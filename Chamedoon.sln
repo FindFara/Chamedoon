@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34407.89
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{F9F7529D-CA4F-4D5D-9B09-AB4EACFB51EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chamedoon.WebAPI", "src\Presentation\Chamedoon.WebAPI\Chamedoon.WebAPI.csproj", "{BC215F42-CCD3-4301-B5F6-94128B3B0625}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{72E0BD40-4936-48F6-A7FF-66AB44D40611}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DDC0FF20-D49C-4FC2-A477-36A2B46DA819}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chamedoon.Application", "src\Libraries\Chamedoon.Application\Chamedoon.Application.csproj", "{1B2CF829-6153-4D56-8529-167BE7A198E2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC215F42-CCD3-4301-B5F6-94128B3B0625}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC215F42-CCD3-4301-B5F6-94128B3B0625}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC215F42-CCD3-4301-B5F6-94128B3B0625}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC215F42-CCD3-4301-B5F6-94128B3B0625}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B2CF829-6153-4D56-8529-167BE7A198E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B2CF829-6153-4D56-8529-167BE7A198E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B2CF829-6153-4D56-8529-167BE7A198E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B2CF829-6153-4D56-8529-167BE7A198E2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BC215F42-CCD3-4301-B5F6-94128B3B0625} = {F9F7529D-CA4F-4D5D-9B09-AB4EACFB51EA}
+		{1B2CF829-6153-4D56-8529-167BE7A198E2} = {72E0BD40-4936-48F6-A7FF-66AB44D40611}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C0213BD1-DDB3-4EE6-B3B7-2C04E375AD7E}
+	EndGlobalSection
+EndGlobal
