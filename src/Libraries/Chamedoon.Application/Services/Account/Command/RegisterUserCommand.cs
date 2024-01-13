@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Chamedoon.Application.Services.Account.Command;
 
-public class RegisterUserCommand : IRequest<BaseResult_VM<bool>>
+public class RegisterUserCommand : IRequest<ResponseRegisterUser_VM>
 {
-    public RegisterUser_VM RegisterUser_VM { get; set; }
+    public required RegisterUser_VM RegisterUser { get; set; }
 }
-public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, BaseResult_VM<bool>>
+public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, ResponseRegisterUser_VM>
 {
     #region Property
     private readonly IMapper mapper;
@@ -27,47 +27,25 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, B
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<bool>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<ResponseRegisterUser_VM> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        try
+        User user = mapper.Map<User>(request.RegisterUser);
+        var registerUser = await userManager.CreateAsync(user, request.RegisterUser.Password);
+
+        if (registerUser.Succeeded)
         {
-            User user = mapper.Map<User>(request.RegisterUser_VM);
-            var registerUser = await userManager.CreateAsync(user, request.RegisterUser_VM.Password);
-
-            if (registerUser.Succeeded)
+            return new ResponseRegisterUser_VM
             {
-                return new BaseResult_VM<bool>
-                {
-                    Result = true,
-                    Code = 0,
-                    Message = "ثبت نام با موفقیت انجام شد"
-                };
-            }
-
-            if (registerUser.Errors.Count() != 0)
-            {
-                var errors = registerUser.Errors.Select(e => e.Description).ToList();
-
-                return new BaseResult_VM<bool>
-                {
-                    Result = false,
-                    Code = -1,
-                    Message = string.Join(" , ", errors)
-                };
-            }
+                Code = 0,
+                Message = "ثبت نام با موفقیت انجام شد"
+            };
         }
 
-        catch (Exception ex)
+        return new ResponseRegisterUser_VM
         {
-            var m = ex.Message;
-        }
-
-        return new BaseResult_VM<bool>
-        {
-            Result = true,
-            Code = 0,
-            Message = "ثبت نام با موفقیت انجام شد"
-
+            Code = -1,
+            Message = "ثبت نام با خطا مواجه شد",
+            Errors = registerUser.Errors.Select(e => e.Description)
         };
     }
     #endregion

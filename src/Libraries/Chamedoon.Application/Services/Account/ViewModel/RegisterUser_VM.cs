@@ -6,7 +6,6 @@ namespace Chamedoon.Application.Services.Account.ViewModel;
 
 public class RegisterUser_VM : IMapFrom<User>
 {
-    public long Id { get; set; }
 
     [Display(Name = "نام کاربری")]
     [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
@@ -35,8 +34,6 @@ public class RegisterUser_VM : IMapFrom<User>
     public string RePassword { get; set; }
 
     public bool IsEmailAtive { get; set; }
-
-    public DateTime Created { get; set; }
 
 }
 

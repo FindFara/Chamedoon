@@ -1,41 +1,52 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
+using Chamedoon.Application.Services.Account.Query;
 using Chamedoon.Application.Services.Account.ViewModel;
 using Chamedoon.Domin.Base;
 using MediatR;
 
 namespace Chamedoon.Application.Services.Account.Command;
 
-public class ManageRegisterUserCommand : IRequest<BaseResult_VM<bool>>
+public class ManageRegisterUserCommand : IRequest<ResponseRegisterUser_VM>
 {
-    public RegisterUser_VM RegisterUser_VM { get; set; }
+    public required RegisterUser_VM RegisterUser { get; set; }
 }
-public class ManageRegisterUserCommandHandler : IRequestHandler<ManageRegisterUserCommand, BaseResult_VM<bool>>
+public class ManageRegisterUserCommandHandler : IRequestHandler<ManageRegisterUserCommand, ResponseRegisterUser_VM>
 {
     #region Property
-    private readonly IApplicationDbContext _context;
-    private readonly ISender sender;
+    private readonly IMediator mediator;
     #endregion
 
     #region Ctor
-    public ManageRegisterUserCommandHandler(IApplicationDbContext context, ISender sender)
+    public ManageRegisterUserCommandHandler(IMediator mediator)
     {
-        _context = context;
-        this.sender = sender;
+        this.mediator = mediator;
     }
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<bool>> Handle(ManageRegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<ResponseRegisterUser_VM> Handle(ManageRegisterUserCommand request, CancellationToken cancellationToken)
     {
-        var register = await sender.Send(new RegisterUserCommand { RegisterUser_VM = request.RegisterUser_VM });
+        //Check Duplicated Email
+        var checkEmail = await mediator.Send(new CheckDuplicatedEmailQuery { Email = request.RegisterUser.Email });
+        if (checkEmail.Code is not 0)
+            return new ResponseRegisterUser_VM
+            {
+                Code = checkEmail.Code,
+                Message = checkEmail.Message,
+            };
 
-        return new BaseResult_VM<bool>
-        {
-            Result = true,
-            Code = 0,
-            Message = "",
+        //Check Duplicated UserName
+        var checkUserName = await mediator.Send(new CheckDuplicatedUserNameQuery { UserName = request.RegisterUser.UserName });
+        if (checkUserName.Code is not 0)
+            return new ResponseRegisterUser_VM
+            {
+                Code = checkUserName.Code,
+                Message = checkUserName.Message,
+            };
 
-        };
+        //Register User
+        var regisrer = await mediator.Send(new RegisterUserCommand { RegisterUser = request.RegisterUser });
+        return regisrer;
     }
 
     #endregion

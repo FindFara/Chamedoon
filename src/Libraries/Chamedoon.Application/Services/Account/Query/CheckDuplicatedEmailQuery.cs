@@ -32,7 +32,7 @@ public class CheckDuplicatedEmailQueryHandler : IRequestHandler<CheckDuplicatedE
             return new BaseResult_VM<bool>
             {
                 Result = false,
-                Code = 0,
+                Code = -1,
                 Message = "کاربر با این ایمیل وجود دارد ",
             };
         }
@@ -40,7 +40,7 @@ public class CheckDuplicatedEmailQueryHandler : IRequestHandler<CheckDuplicatedE
         return new BaseResult_VM<bool>
         {
             Result = true,
-            Code = -1,
+            Code = 0,
             Message = "کاربر با این ایمیل وجود ندارد"
         };
     }
