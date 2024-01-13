@@ -13,9 +13,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DDC0FF20
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chamedoon.Application", "src\Libraries\Chamedoon.Application\Chamedoon.Application.csproj", "{1B2CF829-6153-4D56-8529-167BE7A198E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chamedoon.Domin", "src\Libraries\Chamedoon.Domin\Chamedoon.Domin.csproj", "{11E76ED3-566C-4C72-B43F-E4F0F7550A56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chamedoon.Domin", "src\Libraries\Chamedoon.Domin\Chamedoon.Domin.csproj", "{11E76ED3-566C-4C72-B43F-E4F0F7550A56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chamedoon.Infrastructure", "src\Libraries\Chamedoon.Infrastructure\Chamedoon.Infrastructure.csproj", "{0010E28F-5106-456A-AB26-3A67D7C3721D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chamedoon.Infrastructure", "src\Libraries\Chamedoon.Infrastructure\Chamedoon.Infrastructure.csproj", "{0010E28F-5106-456A-AB26-3A67D7C3721D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

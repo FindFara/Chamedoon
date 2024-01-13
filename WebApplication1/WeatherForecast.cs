@@ -1,4 +1,4 @@
-namespace Chamedoon.WebAPI
+namespace WebApplication1
 {
     public class WeatherForecast
     {

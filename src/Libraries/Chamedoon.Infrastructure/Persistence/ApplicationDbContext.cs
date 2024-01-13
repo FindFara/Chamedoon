@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace DoubleCode.Infrastructure.Persistence;
+namespace Chamedoon.Infrastructure.Persistence;
 
 public class ApplicationDbContext : IdentityDbContext<
                                     User,
@@ -41,21 +41,21 @@ public class ApplicationDbContext : IdentityDbContext<
         //modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
         //modelBuilder.Entity<Role>().HasQueryFilter(u => !u.IsDeleted);
 
-        modelBuilder.Entity<User>(b =>
-        {
-            b.HasMany<UserRole>(u => u.UserRoles)
-                .WithOne(ur => ur.User)
-                .HasForeignKey(ur => ur.UserId)
-                .IsRequired();
-        });
+        //modelBuilder.Entity<User>(b =>
+        //{
+        //    b.HasMany(u => u.UserRoles)
+        //        .WithOne(ur => ur.User)
+        //        .HasForeignKey(ur => ur.UserId)
+        //        .IsRequired();
+        //});
 
-        modelBuilder.Entity<Role>(b =>
-        {
-            b.HasMany<UserRole>(r => r.UserRoles)
-                .WithOne(ur => ur.Role)
-                .HasForeignKey(ur => ur.RoleId)
-                .IsRequired();
-        });
+        //modelBuilder.Entity<Role>(b =>
+        //{
+        //    b.HasMany(r => r.UserRoles)
+        //        .WithOne(ur => ur.Role)
+        //        .HasForeignKey(ur => ur.RoleId)
+        //        .IsRequired();
+        //});
         modelBuilder.ApplyConfiguration(new UserConfigs());
         modelBuilder.ApplyConfiguration(new UserRoleConfigs());
         modelBuilder.ApplyConfiguration(new RoleConfigs());

@@ -2,7 +2,7 @@
 using Chamedoon.Domin.Base;
 using MediatR;
 
-namespace DoubleCode.Application;
+namespace Chamedoon.Application;
 
 public class NonClass : IRequest<BaseResult_VM<bool>>
 {
@@ -26,8 +26,8 @@ public class Handler : IRequestHandler<NonClass, BaseResult_VM<bool>>
         return new BaseResult_VM<bool>
         {
             Result = true,
-            Code =0,
-            Message ="",
+            Code = 0,
+            Message = "",
 
         };
     }

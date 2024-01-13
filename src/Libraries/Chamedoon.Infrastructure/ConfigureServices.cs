@@ -1,5 +1,4 @@
-﻿using DoubleCode.Infrastructure.Persistence;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Chamedoon.Application.Common.Interfaces;
@@ -7,8 +6,9 @@ using Chamedoon.Domin.Entity.User;
 using Chamedoon.Domin.Entity.Permissions;
 using Chamedoon.Application.Utilities.CustomizIdentity;
 using Microsoft.AspNetCore.Identity;
+using Chamedoon.Infrastructure.Persistence;
 
-namespace DoubleCode.Infrastructure;
+namespace Chamedoon.Infrastructure;
 
 public static class ConfigureServices
 {
@@ -17,15 +17,15 @@ public static class ConfigureServices
 
         /*   
 
-         Add-Migration Name -OutputDir Migrations -Context ApplicationDbContext -Project DoubleCode.Infrastructure
+         Add-Migration Name -OutputDir Migrations -Context ApplicationDbContext -Project Chamedoon.Infrastructure
          Update-Database  -Context ApplicationDbContext 
-         dotnet ef migrations add migrationsname -p DoubleCode.Infrastructure -s DoubleCode.WebUI --context ApplicationDbContext
+         dotnet ef migrations add migrationsname -p Chamedoon.Infrastructure -s Chamedoon.WebUI --context ApplicationDbContext
 
          */
 
         services.AddDbContext<ApplicationDbContext>(option =>
         {
-            option.UseSqlServer(configuration.GetConnectionString("DoubleCodeConnection"));
+            option.UseSqlServer(configuration.GetConnectionString("ChamedoonConnection"));
         });
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
         services.AddIdentity<User, Role>()
