@@ -17,9 +17,18 @@ public static class ConfigureServices
 
         /*   
 
-         Add-Migration Name -OutputDir Migrations -Context ApplicationDbContext -Project Chamedoon.Infrastructure
-         Update-Database  -Context ApplicationDbContext 
-         dotnet ef migrations add migrationsname -p Chamedoon.Infrastructure -s Chamedoon.WebUI --context ApplicationDbContext
+         Add-Migration AddUser -OutputDir Migrations -Context ApplicationDbContext -Project Chamedoon.Infrastructure -Args '--environment Production'
+
+         Update-Database -Args '--environment Production'
+
+         dotnet ef migrations add migrationsname 
+        --verbose 
+        --project "src/Libraries/Chamedoon.Infrastructure/Chamedoon.Infrastructure.csproj" 
+        --startup-project "src/Presentation/Chamedoon.WebAPI/Chamedoon.WebAPI.csproj" 
+        --context ApplicationDbContext 
+        -- --environment Chamedoon
+
+        dotnet ef database update -- --environment Production
 
          */
 

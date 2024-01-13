@@ -38,24 +38,23 @@ public class ApplicationDbContext : IdentityDbContext<
     {
         base.OnModelCreating(modelBuilder);
 
-        //modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
-        //modelBuilder.Entity<Role>().HasQueryFilter(u => !u.IsDeleted);
+        modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsBlocked);
 
-        //modelBuilder.Entity<User>(b =>
-        //{
-        //    b.HasMany(u => u.UserRoles)
-        //        .WithOne(ur => ur.User)
-        //        .HasForeignKey(ur => ur.UserId)
-        //        .IsRequired();
-        //});
+        modelBuilder.Entity<User>(b =>
+        {
+            b.HasMany(u => u.UserRoles)
+                .WithOne(ur => ur.User)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+        });
 
-        //modelBuilder.Entity<Role>(b =>
-        //{
-        //    b.HasMany(r => r.UserRoles)
-        //        .WithOne(ur => ur.Role)
-        //        .HasForeignKey(ur => ur.RoleId)
-        //        .IsRequired();
-        //});
+        modelBuilder.Entity<Role>(b =>
+        {
+            b.HasMany(r => r.UserRoles)
+                .WithOne(ur => ur.Role)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
+        });
         modelBuilder.ApplyConfiguration(new UserConfigs());
         modelBuilder.ApplyConfiguration(new UserRoleConfigs());
         modelBuilder.ApplyConfiguration(new RoleConfigs());

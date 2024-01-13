@@ -8,6 +8,6 @@ public class RolePermissionConfigs : IEntityTypeConfiguration<RolePermission>
 {
     public void Configure(EntityTypeBuilder<RolePermission> builder)
     {
-
+        
     }
 }
