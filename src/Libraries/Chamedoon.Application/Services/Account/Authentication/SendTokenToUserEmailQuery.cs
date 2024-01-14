@@ -52,10 +52,11 @@ namespace Chamedoon.Application.Services.Account.Authentication
 
             string url = $"{configuration["AppUrl"]}/api/Account/Confirmemail?userid={user.Result.Id}&token={validToken}";
 
-            await emailService.SendEmailAsync(user.Result.Email
-                 , "Confirm Your Email"
-                 , "<h1>Wellcome </h1>"
-                 + $"<p>confirme your email<a href ='{url}'> clicking here</a></p> ");
+            //TODO :  sing up in sendgrid.com
+            //await emailService.SendEmailAsync(user.Result.Email
+            //     , "Confirm Your Email"
+            //     , "<h1>Wellcome </h1>"
+            //     + $"<p>confirme your email<a href ='{url}'> clicking here</a></p> ");
 
 
             return new BaseResult_VM<bool>

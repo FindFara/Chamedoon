@@ -25,6 +25,7 @@ namespace Chamedoon.Application.Services.Email.Query
 
         public async Task SendEmailAsync(string toEmail, string subject, string content)
         {
+            //TODO : set apikey in appsetting
             var apiKey = _configuration["SendGridAPIKey"];
             var client = new SendGridClient(apiKey);
             var from = new EmailAddress("test@authdemo.com", "JWT Auth Demo");
