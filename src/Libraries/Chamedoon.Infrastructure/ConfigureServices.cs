@@ -36,6 +36,7 @@ public static class ConfigureServices
         {
             option.UseSqlServer(configuration.GetConnectionString("ChamedoonConnection"));
         });
+
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
         services.AddIdentity<User, Role>()
             .AddEntityFrameworkStores<ApplicationDbContext>()

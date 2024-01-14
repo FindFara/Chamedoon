@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Chamedoon.Application.Services.Account.Authentication;
 using Chamedoon.Application.Services.Account.ViewModel;
 using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.User;
@@ -16,13 +17,15 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
     #region Property
     private readonly IMapper mapper;
     private readonly UserManager<User> userManager;
+    private readonly IMediator mediator;
     #endregion
 
     #region Ctor
-    public RegisterUserCommandHandler(IMapper mapper, UserManager<User> userManager)
+    public RegisterUserCommandHandler(IMapper mapper, UserManager<User> userManager ,IMediator mediator)
     {
         this.mapper = mapper;
         this.userManager = userManager;
+        this.mediator = mediator;
     }
     #endregion
 
@@ -31,9 +34,12 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
     {
         User user = mapper.Map<User>(request.RegisterUser);
         var registerUser = await userManager.CreateAsync(user, request.RegisterUser.Password);
-
+        
         if (registerUser.Succeeded)
         {
+            //Send Token
+            var tokenUser = await mediator.Send(new SendTokenToUserEmailQuery { User = user });
+
             return new ResponseRegisterUser_VM
             {
                 Code = 0,

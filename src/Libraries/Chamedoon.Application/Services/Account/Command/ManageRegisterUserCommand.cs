@@ -1,4 +1,5 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
+using Chamedoon.Application.Services.Account.Authentication;
 using Chamedoon.Application.Services.Account.Query;
 using Chamedoon.Application.Services.Account.ViewModel;
 using Chamedoon.Domin.Base;
@@ -46,6 +47,13 @@ public class ManageRegisterUserCommandHandler : IRequestHandler<ManageRegisterUs
 
         //Register User
         var regisrer = await mediator.Send(new RegisterUserCommand { RegisterUser = request.RegisterUser });
+
+
+
+
+
+
+
         return regisrer;
     }
 

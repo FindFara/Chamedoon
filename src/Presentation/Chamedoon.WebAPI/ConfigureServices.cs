@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.OpenApi.Models;
 
 namespace Chamedoon.WebAPI;
 
@@ -23,6 +24,22 @@ public static class ConfigureServices
         //    options.IdleTimeout = TimeSpan.FromMinutes(20);
         //    options.Cookie.HttpOnly = true;
         //});
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "Example API",
+                Version = "v1",
+                Description = "An example of an ASP.NET Core Web API",
+                Contact = new OpenApiContact
+                {
+                    Name = "Example Contact",
+                    Email = "example@example.com",
+                    Url = new Uri("https://example.com/contact"),
+                },
+            });
+
+        });
         services.AddHttpContextAccessor();
         return services;
     }

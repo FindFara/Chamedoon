@@ -5,14 +5,19 @@ using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.User;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Chamedoon.Application.Services.Account.Query;
 
-public class GetUserByUserNameQuery : IRequest<BaseResult_VM<UserDetails_VM>>
+public class GetUserByIdQuery : IRequest<BaseResult_VM<User>>
 {
-    public required string UserName { get; set; }
+    public required long Id { get; set; }
 }
-public class GetUserByUserNameQueryHandler : IRequestHandler<GetUserByUserNameQuery, BaseResult_VM<UserDetails_VM>>
+public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, BaseResult_VM<User>>
 {
     #region Property
     private readonly IApplicationDbContext _context;
@@ -20,7 +25,7 @@ public class GetUserByUserNameQueryHandler : IRequestHandler<GetUserByUserNameQu
     #endregion
 
     #region Ctor
-    public GetUserByUserNameQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetUserByIdQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
         this.mapper = mapper;
@@ -28,27 +33,25 @@ public class GetUserByUserNameQueryHandler : IRequestHandler<GetUserByUserNameQu
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<UserDetails_VM>> Handle(GetUserByUserNameQuery request, CancellationToken cancellationToken)
+    public async Task<BaseResult_VM<User>> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
     {
-        User? user = await _context.User.SingleOrDefaultAsync(u => u.UserName == request.UserName);
+        User? user = await _context.User.SingleOrDefaultAsync(u => u.Id == request.Id);
 
         if (user == null)
         {
-            return new BaseResult_VM<UserDetails_VM>
+            return new BaseResult_VM<User>
             {
                 Code = -1,
                 Message = "کاربری با این نام کاربری یافت نشد",
             };
         }
 
-        return new BaseResult_VM<UserDetails_VM>
+        return new BaseResult_VM<User>
         {
-            Result = mapper.Map<UserDetails_VM>(user),
+            Result = user,
             Code = 0,
             Message = "کاربر با موفقیت یافت شد",
         };
     }
     #endregion
 }
-
-
