@@ -20,5 +20,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Chamedoon.Domin\Chamedoon.Domin.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\Admin\UserManagement\Command\" />
+  </ItemGroup>
 
 </Project>

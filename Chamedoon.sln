@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chamedoon.Domin", "src\Libr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chamedoon.Infrastructure", "src\Libraries\Chamedoon.Infrastructure\Chamedoon.Infrastructure.csproj", "{0010E28F-5106-456A-AB26-3A67D7C3721D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chamedoon.WebUI", "src\Presentation\Chamedoon.WebUI\Chamedoon.WebUI.csproj", "{476336E9-CA5F-4915-8B75-355DD2144DA3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{0010E28F-5106-456A-AB26-3A67D7C3721D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0010E28F-5106-456A-AB26-3A67D7C3721D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0010E28F-5106-456A-AB26-3A67D7C3721D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{476336E9-CA5F-4915-8B75-355DD2144DA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{476336E9-CA5F-4915-8B75-355DD2144DA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{476336E9-CA5F-4915-8B75-355DD2144DA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{476336E9-CA5F-4915-8B75-355DD2144DA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +54,7 @@ Global
 		{1B2CF829-6153-4D56-8529-167BE7A198E2} = {72E0BD40-4936-48F6-A7FF-66AB44D40611}
 		{11E76ED3-566C-4C72-B43F-E4F0F7550A56} = {72E0BD40-4936-48F6-A7FF-66AB44D40611}
 		{0010E28F-5106-456A-AB26-3A67D7C3721D} = {72E0BD40-4936-48F6-A7FF-66AB44D40611}
+		{476336E9-CA5F-4915-8B75-355DD2144DA3} = {F9F7529D-CA4F-4D5D-9B09-AB4EACFB51EA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0213BD1-DDB3-4EE6-B3B7-2C04E375AD7E}
