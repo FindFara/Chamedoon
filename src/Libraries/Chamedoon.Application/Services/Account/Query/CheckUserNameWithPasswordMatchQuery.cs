@@ -9,7 +9,7 @@ namespace Chamedoon.Application.Services.Account.Query;
 
 public class CheckUserNameAndPasswordMatchQuery : IRequest<BaseResult_VM<bool>>
 {
-    public LoginUser_VM LoginUser_VM { get; set; }
+    public required LoginUser_VM LoginUser { get; set; }
 }
 public class CheckUserNameAndPasswordMatchHandler : IRequestHandler<CheckUserNameAndPasswordMatchQuery, BaseResult_VM<bool>>
 {
@@ -30,9 +30,9 @@ public class CheckUserNameAndPasswordMatchHandler : IRequestHandler<CheckUserNam
     public async Task<BaseResult_VM<bool>> Handle(CheckUserNameAndPasswordMatchQuery request, CancellationToken cancellationToken)
     {
         var loginUser = await signinmanager.PasswordSignInAsync(
-             request.LoginUser_VM.UserName,
-             request.LoginUser_VM.Password,
-             request.LoginUser_VM.RememberMe,
+             request.LoginUser.UserName,
+             request.LoginUser.Password,
+             request.LoginUser.RememberMe,
              true);
 
         if (loginUser.IsLockedOut)
