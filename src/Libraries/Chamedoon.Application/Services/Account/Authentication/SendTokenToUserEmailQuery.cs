@@ -58,7 +58,6 @@ namespace Chamedoon.Application.Services.Account.Authentication
             //     , "<h1>Wellcome </h1>"
             //     + $"<p>confirme your email<a href ='{url}'> clicking here</a></p> ");
 
-
             return new BaseResult_VM<bool>
             {
                 Result = true,

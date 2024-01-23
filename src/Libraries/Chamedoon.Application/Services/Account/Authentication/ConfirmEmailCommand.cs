@@ -52,7 +52,6 @@ public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, B
             };
         }
 
-
         return new BaseResult_VM<bool>
         {
             Result = false,
@@ -61,7 +60,6 @@ public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, B
 
         };
     }
-
     #endregion
 }
 
