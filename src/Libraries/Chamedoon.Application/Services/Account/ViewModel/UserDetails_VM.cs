@@ -1,6 +1,5 @@
 ﻿using Chamedoon.Application.Common.Utilities.AutoMapper;
 using Chamedoon.Domin.Entity.User;
-using Microsoft.AspNetCore.Identity;
 
 namespace Chamedoon.Application.Services.Account.ViewModel;
 

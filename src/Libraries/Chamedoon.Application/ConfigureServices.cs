@@ -1,5 +1,4 @@
-﻿using Chamedoon.Application.Common.Utilities.Security;
-using Chamedoon.Application.Services.Email.Query;
+﻿using Chamedoon.Application.Services.Email.Query;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -12,7 +11,6 @@ public static class ConfigureServices
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddMediatR(Assembly.GetExecutingAssembly());
         services.AddTransient<IEmailService, SendGridMailService>();
-        services.AddScoped<ISecurityService, SecurityService>();
 
         return services;
     }

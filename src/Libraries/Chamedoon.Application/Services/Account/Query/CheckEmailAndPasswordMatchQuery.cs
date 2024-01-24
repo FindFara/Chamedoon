@@ -1,5 +1,4 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
-using Chamedoon.Application.Common.Utilities.Security;
 using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.User;
 using MediatR;
@@ -16,14 +15,12 @@ public class CheckEmailAndPasswordMatchQueryHandler : IRequestHandler<CheckEmail
 {
     #region Property
     private readonly IApplicationDbContext _context;
-    private readonly ISecurityService _security;
     #endregion
 
     #region Ctor
-    public CheckEmailAndPasswordMatchQueryHandler(IApplicationDbContext context, ISecurityService security)
+    public CheckEmailAndPasswordMatchQueryHandler(IApplicationDbContext context)
     {
         _context = context;
-        _security = security;
     }
     #endregion
 
@@ -42,7 +39,7 @@ public class CheckEmailAndPasswordMatchQueryHandler : IRequestHandler<CheckEmail
             };
         }
 
-        bool isMatch = true;// _security.VerifyHashedPassword(user.Password, request.Password);
+        bool isMatch = true;
         if (isMatch)
         {
             return new BaseResult_VM<bool>
