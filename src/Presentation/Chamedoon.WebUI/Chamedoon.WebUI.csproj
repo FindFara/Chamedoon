@@ -7,11 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-	  <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.0" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
+
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\..\Libraries\Chamedoon.Application\Chamedoon.Application.csproj" />
+    <ProjectReference Include="..\..\Libraries\Chamedoon.Infrastructure\Chamedoon.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,7 +12,7 @@ namespace Chamedoon.Application.Services.Admin.UserManagement.Query
         {
             _context = context;
         }
-        private IQueryable<User> CheckFiltersShouldApplied(AdminPanelUser_VM? model)
+        private IQueryable<User> CheckFiltersShouldApplied(AdminUserManagement_VM? model)
         {
 
             IQueryable<User> filter = _context.User;
@@ -32,7 +32,7 @@ namespace Chamedoon.Application.Services.Admin.UserManagement.Query
             return filter;
         }
 
-        public IQueryable<User> ApplyAdminPanelUserFilters(AdminPanelUser_VM? model)
+        public IQueryable<User> ApplyAdminPanelUserFilters(AdminUserManagement_VM? model)
         {
             return CheckFiltersShouldApplied(model);
         }

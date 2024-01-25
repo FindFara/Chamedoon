@@ -1,0 +1,30 @@
+﻿using Chamedoon.Application.Common.Extensions;
+using Chamedoon.Domin.Entity.Permissions;
+using System.ComponentModel.DataAnnotations;
+
+namespace Chamedoon.Application.Services.Admin.UserManagement.ViewModel;
+
+public class AdminUserDetaile_VM
+{
+    public long Id { get; set; }
+
+    [Display(Name = "ایمیل")]
+    public string Email { get; set; }
+
+    [Display(Name = "نام کاربری")]
+    public string UserName { get; set; }
+
+    [Display(Name = "وضعیت کاربر")]
+    public bool LockoutEnabled { get; set; }
+
+    [Display(Name = "تاریخ مسدودیت")]
+    public DateTime? LockoutEnd { get; set; }
+
+    [Display(Name = " تاریخ مسدودیت شمسی")]
+    public string? ShamsiLockoutEnd { get => LockoutEnd.ConvertMiladiToShamsi(); }
+
+    #region Reletion
+    public List<Role> PermissionList { get; set; }
+
+    #endregion
+}

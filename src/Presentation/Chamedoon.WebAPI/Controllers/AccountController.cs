@@ -1,6 +1,7 @@
 ﻿using Chamedoon.Application.Services.Account.Authentication;
 using Chamedoon.Application.Services.Account.Command;
 using Chamedoon.Application.Services.Account.Query;
+using Chamedoon.Application.Services.Admin.UserManagement.Query;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,11 @@ public class AccountController : ApiControllerBase
 
     [HttpPost]
     public async Task<IActionResult> Register([FromBody] ManageRegisterUserCommand request)
+    {
+        return Ok(await mediator.Send(request));
+    }
+    [HttpPost]
+    public async Task<IActionResult> A([FromBody] GetAllUsersWithPaginationQuery request)
     {
         return Ok(await mediator.Send(request));
     }

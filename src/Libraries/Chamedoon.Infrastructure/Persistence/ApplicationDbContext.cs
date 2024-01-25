@@ -38,7 +38,7 @@ public class ApplicationDbContext : IdentityDbContext<
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsBlocked);
+        //modelBuilder.Entity<User>().HasQueryFilter(u => !u.LockoutEnabled);
 
         modelBuilder.Entity<User>(b =>
         {

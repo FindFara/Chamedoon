@@ -1,8 +1,6 @@
 using Chamedoon.Application;
-using Chamedoon.Application.Services.Email.ViewModel;
 using Chamedoon.Infrastructure;
 using Chamedoon.WebAPI;
-using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +15,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
-builder.Services.AddWebUIServices();
+builder.Services.AddWebAPIServices();
 
 var app = builder.Build();
 
@@ -35,7 +33,6 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

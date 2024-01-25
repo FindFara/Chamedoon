@@ -15,13 +15,13 @@ using System.Threading.Tasks;
 
 namespace Chamedoon.Application.Services.Admin.UserManagement.Query
 {
-    public class GetAllLockedUsersWithPaginationQuery : IRequest<BaseResult_VM<PaginatedList<AdminPanelUser_VM>>>
+    public class GetAllLockedUsersWithPaginationQuery : IRequest<BaseResult_VM<PaginatedList<AdminUserManagement_VM>>>
     {
         public int PageSize { get; set; } = 20;
         public int PageNumber { get; set; } = 1;
-        public required AdminPanelUser_VM AdminPanelUser { get; set; }
+        public required AdminUserManagement_VM AdminPanelUser { get; set; }
     }
-    public class GetAllLockedUsersQueryHandler : IRequestHandler<GetAllLockedUsersWithPaginationQuery, BaseResult_VM<PaginatedList<AdminPanelUser_VM>>>
+    public class GetAllLockedUsersQueryHandler : IRequestHandler<GetAllLockedUsersWithPaginationQuery, BaseResult_VM<PaginatedList<AdminUserManagement_VM>>>
     {
         #region Property
         private readonly IApplicationDbContext _context;
@@ -37,18 +37,18 @@ namespace Chamedoon.Application.Services.Admin.UserManagement.Query
         #endregion
 
         #region Method
-        public async Task<BaseResult_VM<PaginatedList<AdminPanelUser_VM>>> Handle(GetAllLockedUsersWithPaginationQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResult_VM<PaginatedList<AdminUserManagement_VM>>> Handle(GetAllLockedUsersWithPaginationQuery request, CancellationToken cancellationToken)
         {
             FilterUserAdminPanel filterUser = new FilterUserAdminPanel(_context);
             IQueryable<User> filters = filterUser.ApplyAdminPanelUserFilters(request.AdminPanelUser);
 
-            PaginatedList<AdminPanelUser_VM> users = await filters
+            PaginatedList<AdminUserManagement_VM> users = await filters
            .Where(u=>u.LockoutEnabled == true)
            .OrderByDescending(x => x.Id)
-           .ProjectTo<AdminPanelUser_VM>(mapper.ConfigurationProvider)
+           .ProjectTo<AdminUserManagement_VM>(mapper.ConfigurationProvider)
            .PaginatedListAsync(request.PageNumber, request.PageSize);
 
-            return new BaseResult_VM<PaginatedList<AdminPanelUser_VM>>
+            return new BaseResult_VM<PaginatedList<AdminUserManagement_VM>>
             {
                 Code = 0,
                 Message = "Successful",

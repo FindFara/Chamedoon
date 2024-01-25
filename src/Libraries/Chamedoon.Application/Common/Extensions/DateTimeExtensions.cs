@@ -37,7 +37,40 @@ public static class DateTimeExtensions
 
             return "";
         }
-
-
     }
+    public static string ConvertMiladiToShamsiOffset(this System.DateTimeOffset? DateTime, string seperator = "/")
+    {
+        try
+        {
+            if (DateTime.HasValue == false || DateTime == default)
+            {
+                return "";
+            }
+
+            if (string.IsNullOrEmpty(seperator))
+            {
+                seperator = string.Empty;
+            }
+            PersianCalendar PerCal = new PersianCalendar();
+            string Year, Day, Month;
+            Year = PerCal.GetYear(DateTime.Value.DateTime).ToString();
+            Month = PerCal.GetMonth(DateTime.Value.DateTime).ToString();
+            Day = PerCal.GetDayOfMonth(DateTime.Value.DateTime).ToString();
+            if (Day.Length == 1)
+            {
+                Day = PerCal.GetDayOfMonth(DateTime.Value.DateTime).ToString().Insert(0, "0");
+            }
+            if (Month.Length == 1)
+            {
+                Month = PerCal.GetMonth(DateTime.Value.DateTime).ToString().Insert(0, "0");
+            }
+            return Year + seperator + Month + seperator + Day;
+        }
+        catch (Exception)
+        {
+
+            return "";
+        }
+    }
+
 }

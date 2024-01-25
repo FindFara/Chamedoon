@@ -7,16 +7,19 @@ using Chamedoon.Application.Services.Admin.UserManagement.ViewModel;
 using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.User;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System.Runtime.ExceptionServices;
+using System.Security.Cryptography;
 
 namespace Chamedoon.Application.Services.Admin.UserManagement.Query;
 
-public class GetAllUsersWithPaginationQuery : IRequest<BaseResult_VM<PaginatedList<AdminPanelUser_VM>>>
+public class GetAllUsersWithPaginationQuery : IRequest<BaseResult_VM<PaginatedList<AdminUserManagement_VM>>>
 {
-    public int PageSize { get; set; } = 20;
+    public int PageSize { get; set; }
     public int PageNumber { get; set; } = 1;
-    public required AdminPanelUser_VM AdminPanelUser { get; set; }
+    public  AdminUserManagement_VM? AdminPanelUser { get; set; } 
 }
-public class GetUsersWithPaginationQueryHandler : IRequestHandler<GetAllUsersWithPaginationQuery, BaseResult_VM<PaginatedList<AdminPanelUser_VM>>>
+public class GetUsersWithPaginationQueryHandler : IRequestHandler<GetAllUsersWithPaginationQuery, BaseResult_VM<PaginatedList<AdminUserManagement_VM>>>
 {
     #region Property
     private readonly IApplicationDbContext context;
@@ -27,27 +30,29 @@ public class GetUsersWithPaginationQueryHandler : IRequestHandler<GetAllUsersWit
     public GetUsersWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         this.context = context;
-        this.mapper=mapper;
+        this.mapper = mapper;
     }
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<PaginatedList<AdminPanelUser_VM>>> Handle(GetAllUsersWithPaginationQuery request, CancellationToken cancellationToken)
+    public async Task<BaseResult_VM<PaginatedList<AdminUserManagement_VM>>> Handle(GetAllUsersWithPaginationQuery request, CancellationToken cancellationToken)
     {
         FilterUserAdminPanel filterUser = new FilterUserAdminPanel(context);
         IQueryable<User> filters = filterUser.ApplyAdminPanelUserFilters(request.AdminPanelUser);
 
-        PaginatedList<AdminPanelUser_VM> users = await filters
+        request.PageSize = request.PageSize is 0 ? 20 : request.PageSize;
+        request.PageNumber = request.PageNumber is 0 ? 1 : request.PageNumber;
+
+        PaginatedList<AdminUserManagement_VM> users = await filters
        .OrderByDescending(x => x.Id)
-       .ProjectTo<AdminPanelUser_VM>(mapper.ConfigurationProvider)
+       .ProjectTo<AdminUserManagement_VM>(mapper.ConfigurationProvider)
        .PaginatedListAsync(request.PageNumber, request.PageSize);
 
-        return new BaseResult_VM<PaginatedList<AdminPanelUser_VM>>
+        return new BaseResult_VM<PaginatedList<AdminUserManagement_VM>>
         {
             Code = 0,
             Message = "Successful",
-            Result =users
-
+            Result = users
         };
     }
     #endregion

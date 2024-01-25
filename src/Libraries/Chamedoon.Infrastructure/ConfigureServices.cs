@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Domin.Entity.User;
 using Chamedoon.Domin.Entity.Permissions;
-using Chamedoon.Application.Utilities.CustomizIdentity;
 using Microsoft.AspNetCore.Identity;
 using Chamedoon.Infrastructure.Persistence;
+using Chamedoon.Application.Common.Utilities.CustomizIdentity;
 
 namespace Chamedoon.Infrastructure;
 
@@ -21,12 +21,7 @@ public static class ConfigureServices
 
          Update-Database -Args '--environment Production'
 
-         dotnet ef migrations add migrationsname 
-        --verbose 
-        --project "src/Libraries/Chamedoon.Infrastructure/Chamedoon.Infrastructure.csproj" 
-        --startup-project "src/Presentation/Chamedoon.WebAPI/Chamedoon.WebAPI.csproj" 
-        --context ApplicationDbContext 
-        -- --environment Chamedoon
+         dotnet ef migrations add migrationsname --verbose --project "src/Libraries/Chamedoon.Infrastructure/Chamedoon.Infrastructure.csproj" --startup-project "src/Presentation/Chamedoon.WebAPI/Chamedoon.WebAPI.csproj" --context ApplicationDbContext -- --environment Chamedoon
 
         dotnet ef database update -- --environment Production
 

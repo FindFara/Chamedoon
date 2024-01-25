@@ -2,13 +2,8 @@
 
 namespace Chamedoon.WebUI.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class AdminBaseController : Controller
     {
-        [Area("Admins")]
-        public IActionResult Index()
-        {
-            return View();
-        }
-
     }
 }

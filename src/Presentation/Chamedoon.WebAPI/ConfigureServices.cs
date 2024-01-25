@@ -5,7 +5,7 @@ namespace Chamedoon.WebAPI;
 
 public static class ConfigureServices
 {
-    public static IServiceCollection AddWebUIServices(this IServiceCollection services)
+    public static IServiceCollection AddWebAPIServices(this IServiceCollection services)
     {
         //services.AddAuthentication(op =>
         //{
