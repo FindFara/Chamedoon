@@ -13,14 +13,20 @@ namespace Chamedoon.WebUI.Areas.Admin.Controllers
         {
             this.mediator = mediator;
         }
-        public async Task<IActionResult> Index(int pagesize, int pageNumber, AdminUserManagement_VM adminUser)
+
+        [HttpGet]
+        public async Task<IActionResult> Index([FromQuery] AdminUserManagement_VM adminUser,int pageSize, int pageNumber)
         {
             return View((await mediator.Send(new GetAllUsersWithPaginationQuery
             {
                 PageNumber = pageNumber,
-                PageSize = pagesize,
+                PageSize = pageSize,
                 AdminPanelUser = adminUser
             })).Result);
         }
+
+
+
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Application.Services.Admin.UserManagement.ViewModel;
 using Chamedoon.Domin.Entity.User;
+using System.Linq;
 
 namespace Chamedoon.Application.Services.Admin.UserManagement.Query
 {
@@ -22,11 +23,11 @@ namespace Chamedoon.Application.Services.Admin.UserManagement.Query
             }
             if (string.IsNullOrEmpty(model.UserName) is false)
             {
-                filter = filter.Where(x => x.UserName == model.UserName);
+                filter = filter.Where(x =>(x.UserName?? string.Empty).Contains(model.UserName));
             }
             if (string.IsNullOrEmpty(model.Email) is false)
             {
-                filter = filter.Where(x => x.Email == model.Email);
+                filter = filter.Where(x => (x.Email ?? string.Empty).Contains(model.Email));
             }
 
             return filter;

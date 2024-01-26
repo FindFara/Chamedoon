@@ -18,7 +18,7 @@ namespace Chamedoon.Application.Services.Admin.UserManagement.ViewModel
         public string? UserName { get; set; }
 
         [Display(Name = "تاریخ ساخت")]
-        public DateTime Created { get; set; }
+        public DateTime? Created { get; set; }
 
         [Display(Name = "تاریخ بروزرسانی")]
         public DateTime? LastModified { get; set; }
