@@ -35,7 +35,7 @@ public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, B
     #region Method
     public async Task<BaseResult_VM<bool>> Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
     {
-        var user = await mediator.Send(new GetUserByIdQuery { Id = request.UserId});
+        var user = await mediator.Send(new GetUserQuery { Id = request.UserId});
 
         var decodedTocken = WebEncoders.Base64UrlDecode(request.Token);
         var normalToken =Encoding.UTF8.GetString(decodedTocken);

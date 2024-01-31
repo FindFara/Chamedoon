@@ -38,7 +38,7 @@ namespace Chamedoon.Application.Services.Account.Authentication
         #region Method
         public async Task<BaseResult_VM<bool>> Handle(SendTokenToUserEmailQuery request, CancellationToken cancellationToken)
         {
-            var user = await mediator.Send(new GetUserByUserNameQuery { UserName = request.User.UserName });
+            var user = await mediator.Send(new GetUserQuery { UserName = request.User.UserName });
             if (user.Code is not 0)
                 return new BaseResult_VM<bool>
                 {
