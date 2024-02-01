@@ -7,6 +7,8 @@ using Chamedoon.Domin.Entity.Permissions;
 using Microsoft.AspNetCore.Identity;
 using Chamedoon.Infrastructure.Persistence;
 using Chamedoon.Application.Common.Utilities.CustomizIdentity;
+using MediatR;
+using Chamedoon.Application.Services.Account.Roles.Command;
 
 namespace Chamedoon.Infrastructure;
 
@@ -37,7 +39,6 @@ public static class ConfigureServices
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders()
             .AddErrorDescriber<PersianIdentityErrorDescriber>();
-
         return services;
 
     }

@@ -1,12 +1,10 @@
-﻿using Chamedoon.Application.Services.Account.Authentication;
-using Chamedoon.Application.Services.Account.Authentication.Query;
-using Chamedoon.Application.Services.Account.Command;
+﻿using Chamedoon.Application.Services.Account.Login.Command;
+using Chamedoon.Application.Services.Account.Login.Query;
 using Chamedoon.Application.Services.Account.Query;
-using Chamedoon.Application.Services.Account.ViewModel;
-using Chamedoon.Application.Services.Admin.UserManagement.Query;
-using Chamedoon.Domin.Base;
+using Chamedoon.Application.Services.Account.Register.Command;
+using Chamedoon.Application.Services.Account.Users.Query;
+using Chamedoon.Application.Services.Email.Query;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -38,7 +36,7 @@ public class AccountController : ApiControllerBase
 
         //Get roles
         var userRoles = await mediator.Send(new GetUserRolesQuery { UserName = user.Result.UserName });
-         if (userRoles.Result is null)
+        if (userRoles.Result is null)
             return Unauthorized(userRoles);
 
         var authClaims = new List<Claim>
@@ -47,12 +45,12 @@ public class AccountController : ApiControllerBase
              new Claim(ClaimTypes.Email, user.Result.Email ?? ""),
              new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
-        
+
         foreach (var userRole in userRoles.Result)
         {
             authClaims.Add(new Claim(ClaimTypes.Role, userRole));
         }
-        
+
         //Get token
         var token = (await mediator.Send(new GenerateJsonWebTokenQuery { Claims = authClaims })).Result;
         if (token is null)
