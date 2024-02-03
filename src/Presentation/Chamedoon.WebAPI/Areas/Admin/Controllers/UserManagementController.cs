@@ -24,9 +24,5 @@ namespace Chamedoon.WebUI.Areas.Admin.Controllers
                 AdminPanelUser = adminUser
             })).Result);
         }
-
-
-
-
     }
 }

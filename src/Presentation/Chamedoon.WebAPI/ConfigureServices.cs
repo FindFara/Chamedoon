@@ -1,44 +1,69 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Chamedoon.WebUI.Areas.Admin.Controllers;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace Chamedoon.WebAPI;
 
 public static class ConfigureServices
 {
-    public static IServiceCollection AddWebAPIServices(this IServiceCollection services)
+    public static IServiceCollection AddWebAPIServices(this IServiceCollection services, IConfiguration configuration)
     {
-        //services.AddAuthentication(op =>
-        //{
-        //    op.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        //    op.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        //    op.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        //    op.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        //}).AddCookie(op =>
-        //{
-        //    op.LoginPath = "/auth/login";
-        //    op.LogoutPath = "/auth/logout";
-        //    op.ExpireTimeSpan = TimeSpan.FromMinutes(143200);
-        //});
-        //services.AddSession(options =>
-        //{
-        //    options.IdleTimeout = TimeSpan.FromMinutes(20);
-        //    options.Cookie.HttpOnly = true;
-        //});
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "Example API",
+                Title = "Chamedoon",
                 Version = "v1",
-                Description = "An example of an ASP.NET Core Web API",
                 Contact = new OpenApiContact
                 {
-                    Name = "Example Contact",
-                    Email = "example@example.com",
-                    Url = new Uri("https://example.com/contact"),
+                    Name = "Admin",
+                    Url = new Uri((configuration["AppUrl"])+"/admin"),
                 },
             });
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+                Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+            });
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+            {
+                 new OpenApiSecurityScheme
+                 {
+                     Reference = new OpenApiReference {
+                         Type = ReferenceType.SecurityScheme,
+                             Id = "Bearer"
+                     }
+                 },
+            new string[] {}
+            }});
+        });
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
 
+        // Adding Jwt Bearer
+        .AddJwtBearer(options =>
+        {
+            options.SaveToken = true;
+            options.RequireHttpsMetadata = false;
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidAudience = configuration["JWT:ValidAudience"],
+                ValidIssuer = configuration["JWT:ValidIssuer"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+            };
         });
         services.AddHttpContextAccessor();
         return services;

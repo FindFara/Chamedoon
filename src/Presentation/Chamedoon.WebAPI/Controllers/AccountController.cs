@@ -5,12 +5,14 @@ using Chamedoon.Application.Services.Account.Register.Command;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Email.Query;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Chamedoon.WebAPI.Controllers;
 
+[Authorize]
 public class AccountController : ApiControllerBase
 {
     public IMediator mediator;
@@ -59,7 +61,8 @@ public class AccountController : ApiControllerBase
         return Ok(new
         {
             token = new JwtSecurityTokenHandler().WriteToken(token),
-            expiration = token.ValidTo
+            expiration = token.ValidTo,
+            UserName = request.LoginUser.UserName,
         });
 
     }
