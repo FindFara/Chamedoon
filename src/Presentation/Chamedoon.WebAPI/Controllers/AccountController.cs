@@ -4,22 +4,24 @@ using Chamedoon.Application.Services.Account.Query;
 using Chamedoon.Application.Services.Account.Register.Command;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Email.Query;
+using Chamedoon.WebAPI.Models;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Chamedoon.WebAPI.Controllers;
 
-[Authorize]
+//[Authorize]
 public class AccountController : ApiControllerBase
 {
     public IMediator mediator;
+    private readonly ILogger logger;
 
-    public AccountController(IMediator mediator)
+    public AccountController(IMediator mediator , ILogger logger)
     {
         this.mediator = mediator;
+        this.logger = logger;
     }
 
     [HttpPost]
@@ -70,6 +72,16 @@ public class AccountController : ApiControllerBase
     [HttpGet]
     public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailCommand request)
     {
+        return Ok(await mediator.Send(request));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> FindUser([FromBody] GetUserQuery request)
+    {
+        logger.LogInformation("logger LogInformation");
+        logger.LogError("logger LogError");
+        logger.LogWarning("logger LogWarning");
+
         return Ok(await mediator.Send(request));
     }
 }

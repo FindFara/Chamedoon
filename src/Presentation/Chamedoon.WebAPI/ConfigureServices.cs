@@ -1,4 +1,5 @@
-﻿using Chamedoon.WebUI.Areas.Admin.Controllers;
+﻿using Chamedoon.WebAPI.Models;
+using Chamedoon.WebUI.Areas.Admin.Controllers;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -20,7 +21,7 @@ public static class ConfigureServices
                 Contact = new OpenApiContact
                 {
                     Name = "Admin",
-                    Url = new Uri((configuration["AppUrl"])+"/admin"),
+                    Url = new Uri((configuration["AppUrl"]) + "/admin"),
                 },
             });
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -66,6 +67,10 @@ public static class ConfigureServices
             };
         });
         services.AddHttpContextAccessor();
+
+
+
+
         return services;
     }
 }
