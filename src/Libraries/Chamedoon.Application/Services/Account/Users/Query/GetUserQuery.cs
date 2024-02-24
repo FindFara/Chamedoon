@@ -37,11 +37,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserQuery, BaseResult_
                                    u.NormalizedUserName == (request.UserName ?? "").ToUpper() ||
                                    u.NormalizedEmail == (request.Email ?? "").ToUpper());
         if (user is null)
-            return new BaseResult_VM<User>
-            {
-                Code = -1,
-                Message = "کاربری یافت نشد",
-            };
+            throw new InvalidOperationException("کاربری یافت نشد");
 
         return new BaseResult_VM<User>
         {

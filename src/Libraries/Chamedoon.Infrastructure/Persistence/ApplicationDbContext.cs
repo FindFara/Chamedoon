@@ -34,6 +34,7 @@ public class ApplicationDbContext : IdentityDbContext<
     public DbSet<RolePermission> RolePermission { get; set; }
     #endregion
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

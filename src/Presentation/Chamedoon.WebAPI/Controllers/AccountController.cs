@@ -18,7 +18,7 @@ public class AccountController : ApiControllerBase
     public IMediator mediator;
     private readonly ILogger logger;
 
-    public AccountController(IMediator mediator , ILogger logger)
+    public AccountController(IMediator mediator , ILogger<AccountController> logger)
     {
         this.mediator = mediator;
         this.logger = logger;
@@ -78,7 +78,7 @@ public class AccountController : ApiControllerBase
     [HttpPost]
     public async Task<IActionResult> FindUser([FromBody] GetUserQuery request)
     {
-        logger.LogInformation("logger LogInformation");
+
         logger.LogError("logger LogError");
         logger.LogWarning("logger LogWarning");
 

@@ -2,6 +2,8 @@ using Chamedoon.Application;
 using Chamedoon.Infrastructure;
 using Chamedoon.WebAPI;
 using Chamedoon.WebAPI.Models;
+using Microsoft.Extensions.Configuration;
+using Chamedoon.Application.Common.Log;
 using Serilog;
 
 
@@ -21,14 +23,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddWebAPIServices(builder.Configuration);
-
-
-
-Log.Logger = new LoggerConfiguration()
+var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
     .CreateLogger();
-
-builder.Host.UseSerilog();
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -37,8 +37,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-
+else
+{
+    app.UseExceptionHandler("/error");
+}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -46,6 +48,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.UseExceptionHandleMiddleware();
 
 app.UseEndpoints(endpoints =>
 {

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Text;
 
 namespace Chamedoon.WebAPI;
@@ -67,8 +68,6 @@ public static class ConfigureServices
             };
         });
         services.AddHttpContextAccessor();
-
-
 
 
         return services;
