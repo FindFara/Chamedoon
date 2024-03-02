@@ -3,8 +3,8 @@ using Chamedoon.Infrastructure;
 using Chamedoon.WebAPI;
 using Chamedoon.WebAPI.Models;
 using Microsoft.Extensions.Configuration;
-using Chamedoon.Application.Common.Log;
 using Serilog;
+using Chamedoon.Application.Common.Middelware;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,12 +37,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else
-{
-    app.UseExceptionHandler("/error");
-}
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();

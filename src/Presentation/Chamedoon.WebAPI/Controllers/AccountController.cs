@@ -78,10 +78,6 @@ public class AccountController : ApiControllerBase
     [HttpPost]
     public async Task<IActionResult> FindUser([FromBody] GetUserQuery request)
     {
-
-        logger.LogError("logger LogError");
-        logger.LogWarning("logger LogWarning");
-
         return Ok(await mediator.Send(request));
     }
 }

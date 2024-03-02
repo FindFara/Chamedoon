@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Chamedoon.Application.Common.Interfaces;
+using Chamedoon.Application.Common.Log.ViewModel;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.User;
 using MediatR;
@@ -7,13 +9,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chamedoon.Application.Services.Account.Users.Query;
 
-public class GetUserQuery : IRequest<BaseResult_VM<User>>
+public class GetUserQuery : IRequest<OperationResult<User>>
 {
     public long? Id { get; set; }
     public string? UserName { get; set; }
     public string? Email { get; set; }
 }
-public class GetUserByIdQueryHandler : IRequestHandler<GetUserQuery, BaseResult_VM<User>>
+public class GetUserByIdQueryHandler : IRequestHandler<GetUserQuery, OperationResult<User>>
 {
     #region Property
     private readonly IApplicationDbContext _context;
@@ -29,7 +31,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserQuery, BaseResult_
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<User>> Handle(GetUserQuery request, CancellationToken cancellationToken)
+    public async Task<OperationResult<User>> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
         User? user = await _context.User
              .SingleOrDefaultAsync(u =>
@@ -37,14 +39,9 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserQuery, BaseResult_
                                    u.NormalizedUserName == (request.UserName ?? "").ToUpper() ||
                                    u.NormalizedEmail == (request.Email ?? "").ToUpper());
         if (user is null)
-            throw new InvalidOperationException("کاربری یافت نشد");
+            throw new ThrowException("کاربری یافت نشد", nameof(GetUserQuery));
 
-        return new BaseResult_VM<User>
-        {
-            Result = mapper.Map<User>(user),
-            Code = 0,
-            Message = "کاربر با موفقیت یافت شد",
-        };
+        return OperationResult<User>.Success(mapper.Map<User>(user));
     }
     #endregion
 }
