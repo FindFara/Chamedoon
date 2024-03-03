@@ -4,7 +4,6 @@ using Chamedoon.Application.Services.Account.Query;
 using Chamedoon.Application.Services.Account.Register.Command;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Email.Query;
-using Chamedoon.WebAPI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;

@@ -1,9 +1,11 @@
 ﻿using Chamedoon.Application.Common.Exeption;
-using Chamedoon.Application.Common.Log.ViewModel;
+using Chamedoon.Application.Common.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Serilog.Context;
+using Serilog.Core;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 
@@ -65,11 +67,12 @@ namespace Chamedoon.Application.Common.Middelware
                 //ToDo
             }
 
-            if (ex is ThrowException)
+            if (ex is ThrowException exception)
             {
-
-                // _logger.LogError(ex, "{Message}", ex.Message,ex.MethodName);
-
+                using (LogContext.PushProperty("MethodName", exception.MethodName ?? ""))
+                {
+                    _logger.LogError(ex, "{Message}", ex.Message);
+                }
                 responseModel.StatusCode = StatusCodes.Status500InternalServerError;
                 var json = JsonSerializer.Serialize(responseModel, options);
                 await httpContext.Response.WriteAsync(json);

@@ -1,7 +1,4 @@
-﻿using Chamedoon.WebAPI.Models;
-using Chamedoon.WebUI.Areas.Admin.Controllers;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;

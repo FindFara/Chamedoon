@@ -1,5 +1,7 @@
-﻿using Chamedoon.Application.Services.Account.Query;
+﻿using Chamedoon.Application.Common.Models;
+using Chamedoon.Application.Services.Account.Query;
 using Chamedoon.Application.Services.Account.Users.Query;
+using Chamedoon.Application.Services.Account.Users.ViewModel;
 using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.User;
 using MediatR;
@@ -10,11 +12,11 @@ using System.Text;
 
 namespace Chamedoon.Application.Services.Email.Query
 {
-    public class SendTokenToUserEmailQuery : IRequest<BaseResult_VM<bool>>
+    public class SendTokenToUserEmailQuery : IRequest<OperationResult<bool>>
     {
         public required User User { get; set; }
     }
-    public class SendTokenToUserEmailQueryHandler : IRequestHandler<SendTokenToUserEmailQuery, BaseResult_VM<bool>>
+    public class SendTokenToUserEmailQueryHandler : IRequestHandler<SendTokenToUserEmailQuery, OperationResult<bool>>
     {
         #region Property
         private readonly UserManager<User> userManager;
@@ -36,15 +38,11 @@ namespace Chamedoon.Application.Services.Email.Query
         #endregion
 
         #region Method
-        public async Task<BaseResult_VM<bool>> Handle(SendTokenToUserEmailQuery request, CancellationToken cancellationToken)
+        public async Task<OperationResult<bool>> Handle(SendTokenToUserEmailQuery request, CancellationToken cancellationToken)
         {
             var user = await mediator.Send(new GetUserQuery { UserName = request.User.UserName });
-            if (user.Code is not 0)
-                return new BaseResult_VM<bool>
-                {
-                    Code = user.Code,
-                    Message = user.Message,
-                };
+            if (user.IsSuccess is false)
+                return OperationResult<bool>.Fail(user.Message);
 
             var token = await userManager.GenerateEmailConfirmationTokenAsync(request.User);
             var encodedToken = Encoding.UTF8.GetBytes(token);
@@ -58,13 +56,7 @@ namespace Chamedoon.Application.Services.Email.Query
             //     , "<h1>Wellcome </h1>"
             //     + $"<p>confirme your email<a href ='{url}'> clicking here</a></p> ");
 
-            return new BaseResult_VM<bool>
-            {
-                Result = true,
-                Code = 0,
-                Message = "",
-
-            };
+            return OperationResult<bool>.Success(true);
         }
 
         #endregion

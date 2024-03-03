@@ -1,8 +1,6 @@
 using Chamedoon.Application;
 using Chamedoon.Infrastructure;
 using Chamedoon.WebAPI;
-using Chamedoon.WebAPI.Models;
-using Microsoft.Extensions.Configuration;
 using Serilog;
 using Chamedoon.Application.Common.Middelware;
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Login.ViewModel;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Account.Users.ViewModel;
@@ -6,11 +7,11 @@ using Chamedoon.Domin.Base;
 using MediatR;
 
 namespace Chamedoon.Application.Services.Account.Login.Command;
-public class ManageLoginUserQuery : IRequest<BaseResult_VM<UserDetails_VM>>
+public class ManageLoginUserQuery : IRequest<OperationResult<UserDetails_VM>>
 {
     public required LoginUser_VM LoginUser { get; set; }
 }
-public class ManageLoginUserQueryHandler : IRequestHandler<ManageLoginUserQuery, BaseResult_VM<UserDetails_VM>>
+public class ManageLoginUserQueryHandler : IRequestHandler<ManageLoginUserQuery, OperationResult<UserDetails_VM>>
 {
     #region Property
     private readonly IMediator mediator;
@@ -27,22 +28,17 @@ public class ManageLoginUserQueryHandler : IRequestHandler<ManageLoginUserQuery,
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<UserDetails_VM>> Handle(ManageLoginUserQuery request, CancellationToken cancellationToken)
+    public async Task<OperationResult<UserDetails_VM>> Handle(ManageLoginUserQuery request, CancellationToken cancellationToken)
     {
         var user = await mediator.Send(new GetUserQuery { UserName = request.LoginUser.UserName });
-        if (user.Result is null)
-            return new BaseResult_VM<UserDetails_VM> { Code = user.Code, Message = user.Message };
+        if (user.IsSuccess is false)
+            return OperationResult<UserDetails_VM>.Fail();
 
-        var checkUser = await mediator.Send(new CheckUserNameAndPasswordMatchQuery { LoginUser = request.LoginUser });
-        if (checkUser.Code is not 0)
-            return new BaseResult_VM<UserDetails_VM> { Code = checkUser.Code, Message = checkUser.Message };
+        OperationResult<bool> checkUser = await mediator.Send(new CheckUserNameAndPasswordMatchQuery { LoginUser = request.LoginUser });
+        if (checkUser.IsSuccess is false)
+            return OperationResult<UserDetails_VM>.Fail(checkUser.Message);
 
-        return new BaseResult_VM<UserDetails_VM>
-        {
-            Result = mapper.Map<UserDetails_VM>(user.Result),
-            Code = 0,
-            Message = "ورود با موفقیت انجام شد",
-        };
+        return OperationResult<UserDetails_VM>.Success(mapper.Map<UserDetails_VM>(user.Result));
     }
 
     #endregion

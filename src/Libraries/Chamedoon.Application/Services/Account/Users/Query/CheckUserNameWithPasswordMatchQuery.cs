@@ -1,4 +1,5 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Login.ViewModel;
 using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.User;
@@ -7,11 +8,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Chamedoon.Application.Services.Account.Users.Query;
 
-public class CheckUserNameAndPasswordMatchQuery : IRequest<BaseResult_VM<bool>>
+public class CheckUserNameAndPasswordMatchQuery : IRequest<OperationResult<bool>>
 {
     public required LoginUser_VM LoginUser { get; set; }
 }
-public class CheckUserNameAndPasswordMatchHandler : IRequestHandler<CheckUserNameAndPasswordMatchQuery, BaseResult_VM<bool>>
+public class CheckUserNameAndPasswordMatchHandler : IRequestHandler<CheckUserNameAndPasswordMatchQuery, OperationResult<bool>>
 {
     #region Property
     private readonly IApplicationDbContext context;
@@ -27,7 +28,7 @@ public class CheckUserNameAndPasswordMatchHandler : IRequestHandler<CheckUserNam
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<bool>> Handle(CheckUserNameAndPasswordMatchQuery request, CancellationToken cancellationToken)
+    public async Task<OperationResult<bool>> Handle(CheckUserNameAndPasswordMatchQuery request, CancellationToken cancellationToken)
     {
         var loginUser = await signinmanager.PasswordSignInAsync(
              request.LoginUser.UserName,
@@ -36,15 +37,13 @@ public class CheckUserNameAndPasswordMatchHandler : IRequestHandler<CheckUserNam
              true);
 
         if (loginUser.IsLockedOut)
-            return new BaseResult_VM<bool>
-            { Code = -1, Message = "اکانت شما به دلیل ورود های ناموفق قفل شده است ، چند دقیقه دیگر دوباره امتحلن کنید", };
+            return OperationResult<bool>
+                .Fail("اکانت شما به دلیل ورود های ناموفق قفل شده است ، چند دقیقه دیگر دوباره امتحان کنید");
 
         if (loginUser.Succeeded)
-            return new BaseResult_VM<bool>
-            { Result = true, Code = 0, Message = "ورود با موفقیت انجام شد", };
+            return OperationResult<bool>.Success(true);
 
-        return new BaseResult_VM<bool>
-        { Code = -2, Message = "مشکلی در ورود رخ داده است ، لطفا چند دقیقه دیگر دوباره امتحان کنید", };
+        return OperationResult<bool>.Fail("مشکلی در ورود رخ داده است ، لطفا چند دقیقه دیگر دوباره امتحان کنید");
     }
 
     #endregion
