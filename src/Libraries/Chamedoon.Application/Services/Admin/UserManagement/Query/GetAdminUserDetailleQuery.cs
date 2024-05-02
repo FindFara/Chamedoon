@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Chamedoon.Application.Common.Interfaces;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Admin.UserManagement.ViewModel;
 using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.User;
@@ -8,11 +9,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chamedoon.Application.Services.Admin.UserManagement.Query;
 
-public class GetAdminPanelUserDetailleQuery : IRequest<BaseResult_VM<AdminUserDetaile_VM>>
+public class GetAdminPanelUserDetailleQuery : IRequest<OperationResult<AdminUserDetaile_VM>>
 {
     public long UserId { get; set; }
 }
-public class GetAdminPanelUserDetailleQueryHandler : IRequestHandler<GetAdminPanelUserDetailleQuery, BaseResult_VM<AdminUserDetaile_VM>>
+public class GetAdminPanelUserDetailleQueryHandler : IRequestHandler<GetAdminPanelUserDetailleQuery, OperationResult<AdminUserDetaile_VM>>
 {
     #region Property
     private readonly IApplicationDbContext context;
@@ -28,18 +29,13 @@ public class GetAdminPanelUserDetailleQueryHandler : IRequestHandler<GetAdminPan
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<AdminUserDetaile_VM>> Handle(GetAdminPanelUserDetailleQuery request, CancellationToken cancellationToken)
+    public async Task<OperationResult<AdminUserDetaile_VM>> Handle(GetAdminPanelUserDetailleQuery request, CancellationToken cancellationToken)
     {
         User? user = await context.User.SingleOrDefaultAsync(u => u.Id == request.UserId);
         if (user is null)
-            return new BaseResult_VM<AdminUserDetaile_VM> { Code = -1 };
-        
-        return new BaseResult_VM<AdminUserDetaile_VM>
-        {
-            Result = mapper.Map<AdminUserDetaile_VM>(user),
-            Code = 0,
-            Message = "Successful",
-        };
+            return OperationResult<AdminUserDetaile_VM>.Fail();
+
+        return OperationResult<AdminUserDetaile_VM>.Success(mapper.Map<AdminUserDetaile_VM>(user));
     }
 
     #endregion

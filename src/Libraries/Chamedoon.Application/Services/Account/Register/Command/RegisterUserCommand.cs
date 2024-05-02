@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Register.ViewModel;
 using Chamedoon.Application.Services.Email.Query;
 using Chamedoon.Domin.Entity.User;
@@ -7,11 +8,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Chamedoon.Application.Services.Account.Register.Command;
 
-public class RegisterUserCommand : IRequest<ResponseRegisterUser_VM>
+public class RegisterUserCommand : IRequest<OperationResult<bool>>
 {
     public required RegisterUser_VM RegisterUser { get; set; }
 }
-public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, ResponseRegisterUser_VM>
+public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, OperationResult<bool>>
 {
     #region Property
     private readonly IMapper mapper;
@@ -29,7 +30,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
     #endregion
 
     #region Method
-    public async Task<ResponseRegisterUser_VM> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<bool>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         User user = mapper.Map<User>(request.RegisterUser);
         var registerUser = await userManager.CreateAsync(user, request.RegisterUser.Password);
@@ -41,19 +42,9 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, R
             await userManager.AddToRoleAsync(user, "Member");
             var tokenUser = await mediator.Send(new SendTokenToUserEmailQuery { User = user });
 
-            return new ResponseRegisterUser_VM
-            {
-                Code = 0,
-                Message = "ثبت نام با موفقیت انجام شد"
-            };
+            return OperationResult<bool>.Success(true);
         }
-
-        return new ResponseRegisterUser_VM
-        {
-            Code = -1,
-            Message = "ثبت نام با خطا مواجه شد",
-            Errors = registerUser.Errors.Select(e => e.Description)
-        };
+        return OperationResult<bool>.Fail(registerUser.Errors.Select(e => e.Description).First());
     }
     #endregion
 }

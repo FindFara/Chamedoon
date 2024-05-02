@@ -5,13 +5,14 @@ using Chamedoon.Application.Services.Account.Register.Command;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Email.Query;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Chamedoon.WebAPI.Controllers;
 
-//[Authorize]
+[Authorize]
 public class AccountController : ApiControllerBase
 {
     public IMediator mediator;
@@ -24,12 +25,14 @@ public class AccountController : ApiControllerBase
     }
 
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] ManageRegisterUserCommand request)
     {
         return Ok(await mediator.Send(request));
     }
 
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] ManageLoginUserQuery request)
     {
         //Get user
@@ -45,7 +48,7 @@ public class AccountController : ApiControllerBase
         var authClaims = new List<Claim>
         {
              new Claim(ClaimTypes.Name, user.Result.UserName ?? ""),
-             new Claim(ClaimTypes.Email, user.Result.Email ?? ""),
+             new Claim(ClaimTypes.Role , userRoles.Result.First()),
              new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 
@@ -55,14 +58,14 @@ public class AccountController : ApiControllerBase
         }
 
         //Get token
-        var token = (await mediator.Send(new GenerateJsonWebTokenQuery { Claims = authClaims })).Result;
-        if (token is null)
+        var token = (await mediator.Send(new GenerateJsonWebTokenQuery { Claims = authClaims }));
+        if (token.IsSuccess is false)
             return Unauthorized(token);
 
         return Ok(new
         {
-            token = new JwtSecurityTokenHandler().WriteToken(token),
-            expiration = token.ValidTo,
+            token = new JwtSecurityTokenHandler().WriteToken(token.Result),
+            expiration = token.Result?.ValidTo,
             UserName = request.LoginUser.UserName,
         });
 

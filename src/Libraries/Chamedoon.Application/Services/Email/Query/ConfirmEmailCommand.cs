@@ -1,4 +1,5 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Query;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Domin.Base;
@@ -13,12 +14,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Chamedoon.Application.Services.Email.Query;
-public class ConfirmEmailCommand : IRequest<BaseResult_VM<bool>>
+public class ConfirmEmailCommand : IRequest<OperationResult<bool>>
 {
     public long UserId { get; set; }
     public string Token { get; set; }
 }
-public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, BaseResult_VM<bool>>
+public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, OperationResult<bool>>
 {
     #region Property
     private readonly UserManager<User> userManager;
@@ -34,7 +35,7 @@ public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, B
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<bool>> Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<bool>> Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
     {
         var user = await mediator.Send(new GetUserQuery { Id = request.UserId });
 
@@ -44,22 +45,10 @@ public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, B
         var confirmEmail = await userManager.ConfirmEmailAsync(user.Result, normalToken);
         if (confirmEmail.Succeeded)
         {
-            return new BaseResult_VM<bool>
-            {
-                Result = true,
-                Code = 0,
-                Message = "تایید ایمیل با موفقیت انجام شد",
-
-            };
+            return OperationResult<bool>.Success(true);
         }
 
-        return new BaseResult_VM<bool>
-        {
-            Result = false,
-            Code = -1,
-            Message = "تایید ایمیل با مشکل مواجه شد",
-
-        };
+        return OperationResult<bool>.Fail("تایید ایمیل با مشکل مواجه شد" , false);
     }
     #endregion
 }

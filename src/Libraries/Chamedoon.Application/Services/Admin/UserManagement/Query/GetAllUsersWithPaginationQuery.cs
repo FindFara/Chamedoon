@@ -13,13 +13,13 @@ using System.Security.Cryptography;
 
 namespace Chamedoon.Application.Services.Admin.UserManagement.Query;
 
-public class GetAllUsersWithPaginationQuery : IRequest<BaseResult_VM<PaginatedList<AdminUserManagement_VM>>>
+public class GetAllUsersWithPaginationQuery : IRequest<OperationResult<PaginatedList<AdminUserManagement_VM>>>
 {
     public int PageSize { get; set; }
     public int PageNumber { get; set; } = 1;
     public  AdminUserManagement_VM? AdminPanelUser { get; set; } 
 }
-public class GetUsersWithPaginationQueryHandler : IRequestHandler<GetAllUsersWithPaginationQuery, BaseResult_VM<PaginatedList<AdminUserManagement_VM>>>
+public class GetUsersWithPaginationQueryHandler : IRequestHandler<GetAllUsersWithPaginationQuery, OperationResult<PaginatedList<AdminUserManagement_VM>>>
 {
     #region Property
     private readonly IApplicationDbContext context;
@@ -35,7 +35,7 @@ public class GetUsersWithPaginationQueryHandler : IRequestHandler<GetAllUsersWit
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<PaginatedList<AdminUserManagement_VM>>> Handle(GetAllUsersWithPaginationQuery request, CancellationToken cancellationToken)
+    public async Task<OperationResult<PaginatedList<AdminUserManagement_VM>>> Handle(GetAllUsersWithPaginationQuery request, CancellationToken cancellationToken)
     {
         FilterUserAdminPanel filterUser = new FilterUserAdminPanel(context);
         IQueryable<User> filters = filterUser.ApplyAdminPanelUserFilters(request.AdminPanelUser);
@@ -48,12 +48,7 @@ public class GetUsersWithPaginationQueryHandler : IRequestHandler<GetAllUsersWit
        .ProjectTo<AdminUserManagement_VM>(mapper.ConfigurationProvider)
        .PaginatedListAsync(request.PageNumber, request.PageSize);
 
-        return new BaseResult_VM<PaginatedList<AdminUserManagement_VM>>
-        {
-            Code = 0,
-            Message = "Successful",
-            Result = users
-        };
+        return OperationResult<PaginatedList<AdminUserManagement_VM>>.Success(users);
     }
     #endregion
 }

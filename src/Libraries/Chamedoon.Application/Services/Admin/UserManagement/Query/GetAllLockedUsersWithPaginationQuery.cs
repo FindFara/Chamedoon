@@ -15,13 +15,13 @@ using System.Threading.Tasks;
 
 namespace Chamedoon.Application.Services.Admin.UserManagement.Query
 {
-    public class GetAllLockedUsersWithPaginationQuery : IRequest<BaseResult_VM<PaginatedList<AdminUserManagement_VM>>>
+    public class GetAllLockedUsersWithPaginationQuery : IRequest<OperationResult<PaginatedList<AdminUserManagement_VM>>>
     {
         public int PageSize { get; set; } = 20;
         public int PageNumber { get; set; } = 1;
         public required AdminUserManagement_VM AdminPanelUser { get; set; }
     }
-    public class GetAllLockedUsersQueryHandler : IRequestHandler<GetAllLockedUsersWithPaginationQuery, BaseResult_VM<PaginatedList<AdminUserManagement_VM>>>
+    public class GetAllLockedUsersQueryHandler : IRequestHandler<GetAllLockedUsersWithPaginationQuery, OperationResult<PaginatedList<AdminUserManagement_VM>>>
     {
         #region Property
         private readonly IApplicationDbContext _context;
@@ -37,7 +37,7 @@ namespace Chamedoon.Application.Services.Admin.UserManagement.Query
         #endregion
 
         #region Method
-        public async Task<BaseResult_VM<PaginatedList<AdminUserManagement_VM>>> Handle(GetAllLockedUsersWithPaginationQuery request, CancellationToken cancellationToken)
+        public async Task<OperationResult<PaginatedList<AdminUserManagement_VM>>> Handle(GetAllLockedUsersWithPaginationQuery request, CancellationToken cancellationToken)
         {
             FilterUserAdminPanel filterUser = new FilterUserAdminPanel(_context);
             IQueryable<User> filters = filterUser.ApplyAdminPanelUserFilters(request.AdminPanelUser);
@@ -48,12 +48,7 @@ namespace Chamedoon.Application.Services.Admin.UserManagement.Query
            .ProjectTo<AdminUserManagement_VM>(mapper.ConfigurationProvider)
            .PaginatedListAsync(request.PageNumber, request.PageSize);
 
-            return new BaseResult_VM<PaginatedList<AdminUserManagement_VM>>
-            {
-                Code = 0,
-                Message = "Successful",
-                Result =users
-            };
+            return OperationResult<PaginatedList<AdminUserManagement_VM>>.Success(users);
         }
 
         #endregion

@@ -24,4 +24,8 @@
     <ProjectReference Include="..\..\Libraries\Chamedoon.Infrastructure\Chamedoon.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Properties\PublishProfiles\" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Chamedoon.Application.Common.Interfaces;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.Permissions;
 using MediatR;
@@ -7,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chamedoon.Application.Services.Account.Roles.Command;
 
-public class UpdateRoleCommand : IRequest<BaseResult_VM<bool>>
+public class UpdateRoleCommand : IRequest<OperationResult<bool>>
 {
     public int? RoleId { get; set; }
     public string? RoleTitle { get; set; }
 }
-public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, BaseResult_VM<bool>>
+public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, OperationResult<bool>>
 {
     #region Property
     private readonly IApplicationDbContext context;
@@ -28,12 +29,12 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, BaseR
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<bool>> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<bool>> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
     {
 
         Role? role = await context.Role.FirstOrDefaultAsync(r => r.Id == request.RoleId);
         if (role == null)
-            return new BaseResult_VM<bool> { Result = false, Code = -1, };
+            return OperationResult<bool>.Fail(false);
 
         //TODO :Remove Permissions this Role
 
@@ -41,12 +42,7 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, BaseR
         context.Role.Update(role);
         await context.SaveChangesAsync(cancellationToken);
 
-        return new BaseResult_VM<bool>
-        {
-            Result = true,
-            Code = 0,
-            Message = "با موفقیت بروزرسانی شد",
-        };
+        return OperationResult<bool>.Success(true);
     }
 
     #endregion

@@ -1,4 +1,5 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.User;
 using MediatR;
@@ -12,10 +13,10 @@ using System.Threading.Tasks;
 namespace Chamedoon.Application.Services.Admin.UserManagement.Command;
 
 
-public class AddUserInAdminCommand : IRequest<BaseResult_VM<bool>>
+public class AddUserInAdminCommand : IRequest<OperationResult<bool>>
 {
 }
-public class AddUserInAdminCommandHandler : IRequestHandler<AddUserInAdminCommand, BaseResult_VM<bool>>
+public class AddUserInAdminCommandHandler : IRequestHandler<AddUserInAdminCommand, OperationResult<bool>>
 {
     #region Property
     private readonly IApplicationDbContext _context;
@@ -31,15 +32,9 @@ public class AddUserInAdminCommandHandler : IRequestHandler<AddUserInAdminComman
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<bool>> Handle(AddUserInAdminCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<bool>> Handle(AddUserInAdminCommand request, CancellationToken cancellationToken)
     {
-        return new BaseResult_VM<bool>
-        {
-            Result = true,
-            Code = 0,
-            Message = "",
-
-        };
+        return OperationResult<bool>.Success(true);
     }
 
     #endregion

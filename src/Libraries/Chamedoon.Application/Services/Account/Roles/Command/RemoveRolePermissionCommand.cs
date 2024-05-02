@@ -1,14 +1,15 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Domin.Base;
 using MediatR;
 
 namespace Chamedoon.Application.Services.Account.Roles.Command;
-public class RemoveRolePermissionCommand : IRequest<BaseResult_VM<bool>>
+public class RemoveRolePermissionCommand : IRequest<OperationResult<bool>>
 {
     public int? RolePermissionId { get; set; }
 
 }
-public class RemoveRolePermissionCommandHandler : IRequestHandler<RemoveRolePermissionCommand, BaseResult_VM<bool>>
+public class RemoveRolePermissionCommandHandler : IRequestHandler<RemoveRolePermissionCommand, OperationResult<bool>>
 {
     #region Property
     private readonly IApplicationDbContext _context;
@@ -22,26 +23,16 @@ public class RemoveRolePermissionCommandHandler : IRequestHandler<RemoveRolePerm
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<bool>> Handle(RemoveRolePermissionCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<bool>> Handle(RemoveRolePermissionCommand request, CancellationToken cancellationToken)
     {
         var rolePermission = await _context.RolePermission.FindAsync(request.RolePermissionId);
         if (rolePermission == null)
-            return new BaseResult_VM<bool>
-            {
-                Result = true,
-                Code = 0,
-                Message = "دسترسی موردنظر یافت نشد",
-            };
+            return OperationResult<bool>.Fail("دسترسی موردنظر یافت نشد",false);
 
         _context.RolePermission.Remove(rolePermission);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return new BaseResult_VM<bool>
-        {
-            Result = true,
-            Code = 0,
-            Message = "با موفقیت حذف شد",
-        };
+        return OperationResult<bool>.Success(true);
     }
 
     #endregion

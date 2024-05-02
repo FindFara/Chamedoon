@@ -25,5 +25,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Chamedoon.Domin\Chamedoon.Domin.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\Article\ViewModel\" />
+    <Folder Include="Services\Article\Query\" />
+  </ItemGroup>
 
 </Project>

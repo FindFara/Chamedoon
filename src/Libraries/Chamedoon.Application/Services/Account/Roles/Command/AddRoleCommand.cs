@@ -1,15 +1,16 @@
-﻿using Chamedoon.Domin.Base;
+﻿using Chamedoon.Application.Common.Models;
+using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.Permissions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace Chamedoon.Application.Services.Account.Roles.Command;
 
-public class AddRoleCommand : IRequest<BaseResult_VM<bool>>
+public class AddRoleCommand : IRequest<OperationResult<bool>>
 {
     public required string RoleTitle { get; set; }
 }
-public class AddRoleCommandHandler : IRequestHandler<AddRoleCommand, BaseResult_VM<bool>>
+public class AddRoleCommandHandler : IRequestHandler<AddRoleCommand, OperationResult<bool>>
 {
     #region Property
     private readonly RoleManager<Role> roleManager;
@@ -23,7 +24,7 @@ public class AddRoleCommandHandler : IRequestHandler<AddRoleCommand, BaseResult_
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<bool>> Handle(AddRoleCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<bool>> Handle(AddRoleCommand request, CancellationToken cancellationToken)
     {
         var existsRole = await roleManager.RoleExistsAsync(request.RoleTitle ?? "");
         if (existsRole is false)
@@ -35,20 +36,11 @@ public class AddRoleCommandHandler : IRequestHandler<AddRoleCommand, BaseResult_
             var addRole = await roleManager.CreateAsync(role);
             if (addRole != null)
             {
-                return new BaseResult_VM<bool>
-                {
-                    Result = true,
-                    Code = 0,
-                    Message = "Successful",
-                };
+                return OperationResult<bool>.Success(true);
+
             }
         }
-        return new BaseResult_VM<bool>
-        {
-            Result = false,
-            Code = -1,
-            Message = "Error occurred",
-        };
+        return OperationResult<bool>.Fail(false);
     }
 
     #endregion

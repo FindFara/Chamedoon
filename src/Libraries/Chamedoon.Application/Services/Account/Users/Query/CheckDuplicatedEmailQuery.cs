@@ -1,4 +1,5 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Domin.Base;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -6,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chamedoon.Application.Services.Account.Users.Query;
 
-public class CheckDuplicatedEmailQuery : IRequest<BaseResult_VM<bool>>
+public class CheckDuplicatedEmailQuery : IRequest<OperationResult<bool>>
 {
     public string Email { get; set; }
 }
-public class CheckDuplicatedEmailQueryHandler : IRequestHandler<CheckDuplicatedEmailQuery, BaseResult_VM<bool>>
+public class CheckDuplicatedEmailQueryHandler : IRequestHandler<CheckDuplicatedEmailQuery, OperationResult<bool>>
 {
     #region Property
     private readonly IApplicationDbContext _context;
@@ -24,25 +25,16 @@ public class CheckDuplicatedEmailQueryHandler : IRequestHandler<CheckDuplicatedE
     #endregion
 
     #region Method
-    public async Task<BaseResult_VM<bool>> Handle(CheckDuplicatedEmailQuery request, CancellationToken cancellationToken)
+    public async Task<OperationResult<bool>> Handle(CheckDuplicatedEmailQuery request, CancellationToken cancellationToken)
     {
         bool isDuplicated = await _context.User.AnyAsync(u => u.Email == request.Email);
         if (isDuplicated)
         {
-            return new BaseResult_VM<bool>
-            {
-                Result = false,
-                Code = -1,
-                Message = "کاربر با این ایمیل وجود دارد ",
-            };
+            return OperationResult<bool>.Fail("در حال حاظر کاربری با این ایمیل وجود دارد ", false);
+
         }
 
-        return new BaseResult_VM<bool>
-        {
-            Result = true,
-            Code = 0,
-            Message = "کاربر با این ایمیل وجود ندارد"
-        };
+        return OperationResult<bool>.Success(true);
     }
 
     #endregion

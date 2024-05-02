@@ -1,4 +1,4 @@
-﻿using Chamedoon.Domin.Base;
+﻿using Chamedoon.Application.Common.Models;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -8,11 +8,11 @@ using System.Text;
 
 namespace Chamedoon.Application.Services.Account.Login.Query
 {
-    public class GenerateJsonWebTokenQuery : IRequest<BaseResult_VM<JwtSecurityToken>>
+    public class GenerateJsonWebTokenQuery : IRequest<OperationResult<JwtSecurityToken>>
     {
         public List<Claim>? Claims { get; set; }
     }
-    public class GenerateJsonWebTokenQueryHandler : IRequestHandler<GenerateJsonWebTokenQuery, BaseResult_VM<JwtSecurityToken>>
+    public class GenerateJsonWebTokenQueryHandler : IRequestHandler<GenerateJsonWebTokenQuery, OperationResult<JwtSecurityToken>>
     {
         #region Property
         private readonly IConfiguration _configuration;
@@ -26,25 +26,19 @@ namespace Chamedoon.Application.Services.Account.Login.Query
         #endregion
 
         #region Method
-        public async Task<BaseResult_VM<JwtSecurityToken>> Handle(GenerateJsonWebTokenQuery request, CancellationToken cancellationToken)
+        public async Task<OperationResult<JwtSecurityToken>> Handle(GenerateJsonWebTokenQuery request, CancellationToken cancellationToken)
         {
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]!) );
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(4),
+                expires: DateTime.UtcNow.AddDays(7),
                 claims: request.Claims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
 
-            return new BaseResult_VM<JwtSecurityToken>
-            {
-                Result = token,
-                Code = 0,
-                Message = "Sucsseful",
-
-            };
+            return OperationResult<JwtSecurityToken>.Success(token);
         }
         #endregion
     }
