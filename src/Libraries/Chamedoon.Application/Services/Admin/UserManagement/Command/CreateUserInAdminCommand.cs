@@ -4,7 +4,7 @@ using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Admin.UserManagement.ViewModel;
 using Chamedoon.Application.Services.Email.Query;
 using Chamedoon.Domin.Base;
-using Chamedoon.Domin.Entity.User;
+using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;
@@ -18,7 +18,7 @@ namespace Chamedoon.Application.Services.Admin.UserManagement.Command;
 
 public class CreateUserInAdminCommand : IRequest<OperationResult<bool>>
 {
-    public AdminCreateUser_VM User { get; set; }
+    public AdminCreateOrEditUser_VM User { get; set; }
 }
 public class AddUserInAdminCommandHandler : IRequestHandler<CreateUserInAdminCommand, OperationResult<bool>>
 {

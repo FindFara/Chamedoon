@@ -1,4 +1,4 @@
-﻿using CodeTo.Domain.Entities.Articles;
+﻿using Chamedoon.Domin.Entity.Blogs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

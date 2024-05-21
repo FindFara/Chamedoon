@@ -1,6 +1,6 @@
 ﻿using Chamedoon.Domin.Base;
 
-namespace CodeTo.Domain.Entities.Articles;
+namespace Chamedoon.Domin.Entity.Blogs;
 public class Article : BaseAuditableEntity
 {
     public required string ArticleTitle { get; set; }

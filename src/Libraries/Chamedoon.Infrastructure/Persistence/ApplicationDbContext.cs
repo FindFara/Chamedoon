@@ -1,8 +1,8 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
+using Chamedoon.Domin.Entity.Blogs;
 using Chamedoon.Domin.Entity.Permissions;
-using Chamedoon.Domin.Entity.User;
+using Chamedoon.Domin.Entity.Users;
 using Chamedoon.Infrastructure.FluentConfigs.Users;
-using CodeTo.Domain.Entities.Articles;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

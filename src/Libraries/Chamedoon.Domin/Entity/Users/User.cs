@@ -1,7 +1,8 @@
-﻿using Chamedoon.Domin.Interfaces;
+﻿using Chamedoon.Domin.Entity.Users;
+using Chamedoon.Domin.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
-namespace Chamedoon.Domin.Entity.User;
+namespace Chamedoon.Domin.Entity.Users;
 
 public class User : IdentityUser<long> , IAuditableEntity
 {

@@ -2,7 +2,7 @@
 using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Admin.UserManagement.ViewModel;
-using Chamedoon.Domin.Entity.User;
+using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
@@ -10,7 +10,7 @@ namespace Chamedoon.Application.Services.Admin.UserManagement.Command;
 
 public class EditUserAdminCommand : IRequest<OperationResult<bool>>
 {
-    public AdminEditUser_VM User { get; set; }
+    public AdminCreateOrEditUser_VM User { get; set; }
 }
 public class EditUserAdminCommandHandler : IRequestHandler<EditUserAdminCommand, OperationResult<bool>>
 {

@@ -1,6 +1,6 @@
-﻿using Chamedoon.Domin.Entity.Permissions;
-using Chamedoon.Domin.Entity.User;
-using CodeTo.Domain.Entities.Articles;
+﻿using Chamedoon.Domin.Entity.Blogs;
+using Chamedoon.Domin.Entity.Permissions;
+using Chamedoon.Domin.Entity.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chamedoon.Application.Common.Interfaces

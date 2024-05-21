@@ -1,7 +1,7 @@
 ﻿using Chamedoon.Domin.Base;
-using Chamedoon.Domin.Entity.User;
+using Chamedoon.Domin.Entity.Users;
 
-namespace CodeTo.Domain.Entities.Articles;
+namespace Chamedoon.Domin.Entity.Blogs;
 public class ArticleComment : BaseAuditableEntity
 {
     public int ArticleId { get; set; }

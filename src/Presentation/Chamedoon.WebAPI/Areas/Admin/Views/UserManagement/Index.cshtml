@@ -15,7 +15,7 @@
             </div>
             <div class="col-sm-4 col-md-4">
                 <button asp-area="Admin" type="submit" class="btn btn-info"> بگرد <i class="fa fa-search white"></i></button>
-                <a id="editabledatatable_new" asp-area="Admins" asp-controller="AdminHome" asp-action="Add" class="btn btn-default">
+                <a id="editabledatatable_new" asp-area="Admin" asp-controller="UserManagement" asp-action="CreateUser" class="btn btn-default">
                     افزودن
                 </a>
                 <a id="editabledatatable_new" asp-area="Admins" asp-controller="UserRole" asp-action="Index" class="btn btn-default">
@@ -93,7 +93,7 @@
 
                         <th>
                             <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                <a asp-area="Admins" asp-controller="AdminHome" asp-action="Edit" asp-route-id="@item.Id" type="button" class="btn btn-warning">ویرایش</a>
+                                <a asp-area="Admin" asp-controller="UserManagement" asp-action="EditUser" asp-route-id="@item.Id" type="button" class="btn btn-warning">ویرایش</a>
                                 <a asp-area="Admins" asp-controller="AdminHome" asp-action="Details" asp-route-id="@item.Id" type="button" class="btn btn-success">جزـیات</a>
                                 <a asp-area="Admins" asp-controller="AdminHome" asp-action="Delete" asp-route-id="@item.Id" type="button" class="btn btn-danger">حذف</a>
                             </div>

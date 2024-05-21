@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
-namespace Chamedoon.Domin.Entity.User;
+namespace Chamedoon.Domin.Entity.Users;
 
 public class UserRole : IdentityUserRole<long>
 {
