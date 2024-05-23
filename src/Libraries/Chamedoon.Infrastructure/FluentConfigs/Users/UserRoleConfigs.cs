@@ -1,4 +1,4 @@
-﻿using Chamedoon.Domin.Entity.User;
+﻿using Chamedoon.Domin.Entity.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

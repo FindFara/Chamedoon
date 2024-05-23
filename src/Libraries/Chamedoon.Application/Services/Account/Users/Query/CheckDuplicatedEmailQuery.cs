@@ -27,6 +27,7 @@ public class CheckDuplicatedEmailQueryHandler : IRequestHandler<CheckDuplicatedE
     #region Method
     public async Task<OperationResult<bool>> Handle(CheckDuplicatedEmailQuery request, CancellationToken cancellationToken)
     {
+
         bool isDuplicated = await _context.User.AnyAsync(u => u.Email == request.Email);
         if (isDuplicated)
         {

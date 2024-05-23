@@ -1,6 +1,6 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Application.Services.Admin.UserManagement.ViewModel;
-using Chamedoon.Domin.Entity.User;
+using Chamedoon.Domin.Entity.Users;
 using System.Linq;
 
 namespace Chamedoon.Application.Services.Admin.UserManagement.Query

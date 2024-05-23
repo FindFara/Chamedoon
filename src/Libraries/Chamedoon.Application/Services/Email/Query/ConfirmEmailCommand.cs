@@ -3,7 +3,7 @@ using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Query;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Domin.Base;
-using Chamedoon.Domin.Entity.User;
+using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Chamedoon.Domin.Entity.User;
+using Chamedoon.Domin.Entity.Users;
 using Chamedoon.Domin.Entity.Permissions;
 
 namespace Chamedoon.Infrastructure.FluentConfigs.Users;

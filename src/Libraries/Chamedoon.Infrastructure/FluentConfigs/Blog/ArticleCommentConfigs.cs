@@ -1,4 +1,4 @@
-﻿using Chamedoon.Domin.Entity.Blog;
+﻿using Chamedoon.Domin.Entity.Blogs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

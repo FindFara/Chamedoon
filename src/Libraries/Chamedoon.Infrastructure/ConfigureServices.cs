@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Chamedoon.Application.Common.Interfaces;
-using Chamedoon.Domin.Entity.User;
+using Chamedoon.Domin.Entity.Users;
 using Chamedoon.Domin.Entity.Permissions;
 using Microsoft.AspNetCore.Identity;
 using Chamedoon.Infrastructure.Persistence;

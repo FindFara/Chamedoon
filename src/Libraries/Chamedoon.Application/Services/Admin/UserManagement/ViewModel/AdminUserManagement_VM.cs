@@ -1,5 +1,5 @@
 ﻿using Chamedoon.Application.Common.Utilities.AutoMapper;
-using Chamedoon.Domin.Entity.User;
+using Chamedoon.Domin.Entity.Users;
 using System.ComponentModel.DataAnnotations;
 using Chamedoon.Application.Common.Extensions;
 

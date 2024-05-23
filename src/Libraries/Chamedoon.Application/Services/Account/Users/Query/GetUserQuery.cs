@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Application.Common.Models;
-using Chamedoon.Domin.Entity.User;
+using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

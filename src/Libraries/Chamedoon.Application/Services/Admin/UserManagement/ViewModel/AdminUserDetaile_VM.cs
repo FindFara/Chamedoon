@@ -1,7 +1,7 @@
 ﻿using Chamedoon.Application.Common.Extensions;
 using Chamedoon.Application.Common.Utilities.AutoMapper;
 using Chamedoon.Domin.Entity.Permissions;
-using Chamedoon.Domin.Entity.User;
+using Chamedoon.Domin.Entity.Users;
 using System.ComponentModel.DataAnnotations;
 
 namespace Chamedoon.Application.Services.Admin.UserManagement.ViewModel;

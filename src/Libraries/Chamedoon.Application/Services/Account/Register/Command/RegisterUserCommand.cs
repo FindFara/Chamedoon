@@ -2,7 +2,7 @@
 using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Register.ViewModel;
 using Chamedoon.Application.Services.Email.Query;
-using Chamedoon.Domin.Entity.User;
+using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 

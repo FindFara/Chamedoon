@@ -5,7 +5,7 @@ using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Common.Utilities.AutoMapper;
 using Chamedoon.Application.Services.Admin.UserManagement.ViewModel;
 using Chamedoon.Domin.Base;
-using Chamedoon.Domin.Entity.User;
+using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.ExceptionServices;
