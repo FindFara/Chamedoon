@@ -4,6 +4,7 @@ using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Blog.ViewModel;
 using MediatR;
 using Chamedoon.Domin.Entity.Blogs;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chamedoon.Application.Services.Blog.Command
 {
@@ -24,15 +25,12 @@ namespace Chamedoon.Application.Services.Blog.Command
 
         public async Task<OperationResult<bool>> Handle(EditArticleCommand request, CancellationToken cancellationToken)
         {
-            Article? article = _context.Article.FirstOrDefault(a => a.Id == request.Article.Id);
-            if (article == null)
+            Article? oldArticle = _context.Article.AsNoTracking().FirstOrDefault(a => a.Id == request.Article.Id);
+            if (oldArticle == null)
             {
                 return OperationResult<bool>.Fail("مقاله ای با این مشخصات یافت نشد ");
             }
-
-            article = _mapper.Map<Article>(request.Article);
-
-            _context.Article.Update(article);
+            _context.Article.Update(_mapper.Map<Article>(request.Article));
             await _context.SaveChangesAsync(cancellationToken);
             return OperationResult<bool>.Success(true);
         }

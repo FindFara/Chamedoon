@@ -6,8 +6,7 @@ namespace Chamedoon.Application.Services.Blog.ViewModel
     public class Article_VM : IMapFrom<Article>
     {
         public long Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public string ArticleTitle { get; set; }
+        public string ArticleTitle { get; set; } = string.Empty;
         public string Writer { get; set; }
         public string ArticleDescription { get; set; }
         public string ShortDescription { get; set; }

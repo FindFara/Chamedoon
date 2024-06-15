@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Chamedoon.Application.Services.Admin.UserManagement.ViewModel;
 
-public class AdminUserDetaile_VM :IMapFrom<User>
+public class AdminUserDetaile_VM : IMapFrom<User>, IMapFrom<AdminCreateOrEditUser_VM>
 {
     public long Id { get; set; }
 
@@ -16,6 +16,9 @@ public class AdminUserDetaile_VM :IMapFrom<User>
     [Display(Name = "نام کاربری")]
     public string UserName { get; set; }
 
+    [Display(Name = "رمز عبور")]
+    public string Password { get; set; }
+
     [Display(Name = "وضعیت کاربر")]
     public bool LockoutEnabled { get; set; }
 
@@ -24,6 +27,12 @@ public class AdminUserDetaile_VM :IMapFrom<User>
 
     [Display(Name = " تاریخ مسدودیت شمسی")]
     public string? ShamsiLockoutEnd { get => LockoutEnd.ConvertMiladiToShamsi(); }
+
+    [Display(Name = "تاریخ ثبت نام")]
+    public DateTime Created { get; set; }
+
+    [Display(Name = "تاریخ بروزرسانی")]
+    public DateTime? LastModified { get; set; }
 
     #region Reletion
     public List<Role> PermissionList { get; set; }

@@ -1,6 +1,8 @@
-﻿using Chamedoon.Application.Services.Admin.UserManagement.Command;
+﻿using AutoMapper;
+using Chamedoon.Application.Services.Admin.UserManagement.Command;
 using Chamedoon.Application.Services.Admin.UserManagement.Query;
 using Chamedoon.Application.Services.Admin.UserManagement.ViewModel;
+using Chamedoon.Application.Services.Blog.Query;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
@@ -10,10 +12,12 @@ namespace Chamedoon.WebUI.Areas.Admin.Controllers
     public class UserManagementController : AdminBaseController
     {
         private readonly IMediator mediator;
+        private readonly IMapper mapper;
 
-        public UserManagementController(IMediator mediator)
+        public UserManagementController(IMediator mediator, IMapper mapper)
         {
             this.mediator = mediator;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -26,11 +30,28 @@ namespace Chamedoon.WebUI.Areas.Admin.Controllers
                 AdminPanelUser = adminUser
             })).Result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Details(long id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var user = await mediator.Send(new GetAdminPanelUserDetailleQuery { UserId = id });
+
+            if (user.IsSuccess == false)
+            {
+                return NotFound();
+            }
+
+            return View(user.Result);
+        }
+
         public async Task<IActionResult> CreateUser()
         {
             return View("CreateOrEdit", new AdminCreateOrEditUser_VM());
         }
-        // POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Add(AdminCreateOrEditUser_VM user)
@@ -44,18 +65,20 @@ namespace Chamedoon.WebUI.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditUser(int? id)
+        public async Task<IActionResult> EditUser(long id)
         {
-            if (id == null)
-            {
+            if (id == 0)
                 return NotFound();
-            }
-            var user = await mediator.Send(new GetAdminPanelUserDetailleQuery { UserId = id.Value });
-            if (user == null)
-            {
+
+            var user = await mediator.Send(new GetAdminPanelUserDetailleQuery { UserId = id });
+            if (user.IsSuccess is false)
                 return NotFound();
-            }
-            return View("CreateOrEdit", user);
+
+            var editUser = mapper.Map<AdminCreateOrEditUser_VM>(user.Result);
+            if (editUser == null)
+                return NotFound();
+
+            return View("CreateOrEdit", editUser);
         }
 
         [HttpPost]
@@ -66,32 +89,9 @@ namespace Chamedoon.WebUI.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            await mediator.Send(new EditUserAdminCommand { User = user });
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    await mediator.Send(new EditUserAdminCommand
-                    {
-                        User = new AdminCreateOrEditUser_VM
-                        {
-                            Id = id,
-                            Email = user.Email,
-                            LockoutEnabled = user.LockoutEnabled,
-                            Password = user.Password,
-                            UserName = user.UserName,
-                        }
-                    });
-                }
-                catch (Exception ex)
-                {
-                    return NotFound();
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View("CreateOrEdit", user);
+            return RedirectToAction(nameof(Index));
         }
-
-
     }
 }

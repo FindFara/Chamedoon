@@ -31,7 +31,7 @@ public class GetAdminPanelUserDetailleQueryHandler : IRequestHandler<GetAdminPan
     #region Method
     public async Task<OperationResult<AdminUserDetaile_VM>> Handle(GetAdminPanelUserDetailleQuery request, CancellationToken cancellationToken)
     {
-        User? user = await context.User.SingleOrDefaultAsync(u => u.Id == request.UserId);
+        User? user = await context.User.AsNoTracking().SingleOrDefaultAsync(u => u.Id == request.UserId);
         if (user is null)
             return OperationResult<AdminUserDetaile_VM>.Fail();
 

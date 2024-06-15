@@ -5,6 +5,7 @@ using Chamedoon.Application.Services.Admin.UserManagement.ViewModel;
 using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chamedoon.Application.Services.Admin.UserManagement.Command;
 
@@ -32,16 +33,14 @@ public class EditUserAdminCommandHandler : IRequestHandler<EditUserAdminCommand,
     #region Method
     public async Task<OperationResult<bool>> Handle(EditUserAdminCommand request, CancellationToken cancellationToken)
     {
-        
-        var user = await _context.User.FindAsync(request.User.Id, cancellationToken);
+
+        var user = _context.User.AsNoTracking().FirstOrDefault(u=>u.Id == request.User.Id);
 
         if (user == null)
-            return OperationResult<bool>.Fail("کاربر یافت نشد");  
-        
-        if (request.User != null) 
-            _mapper.Map(request.User, user); 
+            return OperationResult<bool>.Fail("کاربر یافت نشد");
 
-        var updateResult = await _userManager.UpdateAsync(user);
+        var updateUser = _mapper.Map<User>(user);
+        var updateResult = await _userManager.UpdateAsync(updateUser);
 
         if (!updateResult.Succeeded)
         {
