@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chamedoon.UI", "src\Present
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chamedoon.UI.Client", "src\Presentation\Chamedoon.UI\Chamedoon.UI.Client\Chamedoon.UI.Client.csproj", "{D440E07C-D9E5-4569-8234-A11B219653AA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTest", "IntegrationTest", "{EB3BB79A-67F9-4EBA-B3C7-9ED28346CE18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +74,7 @@ Global
 		{127E8BBD-585A-4EEF-9342-A18AA5CB52D4} = {6217F6EB-A437-4AD5-9459-BCC87F8F98F4}
 		{55E03DDE-5124-48E7-AE6D-088C909EE7D4} = {F9F7529D-CA4F-4D5D-9B09-AB4EACFB51EA}
 		{D440E07C-D9E5-4569-8234-A11B219653AA} = {F9F7529D-CA4F-4D5D-9B09-AB4EACFB51EA}
+		{EB3BB79A-67F9-4EBA-B3C7-9ED28346CE18} = {DDC0FF20-D49C-4FC2-A477-36A2B46DA819}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C0213BD1-DDB3-4EE6-B3B7-2C04E375AD7E}
