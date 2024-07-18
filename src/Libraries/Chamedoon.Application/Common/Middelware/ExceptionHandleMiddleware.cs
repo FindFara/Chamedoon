@@ -32,7 +32,7 @@ namespace Chamedoon.Application.Common.Middelware
         public async Task Invoke(HttpContext httpContext)
         {
             try
-            {
+            { 
                 await _next(httpContext);
             }
             catch (Exception ex)
