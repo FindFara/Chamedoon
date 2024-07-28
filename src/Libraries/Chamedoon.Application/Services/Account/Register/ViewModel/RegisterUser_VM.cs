@@ -32,9 +32,6 @@ public class RegisterUser_VM : IMapFrom<User>
     [Compare("Password", ErrorMessage = "کلمه های عبور مغایرت دارند")]
     [DataType(DataType.Password)]
     public string RePassword { get; set; }
-
-    public bool IsEmailAtive { get; set; }
-
 }
 
 

@@ -7,8 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Libraries\Chamedoon.Application\Chamedoon.Application.csproj" />
     <ProjectReference Include="..\Chamedoon.UI.Client\Chamedoon.UI.Client.csproj" />
 	  <PackageReference Include="Blazored.Modal" Version="7.3.1" />
+	  <PackageReference Include="MediatR" Version="12.2.0" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.6" />
   </ItemGroup>
 
