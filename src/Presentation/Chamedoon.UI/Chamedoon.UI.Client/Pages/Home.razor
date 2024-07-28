@@ -1,24 +1,5 @@
 ﻿@page "/"
-@using Chamedoon.UI.Client.Shear
-@inject Blazored.Modal.Services.IModalService Modal
-
 <PageTitle>Home</PageTitle>
-  
-
-<button @onclick="ShowModal">Open Modal</button>
-
-@code {
-    private void ShowModal()
-    {
-        var options = new Blazored.Modal.ModalOptions
-            {
-                DisableBackgroundCancel = true,
-                HideCloseButton = true
-            };
-
-        Modal.Show<ModalContent>("Sample Modal", options);
-    }
-   }
 <section class="bg-half-260 d-table w-100 background" id="home">
     <div class="container">
         <div class="row align-items-center">
@@ -560,4 +541,4 @@
         </div>
     </div>
 </section>
-<Login/>
+
