@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Libraries\Chamedoon.Application\Chamedoon.Application.csproj" />
+    <ProjectReference Include="..\..\..\Libraries\Chamedoon.Infrastructure\Chamedoon.Infrastructure.csproj" />
     <ProjectReference Include="..\Chamedoon.UI.Client\Chamedoon.UI.Client.csproj" />
 	  <PackageReference Include="Blazored.Modal" Version="7.3.1" />
 	  <PackageReference Include="MediatR" Version="12.2.0" />
