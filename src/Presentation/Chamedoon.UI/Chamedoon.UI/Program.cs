@@ -1,3 +1,4 @@
+using Blazored.Modal;
 using Chamedoon.UI.Client.Pages;
 using Chamedoon.UI.Components;
 
@@ -8,7 +9,6 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 var app = builder.Build();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

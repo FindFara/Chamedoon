@@ -8,7 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Chamedoon.UI.Client\Chamedoon.UI.Client.csproj" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.6" />
+	  <PackageReference Include="Blazored.Modal" Version="7.3.1" />
+	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.6" />
   </ItemGroup>
 
 </Project>
