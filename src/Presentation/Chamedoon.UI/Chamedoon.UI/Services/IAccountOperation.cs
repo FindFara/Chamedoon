@@ -3,6 +3,7 @@ using Chamedoon.Application.Services.Account.Register.Command;
 using Chamedoon.Application.Services.Account.Register.ViewModel;
 using MediatR;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Chamedoon.UI.Services
 {
@@ -19,7 +20,6 @@ namespace Chamedoon.UI.Services
         {
             _mediator = mediator;
         }
-
         public async Task<OperationResult<bool>> Register(RegisterUser_VM registerUser)
         {
             return await _mediator.Send(new ManageRegisterUserCommand { RegisterUser = registerUser });
