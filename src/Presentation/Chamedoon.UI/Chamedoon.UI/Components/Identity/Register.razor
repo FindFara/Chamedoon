@@ -3,12 +3,10 @@
 @layout Chamedoon.UI.Components.Pages.EmptyLayout
 @inject IAccountOperation account
 @using Chamedoon.Application.Services.Account.Register.ViewModel
+
 <div class="back-to-home rounded d-none d-sm-block">
     <a href="index.html" class="btn btn-icon btn-primary"><i data-feather="home" class="mdi mdi-home-outline icons"></i></a>
 </div>
-
-<!-- شوع آن -->
-<!-- شوع آن -->
 <section class="bg-home bg-circle-gradiant d-flex align-items-center">
     <div class="bg-overlay bg-overlay-white"></div>
     <div class="container">
@@ -17,69 +15,71 @@
                 <div class="card login-page bg-white shadow rounded border-0">
                     <div class="card-body">
                         <h4 class="card-title text-center">ثبت نام</h4>
-                        <EditForm class="login-form mt-4" Model="registerUser_VM" OnInvalidSubmit="DoRegisterAsync">
+                        <EditForm FormName="rgister" Model="@registerUser_VM" OnValidSubmit="DoRegisterAsync">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="mb-3">
                                         <div class="form-icon position-relative">
                                             <i data-feather="user" class="mdi mdi-account fea icon-sm icons"></i>
-                                            <input type="email" class=" form-control ps-5" placeholder="ایمیل" name="email" @bind-value="registerUser_VM.Email">
+                                            <InputText type="email" class="form-control ps-5" placeholder="ایمیل" @bind-Value="registerUser_VM.Email" />
+                                            <ValidationMessage For="@(() => registerUser_VM.Email)" />
                                         </div>
                                     </div>
-                                </div><!--end col-->
+                                </div>
 
                                 <div class="col-lg-12">
                                     <div class="mb-3">
                                         <div class="form-icon position-relative">
                                             <i data-feather="key" class="mdi mdi-key fea icon-sm icons"></i>
-                                            <input type="password" class=" form-control ps-5" placeholder="رمز عبور " @bind-value="registerUser_VM.Password">
+                                            <InputText type="password" class="form-control ps-5" placeholder="رمز عبور" @bind-Value="registerUser_VM.Password" />
+                                            <ValidationMessage For="@(() => registerUser_VM.Password)" />
                                         </div>
                                     </div>
-                                </div><!--end col-->
+                                </div>
                                 <div class="col-lg-12">
                                     <div class="mb-3">
                                         <div class="form-icon position-relative">
                                             <i data-feather="key" class="mdi mdi-key fea icon-sm icons"></i>
-                                            <input type="password" class="form-control ps-5" placeholder="تکرار رمز عبور " @bind-value="registerUser_VM.RePassword">
+                                            <InputText type="password" class="form-control ps-5" placeholder="تکرار رمز عبور" @bind-Value="registerUser_VM.RePassword" />
+                                            <ValidationMessage For="@(() => registerUser_VM.RePassword)" />
                                         </div>
                                     </div>
-                                </div><!--end col-->
-
+                                </div>
                                 <div class="col-lg-12">
                                     <div class="d-flex justify-content-between">
                                         <div class="mb-3">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                                <label class="form-check-label" for="flexCheckDefault">مرا به خاطر بسپار </label>
+                                                <label class="form-check-label" for="flexCheckDefault">مرا به خاطر بسپار</label>
                                             </div>
                                         </div>
                                     </div>
-                                </div><!--end col-->
-
+                                </div>
                                 <div class="col-lg-12 mb-0">
                                     <div class="d-grid">
                                         <button class="btn btn-primary" type="submit">ثبت نام</button>
                                     </div>
-                                </div><!--end col-->
-
+                                </div>
                                 <div class="col-lg-12 mt-4 text-center">
                                     <div class="row">
-                                            <div class="d-grid">
-                                                <a href="javascript:void(0)" class="btn btn-light"><i class="mdi mdi-google text-danger"></i> ورود با گوگل </a>
-                                            </div>
+                                        <div class="d-grid">
+                                            <a href="javascript:void(0)" class="btn btn-light"><i class="mdi mdi-google text-danger"></i> ورود با گوگل </a>
+                                        </div>
                                     </div>
-                                </div><!--end col-->
-                            </div><!--end row-->
+                                </div>
+                            </div>
                         </EditForm>
                     </div>
-                </div><!---->
-            </div><!--end col-->
-        </div><!--end row-->
-    </div> <!--end container-->
-</section><!--end section-->
-<!-- پایان آن -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 @code {
-    private RegisterUser_VM registerUser_VM = new();
+    private RegisterUser_VM registerUser_VM = new RegisterUser_VM();
     private bool success, errors;
     private string error;
 
@@ -90,7 +90,7 @@
         if (string.IsNullOrWhiteSpace(registerUser_VM.Email))
         {
             errors = true;
-            error = "Email is required.";
+            error = "وارد کردن ایمیل الزامی است.";
 
             return;
         }
@@ -98,7 +98,7 @@
         if (string.IsNullOrWhiteSpace(registerUser_VM.Password))
         {
             errors = true;
-            error = "Password is required.";
+            error = "وارد کردن رمز عبور الزامی است.";
 
             return;
         }
@@ -106,7 +106,7 @@
         if (string.IsNullOrWhiteSpace(registerUser_VM.RePassword))
         {
             errors = true;
-            error = "Please confirm your password.";
+            error = "لطفاً رمز عبور خود را تایید کنید.";
 
             return;
         }
@@ -114,7 +114,7 @@
         if (registerUser_VM.Password != registerUser_VM.RePassword)
         {
             errors = true;
-            error = "Passwords don't match.";
+            error = "رمزهای عبور مطابقت ندارند.";
             return;
         }
 
