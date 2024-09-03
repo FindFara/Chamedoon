@@ -1,9 +1,8 @@
-﻿@model Chamedoon.Application.Services.Account.Register.ViewModel.RegisterUser_VM;
+﻿@model Chamedoon.Application.Services.Account.Login.ViewModel.Login_VM;
 @{
-    ViewData["Title"] = "ثبت نام";
+    ViewData["Title"] = "ورود به سایت";
     Layout = null;
-}﻿
-
+}
 <partial name="Styles" />
 <partial name="MetaTags" />
 
@@ -15,7 +14,7 @@
     </a>
 </div>
 <!-- شوع آن -->
-<section class="bg-home bg-circle-gradiant d-flex align-items-center" style="background: url('/images/bg.png')">
+<section class="bg-home bg-circle-gradiant d-flex align-items-center" style="background: url('/img/bg/bg.png');">
     <div class="bg-overlay bg-overlay-white"></div>
     <div class="container">
         <div class="row justify-content-center">
@@ -23,7 +22,7 @@
                 <div class="card login-page bg-white shadow rounded border-0">
                     <div class="card-body">
                         <h4 class="card-title text-center">وارد شدن </h4>
-                        <form asp-action="Register" method="post" class="login-form mt-4" novalidate>
+                        <form asp-action="Login" method="post" class="login-form mt-4" novalidate>
                             <div class="row">
 
                                 <div class="col-lg-12">
@@ -51,29 +50,27 @@
                                 </div>
 
                                 <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <label class="form-label">رمز عبور  <span class="text-danger">*</span></label>
-                                        <div class="form-icon position-relative">
-                                            <i data-feather="key" class="mdi mdi-key fea icon-sm icons"></i>
-                                            <input asp-for="RePassword" type="password" class="form-control ps-5" placeholder="رمز عبور ">
-                                            <div class="mt-2">
-                                                <span asp-validation-for="RePassword" class="text-danger mt"></span>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="mb-3">
+
+                                            <div class="text-dark fw-bold">
+                                                <label asp-for="RememberMe" class="text-dark fw-bold">
+                                                    <input asp-for="RememberMe" /> مرا به خاطر بسپار
+                                                </label>
                                             </div>
                                         </div>
+                                        <p class="forgot-pass mb-0"><a href="auth-re-password-three.html" class="text-dark fw-bold">فراموشی رمز عبور؟ </a></p>
                                     </div>
                                 </div>
 
                                 <div class="col-lg-12 mb-0">
                                     <div class="d-grid">
-                                        <button class="btn btn-primary">ثبت نام</button>
+                                        <button class="btn btn-primary">ورود  </button>
                                     </div>
                                 </div>
-                                <div class="col-lg-12 mt-4 text-center">
-                                    <div class="row">
-                                        <div class="d-grid">
-                                            <a href="javascript:void(0)" class="btn btn-light"><i class="mdi mdi-google text-danger"></i> ورود با گوگل </a>
-                                        </div>
-                                    </div>
+                                <div class="text-danger" asp-validation-summary="All"></div>
+                                <div class="col-12 text-center">
+                                    <p class="mb-0 mt-3"><small class="text-dark me-2">حسابی ندارید؟ </small> <a asp-controller="Account" asp-action="Register" class="text-dark fw-bold">ثبت نام کنید </a></p>
                                 </div>
                             </div>
                         </form>

@@ -30,7 +30,7 @@ public class ManageLoginUserQueryHandler : IRequestHandler<ManageLoginUserQuery,
     #region Method
     public async Task<OperationResult<UserDetails_VM>> Handle(ManageLoginUserQuery request, CancellationToken cancellationToken)
     {
-        var user = await mediator.Send(new GetUserQuery { UserName = request.LoginUser.UserName });
+        var user = await mediator.Send(new GetUserQuery { Email = request.LoginUser.Email });
         if (user.IsSuccess is false)
             return OperationResult<UserDetails_VM>.Fail();
 

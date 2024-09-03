@@ -6,10 +6,11 @@ namespace Chamedoon.Application.Services.Account.Login.ViewModel
 {
     public class LoginUser_VM : IMapFrom<User>
     {
-        [Display(Name = "نام کاربری")]
+        [Display(Name = "ایمیل")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
         [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-        public string UserName { get; set; }
+        [EmailAddress(ErrorMessage = "ایمیل وارد شده معتبر نمی باشد")]
+        public string Email { get; set; }
 
         [Display(Name = "کلمه عبور")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]

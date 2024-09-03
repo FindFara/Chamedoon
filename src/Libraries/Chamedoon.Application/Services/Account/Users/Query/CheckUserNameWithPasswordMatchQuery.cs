@@ -31,7 +31,7 @@ public class CheckUserNameAndPasswordMatchHandler : IRequestHandler<CheckUserNam
     public async Task<OperationResult<bool>> Handle(CheckUserNameAndPasswordMatchQuery request, CancellationToken cancellationToken)
     {
         var loginUser = await signinmanager.PasswordSignInAsync(
-             request.LoginUser.UserName,
+             request.LoginUser.Email,
              request.LoginUser.Password,
              request.LoginUser.RememberMe,
              true);

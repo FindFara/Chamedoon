@@ -7,12 +7,6 @@ namespace Chamedoon.Application.Services.Account.Register.ViewModel;
 public class RegisterUser_VM : IMapFrom<User>
 {
 
-    [Display(Name = "نام کاربری")]
-    [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
-    [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]
-    //[Remote("IsUserNameInUse", "Account", HttpMethod = "POST")]
-    public string UserName { get; set; }
-
     [Display(Name = "ایمیل")]
     [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
     [MaxLength(200, ErrorMessage = "{0} نمی تواند بیشتر از {1} کاراکتر باشد .")]

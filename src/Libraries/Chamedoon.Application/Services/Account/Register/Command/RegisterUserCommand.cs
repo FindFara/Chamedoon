@@ -33,9 +33,8 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
     public async Task<OperationResult<bool>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         User user = mapper.Map<User>(request.RegisterUser);
+        user.UserName = Path.GetFileNameWithoutExtension(user.Email);
         var registerUser = await userManager.CreateAsync(user, request.RegisterUser.Password);
-
-
         if (registerUser.Succeeded)
         {
             //Send Token

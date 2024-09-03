@@ -31,11 +31,6 @@ public class ManageRegisterUserCommandHandler : IRequestHandler<ManageRegisterUs
         if (checkEmail.IsSuccess is false)
             return OperationResult<bool>.Fail(checkEmail.Message);
 
-        //Check Duplicated UserName
-        var checkUserName = await mediator.Send(new CheckDuplicatedUserNameQuery { UserName = request.RegisterUser.UserName });
-        if (checkUserName.IsSuccess is false)
-            return OperationResult<bool>.Fail(checkUserName.Message);
-
         //Register User
         var regisrer = await mediator.Send(new RegisterUserCommand { RegisterUser = request.RegisterUser });
 

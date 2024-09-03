@@ -1,8 +1,13 @@
 ﻿using Chamedoon.Application.Services.Account.Register.Command;
 using Chamedoon.Application.Services.Account.Register.ViewModel;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Chamedoon.Application.Services.Account.Login.ViewModel;
+using Chamedoon.Application.Services.Account.Users.Query;
+using Chamedoon.Application.Services.Account.Login.Command;
 
 namespace ChamedoonWebUI.Controllers
 {
@@ -15,6 +20,41 @@ namespace ChamedoonWebUI.Controllers
         {
             this.mediator = mediator;
         }
+
+        #region Login
+        [Route("login")]
+        public IActionResult Login()
+        {
+            return View();
+        }
+        [Route("login")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginUser_VM register)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = (await mediator.Send(new ManageLoginUserQuery { LoginUser = register })).Result;
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
+                    new Claim(ClaimTypes.Email,user.Email)
+                };
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+                var properties = new AuthenticationProperties
+                {
+                    IsPersistent = register.RememberMe
+                };
+                await HttpContext.SignInAsync(principal, properties);
+
+                return RedirectToAction("Index", "Home");
+
+            }
+            return View(register);
+        }
+        #endregion
+
         #region Register
         [Route("register")]
         public IActionResult Register()
@@ -35,10 +75,6 @@ namespace ChamedoonWebUI.Controllers
             {
                 return View(register);
             }
-
-            //TODO: Activation Send Email
-            //TODO: Redirect to succssesfullView
-
             return RedirectToAction("Login", "Account");
         }
         #endregion
