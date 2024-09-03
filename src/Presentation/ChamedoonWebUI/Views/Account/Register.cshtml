@@ -1,0 +1,98 @@
+﻿@model Chamedoon.Application.Services.Account.Register.ViewModel.RegisterUser_VM;
+@{
+    ViewData["Title"] = "ثبت نام";
+    Layout = null;
+}
+<partial name="MetaTags" />
+
+<div class="back-to-home rounded d-none d-sm-block">
+    <a asp-controller="Home" asp-action="Index">
+        <button type="button" class="btn btn-icon btn-primary">
+            <i data-feather="home" class="icons"></i>
+        </button>
+    </a>
+</div>
+<!-- شوع آن -->
+<section class="bg-home bg-circle-gradiant d-flex align-items-center" style="background: url('/img/bg/bg.png')">
+    <div class="bg-overlay bg-overlay-white"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-8">
+                <div class="card login-page bg-white shadow rounded border-0">
+                    <div class="card-body">
+                        <h4 class="card-title text-center">وارد شدن </h4>
+                        <form asp-action="Register" method="post" class="login-form mt-4" novalidate>
+                            <div class="row">
+
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">نام کاربری  <span class="text-danger">*</span></label>
+                                        <div class="form-icon position-relative">
+                                            <i data-feather="user" class="fea icon-sm icons" style="top: 11px;"></i>
+                                            <input asp-for="UserName" type="text" class="form-control ps-5" placeholder="نام کاربری">
+                                            <div class="mt-2">
+                                                <span asp-validation-for="UserName" class="text-danger mt"></span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">ایمیل  <span class="text-danger">*</span></label>
+                                        <div class="form-icon position-relative">
+                                            <i data-feather="mail" class="fea icon-sm icons" style="top: 11px;"></i>
+                                            <input asp-for="Email" type="email" class="form-control ps-5" placeholder="ایمیل">
+                                            <div class="mt-2">
+                                                <span asp-validation-for="Email" class="text-danger mt"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">رمز عبور  <span class="text-danger">*</span></label>
+                                        <div class="form-icon position-relative">
+                                            <i data-feather="key" class="fea icon-sm icons" style="top: 11px;"></i>
+                                            <input asp-for="Password" type="password" class="form-control ps-5" placeholder="رمز عبور ">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12">
+                                    <div class="mb-3">
+                                        <label class="form-label">رمز عبور  <span class="text-danger">*</span></label>
+                                        <div class="form-icon position-relative">
+                                            <i data-feather="key" class="fea icon-sm icons" style="top: 11px;"></i>
+                                            <input asp-for="RePassword" type="password" class="form-control ps-5" placeholder="رمز عبور ">
+                                            <div class="mt-2">
+                                                <span asp-validation-for="RePassword" class="text-danger mt"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-12 mb-0">
+                                    <div class="d-grid">
+                                        <button class="btn btn-primary">ثبت نام</button>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 mt-4 text-center">
+                                    <div class="row">
+                                        <div class="d-grid">
+                                            <a href="javascript:void(0)" class="btn btn-light"><i class="mdi mdi-google text-danger"></i> ورود با گوگل </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<partial name="Script" />

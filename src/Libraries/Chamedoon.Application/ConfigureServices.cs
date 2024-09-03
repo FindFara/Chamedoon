@@ -18,7 +18,7 @@ public static class ConfigureServices
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         });
-        services.AddTransient<IEmailService, SendGridMailService>();
+        services.AddScoped<IEmailService, SendGridMailService>();
 
         return services;
     }
