@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Chamedoon.Application.Services.Account.Login.ViewModel;
-using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Account.Login.Command;
 
 namespace ChamedoonWebUI.Controllers
@@ -79,5 +78,13 @@ namespace ChamedoonWebUI.Controllers
         }
         #endregion
 
+        #region Logout
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+        #endregion
     }
 }

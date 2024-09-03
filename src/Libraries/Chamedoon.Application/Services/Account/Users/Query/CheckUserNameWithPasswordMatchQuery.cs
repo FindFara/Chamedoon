@@ -11,6 +11,8 @@ namespace Chamedoon.Application.Services.Account.Users.Query;
 public class CheckUserNameAndPasswordMatchQuery : IRequest<OperationResult<bool>>
 {
     public required LoginUser_VM LoginUser { get; set; }
+    public required string UserName { get; set; }
+
 }
 public class CheckUserNameAndPasswordMatchHandler : IRequestHandler<CheckUserNameAndPasswordMatchQuery, OperationResult<bool>>
 {
@@ -31,7 +33,7 @@ public class CheckUserNameAndPasswordMatchHandler : IRequestHandler<CheckUserNam
     public async Task<OperationResult<bool>> Handle(CheckUserNameAndPasswordMatchQuery request, CancellationToken cancellationToken)
     {
         var loginUser = await signinmanager.PasswordSignInAsync(
-             request.LoginUser.Email,
+             request.UserName,
              request.LoginUser.Password,
              request.LoginUser.RememberMe,
              true);

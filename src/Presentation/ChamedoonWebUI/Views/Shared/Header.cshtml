@@ -6,33 +6,71 @@
                 <img src="images/LogoChamedoon.png" width="150" alt="">
             </a>
         </div>
+        <div>
+            <ul class="buy-button list-inline mb-0">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="list-inline-item mb-0">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-link text-decoration-none dropdown-toggle p-0 pe-2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="uil uil-search h5 text-muted"></i>
+                            </button>
+                            <div class="dropdown-menu dd-menu dropdown-menu-end bg-white shadow rounded border-0 mt-3 py-0" style="width: 300px;">
+                                <form asp-controller="Blog" asp-action="Index" method="get">
+                                    <input type="text" id="text" name="FilterTitle" class="form-control border bg-white" placeholder="جستجو...">
+                                </form>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-inline-item">
+                        <a href="javascript:void(0)" class="btn btn-icon btn-primary"><i class="uil uil-heart"></i></a>
+                    </li>
+                    <li class="list-inline-item mb-0">
+                        <div class="dropdown dropdown-primary">
+                            <button type="button" class="btn btn-icon btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="uil uil-user align-middle icons"></i>
+                            </button>
+                            <div class="dropdown-menu dd-menu dropdown-menu-end bg-white shadow rounded border-0 mt-3 py-3" style="width: 200px; margin: 0px; position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 38px);">
+                                <a class="dropdown-item text-dark" asp-area="UserPanels" asp-controller="UserPanelHome" asp-action="Index"><i class="uil uil-user align-middle me-1"></i> حساب کاربری</a>
+                                @if (User.Identity.Name == "Admin")
+                                {
+                                    <a class="dropdown-item text-dark" a asp-area="Admins" asp-controller="Dashboard" asp-action="Index"><i class="uil uil-award align-middle me-1"></i>پنل ادمین</a>
+                                }
+                                <div class="dropdown-divider my-3 border-top"></div>
+                                <a class="dropdown-item text-dark" asp-controller="Account" asp-action="Logout"><i class="uil uil-sign-out-alt align-middle me-1"></i> خروج </a>
+                            </div>
+                        </div>
+                    </li>
 
-        <ul class="buy-button list-inline mb-0">
-            <li class="list-inline-item-heaad mb-0 pe-1">
-                <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-sm  mt-2 me-2">ثبت نام</a>
-            </li>
-            <li class="list-inline-item-heaad mb-0 pe-1">
-                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-info btn-sm mt-2 me-2">ورود</a>
-            </li>
-            <li class="list-inline-item-heaad mb-0 pe-1">
-                <div class="buy-button">
-                    <div class="menu-extras">
-                        <div class="menu-item">
-                            <!-- Mobile menu toggle-->
-                            <a class="navbar-toggle" id="isToggle" onclick="toggleMenu()">
-                                <div class="lines">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
-                                </div>
-                            </a>
-                            <!-- End mobile menu toggle-->
+                }
+                else
+                {
+                    <li class="list-inline-item-heaad mb-0 pe-1">
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-sm  mt-2 me-2">ثبت نام</a>
+                    </li>
+                    <li class="list-inline-item-heaad mb-0 pe-1">
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-info btn-sm mt-2 me-2">ورود</a>
+                    </li>
+                }
+                <li class="list-inline-item-heaad mb-0 pe-1">
+                    <div class="buy-button">
+                        <div class="menu-extras">
+                            <div class="menu-item">
+                                <!-- Mobile menu toggle-->
+                                <a class="navbar-toggle" id="isToggle" onclick="toggleMenu()">
+                                    <div class="lines">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                </a>
+                                <!-- End mobile menu toggle-->
+                            </div>
                         </div>
                     </div>
-                </div>
-            </li>
-        </ul><!--end login button-->
-
+                </li>
+            </ul>
+        </div>
         <div id="navigation">
             <ul class="navigation-menu">
                 <li><a href="index.html" class="topheader-font sub-menu-item">صفحه اصلی </a></li>

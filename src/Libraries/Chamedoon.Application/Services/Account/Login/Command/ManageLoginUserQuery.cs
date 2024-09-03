@@ -34,7 +34,7 @@ public class ManageLoginUserQueryHandler : IRequestHandler<ManageLoginUserQuery,
         if (user.IsSuccess is false)
             return OperationResult<UserDetails_VM>.Fail();
 
-        OperationResult<bool> checkUser = await mediator.Send(new CheckUserNameAndPasswordMatchQuery { LoginUser = request.LoginUser });
+        OperationResult<bool> checkUser = await mediator.Send(new CheckUserNameAndPasswordMatchQuery { LoginUser = request.LoginUser, UserName =user.Result.UserName});
         if (checkUser.IsSuccess is false)
             return OperationResult<UserDetails_VM>.Fail(checkUser.Message);
 

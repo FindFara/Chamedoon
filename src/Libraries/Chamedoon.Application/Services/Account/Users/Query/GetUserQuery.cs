@@ -37,7 +37,7 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserQuery, OperationRe
                                    u.NormalizedUserName == (request.UserName ?? "").ToUpper() ||
                                    u.NormalizedEmail == (request.Email ?? "").ToUpper());
         if (user is null)
-            OperationResult<User>.Fail("کاربری با مشخصات واد شده یافت نشد");
+           return OperationResult<User>.Fail("کاربری با مشخصات واد شده یافت نشد");
 
         return OperationResult<User>.Success(mapper.Map<User>(user));
     }
