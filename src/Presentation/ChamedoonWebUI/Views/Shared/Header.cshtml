@@ -31,7 +31,7 @@
                                 <i class="mdi mdi-account align-middle icons"></i>
                             </button>
                             <div class="dropdown-menu dd-menu dropdown-menu-end bg-white shadow rounded border-0 mt-3 py-3" style="width: 200px; margin: 0px; position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 38px);">
-                                <a class="dropdown-item text-dark" asp-area="UserPanels" asp-controller="UserPanelHome" asp-action="Index"><i class="mdi mdi-account align-middle me-1"></i> حساب کاربری</a>
+                                <a class="dropdown-item text-dark" asp-controller="UserPanel" asp-action="Index"><i class="mdi mdi-account align-middle me-1"></i> حساب کاربری</a>
                                 @if (User.Identity.Name == "Admin")
                                 {
                                     <a class="dropdown-item text-dark" a asp-area="Admins" asp-controller="Dashboard" asp-action="Index"><i class="mdi mdi-account align-middle me-1"></i>پنل ادمین</a>
