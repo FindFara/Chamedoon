@@ -1,9 +1,11 @@
 using Chamedoon.Application;
 using Chamedoon.Infrastructure;
+using ChamedoonWebUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddWebUIServices();
 builder.Services.AddInfrastructureServices(builder.Configuration); 
 builder.Services.AddApplicationServices();
 var app = builder.Build();
@@ -19,6 +21,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

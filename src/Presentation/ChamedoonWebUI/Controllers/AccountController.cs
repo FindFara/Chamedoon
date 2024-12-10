@@ -55,36 +55,50 @@ namespace ChamedoonWebUI.Controllers
         #endregion
 
         #region Register
+
         [Route("register")]
+
         public IActionResult Register()
+
         {
+
             return View();
+
         }
+
         [Route("register")]
+
         [HttpPost]
+
         [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> Register(RegisterUser_VM register)
         {
             if (ModelState.IsValid)
             {
-              var response = await mediator
-                    .Send(new ManageRegisterUserCommand { RegisterUser = register });
+                var response = await mediator.Send(new ManageRegisterUserCommand { RegisterUser = register });
+
+                if (!response.IsSuccess && response.Message != null)
+                {
+                    ViewData["ErrorMessage"] = string.Join(", ", response.Message);
+                    return View(register);
+                }
+                return RedirectToAction("Login", "Account");
             }
-            else
-            {
-                return View(register);
-            }
-            return RedirectToAction("Login", "Account");
+            return View(register);
         }
+
         #endregion
 
         #region Logout
         [Route("logout")]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
+
         #endregion
+
     }
 }
