@@ -94,6 +94,7 @@ namespace ChamedoonWebUI.Controllers
         [Route("logout")]
         public async Task<IActionResult> Logout()
         {
+            //TODO : dont work logout
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
