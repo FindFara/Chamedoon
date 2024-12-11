@@ -36,7 +36,7 @@ public class AccountController : ApiControllerBase
     public async Task<IActionResult> Login([FromBody] ManageLoginUserQuery request)
     {
         //Get user
-        var user = await mediator.Send(new GetUserQuery { UserName = request.LoginUser.UserName });
+        var user = await mediator.Send(new GetUserQuery { UserName = request.LoginUser.Email });
         if (user.Result is null)
             return Unauthorized(user);
 
@@ -66,7 +66,6 @@ public class AccountController : ApiControllerBase
         {
             token = new JwtSecurityTokenHandler().WriteToken(token.Result),
             expiration = token.Result?.ValidTo,
-            UserName = request.LoginUser.UserName,
         });
 
     }

@@ -33,11 +33,17 @@ namespace ChamedoonWebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = (await mediator.Send(new ManageLoginUserQuery { LoginUser = register })).Result;
+                var user = (await mediator.Send(new ManageLoginUserQuery { LoginUser = register }));
+                if (user.IsSuccess is false || user.Result is null)
+                {
+                    ModelState.AddModelError(string.Empty, user.Message);
+                    return View(register);
+                }
+
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()),
-                    new Claim(ClaimTypes.Email,user.Email)
+                    new Claim(ClaimTypes.NameIdentifier,user.Result.Id.ToString()),
+                    new Claim(ClaimTypes.Email,user.Result.Email)
                 };
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
@@ -67,8 +73,8 @@ namespace ChamedoonWebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-              var response = await mediator
-                    .Send(new ManageRegisterUserCommand { RegisterUser = register });
+                var response = await mediator
+                      .Send(new ManageRegisterUserCommand { RegisterUser = register });
             }
             else
             {
