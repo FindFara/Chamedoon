@@ -2499,8 +2499,8 @@ button:not(:disabled) {
 }
 
 .avatar.avatar-large {
-    height: 140px;
-    width: 140px
+    height: 100px;
+    width: 100px
 }
 
 .avatar.avatar-ex-large {
