@@ -1,55 +1,70 @@
-﻿<div class="sidebar sticky-bar p-4 rounded shadow-md">
+﻿<div class="col-lg-4 col-md-6 col-12 userpanel">
 
-    <div class="widget mt-4 pt-2">
-        <h6 class="widget-title">تکمیل حساب کاربری  :</h6>
-        <div class="progress-box mt-4">
-            <h6 class="title text-muted">پیش رفتن  </h6>
-            <div class="progress">
-                <div class="progress-bar position-relative bg-primary" style="width:50%;">
-                    <div class="progress-value d-block text-muted h6">48 / 100</div>
-                </div>
+    <div class="card public-profile border-0 rounded shadow-md">
+        <div class="card-body" style="background: url('/img/bg/bg2.png') center center;">
+            <img src="~/images/member3.png" class="avatar avatar-large rounded-circle shadow d-block mx-auto" alt="">
+            <div class="mt-4 ">
+                <h6 class="title mb-0">@Model.UserName</h6>
             </div>
+            <small class="text-muted h6 me-2">تاریخ عضویت : </small>
+            <small class="text-muted h6 me-2">@Model.Created</small>
         </div>
     </div>
 
-    <div class="widget mt-4">
-        <ul class="list-unstyled sidebar-nav mb-0" id="navmenu-nav">
+    <div class="sidebar sticky-bar p-4 rounded shadow-md">
 
-            <li class="navbar-item account-menu px-0">
-                <a asp-area="Userpanels" asp-controller="UserPanelHome" asp-action="Index" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                    <span class="h4 mb-0"><i class="uil uil-dashboard"></i></span>
-                    <h6 class="mb-0 ms-2">پروفایل </h6>
-                </a>
-            </li>
+        <div class="widget mt-4 pt-2">
+            <h6 class="widget-title">تکمیل حساب کاربری  :</h6>
+            <div class="progress-box mt-4">
+                <h6 class="title text-muted">پیش رفتن  </h6>
+                <div class="progress">
+                    <div class="progress-bar position-relative bg-primary" style="width:50%;">
+                        <div class="progress-value d-block text-muted h6">48 / 100</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-       @*     <li class="navbar-item account-menu px-0 mt-2 active">
+        <div class="widget mt-4">
+            <ul class="list-unstyled sidebar-nav mb-0" id="navmenu-nav">
+
+                <li class="navbar-item account-menu px-0">
+                    <a asp-controller="UserPanel" asp-action="Index" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
+                        <span class="h4 mb-0"><i class="uil uil-dashboard"></i></span>
+                        <h6 class="mb-0 ms-2">پروفایل </h6>
+                    </a>
+                </li>
+
+                @*     <li class="navbar-item account-menu px-0 mt-2 active">
                 <a asp-area="Userpanels" asp-controller="Wallet" asp-action="index" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                    <span class="h4 mb-0"><i class="uil uil-transaction"></i></span>
-                    <h6 class="mb-0 ms-2">کیف پول </h6>
+                <span class="h4 mb-0"><i class="uil uil-transaction"></i></span>
+                <h6 class="mb-0 ms-2">کیف پول </h6>
                 </a>
-            </li>*@
+                </li>*@
 
-            <li class="navbar-item account-menu px-0 mt-2">
-                <a asp-area="Userpanels" asp-controller="UserPanelHome" asp-action="EditProfile" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                    <span class="h4 mb-0"><i class="uil uil-users-alt"></i></span>
-                    <h6 class="mb-0 ms-2">ویرایش حساب کاربری </h6>
-                </a>
-            </li>
+                <li class="navbar-item account-menu px-0 mt-2">
+                    <a asp-controller="UserPanel" asp-action="EditProfile" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
+                        <span class="h4 mb-0"><i class="uil uil-users-alt"></i></span>
+                        <h6 class="mb-0 ms-2">ویرایش حساب کاربری </h6>
+                    </a>
+                </li>
 
 
-            <li class="navbar-item account-menu px-0 mt-2">
-                <a asp-area="Userpanels" asp-controller="UserPanelHome" asp-action="changepassword" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                    <span class="h4 mb-0"><i class="uil uil-setting"></i></span>
-                    <h6 class="mb-0 ms-2">تغییر رمز عبور </h6>
-                </a>
-            </li>
+                <li class="navbar-item account-menu px-0 mt-2">
+                    <a asp-controller="UserPanel" asp-action="changepassword" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
+                        <span class="h4 mb-0"><i class="uil uil-setting"></i></span>
+                        <h6 class="mb-0 ms-2">تغییر رمز عبور </h6>
+                    </a>
+                </li>
 
-            <li class="navbar-item account-menu px-0 mt-2">
-                <a asp-controller="Account" asp-action="Logout" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                    <span class="h4 mb-0"><i class="uil uil-dashboard"></i></span>
-                    <h6 class="mb-0 ms-2">خروج از حساب </h6>
-                </a>
-            </li>
-        </ul>
+                <li class="navbar-item account-menu px-0 mt-2">
+                    <a asp-controller="Account" asp-action="Logout" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
+                        <span class="h4 mb-0"><i class="uil uil-dashboard"></i></span>
+                        <h6 class="mb-0 ms-2">خروج از حساب </h6>
+                    </a>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
+
