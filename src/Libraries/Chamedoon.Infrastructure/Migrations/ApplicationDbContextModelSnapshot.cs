@@ -111,6 +111,31 @@ namespace Chamedoon.Infrastructure.Migrations
                     b.ToTable("ArticleComment");
                 });
 
+            modelBuilder.Entity("Chamedoon.Domin.Entity.Customers.Customer", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Job")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customers");
+                });
+
             modelBuilder.Entity("Chamedoon.Domin.Entity.Permissions.Role", b =>
                 {
                     b.Property<long>("Id")
@@ -389,6 +414,17 @@ namespace Chamedoon.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Chamedoon.Domin.Entity.Customers.Customer", b =>
+                {
+                    b.HasOne("Chamedoon.Domin.Entity.Users.User", "User")
+                        .WithOne("Customer")
+                        .HasForeignKey("Chamedoon.Domin.Entity.Customers.Customer", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Chamedoon.Domin.Entity.Permissions.RolePermission", b =>
                 {
                     b.HasOne("Chamedoon.Domin.Entity.Permissions.RolePermission", null)
@@ -476,6 +512,9 @@ namespace Chamedoon.Infrastructure.Migrations
 
             modelBuilder.Entity("Chamedoon.Domin.Entity.Users.User", b =>
                 {
+                    b.Navigation("Customer")
+                        .IsRequired();
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

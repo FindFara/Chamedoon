@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Chamedoon.Application.Services.Account.Users.ViewModel;
 using Chamedoon.Application.Services.Admin.UserManagement.Command;
+using Chamedoon.Application.Services.Customers.Query;
 
 namespace ChamedoonWebUI.Controllers
 {
@@ -30,8 +31,9 @@ namespace ChamedoonWebUI.Controllers
         [Route("EditProfile")]
         public async Task<IActionResult> EditProfile()
         {
-            var user = await mediator.Send(new GetUserDetailsQuery { UserName = User.Identity.Name });
-            return View(user);
+            var Customer = await mediator.Send(new GetUserAndCustomerDetailsQuery { UserName = User.Identity.Name });
+
+            return View(Customer.Result);
         }
 
         [Route("EditProfile")]

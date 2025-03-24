@@ -2,7 +2,7 @@
 
 namespace Chamedoon.Domin.Base;
 
-public class BaseEntity
+public abstract  class BaseEntity
 {
     [Key]
     public long Id { get; set; }

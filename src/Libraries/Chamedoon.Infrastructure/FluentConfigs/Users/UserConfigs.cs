@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Chamedoon.Domin.Entity.Users;
 using Chamedoon.Domin.Entity.Permissions;
+using Chamedoon.Domin.Entity.Customers;
 
 namespace Chamedoon.Infrastructure.FluentConfigs.Users;
 public class UserConfigs : IEntityTypeConfiguration<User>
@@ -10,6 +11,11 @@ public class UserConfigs : IEntityTypeConfiguration<User>
     {
 
         builder.ToTable("User");
+
+        builder
+    .HasOne(u => u.Customer)
+    .WithOne(c => c.User)
+    .HasForeignKey<Customer>(c => c.Id);
         //List<User> users = new List<User>()
         //{
         //    new User()

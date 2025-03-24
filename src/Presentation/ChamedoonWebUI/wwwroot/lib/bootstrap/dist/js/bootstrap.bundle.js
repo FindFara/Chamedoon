@@ -3514,7 +3514,7 @@
 
           state.orderedModifiers = orderedModifiers.filter(function (m) {
             return m.enabled;
-          }); // Validate the provided modifiers so that the consumer will get warned
+          }); // Validate the provided modifiers so that the Customer will get warned
 
           runModifierEffects();
           return instance.update();

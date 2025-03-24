@@ -1,0 +1,15 @@
+﻿@{
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<section class="section mt-100">
+    <div class="container mt-lg-3">
+        <div class="row">
+            <partial name="UserPanelSidebar" />
+            @RenderSection("UserPanelContent", required: true)
+            <br />
+        </div>
+    </div>
+</section>
+<section>
+</section>

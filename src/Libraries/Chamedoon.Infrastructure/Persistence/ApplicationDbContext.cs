@@ -1,7 +1,9 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Domin.Entity.Blogs;
+using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Permissions;
 using Chamedoon.Domin.Entity.Users;
+using Chamedoon.Infrastructure.FluentConfigs.Customers;
 using Chamedoon.Infrastructure.FluentConfigs.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -40,6 +42,9 @@ public class ApplicationDbContext : IdentityDbContext<
     public DbSet<ArticleComment> ArticleComment { get; set; }
     #endregion
 
+    #region Customer
+    public DbSet<Customer> Customers { get; set; }
+    #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -66,6 +71,8 @@ public class ApplicationDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new UserRoleConfigs());
         modelBuilder.ApplyConfiguration(new RoleConfigs());
         modelBuilder.ApplyConfiguration(new RolePermissionConfigs());
+        modelBuilder.ApplyConfiguration(new CustomerConfigs());
+
 
     }
 }
