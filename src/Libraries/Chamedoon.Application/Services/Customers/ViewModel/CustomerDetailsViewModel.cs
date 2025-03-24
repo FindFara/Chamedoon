@@ -9,8 +9,8 @@ namespace Chamedoon.Application.Services.Customers.ViewModel
         public string? FirstName { get; set; } 
         public string? LastName { get; set; }
         public string? Job { get; set; }
-        public string? Description { get; set; } 
-
+        public string? Description { get; set; }
+        public string? ProfileImage { get; set; }
 
         public UserDetails_VM? User { get; set; }
     }

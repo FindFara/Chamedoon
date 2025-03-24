@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Chamedoon.Application.Services.Account.Users.ViewModel;
 using Chamedoon.Application.Services.Admin.UserManagement.Command;
 using Chamedoon.Application.Services.Customers.Query;
+using Chamedoon.Application.Services.Customers.Command;
+using AutoMapper;
+using Chamedoon.Application.Services.Customers.ViewModel;
 
 namespace ChamedoonWebUI.Controllers
 {
@@ -13,10 +16,12 @@ namespace ChamedoonWebUI.Controllers
     public class UserPanelController : Controller
     {
         private readonly IMediator mediator;
+        private readonly IMapper mapper;
 
-        public UserPanelController(IMediator mediator)
+        public UserPanelController(IMediator mediator ,IMapper mapper)
         {
             this.mediator = mediator;
+            this.mapper = mapper;
         }
         #region Index
         public async Task<IActionResult> Index()
@@ -47,6 +52,10 @@ namespace ChamedoonWebUI.Controllers
             var edit = await mediator.Send(new EditUserCommand { User = user }); 
             if (edit.IsSuccess is false)
                 return View(user);
+
+            var editCustomer = await mediator.Send(new UpsertCustomerCommand { 
+                UpsertCustomerViewModel = mapper.Map<UpsertCustomerViewModel>(user)
+            });
 
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");

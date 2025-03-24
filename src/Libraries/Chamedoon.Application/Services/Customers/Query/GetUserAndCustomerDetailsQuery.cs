@@ -38,13 +38,13 @@ public class GetUserAndCustomerDetailsHandler : IRequestHandler<GetUserAndCustom
         if (user is null)
             return OperationResult<CustomerDetailsViewModel>.Fail("کاربری با مشخصات واد شده یافت نشد");
 
-        var Customer = await _context.Customers.FindAsync(user.Id) ?? new Domin.Entity.Customers.Customer();
+        var customer = await _context.Customers.FindAsync(user.Id) ?? new Domin.Entity.Customers.Customer();
 
-        var CustomerDitails = mapper.Map<CustomerDetailsViewModel>(Customer);
+        var CustomerDitails = mapper.Map<CustomerDetailsViewModel>(customer);
         CustomerDitails.User = mapper.Map<UserDetails_VM>(user);
 
         return OperationResult<CustomerDetailsViewModel>.Success(CustomerDitails);
     }
     #endregion
-
+    `
 }

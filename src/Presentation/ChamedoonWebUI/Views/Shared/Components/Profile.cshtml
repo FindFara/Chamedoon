@@ -2,11 +2,11 @@
 
 <div class="card public-profile border-0 rounded shadow-md">
     <div class="card-body" style="background: url('/img/bg/bg2.png') center center;">
-        <img src="~/images/member3.png" class="avatar avatar-large rounded-circle shadow d-block mx-auto" alt="">
+        <img src=@Model.ProfileImage class="avatar avatar-large rounded-circle shadow d-block mx-auto" alt="">
         <div class="mt-4 ">
-            <h6 class="title mb-0">@Model.</h6>
+            <h6 class="title mb-0">@Model.FirstName</h6>
         </div>
-        <small class="text-muted h6 me-2">تاریخ عضویت : </small>
-        <small class="text-muted h6 me-2">@Model.Created</small>
+        <small class="text-muted h6 me-2">خوش اومدی </small>
+        <small class="text-muted h6 me-2">@Model.FirstName</small>
     </div>
 </div>
