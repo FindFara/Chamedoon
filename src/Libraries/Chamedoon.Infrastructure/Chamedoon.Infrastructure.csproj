@@ -26,4 +26,8 @@
     <ProjectReference Include="..\Chamedoon.Domin\Chamedoon.Domin.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

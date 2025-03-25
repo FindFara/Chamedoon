@@ -228,6 +228,7 @@ namespace Chamedoon.Infrastructure.Migrations
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Job = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>

@@ -9,6 +9,7 @@ using Chamedoon.Application.Services.Customers.Query;
 using Chamedoon.Application.Services.Customers.Command;
 using AutoMapper;
 using Chamedoon.Application.Services.Customers.ViewModel;
+using Chamedoon.Domin.Entity.Users;
 
 namespace ChamedoonWebUI.Controllers
 {
@@ -33,32 +34,36 @@ namespace ChamedoonWebUI.Controllers
 
         #region EditProfile
 
-        [Route("EditProfile")]
-        public async Task<IActionResult> EditProfile()
+        [Route("Edit")]
+        public async Task<IActionResult> Edit()
         {
             var Customer = await mediator.Send(new GetUserAndCustomerDetailsQuery { UserName = User.Identity.Name });
 
             return View(Customer.Result);
         }
 
-        [Route("EditProfile")]
+        [Route("Edit")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProfile(EditUser_VM user)
+        public async Task<IActionResult> Edit(EditUser_VM user)
         {
             if (!ModelState.IsValid)
                 return View(user);
+           
 
-            var edit = await mediator.Send(new EditUserCommand { User = user }); 
-            if (edit.IsSuccess is false)
+            var userIdentity = await mediator.Send(new GetUserDetailsQuery { UserName = User.Identity.Name });
+            if (userIdentity.IsSuccess is false)
                 return View(user);
 
-            var editCustomer = await mediator.Send(new UpsertCustomerCommand { 
-                UpsertCustomerViewModel = mapper.Map<UpsertCustomerViewModel>(user)
+
+            var editCustomer = await mediator.Send(new UpdateCustomerCommand
+            {
+                UpsertCustomerViewModel = mapper.Map<UpsertCustomerViewModel>(user),
+                Id = userIdentity.Result.Id
             });
 
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Edit", "UserPanel");
         }
         #endregion
     }

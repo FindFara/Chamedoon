@@ -13,6 +13,7 @@ namespace Chamedoon.Application.Services.Admin.UserManagement.Command;
 public class EditUserCommand : IRequest<OperationResult<bool>>
 {
     public EditUser_VM User{ get; set; }
+    public string UserName { get; set; }
 }
 public class EditUserCommandHandler : IRequestHandler<EditUserCommand, OperationResult<bool>>
 {
@@ -34,7 +35,7 @@ public class EditUserCommandHandler : IRequestHandler<EditUserCommand, Operation
     #region Method
     public async Task<OperationResult<bool>> Handle(EditUserCommand request, CancellationToken cancellationToken)
     {
-        var user = _context.User.AsNoTracking().FirstOrDefault(u=>u.Id == request.User.Id);
+        var user = _context.User.AsNoTracking().FirstOrDefault(u=>u.UserName == request.UserName);
         if (user == null)
             return OperationResult<bool>.Fail("کاربر یافت نشد");
 

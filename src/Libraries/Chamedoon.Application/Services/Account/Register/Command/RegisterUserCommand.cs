@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Chamedoon.Application.Services.Account.Register.Command;
 
-public class RegisterUserCommand : IRequest<OperationResult<bool>>
+public class RegisterUserCommand : IRequest<OperationResult<long>>
 {
     public required RegisterUser_VM RegisterUser { get; set; }
 }
-public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, OperationResult<bool>>
+public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, OperationResult<long>>
 {
     #region Property
     private readonly IMapper mapper;
@@ -30,7 +30,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
     #endregion
 
     #region Method
-    public async Task<OperationResult<bool>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<long>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         User user = mapper.Map<User>(request.RegisterUser);
         user.UserName = Path.GetFileNameWithoutExtension(user.Email);
@@ -41,9 +41,9 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
             await userManager.AddToRoleAsync(user, "Member");
             var tokenUser = await mediator.Send(new SendTokenToUserEmailQuery { User = user });
 
-            return OperationResult<bool>.Success(true);
+            return OperationResult<long>.Success(user.Id);
         }
-        return OperationResult<bool>.Fail(registerUser.Errors.Select(e => e.Description).First());
+        return OperationResult<long>.Fail(registerUser.Errors.Select(e => e.Description).First());
     }
     #endregion
 }

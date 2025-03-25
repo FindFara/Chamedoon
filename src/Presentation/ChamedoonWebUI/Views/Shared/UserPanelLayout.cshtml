@@ -5,8 +5,12 @@
 <section class="section mt-100">
     <div class="container mt-lg-3">
         <div class="row">
-            <partial name="UserPanelSidebar" />
-            @RenderSection("UserPanelContent", required: true)
+            <div class="col-lg-4 col-md-6 col-12">
+                <partial name="Sidebar" />
+            </div>
+            <div class="col-lg-8 col-12">
+                @RenderSection("UserPanelContent", required: true)
+            </div>
             <br />
         </div>
     </div>

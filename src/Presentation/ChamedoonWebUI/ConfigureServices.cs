@@ -9,18 +9,17 @@ public static class ConfigureServices
     {
         services.AddAuthentication(options =>
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
         }).AddCookie(options =>
 
         {
-
             options.LoginPath = "/auth/login";
-
             options.LogoutPath = "/auth/logout";
 
             options.AccessDeniedPath = "/auth/AccessDenied";
-        }); ;
+        });
         return services;
     }
 }

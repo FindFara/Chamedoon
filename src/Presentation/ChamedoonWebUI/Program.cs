@@ -8,6 +8,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddWebUIServices();
 builder.Services.AddInfrastructureServices(builder.Configuration); 
 builder.Services.AddApplicationServices();
+builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 

@@ -3,6 +3,7 @@ using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Users.ViewModel;
 using Chamedoon.Application.Services.Customers.ViewModel;
+using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -38,7 +39,7 @@ public class GetUserAndCustomerDetailsHandler : IRequestHandler<GetUserAndCustom
         if (user is null)
             return OperationResult<CustomerDetailsViewModel>.Fail("کاربری با مشخصات واد شده یافت نشد");
 
-        var customer = await _context.Customers.FindAsync(user.Id) ?? new Domin.Entity.Customers.Customer();
+        var customer = await _context.Customers.FindAsync(user.Id) ?? new Customer();
 
         var CustomerDitails = mapper.Map<CustomerDetailsViewModel>(customer);
         CustomerDitails.User = mapper.Map<UserDetails_VM>(user);
@@ -46,5 +47,5 @@ public class GetUserAndCustomerDetailsHandler : IRequestHandler<GetUserAndCustom
         return OperationResult<CustomerDetailsViewModel>.Success(CustomerDitails);
     }
     #endregion
-    `
+    
 }

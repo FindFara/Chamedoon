@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Chamedoon.Application.Services.Account.Login.ViewModel;
 using Chamedoon.Application.Services.Account.Login.Command;
+using Microsoft.AspNetCore.Identity;
 
 namespace ChamedoonWebUI.Controllers
 {
@@ -100,8 +101,7 @@ namespace ChamedoonWebUI.Controllers
         [Route("logout")]
         public async Task<IActionResult> Logout()
         {
-            //TODO : dont work logout
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
             return RedirectToAction("Index", "Home");
         }
 

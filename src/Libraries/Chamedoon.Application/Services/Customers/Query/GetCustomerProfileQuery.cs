@@ -8,7 +8,7 @@ namespace Chamedoon.Application.Services.Customers.Query
 {
     public class GetCustomerProfileQuery : IRequest<OperationResult<CustomerProfileViewModel>>
     {
-        public long CustomerId { get; set; }
+        public required string UserName{ get; set; }
     }
     public class GetCustomerProfileQueryHandler : IRequestHandler<GetCustomerProfileQuery, OperationResult<CustomerProfileViewModel>>
     {
@@ -22,8 +22,10 @@ namespace Chamedoon.Application.Services.Customers.Query
         }
         public async Task<OperationResult<CustomerProfileViewModel>> Handle(GetCustomerProfileQuery request, CancellationToken cancellationToken)
         {
+            var user = await _context.User.SingleOrDefaultAsync(u => u.UserName == request.UserName);
+
             var customer = await _context.Customers
-                .Where(c => c.Id == request.CustomerId)
+                .Where(c => c.Id == user.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (customer == null || string.IsNullOrEmpty(customer.ProfileImage))
