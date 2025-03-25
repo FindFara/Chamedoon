@@ -5,14 +5,13 @@ using Chamedoon.Application.Services.Customers.ViewModel;
 using Chamedoon.Domin.Entity.Customers;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chamedoon.Application.Services.Customers.Command
 {
     public class UpdateCustomerCommand : IRequest<OperationResult>
     {
         public required UpsertCustomerViewModel UpsertCustomerViewModel { get; set; }
-        public required long Id { get; set; }
-
     }
     public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, OperationResult>
     {
@@ -27,19 +26,21 @@ namespace Chamedoon.Application.Services.Customers.Command
 
         public async Task<OperationResult> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {
-            Customer? customer = await _context.Customers.FindAsync(request.Id);
+            Customer? customer = await _context.Customers.SingleOrDefaultAsync(c => c.Id == request.UpsertCustomerViewModel.Id);
 
             if (customer == null)
                 return OperationResult.Fail();
 
-            if (request.UpsertCustomerViewModel.ProfileImage?.Length > 0)
+            if (request.UpsertCustomerViewModel.ProfileImageFile?.Length > 0)
             {
-                var filePath = SaveProfileImage(request.UpsertCustomerViewModel.ProfileImage);
-                customer.ProfileImage = filePath;
+                var filePath = SaveProfileImage(request.UpsertCustomerViewModel.ProfileImageFile);
+                request.UpsertCustomerViewModel.ProfileImage = filePath;
+            }
+            if(!string.IsNullOrEmpty(customer.ProfileImage))
+            {
+                request.UpsertCustomerViewModel.ProfileImage = customer.ProfileImage;
             }
             _mapper.Map(request.UpsertCustomerViewModel, customer);
-            _context.Customers.Update(customer);
-
             await _context.SaveChangesAsync(cancellationToken);
             return OperationResult.Success();
         }

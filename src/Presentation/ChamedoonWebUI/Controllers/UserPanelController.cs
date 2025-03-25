@@ -55,11 +55,10 @@ namespace ChamedoonWebUI.Controllers
             if (userIdentity.IsSuccess is false)
                 return View(user);
 
-
+            user.Id = userIdentity.Result.Id;
             var editCustomer = await mediator.Send(new UpdateCustomerCommand
             {
                 UpsertCustomerViewModel = mapper.Map<UpsertCustomerViewModel>(user),
-                Id = userIdentity.Result.Id
             });
 
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

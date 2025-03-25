@@ -8,6 +8,8 @@ namespace Chamedoon.Application.Services.Customers.ViewModel;
 
 public class UpsertCustomerViewModel : IMapFrom<EditUser_VM>, IMapFrom<Customer>
 {
+    public required long Id { get; set; }
+
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     public string? Job { get; set; }

@@ -33,6 +33,7 @@ public class GetUserDetailsQueryHandler : IRequestHandler<GetUserDetailsQuery, O
     public async Task<OperationResult<UserDetails_VM>> Handle(GetUserDetailsQuery request, CancellationToken cancellationToken)
     {
         User? user = await _context.User
+             .AsNoTracking()
              .SingleOrDefaultAsync(u =>
                                    u.Id == request.Id ||
                                    u.NormalizedUserName == (request.UserName ?? "").ToUpper() ||

@@ -34,12 +34,12 @@ public class GetUserAndCustomerDetailsHandler : IRequestHandler<GetUserAndCustom
     async Task<OperationResult<CustomerDetailsViewModel>> IRequestHandler<GetUserAndCustomerDetailsQuery, OperationResult<CustomerDetailsViewModel>>.Handle(GetUserAndCustomerDetailsQuery request, CancellationToken cancellationToken)
     {
         User? user = await _context.User
-             .SingleOrDefaultAsync(u => u.NormalizedUserName == (request.UserName ?? "").ToUpper());
+             .AsNoTracking().SingleOrDefaultAsync(u => u.NormalizedUserName == (request.UserName ?? "").ToUpper());
 
         if (user is null)
             return OperationResult<CustomerDetailsViewModel>.Fail("کاربری با مشخصات واد شده یافت نشد");
 
-        var customer = await _context.Customers.FindAsync(user.Id) ?? new Customer();
+        var customer = await _context.Customers.AsNoTracking().FirstOrDefaultAsync(c=>c.Id == user.Id) ?? new Customer();
 
         var CustomerDitails = mapper.Map<CustomerDetailsViewModel>(customer);
         CustomerDitails.User = mapper.Map<UserDetails_VM>(user);
