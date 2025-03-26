@@ -86,7 +86,12 @@ namespace ChamedoonWebUI.Controllers
                     ViewData["ErrorMessage"] = string.Join(", ", response.Message);
                     return View(register);
                 }
-                return RedirectToAction("Login", "Account");
+                return await Login(new LoginUser_VM
+                {
+                    Email = register.Email,
+                    Password = register.Password,
+                    RememberMe = true
+                });
             }
             return View(register);
         }
