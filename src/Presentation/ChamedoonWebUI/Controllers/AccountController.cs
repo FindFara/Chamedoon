@@ -8,6 +8,9 @@ using System.Security.Claims;
 using Chamedoon.Application.Services.Account.Login.ViewModel;
 using Chamedoon.Application.Services.Account.Login.Command;
 using Microsoft.AspNetCore.Identity;
+using Chamedoon.Application.Services.Account.Users.Command;
+using Chamedoon.Application.Services.Account.Users.ViewModel;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ChamedoonWebUI.Controllers
 {
@@ -64,18 +67,14 @@ namespace ChamedoonWebUI.Controllers
         #region Register
 
         [Route("register")]
-
         public IActionResult Register()
         {
             return View();
         }
 
         [Route("register")]
-
         [HttpPost]
-
         [ValidateAntiForgeryToken]
-
         public async Task<IActionResult> Register(RegisterUser_VM register)
         {
             if (ModelState.IsValid)
@@ -102,6 +101,35 @@ namespace ChamedoonWebUI.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        #endregion
+
+        #region ChangePassword
+        [Route("ChangePass")]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [Route("ChangePass")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            model.UserId = userId;
+            var result = await mediator.Send(new ChangePasswordCommand { ChangePasswordViewModel = model });
+
+            if (result.IsSuccess)
+                return RedirectToAction("login", "Account");
+
+            ModelState.AddModelError("", result.Message);
+
+            return View(model);
+        }
         #endregion
 
     }

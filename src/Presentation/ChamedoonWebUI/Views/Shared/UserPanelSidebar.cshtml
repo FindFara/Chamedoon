@@ -1,7 +1,4 @@
-﻿
-    @await Component.InvokeAsync("UserProfileImage")
-    <div class="sidebar sticky-bar p-4 rounded shadow-md">
-
+﻿    <div class="sidebar sticky-bar p-4 rounded shadow-md">
         <div class="widget mt-4 pt-2">
             <h6 class="widget-title">تکمیل حساب کاربری  :</h6>
             <div class="progress-box mt-4">
@@ -13,7 +10,6 @@
                 </div>
             </div>
         </div>
-
         <div class="widget mt-4">
             <ul class="list-unstyled sidebar-nav mb-0" id="navmenu-nav">
 
@@ -24,13 +20,6 @@
                     </a>
                 </li>
 
-                @*     <li class="navbar-item account-menu px-0 mt-2 active">
-                <a asp-area="Userpanels" asp-controller="Wallet" asp-action="index" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                <span class="h4 mb-0"><i class="uil uil-transaction"></i></span>
-                <h6 class="mb-0 ms-2">کیف پول </h6>
-                </a>
-                </li>*@
-
                 <li class="navbar-item account-menu px-0 mt-2">
                     <a asp-controller="UserPanel" asp-action="Edit" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
                         <span class="h4 mb-0"><i class="mdi mdi-file-edit"></i></span>
@@ -40,7 +29,7 @@
 
 
                 <li class="navbar-item account-menu px-0 mt-2">
-                    <a asp-controller="UserPanel" asp-action="changepassword" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
+                <a asp-controller="Account" asp-action="ChangePassword" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
                         <span class="h4 mb-0"><i class="mdi mdi-lock"></i></span>
                         <h6 class="mb-0 ms-2">تغییر رمز عبور </h6>
                     </a>

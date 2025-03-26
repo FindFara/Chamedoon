@@ -108,4 +108,11 @@ public class PersianIdentityErrorDescriber : IdentityErrorDescriber
             Code = nameof(DefaultError),
             Description = $"خطای پیشبینی نشده رخ داد"
         };
+    public override IdentityError PasswordMismatch()
+        => new IdentityError()
+        {
+            Code = nameof(PasswordMismatch),
+            Description = "رمز عبور وارد شده اشتباه است"
+        };
+
 }

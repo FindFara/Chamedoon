@@ -4,12 +4,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Chamedoon.Application.Services.Account.Users.ViewModel;
-using Chamedoon.Application.Services.Admin.UserManagement.Command;
 using Chamedoon.Application.Services.Customers.Query;
 using Chamedoon.Application.Services.Customers.Command;
 using AutoMapper;
 using Chamedoon.Application.Services.Customers.ViewModel;
-using Chamedoon.Domin.Entity.Users;
+using System.Security.Claims;
 
 namespace ChamedoonWebUI.Controllers
 {
@@ -49,13 +48,12 @@ namespace ChamedoonWebUI.Controllers
         {
             if (!ModelState.IsValid)
                 return View(user);
-           
 
-            var userIdentity = await mediator.Send(new GetUserDetailsQuery { UserName = User.Identity.Name });
-            if (userIdentity.IsSuccess is false)
-                return View(user);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            user.Id = userIdentity.Result.Id;
+            user.Id = long.Parse(userId);
             var editCustomer = await mediator.Send(new UpdateCustomerCommand
             {
                 UpsertCustomerViewModel = mapper.Map<UpsertCustomerViewModel>(user),
