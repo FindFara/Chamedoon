@@ -1,5 +1,6 @@
 ﻿using Chamedoon.Application.Common.Utilities.AutoMapper;
 using Chamedoon.Domin.Entity.Customers;
+using Chamedoon.Domin.Enums;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,7 @@ namespace Chamedoon.Application.Services.Customers.ViewModel
         public string? Job { get; set; }
         public string? Description { get; set; }
         public IFormFile? ProfileImage { get; set; }
+        public Gender Gender { get; set; }
+
     }
 }

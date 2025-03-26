@@ -36,7 +36,7 @@ namespace Chamedoon.Application.Services.Customers.Command
                 var filePath = SaveProfileImage(request.UpsertCustomerViewModel.ProfileImageFile);
                 request.UpsertCustomerViewModel.ProfileImage = filePath;
             }
-            if(!string.IsNullOrEmpty(customer.ProfileImage))
+            if(!string.IsNullOrEmpty(customer.ProfileImage) && File.Exists(customer.ProfileImage))
             {
                 request.UpsertCustomerViewModel.ProfileImage = customer.ProfileImage;
             }

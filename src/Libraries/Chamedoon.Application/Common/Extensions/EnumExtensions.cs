@@ -3,6 +3,7 @@ using Edition.Common.Extensions;
 using System.ComponentModel.DataAnnotations;
 using Edition.Common.Enums;
 using Edition.Common.Utilities;
+using System.ComponentModel;
 
 namespace Edition.Common.Extensions;
 
@@ -43,5 +44,21 @@ public static class EnumExtensions
     public static Dictionary<int, string> ToDictionary(this Enum value)
     {
         return Enum.GetValues(value.GetType()).Cast<Enum>().ToDictionary(p => Convert.ToInt32(p), q => q.ToDisplay());
+    }
+    public static string GetEnumDescription(Enum value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
+
+        return attribute?.Description ?? value.ToString();
+    }
+
+    public static string[] GetEnumDescriptions<T>() where T : Enum
+    {
+        var value = Enum.GetValues(typeof(T))
+                   .Cast<Enum>()
+                   .Select(GetEnumDescription)
+                   .ToArray();
+        return value;
     }
 }

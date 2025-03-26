@@ -66,11 +66,8 @@ namespace ChamedoonWebUI.Controllers
         [Route("register")]
 
         public IActionResult Register()
-
         {
-
             return View();
-
         }
 
         [Route("register")]

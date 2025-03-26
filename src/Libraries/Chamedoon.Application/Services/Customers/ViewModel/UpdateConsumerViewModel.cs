@@ -2,6 +2,7 @@
 using Chamedoon.Application.Common.Utilities.AutoMapper;
 using Chamedoon.Application.Services.Account.Users.ViewModel;
 using Chamedoon.Domin.Entity.Customers;
+using Chamedoon.Domin.Enums;
 using Microsoft.AspNetCore.Http;
 
 namespace Chamedoon.Application.Services.Customers.ViewModel;
@@ -16,4 +17,6 @@ public class UpsertCustomerViewModel : IMapFrom<EditUser_VM>, IMapFrom<Customer>
     public string? Description { get; set; }
     public string? ProfileImage { get; set; }
     public IFormFile? ProfileImageFile { get; set; }
+    public Gender Gender { get; set; }
+
 }

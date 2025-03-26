@@ -19,7 +19,6 @@
                     <div class="mt-md-4 mt-3 mt-sm-0">
                         <label for="ProfileImageFile" class="btn btn-primary mt-2">تغییر تصویر</label>
                         <input type="file" name="ProfileImageFile" id="ProfileImageFile" class="d-none">
-                        <a href="javascript:void(0)" class="btn btn-outline-primary mt-2 ms-2" id="removeImage">حذف</a>
                     </div>
                 </div>
 
@@ -44,10 +43,17 @@
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label class="form-label">ایمیل  </label>
+                            <label class="form-label">جنسیت</label>
                             <div class="form-icon position-relative">
-                                <i class="mdi mdi-email-outline align-middle icons"></i>
-                                <input name="Email" id="email" type="email" class="form-control ps-5" value="@Model.User?.Email">
+                                <i class="mdi mdi-gender-male-female align-middle icons"></i>
+                                <select name="Gender" id="gender" class="form-control ps-5">
+                                    @for (int i = 0; i < Model.GenderList.Length; i++)
+                                    {
+                                        <option value="@((Gender)i)" selected="@(Model.Gender == (Gender)i ? "selected" : null)">
+                                            @Model.GenderList[i]
+                                        </option>
+                                    }
+                                </select>
                             </div>
                         </div>
                     </div>
