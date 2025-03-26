@@ -1,4 +1,5 @@
 using Chamedoon.Application;
+using Chamedoon.Domin.Configs;
 using Chamedoon.Infrastructure;
 using ChamedoonWebUI;
 
@@ -9,6 +10,9 @@ builder.Services.AddWebUIServices();
 builder.Services.AddInfrastructureServices(builder.Configuration); 
 builder.Services.AddApplicationServices();
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.Configure<SmtpConfig>(builder.Configuration.GetSection("Smtp"));
+
 var app = builder.Build();
 
 

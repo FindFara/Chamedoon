@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Chamedoon.Application.Services.Account.Users.Command;
 using Chamedoon.Application.Services.Account.Users.ViewModel;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Chamedoon.Application.Services.Email.Query;
 
 namespace ChamedoonWebUI.Controllers
 {
@@ -86,12 +87,8 @@ namespace ChamedoonWebUI.Controllers
                     ViewData["ErrorMessage"] = string.Join(", ", response.Message);
                     return View(register);
                 }
-                return await Login(new LoginUser_VM
-                {
-                    Email = register.Email,
-                    Password = register.Password,
-                    RememberMe = true
-                });
+
+                return RedirectToAction("EmailVerification");
             }
             return View(register);
         }
@@ -137,5 +134,10 @@ namespace ChamedoonWebUI.Controllers
         }
         #endregion
 
+        [Route("Email-V")]
+        public IActionResult EmailVerification()
+        {
+            return View();
+        }
     }
 }

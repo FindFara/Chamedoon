@@ -1,8 +1,5 @@
 ﻿using Chamedoon.Application.Common.Models;
-using Chamedoon.Application.Services.Account.Query;
 using Chamedoon.Application.Services.Account.Users.Query;
-using Chamedoon.Application.Services.Account.Users.ViewModel;
-using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +11,7 @@ namespace Chamedoon.Application.Services.Email.Query
 {
     public class SendTokenToUserEmailQuery : IRequest<OperationResult<bool>>
     {
-        public required User User { get; set; }
+        public required string UserName { get; set; }
     }
     public class SendTokenToUserEmailQueryHandler : IRequestHandler<SendTokenToUserEmailQuery, OperationResult<bool>>
     {
@@ -40,21 +37,19 @@ namespace Chamedoon.Application.Services.Email.Query
         #region Method
         public async Task<OperationResult<bool>> Handle(SendTokenToUserEmailQuery request, CancellationToken cancellationToken)
         {
-            var user = await mediator.Send(new GetUserQuery { UserName = request.User.UserName });
-            if (user.IsSuccess is false)
+            var user = await mediator.Send(new GetUserQuery { UserName = request.UserName });
+            if (user.IsSuccess is false || user.Result is null)
                 return OperationResult<bool>.Fail(user.Message);
 
-            var token = await userManager.GenerateEmailConfirmationTokenAsync(request.User);
-            var encodedToken = Encoding.UTF8.GetBytes(token);
-            var validToken = WebEncoders.Base64UrlEncode(encodedToken);
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user.Result);
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            string url = $"{configuration["AppUrl"]}/api/Account/Confirmemail?userid={user.Result.Id}&token={validToken}";
+            string url = $"{configuration["AppUrl"]}/api/Account/Confirmemail?userid={user.Result.Id}&token={encodedToken}";
 
-            //TODO :  sing up in sendgrid.com
-            //await emailService.SendEmailAsync(user.Result.Email
-            //     , "Confirm Your Email"
-            //     , "<h1>Wellcome </h1>"
-            //     + $"<p>confirme your email<a href ='{url}'> clicking here</a></p> ");
+            await emailService.SendMail(user.Result.Email
+                 , "Confirm Your Email"
+                 , "<h1>Wellcome </h1>"
+                 + $"<p>confirme your email<a href ='{url}'> clicking here</a></p> ");
 
             return OperationResult<bool>.Success(true);
         }

@@ -3,6 +3,7 @@ using Chamedoon.Application.Services.Account.Query;
 using Chamedoon.Application.Services.Account.Register.ViewModel;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Customers.Command;
+using Chamedoon.Application.Services.Email.Query;
 using MediatR;
 
 namespace Chamedoon.Application.Services.Account.Register.Command;

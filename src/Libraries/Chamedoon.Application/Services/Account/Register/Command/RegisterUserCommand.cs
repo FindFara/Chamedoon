@@ -38,9 +38,8 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
         var registerUser = await userManager.CreateAsync(user, request.RegisterUser.Password);
         if (registerUser.Succeeded)
         {
-            //Send Token
             await userManager.AddToRoleAsync(user, "Member");
-            var tokenUser = await mediator.Send(new SendTokenToUserEmailQuery { User = user });
+            var tokenUser = await mediator.Send(new SendTokenToUserEmailQuery { UserName = user.UserName });
 
             return OperationResult<long>.Success(user.Id);
         }
