@@ -1,10 +1,12 @@
 ﻿using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Users.Query;
+using Chamedoon.Domin.Configs;
 using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System.Text;
 
 namespace Chamedoon.Application.Services.Email.Query
@@ -20,17 +22,22 @@ namespace Chamedoon.Application.Services.Email.Query
         private readonly IConfiguration configuration;
         private readonly IMediator mediator;
         private readonly IEmailService emailService;
-
+        private readonly string AppUrl;
 
         #endregion
 
         #region Ctor
-        public SendTokenToUserEmailQueryHandler(UserManager<User> userManager, IConfiguration configuration, IMediator mediator, IEmailService emailService)
+        public SendTokenToUserEmailQueryHandler(UserManager<User> userManager,
+            IConfiguration configuration,
+            IMediator mediator,
+            IEmailService emailService,
+            IOptions<UrlsConfig> urlConfig)
         {
             this.userManager = userManager;
             this.configuration = configuration;
             this.mediator = mediator;
             this.emailService = emailService;
+            AppUrl = urlConfig.Value.AppUrl;
         }
         #endregion
 
@@ -44,7 +51,7 @@ namespace Chamedoon.Application.Services.Email.Query
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user.Result);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            string url = $"{configuration["AppUrl"]}/api/Account/Confirmemail?userid={user.Result.Id}&token={encodedToken}";
+            string url = $"{AppUrl}/auth/Confirmemail?userid={user.Result.Id}&token={encodedToken}";
 
             await emailService.SendMail(user.Result.Email
                  , "Confirm Your Email"

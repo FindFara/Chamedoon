@@ -32,7 +32,8 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserQuery, OperationRe
     public async Task<OperationResult<User>> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
         User? user = await _context.User
-             .SingleOrDefaultAsync(u =>
+            .AsNoTracking()
+            .SingleOrDefaultAsync(u =>
                                    u.Id == request.Id ||
                                    u.NormalizedUserName == (request.UserName ?? "").ToUpper() ||
                                    u.NormalizedEmail == (request.Email ?? "").ToUpper());

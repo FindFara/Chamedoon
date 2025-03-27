@@ -2,12 +2,10 @@ using Chamedoon.Application;
 using Chamedoon.Infrastructure;
 using Chamedoon.WebAPI;
 using Serilog;
-using Chamedoon.Application.Common.Middelware;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllers(options =>
 {
@@ -15,7 +13,6 @@ builder.Services.AddControllers(options =>
 });
 builder.Services.AddControllersWithViews();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddInfrastructureServices(builder.Configuration);
@@ -29,7 +26,6 @@ builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -46,7 +42,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.UseExceptionHandleMiddleware();
 
 app.UseEndpoints(endpoints =>
 {
