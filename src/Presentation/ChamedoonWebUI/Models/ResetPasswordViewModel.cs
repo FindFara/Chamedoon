@@ -2,7 +2,7 @@
 
 namespace ChamedoonWebUI.Models
 {
-    public class ForgotPasswordViewModel
+    public class ResetPasswordViewModel
     {
         [Required]
         public string? Email { get; set; }
@@ -12,11 +12,11 @@ namespace ChamedoonWebUI.Models
 
         [Required]
         [DataType(DataType.Password)]
-        public string NewPassword { get; set; }
+        public string? NewPassword { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
         [Compare("NewPassword", ErrorMessage = "تکرار رمز عبور با رمز جدید مطابقت ندارد.")]
-        public string ConfirmPassword { get; set; }
+        public string? ConfirmPassword { get; set; }
     }
 }

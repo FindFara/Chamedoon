@@ -1,6 +1,7 @@
 ﻿using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,8 @@ namespace Chamedoon.Application.Services.Account.Login.Command
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null) return false;
 
-            var result = await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Token));
+            var result = await _userManager.ResetPasswordAsync(user, decodedToken, request.NewPassword);
             return result.Succeeded;
         }
     }

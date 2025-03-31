@@ -1,4 +1,5 @@
-﻿using Chamedoon.Application.Services.Account.Login.Command;
+﻿using Azure.Core;
+using Chamedoon.Application.Services.Account.Login.Command;
 using Chamedoon.Application.Services.Account.Login.Query;
 using Chamedoon.Application.Services.Account.Login.ViewModel;
 using Chamedoon.Application.Services.Account.Register.Command;
@@ -7,6 +8,7 @@ using Chamedoon.Application.Services.Account.Users.Command;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Account.Users.ViewModel;
 using Chamedoon.Application.Services.Email.Query;
+using Chamedoon.Domin.Configs;
 using ChamedoonWebUI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -17,6 +19,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
+using NuGet.Common;
 using System.Security.Claims;
 
 namespace ChamedoonWebUI.Controllers;
@@ -24,11 +29,14 @@ namespace ChamedoonWebUI.Controllers;
 [Route("auth")]
 public class AccountController : Controller
 {
-    private readonly IMediator mediator;
+    private readonly IMediator _mediator;
+    private readonly UrlsConfig _urls;
 
-    public AccountController(IMediator mediator)
+
+    public AccountController(IMediator mediator, IOptions<UrlsConfig> urlOption)
     {
-        this.mediator = mediator;
+        _mediator = mediator;
+        _urls = urlOption.Value;
     }
 
     #region Login
@@ -44,7 +52,7 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            var user = (await mediator.Send(new ManageLoginUserCommand { LoginUser = register }));
+            var user = (await _mediator.Send(new ManageLoginUserCommand { LoginUser = register }));
             if (user.IsSuccess is false || user.Result is null)
             {
                 ModelState.AddModelError(string.Empty, user.Message);
@@ -71,7 +79,7 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            var response = await mediator.Send(new ManageRegisterUserCommand { RegisterUser = register });
+            var response = await _mediator.Send(new ManageRegisterUserCommand { RegisterUser = register });
 
             if (!response.IsSuccess && response.Message != null)
             {
@@ -114,7 +122,7 @@ public class AccountController : Controller
             return Unauthorized();
 
         model.UserId = userId;
-        var result = await mediator.Send(new ChangePasswordCommand { ChangePasswordViewModel = model });
+        var result = await _mediator.Send(new ChangePasswordCommand { ChangePasswordViewModel = model });
 
         if (result.IsSuccess)
             return RedirectToAction("login", "Account");
@@ -136,17 +144,17 @@ public class AccountController : Controller
     [Route("Confirmemail")]
     public async Task<IActionResult> ConfirmEmail(string userId, string token)
     {
-        var result = await mediator.Send(new ConfirmEmailQuery { Token = token, UserId = userId });
+        var result = await _mediator.Send(new ConfirmEmailQuery { Token = token, UserId = userId });
         if (!result.IsSuccess)
         {
             ModelState.AddModelError(string.Empty, result.Message);
             return View();
         }
-        var user = await mediator.Send(new GetUserQuery { Id = long.Parse(userId) });
+        var user = await _mediator.Send(new GetUserQuery { Id = long.Parse(userId) });
 
         if (user.IsSuccess && user.Result != null)
         {
-            var signInResult = await mediator.Send(new SignInUserCommand { UserId = userId, IsPersistent = true });
+            var signInResult = await _mediator.Send(new SignInUserCommand { UserId = userId, IsPersistent = true });
             if (!signInResult.IsSuccess)
             {
                 ModelState.AddModelError(string.Empty, signInResult.Message);
@@ -165,7 +173,7 @@ public class AccountController : Controller
     {
         var redirectUrl = Url.Action("google-callback", "auth");
 
-        var result = await mediator.Send(new ExternalLoginCommand { Provider = GoogleDefaults.AuthenticationScheme, RedirectUrl = redirectUrl });
+        var result = await _mediator.Send(new ExternalLoginCommand { Provider = GoogleDefaults.AuthenticationScheme, RedirectUrl = redirectUrl });
         if (!result.IsSuccess || result.Result is null)
             return RedirectToAction("register", "Account");
 
@@ -174,7 +182,7 @@ public class AccountController : Controller
     [HttpGet("google-callback")]
     public async Task<IActionResult> GoogleCallback(string returnUrl = "/")
     {
-        var result = mediator.Send(new ExternalLoginCallbackQuery()).Result;
+        var result = _mediator.Send(new ExternalLoginCallbackQuery()).Result;
 
         if (result.IsSuccess)
         {
@@ -196,29 +204,36 @@ public class AccountController : Controller
     }
 
     [HttpPost("ForgotPassword")]
-    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+    public async Task<IActionResult> ForgotPassword(string email)
     {
         if (!ModelState.IsValid)
-            return View(model);
+            return View();
+        var resetlink = $"{_urls.AppUrl}/auth/ResetPassword";
+        var result = await _mediator.Send(new ForgotPasswordQuery { Email = email, ResetLinkAction = resetlink });
 
-        var result = await mediator.Send(new ForgotPasswordQuery { Email = model.Email });
-
-        if (!result)
-        {
-            ModelState.AddModelError(string.Empty, "ایمیلی با این آدرس یافت نشد.");
-            return View(model);
-        }
-
-        ViewBag.Message = "لینک بازیابی رمز عبور به ایمیل شما ارسال شد.";
+        if (result.IsSuccess)
+            ViewBag.Message = "ایمیل ارسال شد.";
+        else
+            ViewBag.Message = "کاربری با این ایمیل یافت نشد.";
         return View();
     }
+    [HttpGet("ResetPassword")]
+    public IActionResult ResetPassword(string email, string token)
+    {
+        if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(token))
+        {
+            return BadRequest("Invalid password reset request.");
+        }
+        var model = new ResetPasswordViewModel { Email = email  , Token = token };
+        return View(model);
+    }
     [HttpPost("ResetPassword")]
-    public async Task<IActionResult> ResetPassword(ForgotPasswordViewModel model)
+    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
     {
         if (!ModelState.IsValid)
             return View(model);
 
-        var result = await mediator.Send(new ResetPasswordCommand
+        var result = await _mediator.Send(new ResetPasswordCommand
         {
             Email = model.Email,
             Token = model.Token,
@@ -230,7 +245,6 @@ public class AccountController : Controller
             ModelState.AddModelError(string.Empty, "خطا در تغییر رمز عبور. لطفاً دوباره امتحان کنید.");
             return View(model);
         }
-
         return RedirectToAction("Login");
     }
     #endregion
