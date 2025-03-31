@@ -1,4 +1,5 @@
 ﻿using Chamedoon.Application.Services.Account.Login.Command;
+using Chamedoon.Application.Services.Account.Login.Query;
 using Chamedoon.Application.Services.Account.Login.ViewModel;
 using Chamedoon.Application.Services.Account.Register.Command;
 using Chamedoon.Application.Services.Account.Register.ViewModel;
@@ -9,8 +10,11 @@ using Chamedoon.Application.Services.Email.Query;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared;
 using System.Security.Claims;
 
 namespace ChamedoonWebUI.Controllers;
@@ -34,19 +38,17 @@ public class AccountController : Controller
     [Route("login")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginUser_VM register)
+    public async Task<IActionResult> Login(LoginUserViewModel register)
     {
         if (ModelState.IsValid)
         {
-            var user = (await mediator.Send(new ManageLoginUserQuery { LoginUser = register }));
+            var user = (await mediator.Send(new ManageLoginUserCommand { LoginUser = register }));
             if (user.IsSuccess is false || user.Result is null)
             {
                 ModelState.AddModelError(string.Empty, user.Message);
                 return View(register);
             }
-
-            return await SetAuthenticationCookie(user.Result.Id, user.Result.UserName, user.Result.Email, register.RememberMe);
-
+            return RedirectToAction("Index", "Home");
         }
         return View(register);
     }
@@ -121,6 +123,7 @@ public class AccountController : Controller
     }
     #endregion
 
+    #region ConfirmEmail
     [Route("emailverify")]
     public IActionResult EmailVerification()
     {
@@ -148,30 +151,36 @@ public class AccountController : Controller
                 return View();
             }
             return RedirectToAction("Index", "Home");
-
-            //return await SetAuthenticationCookie(user.Result.Id, user.Result.UserName, user.Result.Email,true);
         }
         return View();
 
     }
-    public async Task<IActionResult> SetAuthenticationCookie(long id, string username, string email, bool rememberMe = false)
+    #endregion
+
+    #region GoogleAuth
+    [HttpGet("login-google")]
+    public  async  Task<IActionResult> LoginWithGoogle()
     {
-        var claims = new List<Claim>
-        {
-        new Claim(ClaimTypes.NameIdentifier, id.ToString()),
-        new Claim(ClaimTypes.Email, email),
-        new Claim(ClaimTypes.Name, username)
-    };
+        var redirectUrl = Url.Action("google-callback", "auth");
 
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(identity);
-        var properties = new AuthenticationProperties
-        {
-            IsPersistent = rememberMe
-        };
+        var result = await mediator.Send(new ExternalLoginCommand { Provider = GoogleDefaults.AuthenticationScheme, RedirectUrl = redirectUrl });
+        if (!result.IsSuccess || result.Result is null)
+            return RedirectToAction("register", "Account");
 
-        await HttpContext.SignInAsync(principal, properties);
-
-        return RedirectToAction("Index", "Home");
+        return Challenge(result.Result, GoogleDefaults.AuthenticationScheme);
     }
+    [HttpGet("google-callback")]
+    public async Task<IActionResult> GoogleCallback(string returnUrl = "/")
+    {
+        var result = mediator.Send(new ExternalLoginCallbackQuery()).Result;
+
+        if (result.IsSuccess)
+        {
+            return LocalRedirect(returnUrl);
+        }
+
+        TempData["ErrorMessage"] = result.Message;
+        return RedirectToAction(nameof(Register));
+    }
+    #endregion
 }

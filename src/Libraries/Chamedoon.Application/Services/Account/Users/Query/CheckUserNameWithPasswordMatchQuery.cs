@@ -10,7 +10,7 @@ namespace Chamedoon.Application.Services.Account.Users.Query;
 
 public class CheckUserNameAndPasswordMatchQuery : IRequest<OperationResult<bool>>
 {
-    public required LoginUser_VM LoginUser { get; set; }
+    public required LoginUserViewModel LoginUser { get; set; }
     public required string UserName { get; set; }
 
 }

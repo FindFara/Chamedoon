@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Chamedoon.Application.Services.Account.Login.ViewModel
 {
-    public class LoginUser_VM : IMapFrom<User>
+    public class LoginUserViewModel : IMapFrom<User>
     {
         [Display(Name = "ایمیل")]
         [Required(ErrorMessage = "لطفا {0} را وارد کنید")]
