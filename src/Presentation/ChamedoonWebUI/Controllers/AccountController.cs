@@ -7,12 +7,14 @@ using Chamedoon.Application.Services.Account.Users.Command;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Account.Users.ViewModel;
 using Chamedoon.Application.Services.Email.Query;
+using ChamedoonWebUI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared;
 using System.Security.Claims;
@@ -159,7 +161,7 @@ public class AccountController : Controller
 
     #region GoogleAuth
     [HttpGet("login-google")]
-    public  async  Task<IActionResult> LoginWithGoogle()
+    public async Task<IActionResult> LoginWithGoogle()
     {
         var redirectUrl = Url.Action("google-callback", "auth");
 
@@ -181,6 +183,55 @@ public class AccountController : Controller
 
         TempData["ErrorMessage"] = result.Message;
         return RedirectToAction(nameof(Register));
+    }
+    #endregion
+
+    #region ForgotPassword
+
+
+    [HttpGet("ForgotPassword")]
+    public async Task<IActionResult> ForgotPassword()
+    {
+        return View();
+    }
+
+    [HttpPost("ForgotPassword")]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var result = await mediator.Send(new ForgotPasswordQuery { Email = model.Email });
+
+        if (!result)
+        {
+            ModelState.AddModelError(string.Empty, "ایمیلی با این آدرس یافت نشد.");
+            return View(model);
+        }
+
+        ViewBag.Message = "لینک بازیابی رمز عبور به ایمیل شما ارسال شد.";
+        return View();
+    }
+    [HttpPost("ResetPassword")]
+    public async Task<IActionResult> ResetPassword(ForgotPasswordViewModel model)
+    {
+        if (!ModelState.IsValid)
+            return View(model);
+
+        var result = await mediator.Send(new ResetPasswordCommand
+        {
+            Email = model.Email,
+            Token = model.Token,
+            NewPassword = model.NewPassword
+        });
+
+        if (!result)
+        {
+            ModelState.AddModelError(string.Empty, "خطا در تغییر رمز عبور. لطفاً دوباره امتحان کنید.");
+            return View(model);
+        }
+
+        return RedirectToAction("Login");
     }
     #endregion
 }
