@@ -1,0 +1,8 @@
+{
+  "app": "beautiful-gagarin-nmaiuaz6g",
+  "port": 3000,
+  "build": {
+    "location": "iran"
+  },
+  "disks": []
+}
