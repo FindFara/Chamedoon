@@ -34,16 +34,22 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
     public async Task<OperationResult<long>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         User user = mapper.Map<User>(request.RegisterUser);
-        user.UserName = string.Concat("U-",StringExtensions.GenerateRandomString(8));
-        var registerUser = await userManager.CreateAsync(user, request.RegisterUser.Password);
-        if (registerUser.Succeeded)
-        {
-            await userManager.AddToRoleAsync(user, "Member");
-            var tokenUser = await mediator.Send(new SendTokenToUserEmailQuery { UserName = user.UserName });
+        user.UserName = string.Concat("U-", StringExtensions.GenerateRandomString(8));
 
-            return OperationResult<long>.Success(user.Id);
-        }
-        return OperationResult<long>.Fail(registerUser.Errors.Select(e => e.Description).First());
+        var registerUser = await userManager.CreateAsync(user, request.RegisterUser.Password);
+        if (!registerUser.Succeeded)
+            return OperationResult<long>.Fail(registerUser.Errors.Select(e => e.Description).First());
+
+        var addToRoleResult = await userManager.AddToRoleAsync(user, "Member");
+        if (!addToRoleResult.Succeeded)
+            return OperationResult<long>.Fail();
+
+        var tokenUser = await mediator.Send(new SendTokenToUserEmailQuery { UserName = user.UserName });
+        if (!tokenUser.IsSuccess)
+            return OperationResult<long>.Fail();
+
+        return OperationResult<long>.Success(user.Id);
+
     }
     #endregion
 }

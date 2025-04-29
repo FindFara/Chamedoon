@@ -31,7 +31,7 @@ public static class ConfigureServices
         {
             options.ClientId = "122973351692-2fgb7h8v7qff9qnehugl7fio831lnvi8.apps.googleusercontent.com";
             options.ClientSecret = "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";
-            options.CallbackPath = "/signin-google";
+            options.CallbackPath = "/auth/google-callback";
         }); ;
         return services;
     }

@@ -39,24 +39,33 @@ namespace Chamedoon.Application.Services.Email.Query
 
         public async Task SendMail(string toEmail, string subject, string content)
         {
-            using var client = new SmtpClient
+            try
             {
-                Host = _smtpSettings.Host,
-                Port = _smtpSettings.Port,
-                Credentials = new NetworkCredential(_smtpSettings.Username, _smtpSettings.Password),
-                EnableSsl = true
-            };
+                using var client = new SmtpClient
+                {
+                    Host = _smtpSettings.Host,
+                    Port = _smtpSettings.Port,
+                    Credentials = new NetworkCredential(_smtpSettings.Username, _smtpSettings.Password),
+                    EnableSsl = true
+                };
 
-            var message = new MailMessage
+                var message = new MailMessage
+                {
+                    From = new MailAddress(_smtpSettings.Username, "Chamedoon"),
+                    Subject = subject,
+                    Body = content,
+                    IsBodyHtml = true
+                };
+                message.To.Add(toEmail);
+
+                await client.SendMailAsync(message);
+            }
+            catch (Exception EV)
             {
-                From = new MailAddress(_smtpSettings.Username, "Chamedoon"),
-                Subject = subject,
-                Body = content,
-                IsBodyHtml = true
-            };
-            message.To.Add(toEmail);
 
-            await client.SendMailAsync(message);
+                throw;
+            }
+
         }
     }
 }

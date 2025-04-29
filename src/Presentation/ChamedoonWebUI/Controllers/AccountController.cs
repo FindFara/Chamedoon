@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using Chamedoon.Application.Services.Account.Login.Command;
+﻿using Chamedoon.Application.Services.Account.Login.Command;
 using Chamedoon.Application.Services.Account.Login.Query;
 using Chamedoon.Application.Services.Account.Login.ViewModel;
 using Chamedoon.Application.Services.Account.Register.Command;
@@ -12,16 +11,10 @@ using Chamedoon.Domin.Configs;
 using ChamedoonWebUI.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.DotNet.Scaffolding.Shared;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using NuGet.Common;
 using System.Security.Claims;
 
 namespace ChamedoonWebUI.Controllers;
@@ -168,7 +161,7 @@ public class AccountController : Controller
     #endregion
 
     #region GoogleAuth
-    [HttpGet("login-google")]
+    [HttpGet("login-google")] 
     public async Task<IActionResult> LoginWithGoogle()
     {
         var redirectUrl = Url.Action("google-callback", "auth");
@@ -224,7 +217,7 @@ public class AccountController : Controller
         {
             return BadRequest("Invalid password reset request.");
         }
-        var model = new ResetPasswordViewModel { Email = email  , Token = token };
+        var model = new ResetPasswordViewModel { Email = email, Token = token };
         return View(model);
     }
     [HttpPost("ResetPassword")]
