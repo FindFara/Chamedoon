@@ -208,6 +208,7 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid)
             return View();
+
         var resetlink = $"{_urls.AppUrl}/auth/ResetPassword";
         var result = await _mediator.Send(new ForgotPasswordQuery { Email = email, ResetLinkAction = resetlink });
 

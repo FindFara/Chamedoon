@@ -3,7 +3,7 @@ using Chamedoon.Domin.Entity.Blogs;
 
 namespace Chamedoon.Application.Services.Blog.ViewModel
 {
-    public class Article_VM : IMapFrom<Article>
+    public class ArticleViewModel : IMapFrom<Article>
     {
         public long Id { get; set; }
         public string ArticleTitle { get; set; } = string.Empty;
