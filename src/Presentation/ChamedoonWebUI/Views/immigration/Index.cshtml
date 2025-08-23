@@ -1,0 +1,149 @@
+@model Chamedoon.Application.Services.Immigration.ImmigrationInput
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using Chamedoon.Application.Services.Immigration
+@{
+    ViewData["Title"] = "محاسبه امتیاز مهاجرت";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<h2>فرم ارزیابی مهاجرت</h2>
+
+<!-- دکمه شروع که اولین مودال را باز می‌کند -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalStep1">شروع ارزیابی</button>
+
+<form id="immigrationForm" asp-action="Calculate" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Modal Step 1: اطلاعات پایه -->
+    <div class="modal fade" id="modalStep1" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">مرحله ۱ - اطلاعات پایه</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="Age" class="form-label">سن:</label>
+                        <input asp-for="Age" class="form-control" type="number" min="0" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="JobCategory" class="form-label">دسته شغلی:</label>
+                        <select asp-for="JobCategory" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.JobCategoryType>()"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="JobTitle" class="form-label">عنوان شغل (اختیاری):</label>
+                        <input asp-for="JobTitle" class="form-control" type="text" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="WorkExperienceYears" class="form-label">سابقه کاری (سال):</label>
+                        <input asp-for="WorkExperienceYears" class="form-control" type="number" min="0" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="showNextModal('modalStep1','modalStep2')">بعدی</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Step 2: تحصیلات و زبان -->
+    <div class="modal fade" id="modalStep2" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">مرحله ۲ - تحصیلات و زبان</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="FieldCategory" class="form-label">دسته رشته یا شغل:</label>
+                        <select asp-for="FieldCategory" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.FieldCategoryType>()"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="DegreeLevel" class="form-label">مقطع تحصیلی:</label>
+                        <select asp-for="DegreeLevel" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.DegreeLevelType>()"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="LanguageCertificate" class="form-label">مدرک زبان:</label>
+                        <select asp-for="LanguageCertificate" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.LanguageCertificateType>()"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="showPreviousModal('modalStep2','modalStep1')">قبلی</button>
+                    <button type="button" class="btn btn-primary" onclick="showNextModal('modalStep2','modalStep3')">بعدی</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Step 3: ویزا و وضعیت فردی -->
+    <div class="modal fade" id="modalStep3" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">مرحله ۳ - نوع ویزا و وضعیت فردی</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- حذف فیلد نوع ویزای درخواستی و سابقه کیفری بنا به نیاز کاربر -->
+                    <div class="mb-3">
+                        <label for="InvestmentAmount" class="form-label">میزان سرمایه (دلار/یورو):</label>
+                        <input asp-for="InvestmentAmount" class="form-control" type="number" min="0" step="1000" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="MaritalStatus" class="form-label">وضعیت تاهل:</label>
+                        <select asp-for="MaritalStatus" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.MaritalStatusType>()"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="showPreviousModal('modalStep3','modalStep2')">قبلی</button>
+                    <button type="button" class="btn btn-primary" onclick="showNextModal('modalStep3','modalStep4')">بعدی</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Step 4: سایر اطلاعات -->
+    <div class="modal fade" id="modalStep4" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">مرحله ۴ - سایر اطلاعات</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check mb-3">
+                        <label class="form-check-label" for="WillingToStudy">آیا تمایل به ادامه تحصیل دارید؟</label>
+                        <input asp-for="WillingToStudy" class="form-check-input" type="checkbox" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="MBTIPersonality" class="form-label">شخصیت MBTI:</label>
+                        <select asp-for="MBTIPersonality" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.PersonalityType>()"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="showPreviousModal('modalStep4','modalStep3')">قبلی</button>
+                    <button type="submit" class="btn btn-success">محاسبه امتیاز</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    // Helper functions to transition between modals
+    function showNextModal(currentId, nextId) {
+        var currentModal = bootstrap.Modal.getInstance(document.getElementById(currentId));
+        currentModal.hide();
+        var nextModal = new bootstrap.Modal(document.getElementById(nextId));
+        nextModal.show();
+    }
+    function showPreviousModal(currentId, prevId) {
+        var currentModal = bootstrap.Modal.getInstance(document.getElementById(currentId));
+        currentModal.hide();
+        var prevModal = new bootstrap.Modal(document.getElementById(prevId));
+        prevModal.show();
+    }
+</script>

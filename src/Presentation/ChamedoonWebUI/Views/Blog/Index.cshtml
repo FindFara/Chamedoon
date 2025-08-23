@@ -1,1 +1,125 @@
-﻿
+@model ChamedoonWebUI.Models.BlogIndexViewModel
+@using System.Linq
+@{
+    ViewData["Title"] = "وبلاگ";
+    // Build a list of distinct writer names from the current page's articles for the writer filter.
+    var writers = Model.Articles.Select(a => a.Writer).Distinct().ToList();
+}
+
+<section class="section mt-5">
+    <div class="container">
+        <!-- Advanced search form -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h5 class="mb-3">جستجوی پیشرفته</h5>
+                <form method="get" asp-action="Index" asp-controller="Blog">
+                    <div class="row g-3 align-items-end">
+                        <!-- General search term -->
+                        <div class="col-md-4">
+                            <label for="search" class="form-label">کلمه کلیدی</label>
+                                <input type="text" id="search" name="search" class="form-control" placeholder="عنوان یا متن مقاله..." value="@Model.Search" />
+                        </div>
+                        <!-- Writer filter -->
+                        <div class="col-md-3">
+                            <label for="writer" class="form-label">نویسنده</label>
+                            <select id="writer" name="writer" class="form-select">
+                                <option value="">همه</option>
+                                @foreach (var w in writers)
+                                {
+                                    if (Model.Writer == w)
+                                    {
+                                        <option value="@w" selected>@w</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@w">@w</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <!-- Date range: from -->
+                        <div class="col-md-2">
+                            <label for="dateFrom" class="form-label">از تاریخ</label>
+                            <input type="date" id="dateFrom" name="dateFrom" class="form-control" value="@(Model.DateFrom?.ToString("yyyy-MM-dd"))" />
+                        </div>
+                        <!-- Date range: to -->
+                        <div class="col-md-2">
+                            <label for="dateTo" class="form-label">تا تاریخ</label>
+                            <input type="date" id="dateTo" name="dateTo" class="form-control" value="@(Model.DateTo?.ToString("yyyy-MM-dd"))" />
+                        </div>
+                        <div class="col-md-1 d-grid">
+                            <button type="submit" class="btn btn-primary">جستجو</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Blog cards -->
+        <div class="row mt-4">
+            @if (!Model.Articles.Any())
+            {
+                <div class="col-12">
+                    <p class="text-muted">هیچ مقاله‌ای با فیلترهای انتخاب شده یافت نشد.</p>
+                </div>
+            }
+            else
+            {
+                foreach (var item in Model.Articles)
+                {
+                    <div class="col-lg-3 col-md-6 mb-4 pb-2">
+                        <div class="card blog rounded border-0 shadow overflow-hidden">
+                            <div class="position-relative">
+                                @{
+                                    // Determine the image to display: prefer ImageUrl, then ArticleImageName, finally fallback to default
+                                    var imageName = 
+                                     (!string.IsNullOrEmpty(item.ArticleImageName)
+                                    ? item.ArticleImageName
+                                    : "01.jpg");
+                                }
+                                <img src="~/images/blog/@imageName" class="card-img-top" alt="@item.ArticleTitle">
+                                <div class="overlay rounded-top bg-dark"></div>
+                            </div>
+                            <div class="card-body content">
+                                <h6>
+                                    <a asp-controller="Blog" asp-action="Detail" asp-route-id="@item.Id" class="card-title title text-dark">
+                                        @item.ArticleTitle
+                                    </a>
+                                </h6>
+                                <p class="text-muted mt-2 mb-0">@item.ShortDescription</p>
+                                <div class="post-meta d-flex justify-content-between mt-3">
+                                    <a asp-controller="Blog" asp-action="Detail" asp-route-id="@item.Id" class="text-muted readmore">
+                                        ادامه مطلب <i class="uil uil-angle-left-b align-middle"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="author">
+                                <small class="text-light user d-block"><i class="uil uil-user"></i> @item.Writer</small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="page navigation">
+                <ul class="pagination justify-content-center mt-4">
+                    <!-- Previous page link -->
+                    <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)" asp-route-search="@Model.Search" asp-route-writer="@Model.Writer" asp-route-dateFrom="@(Model.DateFrom?.ToString("yyyy-MM-dd"))" asp-route-dateTo="@(Model.DateTo?.ToString("yyyy-MM-dd"))" tabindex="-1">قبلی</a>
+                    </li>
+                    @for (var i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-search="@Model.Search" asp-route-writer="@Model.Writer" asp-route-dateFrom="@(Model.DateFrom?.ToString("yyyy-MM-dd"))" asp-route-dateTo="@(Model.DateTo?.ToString("yyyy-MM-dd"))">@i</a>
+                        </li>
+                    }
+                    <!-- Next page link -->
+                    <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)" asp-route-search="@Model.Search" asp-route-writer="@Model.Writer" asp-route-dateFrom="@(Model.DateFrom?.ToString("yyyy-MM-dd"))" asp-route-dateTo="@(Model.DateTo?.ToString("yyyy-MM-dd"))">بعدی</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
+</section>

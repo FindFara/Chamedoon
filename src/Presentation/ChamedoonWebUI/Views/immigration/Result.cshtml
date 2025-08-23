@@ -1,0 +1,40 @@
+@model Chamedoon.Application.Services.Immigration.ImmigrationResult
+@{
+    ViewData["Title"] = "نتیجه ارزیابی مهاجرت";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+<h2>نتیجه ارزیابی</h2>
+<p>بر اساس اطلاعات وارد شده، سه کشور پیشنهادی با امتیاز نهایی و نوع ویزای مناسب در ادامه آمده است:</p>
+
+@foreach (var item in Model.TopCountries)
+{
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h3 class="mb-0">@item.Country.ToString()</h3>
+        </div>
+        <div class="card-body">
+            <p><strong>امتیاز:</strong> @item.Score از ۱۰۰</p>
+            <p><strong>نوع ویزای پیشنهادی:</strong> @item.RecommendedVisaType</p>
+            <p><strong>شرایط لازم:</strong> @item.Conditions</p>
+            @if (!string.IsNullOrEmpty(item.PersonalityReport))
+            {
+                <p><strong>تطبیق شخصیتی:</strong> @item.PersonalityReport</p>
+            }
+            @if (!string.IsNullOrEmpty(item.JobInfo))
+            {
+                <p><strong>کار و بازار کار:</strong> @item.JobInfo</p>
+            }
+            @if (!string.IsNullOrEmpty(item.EducationInfo))
+            {
+                <p><strong>تحصیل و زندگی:</strong> @item.EducationInfo</p>
+            }
+            @if (!string.IsNullOrEmpty(item.EconomyInfo))
+            {
+                <p><strong>اقتصاد و هزینه زندگی:</strong> @item.EconomyInfo</p>
+            }
+        </div>
+    </div>
+}
+
+<a href="/Immigration" class="btn btn-primary">محاسبه مجدد</a>
