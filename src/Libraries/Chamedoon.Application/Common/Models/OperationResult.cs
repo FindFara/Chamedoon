@@ -1,5 +1,5 @@
-﻿using Edition.Common.Enums;
-using Edition.Common.Extensions;
+﻿using Chamedoon.Application.Common.Extensions;
+using Edition.Common.Enums;
 
 namespace Chamedoon.Application.Common.Models;
 

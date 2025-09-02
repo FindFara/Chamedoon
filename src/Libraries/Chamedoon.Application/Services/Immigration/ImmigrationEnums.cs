@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Chamedoon.Application.Services.Immigration
@@ -69,10 +70,6 @@ namespace Chamedoon.Application.Services.Immigration
         /// </summary>
         Other
     }
-
-    /// <summary>
-    /// مقاطع تحصیلی برای محاسبه امتیاز.
-    /// </summary>
     public enum DegreeLevelType
     {
         [Display(Name = "دیپلم دبیرستان")] HighSchool,
@@ -82,19 +79,12 @@ namespace Chamedoon.Application.Services.Immigration
         [Display(Name = "کارشناسی ارشد")] Master,
         [Display(Name = "دکترا")] Doctorate
     }
-
-    /// <summary>
-    /// وضعیت تاهل متقاضی.
-    /// </summary>
     public enum MaritalStatusType
     {
         [Display(Name = "مجرد")] Single,
         [Display(Name = "متأهل")] Married
     }
 
-    /// <summary>
-    /// نوع مدرک یا سطح زبان. مقادیر آلمانی بر اساس سطح CEFR دسته‌بندی شده‌اند.
-    /// </summary>
     public enum LanguageCertificateType
     {
         [Display(Name = "بدون مدرک")] None,
@@ -107,10 +97,6 @@ namespace Chamedoon.Application.Services.Immigration
         [Display(Name = "آلمانی C2")] GermanC2,
         [Display(Name = "مدرک دیگر")] Other
     }
-
-    /// <summary>
-    /// دسته‌بندی کلی رشته یا زمینه تحصیل/شغل.
-    /// </summary>
     public enum FieldCategoryType
     {
         [Display(Name = "سایر")] Other,
@@ -122,98 +108,29 @@ namespace Chamedoon.Application.Services.Immigration
         [Display(Name = "هنر")] Arts
     }
 
-    /// <summary>
-    /// دسته‌بندی مشاغل برای امتیازدهی دقیق‌تر. شامل گزینه‌ای برای افراد بدون شغل نیز می‌شود.
-    /// </summary>
     public enum JobCategoryType
     {
-        /// <summary>
-        /// بدون شغل یا بیکار. مناسب برای افرادی که در حال حاضر شغلی ندارند یا فقط در حال تحصیل هستند.
-        /// </summary>
         [Display(Name = "بدون شغل")] None,
-        /// <summary>
-        /// حوزه فناوری اطلاعات و نرم‌افزار.
-        /// </summary>
         [Display(Name = "فناوری اطلاعات")] IT,
-        /// <summary>
-        /// مهندسی در رشته‌های مختلف مانند عمران، مکانیک، برق و غیره.
-        /// </summary>
         [Display(Name = "مهندسی")] Engineering,
-        /// <summary>
-        /// مراقبت‌های بهداشتی، پزشکی و پرستاری.
-        /// </summary>
         [Display(Name = "سلامت و پزشکی")] Healthcare,
-        /// <summary>
-        /// آموزش و تدریس در سطوح مختلف.
-        /// </summary>
         [Display(Name = "آموزش و تدریس")] Education,
-        /// <summary>
-        /// امور مالی، حسابداری، بانکداری و بیمه.
-        /// </summary>
         [Display(Name = "مالی و حسابداری")] Finance,
-        /// <summary>
-        /// کسب و کار، مدیریت و کارآفرینی.
-        /// </summary>
         [Display(Name = "کسب‌وکار و مدیریت")] Business,
-        /// <summary>
-        /// علوم پایه و تحقیقاتی مانند فیزیک، شیمی و ریاضیات.
-        /// </summary>
         [Display(Name = "علوم پایه")] Science,
-        /// <summary>
-        /// هنر، طراحی و صنایع خلاق.
-        /// </summary>
         [Display(Name = "هنر و خلاقیت")] Arts,
-        /// <summary>
-        /// خدمات مانند هتل‌داری، گردشگری و پذیرایی.
-        /// </summary>
         [Display(Name = "خدمات")] Services,
-        /// <summary>
-        /// کشاورزی، دامپروری و صنایع غذایی.
-        /// </summary>
         [Display(Name = "کشاورزی")] Agriculture,
-        /// <summary>
-        /// فروش و بازاریابی.
-        /// </summary>
         [Display(Name = "فروش و بازاریابی")] Sales,
-        /// <summary>
-        /// حقوق، وکالت و امور قضایی.
-        /// </summary>
         [Display(Name = "حقوق و وکالت")] Legal,
-        /// <summary>
-        /// تولید و کارخانه‌ای.
-        /// </summary>
         [Display(Name = "تولید و صنعت")] Manufacturing,
-        /// <summary>
-        /// مهمان‌داری و گردشگری مانند رستوران و هتل.
-        /// </summary>
         [Display(Name = "مهمان‌داری و گردشگری")] Hospitality,
-        /// <summary>
-        /// لجستیک، زنجیره تأمین و انبارداری.
-        /// </summary>
         [Display(Name = "لجستیک و زنجیره تأمین")] Logistics,
-        /// <summary>
-        /// حمل‌ونقل زمینی، هوایی و دریایی.
-        /// </summary>
         [Display(Name = "حمل‌ونقل")] Transportation,
-        /// <summary>
-        /// املاک و مستغلات و مدیریت دارایی‌ها.
-        /// </summary>
         [Display(Name = "املاک و مستغلات")] RealEstate,
-        /// <summary>
-        /// مخابرات و ارتباطات.
-        /// </summary>
         [Display(Name = "مخابرات و ارتباطات")] Telecommunications,
-        /// <summary>
-        /// انرژی، نفت و گاز و منابع طبیعی.
-        /// </summary>
         [Display(Name = "انرژی و منابع")] Energy
     }
-
-    /// <summary>
-    /// تیپ‌های شخصیتی MBTI. این فهرست شامل 16 تیپ رایج به‌همراه گزینه ناشناخته است.
-    /// استفاده از Enum به کاربر امکان می‌دهد تا شخصیت خود را دقیق‌تر انتخاب کند و الگوریتم
-    /// بر اساس آن توصیه‌های مناسب‌تری ارائه دهد.
-    /// </summary>
     public enum PersonalityType
     {
         Unknown,
@@ -234,26 +151,45 @@ namespace Chamedoon.Application.Services.Immigration
         ISTP,
         ISTJ
     }
-
-    /// <summary>
-    /// فهرست کشورهایی که سیستم امتیازدهی از آن‌ها پشتیبانی می‌کند. استفاده از Enum موجب می‌شود
-    /// در سراسر برنامه از نام‌های ثابت و بدون خطا استفاده شود. مقدار ToString این Enum به زبان انگلیسی باقی می‌ماند
-    /// تا قابلیت استفاده در کلیدها و نمایش لیست‌ها حفظ شود.
-    /// </summary>
     public enum CountryType
     {
+        [Description("کانادا")]
         Canada,
+
+        [Description("استرالیا")]
         Australia,
+
+        [Description("آلمان")]
         Germany,
+
+        [Description("ایالات متحده آمریکا")]
         USA,
+
+        [Description("بریتانیا")]
         UK,
+
+        [Description("نیوزیلند")]
         NewZealand,
+
+        [Description("هلند")]
         Netherlands,
+
+        [Description("اسپانیا")]
         Spain,
+
+        [Description("سوئد")]
         Sweden,
+
+        [Description("دانمارک")]
         Denmark,
+
+        [Description("ایتالیا")]
         Italy,
+
+        [Description("سوئیس")]
         Switzerland,
+
+        [Description("عمان")]
         Oman
     }
 }

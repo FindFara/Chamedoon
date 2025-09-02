@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using Chamedoon.Application.Common.Extensions;
 using Chamedoon.Application.Common.Utilities.AutoMapper;
 using Chamedoon.Application.Services.Account.Users.ViewModel;
 using Chamedoon.Domin.Enums;
-using Edition.Common.Extensions;
 
 namespace Chamedoon.Application.Services.Customers.ViewModel
 {

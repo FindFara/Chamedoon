@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
-using Edition.Common.Extensions;
 using System.ComponentModel.DataAnnotations;
 using Edition.Common.Enums;
 using Edition.Common.Utilities;
 using System.ComponentModel;
+using Chamedoon.Application.Common.Extensions;
 
-namespace Edition.Common.Extensions;
+namespace Chamedoon.Application.Common.Extensions;
 
 public static class EnumExtensions
 {
@@ -60,5 +60,11 @@ public static class EnumExtensions
                    .Select(GetEnumDescription)
                    .ToArray();
         return value;
+    }
+    public static string GetDescription(this Enum value)
+    {
+        var field = value.GetType().GetField(value.ToString());
+        var attribute = field.GetCustomAttribute<DescriptionAttribute>();
+        return attribute?.Description ?? value.ToString();
     }
 }

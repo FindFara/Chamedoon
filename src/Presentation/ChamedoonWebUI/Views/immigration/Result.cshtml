@@ -3,38 +3,55 @@
     ViewData["Title"] = "نتیجه ارزیابی مهاجرت";
     Layout = "~/Views/Shared/Layout.cshtml";
 }
+<div class="container mt-100 mt-60">
+    <div class="row justify-content-center">
+        <div class="col-12 text-center">
+            <div class="section-title mb-4 pb-2">
+                <h4 class="title mb-4">مناسب ترین کشور ها طبق شرایط شما</h4>
+                <p class="text-muted para-desc mb-0 mx-auto">
+                    <span class="text-primary fw-bold"> چمدون ;</span>پیشنهاد بهترین راه مهاجرت و بهترین کشور
+                    بر اساس شخصیت و شرایط شما
+                </p>
+            </div>
+        </div><!--end col-->
+    </div><!--end row-->
 
-<h2>نتیجه ارزیابی</h2>
-<p>بر اساس اطلاعات وارد شده، سه کشور پیشنهادی با امتیاز نهایی و نوع ویزای مناسب در ادامه آمده است:</p>
+    <div class="row align-items-center">
+        @{
+            var countryScore = Model.TopCountries.Count();
+        }
 
-@foreach (var item in Model.TopCountries)
-{
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">@item.Country.ToString()</h3>
-        </div>
-        <div class="card-body">
-            <p><strong>امتیاز:</strong> @item.Score از ۱۰۰</p>
-            <p><strong>نوع ویزای پیشنهادی:</strong> @item.RecommendedVisaType</p>
-            <p><strong>شرایط لازم:</strong> @item.Conditions</p>
-            @if (!string.IsNullOrEmpty(item.PersonalityReport))
-            {
-                <p><strong>تطبیق شخصیتی:</strong> @item.PersonalityReport</p>
-            }
-            @if (!string.IsNullOrEmpty(item.JobInfo))
-            {
-                <p><strong>کار و بازار کار:</strong> @item.JobInfo</p>
-            }
-            @if (!string.IsNullOrEmpty(item.EducationInfo))
-            {
-                <p><strong>تحصیل و زندگی:</strong> @item.EducationInfo</p>
-            }
-            @if (!string.IsNullOrEmpty(item.EconomyInfo))
-            {
-                <p><strong>اقتصاد و هزینه زندگی:</strong> @item.EconomyInfo</p>
-            }
-        </div>
+        @for (int i = 0; i < countryScore; i++)
+        {
+            var item = Model.TopCountries[i];
+            <div class="col-lg-4 col-md-6 col-12 mt-4 pt-2">
+                <div class="card bg-light shadow rounded border-0">
+                    <div class="bg-primary bg-gradient p-4 text-center rounded-top">
+                        <h4 class="mb-0 card-title title-dark text-light">@item.Country.GetDescription()</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center mb-4">
+                            <span class="price text-primary fw-bold display-4 mb-0">@item.Score</span>
+                            <span class="h4 mb-0 mt-2 text-primary">%</span>
+                            <span class="h6 align-self-end fw-bold text-uppercase mb-2 ms-2">شانس مهاجرت</span>
+                        </div>
+
+                        <ul class="feature list-inline">
+                            <li class="h6 mt-2 fw-normal">
+                                <i data-feather="check-circle" class="fea icon-ex-md text-primarye me-2"></i>
+                                رتبه @(i + 1)
+                            </li>
+                            <li class="h6 mt-2 fw-normal">
+                                <i data-feather="check-circle" class="fea icon-ex-md text-primary me-2"></i>
+                                @item.RecommendedVisaType
+                            </li>
+                        </ul>
+                        <div class="d-grid">
+                            <a href="javascript:void(0)" class="btn btn-primary mt-4 pt-2">جزییات بیشتر</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
-}
-
-<a href="/Immigration" class="btn btn-primary">محاسبه مجدد</a>
