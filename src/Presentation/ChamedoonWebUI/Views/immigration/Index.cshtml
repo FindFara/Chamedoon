@@ -6,10 +6,23 @@
     Layout = "~/Views/Shared/Layout.cshtml";
 }
 
-<h2>فرم ارزیابی مهاجرت</h2>
+<section class="section overflow-hidden">
+<div class="container mt-100 mt-60">
+    <div class="row align-items-center">
+        <div class="col-lg-6 col-md-6 col-12 order-2 order-md-1 mt-4 mt-sm-0 pt-2 pt-sm-0">
+                <img src="~/images/app.svg" alt="">
+            </div>
 
-<!-- دکمه شروع که اولین مودال را باز می‌کند -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalStep1">شروع ارزیابی</button>
+        <div class="col-lg-6 col-md-6 col-12 order-1 order-md-2">
+            <div class="section-title">
+                <h4 class="title mb-4">سئوی سایت شما<br> با کمک لندریک بالاست</h4>
+                <p class="text-muted">به دلیل استفاده گسترده از آن به عنوان متن پر کننده برای طرح بندی, غیرقابل خواندن از اهمیت زیادی برخوردار است: ادراک انسان برای شناسایی الگوها و تکرارهای خاص در متن تنظیم شده است. اگر توزیع حروف تأثیر بصری داشته باشد.</p>
+                    <a data-bs-toggle="modal" data-bs-target="#modalStep1" class="btn btn-primary">شروع ارزیابی<i data-feather="arrow-left" class="fea icon-sm"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
 
 <form id="immigrationForm" asp-action="Calculate" method="post">
     @Html.AntiForgeryToken()
@@ -131,7 +144,6 @@
 </form>
 
 <script>
-    // Helper functions to transition between modals
     function showNextModal(currentId, nextId) {
         var currentModal = bootstrap.Modal.getInstance(document.getElementById(currentId));
         currentModal.hide();
