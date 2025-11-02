@@ -24,6 +24,54 @@
 </div>
 </section>
 
+<style>
+    .field-hint {
+        position: relative;
+        padding-top: 1.75rem;
+    }
+
+    .field-hint .field-hint-icon {
+        position: absolute;
+        top: 0.25rem;
+        left: 0;
+        width: 1.6rem;
+        height: 1.6rem;
+        background-color: #0d6efd;
+        color: #fff;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+        cursor: pointer;
+        box-shadow: 0 0.25rem 0.5rem rgba(13, 110, 253, 0.25);
+        z-index: 2;
+    }
+
+    .field-hint .form-label,
+    .field-hint .form-check-label {
+        padding-inline-start: 2.1rem;
+        padding-left: 2.1rem;
+    }
+
+    .field-hint.form-check {
+        padding-top: 2.25rem;
+    }
+
+    [dir="rtl"] .field-hint .field-hint-icon {
+        left: auto;
+        right: 0;
+    }
+
+    [dir="rtl"] .field-hint .form-label,
+    [dir="rtl"] .field-hint .form-check-label {
+        padding-inline-start: 0;
+        padding-inline-end: 2.1rem;
+        padding-left: 0;
+        padding-right: 2.1rem;
+    }
+</style>
+
 <form id="immigrationForm" asp-action="Calculate" method="post">
     @Html.AntiForgeryToken()
 
@@ -36,19 +84,23 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
+                    <div class="mb-3 field-hint">
+                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر سن" title="سن بین ۱۸ تا ۲۹ سال بیشترین امتیاز پایه (۲۰) را می‌گیرد و بعد از ۴۴ سال امتیاز به ۵ کاهش می‌یابد.">!</span>
                         <label for="Age" class="form-label">سن:</label>
                         <input asp-for="Age" class="form-control" type="number" min="0" />
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-hint">
+                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر دسته شغلی" title="دسته‌های پرتقاضا مثل فناوری، مهندسی و درمان تا ۱۰ امتیاز می‌گیرند؛ انتخاب گزینه فاقد شغل فقط ۲ امتیاز دارد.">!</span>
                         <label for="JobCategory" class="form-label">دسته شغلی:</label>
                         <select asp-for="JobCategory" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.JobCategoryType>()"></select>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-hint">
+                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر عنوان شغل" title="این فیلد اختیاری است اما اگر شامل کلیدواژه‌هایی مثل برنامه‌نویس، پرستار یا مدیر باشد، یک امتیاز اضافه دریافت می‌کنید.">!</span>
                         <label for="JobTitle" class="form-label">عنوان شغل (اختیاری):</label>
                         <input asp-for="JobTitle" class="form-control" type="text" />
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-hint">
+                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر سابقه کاری" title="بدون سابقه امتیازی نمی‌گیرید؛ ۱ تا ۳ سال ۵ امتیاز، ۴ تا ۷ سال ۸ امتیاز و بیشتر از ۷ سال ۱۰ امتیاز دارد.">!</span>
                         <label for="WorkExperienceYears" class="form-label">سابقه کاری (سال):</label>
                         <input asp-for="WorkExperienceYears" class="form-control" type="number" min="0" />
                     </div>
@@ -69,15 +121,18 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
+                    <div class="mb-3 field-hint">
+                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر دسته رشته" title="رشته‌های IT، مهندسی، پزشکی و علوم ۳ امتیاز اضافه می‌گیرند و اگر با دسته شغلی هم‌خوان باشند امتیاز هم‌افزایی می‌گیرید.">!</span>
                         <label for="FieldCategory" class="form-label">دسته رشته یا شغل:</label>
                         <select asp-for="FieldCategory" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.FieldCategoryType>()"></select>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-hint">
+                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر مقطع تحصیلی" title="مقطع دکتری ۱۵ امتیاز، کارشناسی ارشد ۱۲، کارشناسی ۱۰ و دیپلم ۶ امتیاز دارد؛ مقاطع پایین‌تر امتیاز کمتری می‌گیرند.">!</span>
                         <label for="DegreeLevel" class="form-label">مقطع تحصیلی:</label>
                         <select asp-for="DegreeLevel" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.DegreeLevelType>()"></select>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-hint">
+                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر مدرک زبان" title="مدارک زبان قوی مثل C2 آلمانی ۱۰ امتیاز و IELTS/TOEFL هشت امتیاز دارند؛ بدون مدرک زبان امتیاز این بخش صفر می‌شود.">!</span>
                         <label for="LanguageCertificate" class="form-label">مدرک زبان:</label>
                         <select asp-for="LanguageCertificate" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.LanguageCertificateType>()"></select>
                     </div>
@@ -98,11 +153,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
+                    <div class="mb-3 field-hint">
+                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر میزان سرمایه" title="سرمایه کمتر از ۵۰ هزار فقط ۳ امتیاز، بین ۵۰ تا ۱۰۰ هزار ۶ امتیاز و سرمایه ۱۰۰ هزار به بالا ۱۰ امتیاز به مسیرهای سرمایه‌گذاری می‌افزاید.">!</span>
                         <label for="InvestmentAmount" class="form-label">میزان سرمایه (دلار/یورو):</label>
                         <input asp-for="InvestmentAmount" class="form-control" type="number" min="0" step="1000" />
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-hint">
+                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر وضعیت تاهل" title="افراد متأهل ۱۰ امتیاز کامل می‌گیرند و مجرد یا سایر وضعیت‌ها ۵ امتیاز دریافت می‌کنند.">!</span>
                         <label for="MaritalStatus" class="form-label">وضعیت تاهل:</label>
                         <select asp-for="MaritalStatus" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.MaritalStatusType>()"></select>
                     </div>
@@ -116,7 +173,7 @@
     </div>
 
     <!-- Modal Step 4: سایر اطلاعات -->
-    <div class="modal fade" id="modalStep4" tabindex="-1" aria-hidden="true">k59902446627
+    <div class="modal fade" id="modalStep4" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -124,11 +181,13 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-check mb-3">
-                        <label class="form-check-label" for="WillingToStudy">آیا تمایل به ادامه تحصیل دارید؟</label>
+                    <div class="form-check mb-3 field-hint">
+                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر تمایل به تحصیل" title="علامت زدن این گزینه ۱۰ امتیاز اضافه می‌دهد و اگر ویزای تحصیلی انتخاب کنید ۵ امتیاز هم‌افزایی می‌گیرید.">!</span>
                         <input asp-for="WillingToStudy" class="form-check-input" type="checkbox" />
+                        <label class="form-check-label" for="WillingToStudy">آیا تمایل به ادامه تحصیل دارید؟</label>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-hint">
+                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر تیپ شخصیتی" title="انتخاب تیپ شخصیتی شناخته‌شده امتیاز شخصیتی و پیشنهاد کشور مناسب را بهبود می‌دهد؛ گزینه نامشخص امتیازی ندارد.">!</span>
                         <label for="MBTIPersonality" class="form-label">شخصیت MBTI:</label>
                         <select asp-for="MBTIPersonality" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.PersonalityType>()"></select>
                     </div>
@@ -144,6 +203,13 @@
 </form>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+
     function showNextModal(currentId, nextId) {
         var currentModal = bootstrap.Modal.getInstance(document.getElementById(currentId));
         currentModal.hide();
