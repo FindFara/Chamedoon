@@ -25,50 +25,185 @@
 </section>
 
 <style>
-    .field-hint {
-        position: relative;
-        padding-top: 1.75rem;
+    .modal-step .modal-dialog {
+        max-width: 640px;
+        margin: 1.5rem auto;
     }
 
-    .field-hint .field-hint-icon {
-        position: absolute;
-        top: 0.25rem;
-        left: 0;
-        width: 1.6rem;
-        height: 1.6rem;
-        background-color: #0d6efd;
-        color: #fff;
-        border-radius: 50%;
+    .modal-step .modal-content {
+        border: 0;
+        border-radius: 1.5rem;
+        box-shadow: 0 1.35rem 3rem rgba(15, 23, 42, 0.18);
+        overflow: hidden;
+    }
+
+    .modal-step .modal-header {
+        border-bottom: 0;
+        padding: 1.75rem 1.75rem 1.25rem;
+        background: linear-gradient(135deg, #f8f9ff 0%, #f0f6ff 100%);
+    }
+
+    .modal-step .modal-body {
+        padding: 1.75rem;
+    }
+
+    .modal-step .modal-footer {
+        border-top: 0;
+        padding: 1.5rem 1.75rem 1.75rem;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+
+    .modal-step-heading {
         display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+    }
+
+    .modal-step .modal-title {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .modal-step .modal-subtitle {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .modal-step .step-badge {
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 0.95rem;
+        min-width: 3.75rem;
+        font-size: 0.85rem;
+        border-radius: 999px;
+        background: rgba(13, 110, 253, 0.12);
+        color: #0d6efd;
+        padding: 0.35rem 0.9rem;
+        font-weight: 600;
+    }
+
+    .field-hint {
+        margin-bottom: 1.5rem;
+    }
+
+    .field-hint:last-child {
+        margin-bottom: 0;
+    }
+
+    .field-hint-header {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 0.45rem;
+    }
+
+    .field-hint-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        border: 1px solid rgba(13, 110, 253, 0.35);
+        background-color: rgba(13, 110, 253, 0.08);
+        color: #0d6efd;
+        font-weight: 600;
+        font-size: 0.85rem;
         cursor: pointer;
-        box-shadow: 0 0.25rem 0.5rem rgba(13, 110, 253, 0.25);
-        z-index: 2;
+        transition: all 0.2s ease;
+    }
+
+    .field-hint-icon:hover,
+    .field-hint-icon:focus {
+        background-color: #0d6efd;
+        color: #fff;
+        border-color: #0d6efd;
+        box-shadow: 0 0.35rem 0.85rem rgba(13, 110, 253, 0.25);
+        outline: none;
     }
 
     .field-hint .form-label,
-    .field-hint .form-check-label {
-        padding-inline-start: 2.1rem;
-        padding-left: 2.1rem;
+    .field-hint .form-check-label,
+    .field-hint-title {
+        margin: 0;
+        font-weight: 600;
     }
 
-    .field-hint.form-check {
-        padding-top: 2.25rem;
+    .field-hint-control .form-control,
+    .field-hint-control select.form-control {
+        border-radius: 0.9rem;
+        padding: 0.65rem 1rem;
+        border-color: #e0e6f0;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    [dir="rtl"] .field-hint .field-hint-icon {
-        left: auto;
-        right: 0;
+    .field-hint-control .form-control:focus,
+    .field-hint-control select.form-control:focus {
+        border-color: rgba(13, 110, 253, 0.65);
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
     }
 
-    [dir="rtl"] .field-hint .form-label,
-    [dir="rtl"] .field-hint .form-check-label {
-        padding-inline-start: 0;
-        padding-inline-end: 2.1rem;
-        padding-left: 0;
-        padding-right: 2.1rem;
+    .field-hint-control .form-check {
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .field-hint-control .form-check-input {
+        margin: 0 0.5rem 0 0;
+    }
+
+    .modal-step .modal-footer .btn {
+        border-radius: 0.85rem;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+    }
+
+    [dir="rtl"] .modal-step-heading {
+        align-items: flex-end;
+        text-align: right;
+    }
+
+    [dir="rtl"] .field-hint-header {
+        flex-direction: row-reverse;
+    }
+
+    [dir="rtl"] .field-hint-control .form-check-input {
+        margin: 0 0 0 0.5rem;
+    }
+
+    @media (max-width: 576px) {
+        .modal-step .modal-dialog {
+            margin: 0.75rem auto;
+            max-width: none;
+            width: calc(100% - 1.5rem);
+        }
+
+        .modal-step .modal-content {
+            border-radius: 1.25rem;
+        }
+
+        .modal-step .modal-header,
+        .modal-step .modal-body,
+        .modal-step .modal-footer {
+            padding: 1.25rem;
+        }
+
+        .field-hint {
+            margin-bottom: 1.25rem;
+        }
+
+        .field-hint-header {
+            align-items: flex-start;
+        }
+
+        .modal-step .modal-footer {
+            flex-wrap: wrap;
+        }
     }
 </style>
 
@@ -76,33 +211,53 @@
     @Html.AntiForgeryToken()
 
     <!-- Modal Step 1: اطلاعات پایه -->
-    <div class="modal fade" id="modalStep1" tabindex="-1" aria-hidden="true">
+    <div class="modal fade modal-step" id="modalStep1" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">مرحله ۱ - اطلاعات پایه</h5>
+                    <div class="modal-step-heading">
+                        <span class="step-badge">۱ از ۴</span>
+                        <h5 class="modal-title">مرحله ۱ - اطلاعات پایه</h5>
+                        <p class="modal-subtitle">برای شروع، اطلاعات عمومی خود را با دقت وارد کنید.</p>
+                    </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3 field-hint">
-                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر سن" title="سن بین ۱۸ تا ۲۹ سال بیشترین امتیاز پایه (۲۰) را می‌گیرد و بعد از ۴۴ سال امتیاز به ۵ کاهش می‌یابد.">!</span>
-                        <label for="Age" class="form-label">سن:</label>
-                        <input asp-for="Age" class="form-control" type="number" min="0" />
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر سن" title="سن بین ۱۸ تا ۲۹ سال بیشترین امتیاز پایه (۲۰) را می‌گیرد و بعد از ۴۴ سال امتیاز به ۵ کاهش می‌یابد.">!</span>
+                            <label for="Age" class="form-label">سن:</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <input asp-for="Age" class="form-control" type="number" min="0" />
+                        </div>
                     </div>
-                    <div class="mb-3 field-hint">
-                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر دسته شغلی" title="دسته‌های پرتقاضا مثل فناوری، مهندسی و درمان تا ۱۰ امتیاز می‌گیرند؛ انتخاب گزینه فاقد شغل فقط ۲ امتیاز دارد.">!</span>
-                        <label for="JobCategory" class="form-label">دسته شغلی:</label>
-                        <select asp-for="JobCategory" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.JobCategoryType>()"></select>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر دسته شغلی" title="دسته‌های پرتقاضا مثل فناوری، مهندسی و درمان تا ۱۰ امتیاز می‌گیرند؛ انتخاب گزینه فاقد شغل فقط ۲ امتیاز دارد.">!</span>
+                            <label for="JobCategory" class="form-label">دسته شغلی:</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <select asp-for="JobCategory" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.JobCategoryType>()"></select>
+                        </div>
                     </div>
-                    <div class="mb-3 field-hint">
-                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر عنوان شغل" title="این فیلد اختیاری است اما اگر شامل کلیدواژه‌هایی مثل برنامه‌نویس، پرستار یا مدیر باشد، یک امتیاز اضافه دریافت می‌کنید.">!</span>
-                        <label for="JobTitle" class="form-label">عنوان شغل (اختیاری):</label>
-                        <input asp-for="JobTitle" class="form-control" type="text" />
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر عنوان شغل" title="این فیلد اختیاری است اما اگر شامل کلیدواژه‌هایی مثل برنامه‌نویس، پرستار یا مدیر باشد، یک امتیاز اضافه دریافت می‌کنید.">!</span>
+                            <label for="JobTitle" class="form-label">عنوان شغل (اختیاری):</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <input asp-for="JobTitle" class="form-control" type="text" />
+                        </div>
                     </div>
-                    <div class="mb-3 field-hint">
-                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر سابقه کاری" title="بدون سابقه امتیازی نمی‌گیرید؛ ۱ تا ۳ سال ۵ امتیاز، ۴ تا ۷ سال ۸ امتیاز و بیشتر از ۷ سال ۱۰ امتیاز دارد.">!</span>
-                        <label for="WorkExperienceYears" class="form-label">سابقه کاری (سال):</label>
-                        <input asp-for="WorkExperienceYears" class="form-control" type="number" min="0" />
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر سابقه کاری" title="بدون سابقه امتیازی نمی‌گیرید؛ ۱ تا ۳ سال ۵ امتیاز، ۴ تا ۷ سال ۸ امتیاز و بیشتر از ۷ سال ۱۰ امتیاز دارد.">!</span>
+                            <label for="WorkExperienceYears" class="form-label">سابقه کاری (سال):</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <input asp-for="WorkExperienceYears" class="form-control" type="number" min="0" />
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -113,28 +268,44 @@
     </div>
 
     <!-- Modal Step 2: تحصیلات و زبان -->
-    <div class="modal fade" id="modalStep2" tabindex="-1" aria-hidden="true">
+    <div class="modal fade modal-step" id="modalStep2" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">مرحله ۲ - تحصیلات و زبان</h5>
+                    <div class="modal-step-heading">
+                        <span class="step-badge">۲ از ۴</span>
+                        <h5 class="modal-title">مرحله ۲ - تحصیلات و زبان</h5>
+                        <p class="modal-subtitle">مدارک تحصیلی و مهارت‌های زبانی خود را مشخص کنید.</p>
+                    </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3 field-hint">
-                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر دسته رشته" title="رشته‌های IT، مهندسی، پزشکی و علوم ۳ امتیاز اضافه می‌گیرند و اگر با دسته شغلی هم‌خوان باشند امتیاز هم‌افزایی می‌گیرید.">!</span>
-                        <label for="FieldCategory" class="form-label">دسته رشته یا شغل:</label>
-                        <select asp-for="FieldCategory" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.FieldCategoryType>()"></select>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر دسته رشته" title="رشته‌های IT، مهندسی، پزشکی و علوم ۳ امتیاز اضافه می‌گیرند و اگر با دسته شغلی هم‌خوان باشند امتیاز هم‌افزایی می‌گیرید.">!</span>
+                            <label for="FieldCategory" class="form-label">دسته رشته یا شغل:</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <select asp-for="FieldCategory" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.FieldCategoryType>()"></select>
+                        </div>
                     </div>
-                    <div class="mb-3 field-hint">
-                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر مقطع تحصیلی" title="مقطع دکتری ۱۵ امتیاز، کارشناسی ارشد ۱۲، کارشناسی ۱۰ و دیپلم ۶ امتیاز دارد؛ مقاطع پایین‌تر امتیاز کمتری می‌گیرند.">!</span>
-                        <label for="DegreeLevel" class="form-label">مقطع تحصیلی:</label>
-                        <select asp-for="DegreeLevel" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.DegreeLevelType>()"></select>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر مقطع تحصیلی" title="مقطع دکتری ۱۵ امتیاز، کارشناسی ارشد ۱۲، کارشناسی ۱۰ و دیپلم ۶ امتیاز دارد؛ مقاطع پایین‌تر امتیاز کمتری می‌گیرند.">!</span>
+                            <label for="DegreeLevel" class="form-label">مقطع تحصیلی:</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <select asp-for="DegreeLevel" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.DegreeLevelType>()"></select>
+                        </div>
                     </div>
-                    <div class="mb-3 field-hint">
-                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر مدرک زبان" title="مدارک زبان قوی مثل C2 آلمانی ۱۰ امتیاز و IELTS/TOEFL هشت امتیاز دارند؛ بدون مدرک زبان امتیاز این بخش صفر می‌شود.">!</span>
-                        <label for="LanguageCertificate" class="form-label">مدرک زبان:</label>
-                        <select asp-for="LanguageCertificate" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.LanguageCertificateType>()"></select>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر مدرک زبان" title="مدارک زبان قوی مثل C2 آلمانی ۱۰ امتیاز و IELTS/TOEFL هشت امتیاز دارند؛ بدون مدرک زبان امتیاز این بخش صفر می‌شود.">!</span>
+                            <label for="LanguageCertificate" class="form-label">مدرک زبان:</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <select asp-for="LanguageCertificate" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.LanguageCertificateType>()"></select>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -145,23 +316,36 @@
         </div>
     </div>
 
-    <div class="modal fade" id="modalStep3" tabindex="-1" aria-hidden="true">
+    <!-- Modal Step 3: نوع ویزا و وضعیت فردی -->
+    <div class="modal fade modal-step" id="modalStep3" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">مرحله ۳ - نوع ویزا و وضعیت فردی</h5>
+                    <div class="modal-step-heading">
+                        <span class="step-badge">۳ از ۴</span>
+                        <h5 class="modal-title">مرحله ۳ - نوع ویزا و وضعیت فردی</h5>
+                        <p class="modal-subtitle">اطلاعات مربوط به سرمایه و وضعیت شخصی خود را تکمیل کنید.</p>
+                    </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3 field-hint">
-                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر میزان سرمایه" title="سرمایه کمتر از ۵۰ هزار فقط ۳ امتیاز، بین ۵۰ تا ۱۰۰ هزار ۶ امتیاز و سرمایه ۱۰۰ هزار به بالا ۱۰ امتیاز به مسیرهای سرمایه‌گذاری می‌افزاید.">!</span>
-                        <label for="InvestmentAmount" class="form-label">میزان سرمایه (دلار/یورو):</label>
-                        <input asp-for="InvestmentAmount" class="form-control" type="number" min="0" step="1000" />
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر میزان سرمایه" title="سرمایه کمتر از ۵۰ هزار فقط ۳ امتیاز، بین ۵۰ تا ۱۰۰ هزار ۶ امتیاز و سرمایه ۱۰۰ هزار به بالا ۱۰ امتیاز به مسیرهای سرمایه‌گذاری می‌افزاید.">!</span>
+                            <label for="InvestmentAmount" class="form-label">میزان سرمایه (دلار/یورو):</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <input asp-for="InvestmentAmount" class="form-control" type="number" min="0" step="1000" />
+                        </div>
                     </div>
-                    <div class="mb-3 field-hint">
-                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر وضعیت تاهل" title="افراد متأهل ۱۰ امتیاز کامل می‌گیرند و مجرد یا سایر وضعیت‌ها ۵ امتیاز دریافت می‌کنند.">!</span>
-                        <label for="MaritalStatus" class="form-label">وضعیت تاهل:</label>
-                        <select asp-for="MaritalStatus" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.MaritalStatusType>()"></select>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر وضعیت تاهل" title="افراد متأهل ۱۰ امتیاز کامل می‌گیرند و مجرد یا سایر وضعیت‌ها ۵ امتیاز دریافت می‌کنند.">!</span>
+                            <label for="MaritalStatus" class="form-label">وضعیت تاهل:</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <select asp-for="MaritalStatus" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.MaritalStatusType>()"></select>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -173,23 +357,38 @@
     </div>
 
     <!-- Modal Step 4: سایر اطلاعات -->
-    <div class="modal fade" id="modalStep4" tabindex="-1" aria-hidden="true">
+    <div class="modal fade modal-step" id="modalStep4" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">مرحله ۴ - سایر اطلاعات</h5>
+                    <div class="modal-step-heading">
+                        <span class="step-badge">۴ از ۴</span>
+                        <h5 class="modal-title">مرحله ۴ - سایر اطلاعات</h5>
+                        <p class="modal-subtitle">آخرین جزئیات تکمیلی را برای پیشنهاد بهتر وارد کنید.</p>
+                    </div>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-check mb-3 field-hint">
-                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر تمایل به تحصیل" title="علامت زدن این گزینه ۱۰ امتیاز اضافه می‌دهد و اگر ویزای تحصیلی انتخاب کنید ۵ امتیاز هم‌افزایی می‌گیرید.">!</span>
-                        <input asp-for="WillingToStudy" class="form-check-input" type="checkbox" />
-                        <label class="form-check-label" for="WillingToStudy">آیا تمایل به ادامه تحصیل دارید؟</label>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر تمایل به تحصیل" title="علامت زدن این گزینه ۱۰ امتیاز اضافه می‌دهد و اگر ویزای تحصیلی انتخاب کنید ۵ امتیاز هم‌افزایی می‌گیرید.">!</span>
+                            <span class="field-hint-title">آیا تمایل به ادامه تحصیل دارید؟</span>
+                        </div>
+                        <div class="field-hint-control">
+                            <div class="form-check form-switch">
+                                <input asp-for="WillingToStudy" class="form-check-input" type="checkbox" role="switch" />
+                                <label class="form-check-label" for="WillingToStudy">بله</label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3 field-hint">
-                        <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر تیپ شخصیتی" title="انتخاب تیپ شخصیتی شناخته‌شده امتیاز شخصیتی و پیشنهاد کشور مناسب را بهبود می‌دهد؛ گزینه نامشخص امتیازی ندارد.">!</span>
-                        <label for="MBTIPersonality" class="form-label">شخصیت MBTI:</label>
-                        <select asp-for="MBTIPersonality" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.PersonalityType>()"></select>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر تیپ شخصیتی" title="انتخاب تیپ شخصیتی شناخته‌شده امتیاز شخصیتی و پیشنهاد کشور مناسب را بهبود می‌دهد؛ گزینه نامشخص امتیازی ندارد.">!</span>
+                            <label for="MBTIPersonality" class="form-label">شخصیت MBTI:</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <select asp-for="MBTIPersonality" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.PersonalityType>()"></select>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -205,8 +404,62 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var prefersTouch = window.matchMedia('(hover: none)').matches;
+
         tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-            new bootstrap.Tooltip(tooltipTriggerEl);
+            var tooltip = new bootstrap.Tooltip(tooltipTriggerEl, {
+                trigger: prefersTouch ? 'manual' : 'hover focus',
+                boundary: document.body
+            });
+
+            tooltipTriggerEl.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    tooltip.toggle();
+                }
+            });
+
+            if (prefersTouch) {
+                tooltipTriggerEl.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    tooltip.toggle();
+                });
+            }
+        });
+
+        if (prefersTouch) {
+            document.addEventListener('click', function (event) {
+                tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                    var tooltipInstance = bootstrap.Tooltip.getInstance(tooltipTriggerEl);
+                    if (!tooltipInstance) {
+                        return;
+                    }
+
+                    var tip = tooltipInstance.tip || (typeof tooltipInstance.getTipElement === 'function' ? tooltipInstance.getTipElement() : null);
+
+                    if (tooltipTriggerEl.contains(event.target)) {
+                        return;
+                    }
+
+                    if (tip && tip.contains && tip.contains(event.target)) {
+                        return;
+                    }
+
+                    tooltipInstance.hide();
+                });
+            });
+        }
+
+        document.querySelectorAll('.modal-step').forEach(function (modalEl) {
+            modalEl.addEventListener('hide.bs.modal', function () {
+                tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                    var tooltipInstance = bootstrap.Tooltip.getInstance(tooltipTriggerEl);
+                    if (tooltipInstance) {
+                        tooltipInstance.hide();
+                    }
+                });
+            });
         });
     });
 
