@@ -42,6 +42,7 @@
                             <i data-feather="calendar" class="field-hint-icon" data-bs-toggle="tooltip" title="سن مناسب می‌تواند امتیاز بیشتری برای مهاجرت فراهم کند. کشورهای مقصد معمولاً برای سنین جوان‌تر امتیاز بالاتری در نظر می‌گیرند زیرا فرصت بیشتری برای تحصیل و کار وجود دارد."></i>
                         </label>
                         <input asp-for="Age" class="form-control" type="number" min="0" />
+                        <small class="field-hint-text">کشورهای مقصد معمولاً برای سنین جوان‌تر امتیاز بالاتری در نظر می‌گیرند زیرا فرصت بیشتری برای تحصیل و کار وجود دارد.</small>
                     </div>
                     <div class="mb-3">
                         <label for="JobCategory" class="form-label d-flex align-items-center justify-content-between field-label">
@@ -49,6 +50,7 @@
                             <i data-feather="briefcase" class="field-hint-icon" data-bs-toggle="tooltip" title="انتخاب دسته شغلی تخصصی تأثیر زیادی در امتیازدهی دارد. اگر شغل شما در فهرست نیازهای فوری کشور مقصد باشد، امتیاز بیشتری دریافت می‌کنید چون کمبود نیروی متخصص جبران می‌شود."></i>
                         </label>
                         <select asp-for="JobCategory" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.JobCategoryType>()"></select>
+                        <small class="field-hint-text">اگر شغل شما در فهرست نیازهای فوری کشور مقصد باشد، امتیاز بیشتری دریافت می‌کنید چون کمبود نیروی متخصص جبران می‌شود.</small>
                     </div>
                     <div class="mb-3">
                         <label for="JobTitle" class="form-label d-flex align-items-center justify-content-between field-label">
@@ -56,6 +58,7 @@
                             <i data-feather="tag" class="field-hint-icon" data-bs-toggle="tooltip" title="عنوان دقیق شغل کمک می‌کند تا امتیاز با شرایط واقعی شما تطبیق داده شود. ذکر دقیق عنوان شغلی باعث می‌شود امتیازات مرتبط با مهارت‌های ویژه یا مدارک حرفه‌ای دقیق‌تر محاسبه شود."></i>
                         </label>
                         <input asp-for="JobTitle" class="form-control" type="text" />
+                        <small class="field-hint-text">ذکر دقیق عنوان شغلی باعث می‌شود امتیازات مرتبط با مهارت‌های ویژه یا مدارک حرفه‌ای دقیق‌تر محاسبه شود.</small>
                     </div>
                     <div class="mb-3">
                         <label for="WorkExperienceYears" class="form-label d-flex align-items-center justify-content-between field-label">
@@ -63,6 +66,7 @@
                             <i data-feather="trending-up" class="field-hint-icon" data-bs-toggle="tooltip" title="سابقه کاری بیشتر معمولاً امتیاز بیشتری به همراه دارد. هر سال تجربه مرتبط، آمادگی شما برای بازار کار کشور مقصد را نشان می‌دهد و سقف امتیازات حرفه‌ای را افزایش می‌دهد."></i>
                         </label>
                         <input asp-for="WorkExperienceYears" class="form-control" type="number" min="0" />
+                        <small class="field-hint-text">هر سال تجربه مرتبط، آمادگی شما برای بازار کار کشور مقصد را نشان می‌دهد و سقف امتیازات حرفه‌ای را افزایش می‌دهد.</small>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -87,6 +91,7 @@
                             <i data-feather="layers" class="field-hint-icon" data-bs-toggle="tooltip" title="رشته‌های اولویت‌دار امتیاز بیشتری به دست می‌آورند. کسب‌وکارها برای رشته‌های تخصصی و کمیاب امتیاز ویژه قائل‌اند تا کمبود نیروهای کلیدی سریع‌تر تأمین شود."></i>
                         </label>
                         <select asp-for="FieldCategory" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.FieldCategoryType>()"></select>
+                        <small class="field-hint-text">کسب‌وکارها برای رشته‌های تخصصی و کمیاب امتیاز ویژه قائل‌اند تا کمبود نیروهای کلیدی سریع‌تر تأمین شود.</small>
                     </div>
                     <div class="mb-3">
                         <label for="DegreeLevel" class="form-label d-flex align-items-center justify-content-between field-label">
@@ -94,6 +99,7 @@
                             <i data-feather="award" class="field-hint-icon" data-bs-toggle="tooltip" title="مدرک تحصیلی بالاتر امتیاز بیشتری ایجاد می‌کند. داشتن مدرک دانشگاهی معتبر نشان‌دهنده مهارت‌های علمی و پژوهشی است و در سیستم‌های امتیازدهی به‌عنوان مزیت رقابتی ثبت می‌شود."></i>
                         </label>
                         <select asp-for="DegreeLevel" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.DegreeLevelType>()"></select>
+                        <small class="field-hint-text">داشتن مدرک دانشگاهی معتبر نشان‌دهنده مهارت‌های علمی و پژوهشی است و در سیستم‌های امتیازدهی به‌عنوان مزیت رقابتی ثبت می‌شود.</small>
                     </div>
                     <div class="mb-3">
                         <label for="LanguageCertificate" class="form-label d-flex align-items-center justify-content-between field-label">
@@ -101,6 +107,7 @@
                             <i data-feather="globe" class="field-hint-icon" data-bs-toggle="tooltip" title="مدرک زبان قوی یکی از معیارهای اصلی امتیازدهی است. ارائه نمرات معتبر زبان ثابت می‌کند که می‌توانید در محیط‌های کاری و تحصیلی ارتباط مؤثر برقرار کنید و از امتیازهای اصلی محروم نمی‌شوید."></i>
                         </label>
                         <select asp-for="LanguageCertificate" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.LanguageCertificateType>()"></select>
+                        <small class="field-hint-text">ارائه نمرات معتبر زبان ثابت می‌کند که می‌توانید در محیط‌های کاری و تحصیلی ارتباط مؤثر برقرار کنید و از امتیازهای اصلی محروم نمی‌شوید.</small>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -125,6 +132,7 @@
                             <i data-feather="dollar-sign" class="field-hint-icon" data-bs-toggle="tooltip" title="سرمایه بیشتر مسیرهای سرمایه‌گذاری و امتیاز را افزایش می‌دهد. هرچه سرمایه‌گذاری شما بیشتر باشد، دولت مقصد با اطمینان بیشتری ویزا صادر می‌کند و در نتیجه امتیاز برنامه‌های سرمایه‌گذاری افزایش می‌یابد."></i>
                         </label>
                         <input asp-for="InvestmentAmount" class="form-control" type="number" min="0" step="1000" />
+                        <small class="field-hint-text">هرچه سرمایه‌گذاری شما بیشتر باشد، دولت مقصد با اطمینان بیشتری ویزا صادر می‌کند و در نتیجه امتیاز برنامه‌های سرمایه‌گذاری افزایش می‌یابد.</small>
                     </div>
                     <div class="mb-3">
                         <label for="MaritalStatus" class="form-label d-flex align-items-center justify-content-between field-label">
@@ -132,6 +140,7 @@
                             <i data-feather="heart" class="field-hint-icon" data-bs-toggle="tooltip" title="وضعیت تأهل می‌تواند امتیاز خانوادگی و امتیاز نهایی را تغییر دهد. داشتن همسر یا همراه واجد شرایط می‌تواند امتیاز مهارت‌های مکمل، زبان و سرمایه اضافی را به پرونده شما اضافه کند."></i>
                         </label>
                         <select asp-for="MaritalStatus" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.MaritalStatusType>()"></select>
+                        <small class="field-hint-text">داشتن همسر یا همراه واجد شرایط می‌تواند امتیاز مهارت‌های مکمل، زبان و سرمایه اضافی را به پرونده شما اضافه کند.</small>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -164,6 +173,7 @@
                             <i data-feather="users" class="field-hint-icon" data-bs-toggle="tooltip" title="شناخت تیپ شخصیتی به پیشنهاد مسیرهای متناسب و افزایش شانس موفقیت کمک می‌کند. تحلیل تیپ شخصیتی کمک می‌کند مسیرهای مهاجرتی متناسب با سبک کاری و تعاملات اجتماعی شما انتخاب شود و شانس موفقیت در اخذ ویزا بالا رود."></i>
                         </label>
                         <select asp-for="MBTIPersonality" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.PersonalityType>()"></select>
+                        <small class="field-hint-text">تحلیل تیپ شخصیتی کمک می‌کند مسیرهای مهاجرتی متناسب با سبک کاری و تعاملات اجتماعی شما انتخاب شود و شانس موفقیت در اخذ ویزا بالا رود.</small>
                     </div>
                 </div>
                 <div class="modal-footer">
