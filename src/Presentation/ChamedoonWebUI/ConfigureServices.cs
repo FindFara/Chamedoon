@@ -1,17 +1,24 @@
-﻿using Chamedoon.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using System;
 using System.Configuration;
+using System.Linq;
+using System.Threading.Tasks;
+using Chamedoon.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace ChamedoonWebUI;
 
 public static class ConfigureServices
 {
-    public static IServiceCollection AddWebUIServices(this IServiceCollection services)
+    public static IServiceCollection AddWebUIServices(this IServiceCollection services, IConfiguration configuration)
     {
+        var appUrl = configuration.GetSection("Urls")?.GetValue<string>("AppUrl");
+
         services.AddAuthentication(options =>
         {
             options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -32,7 +39,28 @@ public static class ConfigureServices
             options.ClientId = "122973351692-2fgb7h8v7qff9qnehugl7fio831lnvi8.apps.googleusercontent.com";
             options.ClientSecret = "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";
             options.CallbackPath = "/signin-google";
-        }); ;
+
+            if (!string.IsNullOrWhiteSpace(appUrl) && Uri.TryCreate(appUrl, UriKind.Absolute, out var appUri))
+            {
+                options.Events ??= new OAuthEvents();
+                options.Events.OnRedirectToAuthorizationEndpoint = context =>
+                {
+                    var callbackUri = new Uri(appUri, options.CallbackPath.Value);
+                    var originalRedirectUri = new Uri(context.RedirectUri);
+                    var query = QueryHelpers.ParseQuery(originalRedirectUri.Query);
+                    var parameters = query.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString());
+
+                    parameters["redirect_uri"] = callbackUri.ToString();
+
+                    var updatedRedirectUri = QueryHelpers.AddQueryString(
+                        originalRedirectUri.GetLeftPart(UriPartial.Path),
+                        parameters);
+
+                    context.Response.Redirect(updatedRedirectUri);
+                    return Task.CompletedTask;
+                };
+            }
+        });
         return services;
     }
 }
