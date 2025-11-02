@@ -6,7 +6,7 @@ using ChamedoonWebUI;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddWebUIServices();
+builder.Services.AddWebUIServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration); 
 builder.Services.AddApplicationServices();
 builder.Services.AddHttpContextAccessor();
