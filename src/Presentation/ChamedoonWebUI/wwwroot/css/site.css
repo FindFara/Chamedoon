@@ -21,6 +21,19 @@ body {
   margin-bottom: 60px;
 }
 
+.field-group {
+  position: relative;
+  padding-top: 2.25rem;
+}
+
+.field-group .field-label {
+  margin-top: 0.5rem;
+}
+
+.field-group-checkbox {
+  padding-top: 2.75rem;
+}
+
 .field-label {
   display: flex;
   align-items: center;
@@ -33,12 +46,37 @@ body {
   flex: 1 1 auto;
 }
 
-.field-hint-icon {
-  width: 22px;
-  height: 22px;
+.field-hint-trigger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--bs-primary);
+  background-color: rgba(13, 110, 253, 0.08);
   color: var(--bs-primary);
   cursor: help;
-  margin-left: 0.5rem;
+  transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field-hint-trigger:focus,
+.field-hint-trigger:hover {
+  background-color: var(--bs-primary);
+  color: #fff;
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+}
+
+.field-hint-trigger:focus {
+  outline: none;
+}
+
+.field-hint-icon {
+  width: 18px;
+  height: 18px;
 }
 
 .field-hint-text {

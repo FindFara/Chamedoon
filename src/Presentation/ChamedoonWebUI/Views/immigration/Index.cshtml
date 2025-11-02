@@ -36,34 +36,42 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
+                    <div class="mb-3 field-group">
+                        <span class="field-hint-trigger" role="button" tabindex="0" data-bs-toggle="tooltip" title="سن مناسب می‌تواند امتیاز بیشتری برای مهاجرت فراهم کند." aria-label="سن مناسب می‌تواند امتیاز بیشتری برای مهاجرت فراهم کند.">
+                            <i data-feather="alert-circle" class="field-hint-icon"></i>
+                        </span>
                         <label for="Age" class="form-label d-flex align-items-center justify-content-between field-label">
                             <span class="field-label-text">سن:</span>
-                            <i data-feather="calendar" class="field-hint-icon" data-bs-toggle="tooltip" title="سن مناسب می‌تواند امتیاز بیشتری برای مهاجرت فراهم کند."></i>
                         </label>
                         <input asp-for="Age" class="form-control" type="number" min="0" />
                         <small class="field-hint-text">کشورهای مقصد معمولاً برای سنین جوان‌تر امتیاز بالاتری در نظر می‌گیرند زیرا فرصت بیشتری برای تحصیل و کار وجود دارد.</small>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-group">
+                        <span class="field-hint-trigger" role="button" tabindex="0" data-bs-toggle="tooltip" title="انتخاب دسته شغلی تخصصی تأثیر زیادی در امتیازدهی دارد." aria-label="انتخاب دسته شغلی تخصصی تأثیر زیادی در امتیازدهی دارد.">
+                            <i data-feather="alert-circle" class="field-hint-icon"></i>
+                        </span>
                         <label for="JobCategory" class="form-label d-flex align-items-center justify-content-between field-label">
                             <span class="field-label-text">دسته شغلی:</span>
-                            <i data-feather="briefcase" class="field-hint-icon" data-bs-toggle="tooltip" title="انتخاب دسته شغلی تخصصی تأثیر زیادی در امتیازدهی دارد."></i>
                         </label>
                         <select asp-for="JobCategory" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.JobCategoryType>()"></select>
                         <small class="field-hint-text">اگر شغل شما در فهرست نیازهای فوری کشور مقصد باشد، امتیاز بیشتری دریافت می‌کنید چون کمبود نیروی متخصص جبران می‌شود.</small>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-group">
+                        <span class="field-hint-trigger" role="button" tabindex="0" data-bs-toggle="tooltip" title="عنوان دقیق شغل کمک می‌کند تا امتیاز با شرایط واقعی شما تطبیق داده شود." aria-label="عنوان دقیق شغل کمک می‌کند تا امتیاز با شرایط واقعی شما تطبیق داده شود.">
+                            <i data-feather="alert-circle" class="field-hint-icon"></i>
+                        </span>
                         <label for="JobTitle" class="form-label d-flex align-items-center justify-content-between field-label">
                             <span class="field-label-text">عنوان شغل (اختیاری):</span>
-                            <i data-feather="tag" class="field-hint-icon" data-bs-toggle="tooltip" title="عنوان دقیق شغل کمک می‌کند تا امتیاز با شرایط واقعی شما تطبیق داده شود."></i>
                         </label>
                         <input asp-for="JobTitle" class="form-control" type="text" />
                         <small class="field-hint-text">ذکر دقیق عنوان شغلی باعث می‌شود امتیازات مرتبط با مهارت‌های ویژه یا مدارک حرفه‌ای دقیق‌تر محاسبه شود.</small>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-group">
+                        <span class="field-hint-trigger" role="button" tabindex="0" data-bs-toggle="tooltip" title="سابقه کاری بیشتر معمولاً امتیاز بیشتری به همراه دارد." aria-label="سابقه کاری بیشتر معمولاً امتیاز بیشتری به همراه دارد.">
+                            <i data-feather="alert-circle" class="field-hint-icon"></i>
+                        </span>
                         <label for="WorkExperienceYears" class="form-label d-flex align-items-center justify-content-between field-label">
                             <span class="field-label-text">سابقه کاری (سال):</span>
-                            <i data-feather="trending-up" class="field-hint-icon" data-bs-toggle="tooltip" title="سابقه کاری بیشتر معمولاً امتیاز بیشتری به همراه دارد."></i>
                         </label>
                         <input asp-for="WorkExperienceYears" class="form-control" type="number" min="0" />
                         <small class="field-hint-text">هر سال تجربه مرتبط، آمادگی شما برای بازار کار کشور مقصد را نشان می‌دهد و سقف امتیازات حرفه‌ای را افزایش می‌دهد.</small>
@@ -85,26 +93,32 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
+                    <div class="mb-3 field-group">
+                        <span class="field-hint-trigger" role="button" tabindex="0" data-bs-toggle="tooltip" title="رشته‌های اولویت‌دار امتیاز بیشتری به دست می‌آورند." aria-label="رشته‌های اولویت‌دار امتیاز بیشتری به دست می‌آورند.">
+                            <i data-feather="alert-circle" class="field-hint-icon"></i>
+                        </span>
                         <label for="FieldCategory" class="form-label d-flex align-items-center justify-content-between field-label">
                             <span class="field-label-text">دسته رشته یا شغل:</span>
-                            <i data-feather="layers" class="field-hint-icon" data-bs-toggle="tooltip" title="رشته‌های اولویت‌دار امتیاز بیشتری به دست می‌آورند."></i>
                         </label>
                         <select asp-for="FieldCategory" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.FieldCategoryType>()"></select>
                         <small class="field-hint-text">کسب‌وکارها برای رشته‌های تخصصی و کمیاب امتیاز ویژه قائل‌اند تا کمبود نیروهای کلیدی سریع‌تر تأمین شود.</small>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-group">
+                        <span class="field-hint-trigger" role="button" tabindex="0" data-bs-toggle="tooltip" title="مدرک تحصیلی بالاتر امتیاز بیشتری ایجاد می‌کند." aria-label="مدرک تحصیلی بالاتر امتیاز بیشتری ایجاد می‌کند.">
+                            <i data-feather="alert-circle" class="field-hint-icon"></i>
+                        </span>
                         <label for="DegreeLevel" class="form-label d-flex align-items-center justify-content-between field-label">
                             <span class="field-label-text">مقطع تحصیلی:</span>
-                            <i data-feather="award" class="field-hint-icon" data-bs-toggle="tooltip" title="مدرک تحصیلی بالاتر امتیاز بیشتری ایجاد می‌کند."></i>
                         </label>
                         <select asp-for="DegreeLevel" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.DegreeLevelType>()"></select>
                         <small class="field-hint-text">داشتن مدرک دانشگاهی معتبر نشان‌دهنده مهارت‌های علمی و پژوهشی است و در سیستم‌های امتیازدهی به‌عنوان مزیت رقابتی ثبت می‌شود.</small>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-group">
+                        <span class="field-hint-trigger" role="button" tabindex="0" data-bs-toggle="tooltip" title="مدرک زبان قوی یکی از معیارهای اصلی امتیازدهی است." aria-label="مدرک زبان قوی یکی از معیارهای اصلی امتیازدهی است.">
+                            <i data-feather="alert-circle" class="field-hint-icon"></i>
+                        </span>
                         <label for="LanguageCertificate" class="form-label d-flex align-items-center justify-content-between field-label">
                             <span class="field-label-text">مدرک زبان:</span>
-                            <i data-feather="globe" class="field-hint-icon" data-bs-toggle="tooltip" title="مدرک زبان قوی یکی از معیارهای اصلی امتیازدهی است."></i>
                         </label>
                         <select asp-for="LanguageCertificate" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.LanguageCertificateType>()"></select>
                         <small class="field-hint-text">ارائه نمرات معتبر زبان ثابت می‌کند که می‌توانید در محیط‌های کاری و تحصیلی ارتباط مؤثر برقرار کنید و از امتیازهای اصلی محروم نمی‌شوید.</small>
@@ -126,18 +140,22 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
+                    <div class="mb-3 field-group">
+                        <span class="field-hint-trigger" role="button" tabindex="0" data-bs-toggle="tooltip" title="سرمایه بیشتر مسیرهای سرمایه‌گذاری و امتیاز را افزایش می‌دهد." aria-label="سرمایه بیشتر مسیرهای سرمایه‌گذاری و امتیاز را افزایش می‌دهد.">
+                            <i data-feather="alert-circle" class="field-hint-icon"></i>
+                        </span>
                         <label for="InvestmentAmount" class="form-label d-flex align-items-center justify-content-between field-label">
                             <span class="field-label-text">میزان سرمایه (دلار/یورو):</span>
-                            <i data-feather="dollar-sign" class="field-hint-icon" data-bs-toggle="tooltip" title="سرمایه بیشتر مسیرهای سرمایه‌گذاری و امتیاز را افزایش می‌دهد."></i>
                         </label>
                         <input asp-for="InvestmentAmount" class="form-control" type="number" min="0" step="1000" />
                         <small class="field-hint-text">هرچه سرمایه‌گذاری شما بیشتر باشد، دولت مقصد با اطمینان بیشتری ویزا صادر می‌کند و در نتیجه امتیاز برنامه‌های سرمایه‌گذاری افزایش می‌یابد.</small>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-group">
+                        <span class="field-hint-trigger" role="button" tabindex="0" data-bs-toggle="tooltip" title="وضعیت تأهل می‌تواند امتیاز خانوادگی و امتیاز نهایی را تغییر دهد." aria-label="وضعیت تأهل می‌تواند امتیاز خانوادگی و امتیاز نهایی را تغییر دهد.">
+                            <i data-feather="alert-circle" class="field-hint-icon"></i>
+                        </span>
                         <label for="MaritalStatus" class="form-label d-flex align-items-center justify-content-between field-label">
                             <span class="field-label-text">وضعیت تاهل:</span>
-                            <i data-feather="heart" class="field-hint-icon" data-bs-toggle="tooltip" title="وضعیت تأهل می‌تواند امتیاز خانوادگی و امتیاز نهایی را تغییر دهد."></i>
                         </label>
                         <select asp-for="MaritalStatus" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.MaritalStatusType>()"></select>
                         <small class="field-hint-text">داشتن همسر یا همراه واجد شرایط می‌تواند امتیاز مهارت‌های مکمل، زبان و سرمایه اضافی را به پرونده شما اضافه کند.</small>
@@ -160,18 +178,22 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-check mb-3">
+                    <div class="form-check mb-3 field-group field-group-checkbox">
+                        <span class="field-hint-trigger" role="button" tabindex="0" data-bs-toggle="tooltip" title="تمایل به تحصیل می‌تواند مسیرهای امتیازآور تحصیلی را فعال کند." aria-label="تمایل به تحصیل می‌تواند مسیرهای امتیازآور تحصیلی را فعال کند.">
+                            <i data-feather="alert-circle" class="field-hint-icon"></i>
+                        </span>
                         <input asp-for="WillingToStudy" class="form-check-input" type="checkbox" />
                         <label class="form-check-label d-flex align-items-center justify-content-between field-label" for="WillingToStudy">
                             <span class="field-label-text">آیا تمایل به ادامه تحصیل دارید؟</span>
-                            <i data-feather="book-open" class="field-hint-icon" data-bs-toggle="tooltip" title="تمایل به تحصیل می‌تواند مسیرهای امتیازآور تحصیلی را فعال کند."></i>
                         </label>
                         <small class="field-hint-text">اعلام آمادگی برای تحصیل مجدد نشان می‌دهد که می‌توانید از برنامه‌های تحصیلی و بورسیه استفاده کنید و امتیاز مسیرهای آموزشی را بالا ببرید.</small>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-3 field-group">
+                        <span class="field-hint-trigger" role="button" tabindex="0" data-bs-toggle="tooltip" title="شناخت تیپ شخصیتی به پیشنهاد مسیرهای متناسب و افزایش شانس موفقیت کمک می‌کند." aria-label="شناخت تیپ شخصیتی به پیشنهاد مسیرهای متناسب و افزایش شانس موفقیت کمک می‌کند.">
+                            <i data-feather="alert-circle" class="field-hint-icon"></i>
+                        </span>
                         <label for="MBTIPersonality" class="form-label d-flex align-items-center justify-content-between field-label">
                             <span class="field-label-text">شخصیت MBTI:</span>
-                            <i data-feather="users" class="field-hint-icon" data-bs-toggle="tooltip" title="شناخت تیپ شخصیتی به پیشنهاد مسیرهای متناسب و افزایش شانس موفقیت کمک می‌کند."></i>
                         </label>
                         <select asp-for="MBTIPersonality" class="form-control" asp-items="Html.GetEnumSelectList<Chamedoon.Application.Services.Immigration.PersonalityType>()"></select>
                         <small class="field-hint-text">تحلیل تیپ شخصیتی کمک می‌کند مسیرهای مهاجرتی متناسب با سبک کاری و تعاملات اجتماعی شما انتخاب شود و شانس موفقیت در اخذ ویزا بالا رود.</small>
