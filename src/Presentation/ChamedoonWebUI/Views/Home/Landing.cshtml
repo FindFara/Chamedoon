@@ -1,0 +1,192 @@
+@{
+    Layout = "_LandingLayout";
+    ViewData["Title"] = "Welcome";
+}
+
+<section class="container py-5">
+    <div class="hero-section">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <span class="hero-badge"><span class="dot"></span> Smarter journeys start here</span>
+                <h1 class="display-5 fw-bold mt-4">Chart your path to a new country with clarity and confidence.</h1>
+                <p class="text-muted mt-3">Chamedoon brings together guided assessments, curated insights, and expert tips so you always know the next best step.</p>
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a asp-controller="Immigration" asp-action="Index" class="btn btn-primary btn-lg px-4">Start the assessment</a>
+                    <a asp-controller="Blog" asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">Browse insights</a>
+                </div>
+                <div class="d-flex align-items-center gap-3 mt-4 text-muted small">
+                    <div class="d-flex align-items-center gap-2">
+                        <strong class="text-dark fs-5">12k+</strong>
+                        successful matches
+                    </div>
+                    <span class="vr"></span>
+                    Trusted guidance for students, skilled workers, and families.
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="~/newtheme/img/hero-illustration.svg" class="hero-illustration" alt="Planning your next move" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="py-5">
+    <div class="container">
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-lg-7">
+                <span class="text-uppercase text-primary fw-semibold">Why Chamedoon</span>
+                <h2 class="fw-bold mt-2">Everything you need to move forward, neatly organized into sections.</h2>
+                <p class="text-muted">Each module is designed to keep you focused on progress, from research to relocation.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">📍</div>
+                    <h5 class="fw-semibold">Personalized destinations</h5>
+                    <p class="text-muted">Match with countries that align with your goals, experience, and lifestyle expectations.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">🗂️</div>
+                    <h5 class="fw-semibold">Step-by-step roadmap</h5>
+                    <p class="text-muted">Understand exactly which documents, tasks, and deadlines matter at each stage.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h5 class="fw-semibold">Community experience</h5>
+                    <p class="text-muted">Learn from shared journeys and verified experiences from the Chamedoon community.</p>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h5 class="fw-semibold">Real-time insights</h5>
+                    <p class="text-muted">Stay current with policy updates, program availability, and expert-curated analysis.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="process" class="py-5 bg-white">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-5">
+                <h2 class="fw-bold">A clear journey divided into focused sections.</h2>
+                <p class="text-muted">Progress effortlessly through guided sections that cover preparation, eligibility, document collection, and landing support.</p>
+            </div>
+            <div class="col-lg-7">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="process-step h-100" data-step="1">
+                            <h5 class="fw-semibold">Discover</h5>
+                            <p class="text-muted">Take the interactive assessment to understand your profile and unlock tailored suggestions.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="process-step h-100" data-step="2">
+                            <h5 class="fw-semibold">Prepare</h5>
+                            <p class="text-muted">Follow the preparation checklist built for your destination and track your progress with ease.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="process-step h-100" data-step="3">
+                            <h5 class="fw-semibold">Apply</h5>
+                            <p class="text-muted">Get a guided view of critical timelines, fees, and document uploads before submitting your application.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="process-step h-100" data-step="4">
+                            <h5 class="fw-semibold">Settle</h5>
+                            <p class="text-muted">Access curated relocation tips and local insights as you get ready to land and thrive.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="insights" class="py-5">
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-5">
+                <h2 class="fw-bold">Fresh perspectives every week</h2>
+                <p class="text-muted">Dive into expert articles, success stories, and in-depth guides covering visas, relocation strategies, and cultural readiness.</p>
+                <a asp-controller="Blog" asp-action="Index" class="btn btn-outline-primary mt-3">Visit the blog</a>
+            </div>
+            <div class="col-lg-7">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="feature-card h-100">
+                            <span class="badge bg-primary-subtle text-primary mb-3">Latest guide</span>
+                            <h5 class="fw-semibold">Choosing the right study destination in 2024</h5>
+                            <p class="text-muted">Understand entry requirements, tuition expectations, and post-graduation pathways.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="feature-card h-100">
+                            <span class="badge bg-primary-subtle text-primary mb-3">Community</span>
+                            <h5 class="fw-semibold">How the Rahimi family settled in Toronto</h5>
+                            <p class="text-muted">A detailed look at timelines, budgeting, and support networks that made the move smooth.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="testimonials" class="py-5 bg-white">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col">
+                <span class="text-uppercase text-primary fw-semibold">Testimonials</span>
+                <h2 class="fw-bold mt-2">What travelers love about Chamedoon</h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="testimonial-card">
+                    <p>“The sectioned roadmap kept my student visa application on schedule. Every time I completed a section I felt closer to my goal.”</p>
+                    <h6 class="fw-semibold mb-0">Sara K.</h6>
+                    <small class="text-muted">Moved to Netherlands</small>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="testimonial-card">
+                    <p>“I loved how the insights were always fresh. The blog recommendations helped me compare programs across three countries.”</p>
+                    <h6 class="fw-semibold mb-0">Farhad M.</h6>
+                    <small class="text-muted">Tech professional in Berlin</small>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="testimonial-card">
+                    <p>“From visa prep to the first month after landing, the app gave me clear steps and community advice when I needed it most.”</p>
+                    <h6 class="fw-semibold mb-0">Niloofar A.</h6>
+                    <small class="text-muted">Family relocation to Calgary</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="cta-section text-center text-lg-start">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-8">
+                    <h3 class="fw-bold mb-3">Ready to plan your next chapter?</h3>
+                    <p class="mb-0">Join thousands of explorers using Chamedoon to navigate immigration with structure and support. Your first tailored section is just a click away.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg px-4">Create your free account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
