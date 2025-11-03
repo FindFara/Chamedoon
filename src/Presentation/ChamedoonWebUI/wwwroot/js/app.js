@@ -35,19 +35,67 @@ function fn() {
     }
     // Menus
     activateMenu();
+    setupMobileMenu();
 }
 
 //Menu
 // Toggle menu
-function toggleMenu() {
-    document.getElementById('isToggle').classList.toggle('open');
-    var isOpen = document.getElementById('navigation')
-    if (isOpen.style.display === "block") {
-        isOpen.style.display = "none";
+function toggleMenu(forceState) {
+    var toggle = document.getElementById('isToggle');
+    var navigation = document.getElementById('navigation');
+    var overlay = document.getElementById('nav-overlay');
+
+    if (!navigation) {
+        return;
+    }
+
+    var shouldOpen;
+    if (typeof forceState === 'boolean') {
+        shouldOpen = forceState;
     } else {
-        isOpen.style.display = "block";
+        shouldOpen = !navigation.classList.contains('open');
+    }
+
+    navigation.classList.toggle('open', shouldOpen);
+
+    if (toggle) {
+        toggle.classList.toggle('open', shouldOpen);
+        toggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+    }
+
+    if (overlay) {
+        overlay.classList.toggle('active', shouldOpen);
+    }
+
+    if (shouldOpen) {
+        document.body.classList.add('nav-open');
+    } else {
+        document.body.classList.remove('nav-open');
+        var openSubmenus = navigation.querySelectorAll('.submenu.open');
+        for (var i = 0; i < openSubmenus.length; i++) {
+            openSubmenus[i].classList.remove('open');
+        }
     }
 };
+
+function setupMobileMenu() {
+    var navLinks = document.querySelectorAll('#navigation .navigation-menu a');
+    for (var i = 0; i < navLinks.length; i++) {
+        var link = navLinks[i];
+        var href = link.getAttribute('href');
+        if (href && href !== 'javascript:void(0)') {
+            link.addEventListener('click', function () {
+                toggleMenu(false);
+            });
+        }
+    }
+}
+
+window.addEventListener('resize', function () {
+    if (window.innerWidth > 991) {
+        toggleMenu(false);
+    }
+});
 
 //Menu Active
 function getClosest(elem, selector) {
