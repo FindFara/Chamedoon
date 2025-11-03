@@ -57,7 +57,7 @@
                         <div class="menu-extras">
                             <div class="menu-item">
                                 <!-- Mobile menu toggle-->
-                                <a class="navbar-toggle" id="isToggle" onclick="toggleMenu()">
+                                <a class="navbar-toggle" id="isToggle" onclick="toggleMenu()" aria-controls="navigation" aria-expanded="false" aria-label="باز کردن منو">
                                     <div class="lines">
                                         <span></span>
                                         <span></span>
@@ -72,6 +72,10 @@
             </ul>
         </div>
         <div id="navigation">
+            <div class="mobile-nav-header d-lg-none">
+                <span class="mobile-nav-title">منو</span>
+                <button type="button" class="btn-close" aria-label="بستن منو" onclick="toggleMenu(false)"></button>
+            </div>
             <ul class="navigation-menu">
                 <li><a asp-controller="Home" asp-action="Index" class="topheader-font sub-menu-item">صفحه اصلی </a></li>
                 <li><a asp-controller="Blog" asp-action="Index" class="topheader-font">وبلاگ</a></li>
