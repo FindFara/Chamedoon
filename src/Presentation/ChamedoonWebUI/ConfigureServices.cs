@@ -1,12 +1,11 @@
 using System;
-using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using Chamedoon.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,26 +18,13 @@ public static class ConfigureServices
     {
         var appUrl = configuration.GetSection("Urls")?.GetValue<string>("AppUrl");
 
-        services.AddAuthentication(options =>
-        {
-            options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        }).AddCookie(options =>
-        {
-            options.LoginPath = "/auth/login";
-            options.LogoutPath = "/auth/logout";
-
-            options.AccessDeniedPath = "/auth/AccessDenied";
-            options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        })
+        services.AddAuthentication()
         .AddGoogle(options =>
         {
             options.ClientId = "122973351692-2fgb7h8v7qff9qnehugl7fio831lnvi8.apps.googleusercontent.com";
             options.ClientSecret = "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";
             options.CallbackPath = "/signin-google";
+            options.SignInScheme = IdentityConstants.ExternalScheme;
 
             if (!string.IsNullOrWhiteSpace(appUrl) && Uri.TryCreate(appUrl, UriKind.Absolute, out var appUri))
             {
@@ -61,6 +47,16 @@ public static class ConfigureServices
                 };
             }
         });
+
+        services.ConfigureApplicationCookie(options =>
+        {
+            options.LoginPath = "/auth/login";
+            options.LogoutPath = "/auth/logout";
+            options.AccessDeniedPath = "/auth/AccessDenied";
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        });
+
         return services;
     }
 }
