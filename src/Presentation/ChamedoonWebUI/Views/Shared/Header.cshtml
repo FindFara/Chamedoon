@@ -57,13 +57,19 @@
                         <div class="menu-extras">
                             <div class="menu-item">
                                 <!-- Mobile menu toggle-->
-                                <a class="navbar-toggle" id="isToggle" onclick="toggleMenu()">
-                                    <div class="lines">
+                                <button type="button"
+                                        class="navbar-toggle"
+                                        id="isToggle"
+                                        aria-expanded="false"
+                                        aria-controls="navigation"
+                                        aria-label="باز کردن منو"
+                                        onclick="toggleMenu()">
+                                    <div class="lines" aria-hidden="true">
                                         <span></span>
                                         <span></span>
                                         <span></span>
                                     </div>
-                                </a>
+                                </button>
                                 <!-- End mobile menu toggle-->
                             </div>
                         </div>
@@ -71,7 +77,13 @@
                 </li>
             </ul>
         </div>
-        <div id="navigation">
+        <nav id="navigation" aria-label="منوی اصلی">
+            <div class="mobile-nav-header">
+                <span class="mobile-nav-title">منوی چمدون</span>
+                <button type="button" class="mobile-nav-close" onclick="closeMenu()" aria-label="بستن منو">
+                    <i class="mdi mdi-close"></i>
+                </button>
+            </div>
             <ul class="navigation-menu">
                 <li><a asp-controller="Home" asp-action="Index" class="topheader-font sub-menu-item">صفحه اصلی </a></li>
                 <li><a asp-controller="Blog" asp-action="Index" class="topheader-font">وبلاگ</a></li>
@@ -130,7 +142,8 @@
                     </ul>
                 </li>
             </ul>
-        </div>
+        </nav>
+        <div id="navOverlay" class="nav-overlay" onclick="closeMenu()" aria-hidden="true"></div>
     </div>
 </header>
 <!--End Header-->
