@@ -1,14 +1,22 @@
-﻿﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <partial name="Styles" />
     <partial name="MetaTags" />
+    <partial name="Styles" />
 </head>
 <body>
-    <partial name="Header" />
-    <div id="nav-overlay" class="nav-overlay d-lg-none" onclick="toggleMenu(false)"></div>
-    @RenderBody()
-    <partial name="Footer" />
+    <header class="border-bottom bg-white sticky-top shadow-sm">
+        <partial name="Header" />
+    </header>
+    <main class="py-5">
+        @RenderBody()
+    </main>
+    <footer class="py-5">
+        <partial name="Footer" />
+    </footer>
+    <a id="backToTop" class="btn btn-lg" href="#" aria-label="Back to top">
+        ↑
+    </a>
     <partial name="Script" />
 </body>
 </html>

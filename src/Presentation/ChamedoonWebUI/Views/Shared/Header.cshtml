@@ -1,140 +1,51 @@
-﻿<!--Start Header-->
-<header id="topnav" class="defaultscroll sticky">
+<nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
     <div class="container">
-        <div>
-            <a asp-controller="Home" asp-action="Index" class="logo">
-                <img src="images/LogoChamedoon.png" width="150" alt="">
-            </a>
-        </div>
-        <div>
-            <ul class="buy-button list-inline mb-0">
-                @if (User.Identity.IsAuthenticated)
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index">Chamedoon</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNavigation" aria-controls="primaryNavigation" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="primaryNavigation">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Blog" asp-action="Index">Blog</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Immigration" asp-action="Index">Immigration Test</a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center gap-2">
+                <form class="d-none d-lg-flex" asp-controller="Blog" asp-action="Index" method="get">
+                    <div class="input-group">
+                        <input type="text" name="FilterTitle" class="form-control" placeholder="Search blog" />
+                        <button class="btn btn-outline-primary" type="submit">Search</button>
+                    </div>
+                </form>
+                @if (User.Identity?.IsAuthenticated ?? false)
                 {
-                    <li class="list-inline-item mb-0">
-                        <div class="dropdown">
-                            <button type="button" class="btn btn-link text-decoration-none dropdown-toggle p-0 pe-2" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="uil uil-search h5 text-muted"></i>
-                            </button>
-                            <div class="dropdown-menu dd-menu dropdown-menu-end bg-white shadow rounded border-0 mt-3 py-0">
-                                <form asp-controller="Blog" asp-action="Index" method="get">
-                                    <input type="text" id="text" name="FilterTitle" class="form-control border bg-white" placeholder="جستجو...">
-                                </form>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="list-inline-item">
-                        <a href="javascript:void(0)" class="btn btn-icon btn-primary"><i class="mdi mdi-heart-multiple"></i></a>
-                    </li>
-                    <li class="list-inline-item mb-0">
-                        <div class="dropdown dropdown-primary">
-                            <button type="button" class="btn btn-icon btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="mdi mdi-account align-middle icons"></i>
-                            </button>
-                            <div class="dropdown-menu dd-menu dropdown-menu-end bg-white shadow rounded border-0 mt-3 py-3" style="width: 200px; margin: 0px; position: absolute; inset: 0px auto auto 0px; transform: translate(0px, 38px);">
-                                <a class="dropdown-item text-dark" asp-controller="UserPanel" asp-action="Index"><i class="mdi mdi-account align-middle me-1"></i> حساب کاربری</a>
-                                @if (User.Identity.Name == "Admin")
-                                {
-                                    <a class="dropdown-item text-dark" a asp-area="Admins" asp-controller="Dashboard" asp-action="Index"><i class="mdi mdi-account align-middle me-1"></i>پنل ادمین</a>
-                                }
-                                <div class="dropdown-divider my-3 border-top"></div>
-                                <a class="dropdown-item text-dark" asp-controller="Account" asp-action="Logout"><i class="mdi mdi-logout align-middle me-1"></i> خروج </a>
-                            </div>
-                        </div>
-                    </li>
-
+                    <div class="dropdown">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            @User.Identity!.Name
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li><a class="dropdown-item" asp-controller="UserPanel" asp-action="Index">Dashboard</a></li>
+                            @if (User.Identity?.Name == "Admin")
+                            {
+                                <li><a class="dropdown-item" asp-area="Admins" asp-controller="Dashboard" asp-action="Index">Admin Panel</a></li>
+                            }
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout">Sign out</a></li>
+                        </ul>
+                    </div>
                 }
                 else
                 {
-                    <li class="list-inline-item-heaad mb-0 pe-1">
-                        <a asp-controller="Account" asp-action="Register" class="btn btn-primary btn-sm  mt-2 me-2">ثبت نام</a>
-                    </li>
-                    <li class="list-inline-item-heaad mb-0 pe-1">
-                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-info btn-sm mt-2 me-2">ورود</a>
-                    </li>
+                    <a class="btn btn-outline-secondary" asp-controller="Account" asp-action="Login">Sign in</a>
+                    <a class="btn btn-primary" asp-controller="Account" asp-action="Register">Create account</a>
                 }
-                <li class="list-inline-item-heaad mb-0 pe-1">
-                    <div class="buy-button">
-                        <div class="menu-extras">
-                            <div class="menu-item">
-                                <!-- Mobile menu toggle-->
-                                <a class="navbar-toggle" id="isToggle" onclick="toggleMenu()" aria-controls="navigation" aria-expanded="false" aria-label="باز کردن منو">
-                                    <div class="lines">
-                                        <span></span>
-                                        <span></span>
-                                        <span></span>
-                                    </div>
-                                </a>
-                                <!-- End mobile menu toggle-->
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div id="navigation">
-            <div class="mobile-nav-header d-lg-none">
-                <span class="mobile-nav-title">منو</span>
-                <button type="button" class="btn-close" aria-label="بستن منو" onclick="toggleMenu(false)"></button>
             </div>
-            <ul class="navigation-menu">
-                <li><a asp-controller="Home" asp-action="Index" class="topheader-font sub-menu-item">صفحه اصلی </a></li>
-                <li><a asp-controller="Blog" asp-action="Index" class="topheader-font">وبلاگ</a></li>
-                <li><a asp-controller="Immigration" asp-action="Index" class="topheader-font">شروع تست</a></li>
-
-                <li class="has-submenu parent-parent-menu-item">
-                    <a href="javascript:void(0)" class="topheader-font ">مهاجرت </a><span class="menu-arrow"></span>
-                    <ul class="submenu">
-                        <li class="has-submenu parent-menu-item">
-                            <a href="javascript:void(0)"> تحصیلی </a><span class="submenu-arrow"></span>
-                            <ul class="submenu">
-                                <li><a href="page-aboutus.html" class="sub-menu-item"> درباره ما </a></li>
-                                <li><a href="page-aboutus-two.html" class="sub-menu-item"> درباره ما 2 </a></li>
-                                <li><a href="page-services.html" class="sub-menu-item">خدمات </a></li>
-                                <li><a href="page-history.html" class="sub-menu-item">تاریخچه </a></li>
-                                <li><a href="page-team.html" class="sub-menu-item"> تیم </a></li>
-                                <li><a href="page-pricing.html" class="sub-menu-item">قیمت گذاری </a></li>
-                            </ul>
-                        </li>
-                        <li class="has-submenu parent-menu-item">
-                            <a href="javascript:void(0)">
-                                شغلی
-                            </a><span class="submenu-arrow"></span>
-                            <ul class="submenu">
-                                <li><a href="account-profile.html" class="sub-menu-item">پروفایل </a></li>
-                                <li><a href="account-members.html" class="sub-menu-item">اعضا </a></li>
-                                <li><a href="account-works.html" class="sub-menu-item">کارها</a></li>
-                                <li><a href="account-messages.html" class="sub-menu-item">پیام ها </a></li>
-                                <li><a href="account-payments.html" class="sub-menu-item">پرداخت ها </a></li>
-                                <li><a href="account-setting.html" class="sub-menu-item">تنظیمات </a></li>
-                                <li><a href="page-invoice.html" class="sub-menu-item">صورتحساب </a></li>
-                            </ul>
-                        </li>
-                        <li class="has-submenu parent-menu-item">
-                            <a href="javascript:void(0)">شغلی</a><span class="submenu-arrow"></span>
-                            <ul class="submenu">
-                                <li><a href="shop-grids.html" class="sub-menu-item">گرید محصولات </a></li>
-                                <li><a href="shop-lists.html" class="sub-menu-item">محصولات لیستی </a></li>
-                                <li>
-                                    <a href="shop-product-detail.html" class="sub-menu-item">جزئیات محصول </a>
-                                </li>
-                                <li><a href="shop-cart.html" class="sub-menu-item">سبد خرید </a></li>
-                                <li><a href="shop-checkouts.html" class="sub-menu-item">پرداختی ها </a></li>
-                                <li><a href="shop-myaccount.html" class="sub-menu-item">حساب من </a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li class="has-submenu parent-menu-item">
-                    <a href="javascript:void(0)" class="topheader-font">درباره </a><span class="menu-arrow"></span>
-                    <ul class="submenu">
-                        <li><a href="documentation.html" class="sub-menu-item">مستند </a></li>
-                        <li><a href="changelog.html" class="sub-menu-item">تغییرات </a></li>
-                        <li><a href="components.html" class="sub-menu-item">اجزاء </a></li>
-                        <li><a href="widget.html" class="sub-menu-item">ابزارک </a></li>
-                    </ul>
-                </li>
-            </ul>
         </div>
     </div>
-</header>
-<!--End Header-->
+</nav>
