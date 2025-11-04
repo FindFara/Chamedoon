@@ -8,10 +8,31 @@
 }
 
 body {
-    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Vazirmatn', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--text-dark);
     background-color: var(--background-soft);
     line-height: 1.6;
+    direction: rtl;
+    text-align: right;
+}
+
+.landing-header .navbar,
+.landing-header .navbar > .container {
+    flex-direction: row-reverse;
+    display: flex;
+    align-items: center;
+}
+
+.landing-header .navbar .navbar-toggler {
+    margin-left: auto;
+}
+
+.landing-header .navbar-collapse {
+    justify-content: flex-end;
+}
+
+.landing-header .navbar-nav {
+    gap: 1rem;
 }
 
 a {
@@ -72,6 +93,8 @@ a:hover {
     box-shadow: 0 18px 30px -24px rgba(79, 70, 229, 0.6);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     height: 100%;
+    position: relative;
+    text-align: right;
 }
 
 .feature-card:hover {
@@ -102,7 +125,8 @@ a:hover {
 .process-step::after {
     content: attr(data-step);
     position: absolute;
-    inset: 1.5rem auto auto 1.5rem;
+    top: 1.5rem;
+    right: 1.5rem;
     width: 3rem;
     height: 3rem;
     border-radius: 1rem;
@@ -175,6 +199,10 @@ footer .nav-link:hover {
     .hero-illustration {
         margin: 0 auto;
     }
+
+    .feature-card {
+        text-align: center;
+    }
 }
 
 @media (max-width: 575.98px) {
@@ -190,7 +218,8 @@ footer .nav-link:hover {
 #backToTop {
     position: fixed;
     bottom: 1.5rem;
-    right: 1.5rem;
+    left: 1.5rem;
+    right: auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
