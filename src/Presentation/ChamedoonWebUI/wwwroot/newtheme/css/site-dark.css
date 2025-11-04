@@ -1,0 +1,156 @@
+body.landing-page.dark-mode {
+    background-color: #0b1220;
+    color: #e2e8f0;
+}
+
+body.landing-page.dark-mode a {
+    color: #93c5fd;
+}
+
+body.landing-page.dark-mode a:hover {
+    color: #bfdbfe;
+}
+
+body.landing-page.dark-mode .text-muted {
+    color: #94a3b8 !important;
+}
+
+body.landing-page.dark-mode .text-dark {
+    color: #e2e8f0 !important;
+}
+
+body.landing-page.dark-mode .landing-header {
+    background: rgba(10, 17, 29, 0.92);
+    border-bottom-color: rgba(148, 163, 184, 0.18);
+    box-shadow: 0 18px 42px -26px rgba(2, 6, 23, 0.8);
+}
+
+body.landing-page.dark-mode .landing-header .navbar-toggler {
+    background-color: rgba(15, 23, 42, 0.65);
+    border-color: rgba(148, 163, 184, 0.35);
+    color: #cbd5f5;
+}
+
+body.landing-page.dark-mode .landing-header .navbar-toggler:focus {
+    box-shadow: 0 0 0 0.25rem rgba(129, 140, 248, 0.35);
+}
+
+body.landing-page.dark-mode .landing-header .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 30 30%27%3E%3Cpath stroke=%27rgba(203,213,225,0.85)%27 stroke-linecap=%27round%27 stroke-miterlimit=%2710%27 stroke-width=%272%27 d=%27M4 7h22M4 15h22M4 23h22%27/%3E%3C/svg%3E");
+}
+
+body.landing-page.dark-mode .landing-header .navbar-brand {
+    color: #c7d2fe;
+}
+
+body.landing-page.dark-mode .landing-header .navbar-brand::before {
+    background: linear-gradient(135deg, #a5b4fc, #38bdf8);
+    box-shadow: 0 0 0 6px rgba(129, 140, 248, 0.18);
+}
+
+body.landing-page.dark-mode .landing-header .nav-link {
+    color: #cbd5f5;
+}
+
+body.landing-page.dark-mode .landing-header .nav-link:hover,
+body.landing-page.dark-mode .landing-header .nav-link:focus {
+    color: #93c5fd;
+}
+
+body.landing-page.dark-mode .glass-action-back {
+    box-shadow: 16px 0 44px rgba(2, 6, 23, 0.55);
+}
+
+body.landing-page.dark-mode .glass-action-front {
+    background: rgba(15, 23, 42, 0.45);
+    color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .glass-action:hover .glass-action-front,
+body.landing-page.dark-mode .glass-action:focus-visible .glass-action-front {
+    background: rgba(15, 23, 42, 0.58);
+}
+
+body.landing-page.dark-mode .glass-action::after {
+    background: rgba(226, 232, 240, 0.9);
+    color: #0f172a;
+    box-shadow: 0 12px 22px -14px rgba(2, 6, 23, 0.6);
+}
+
+body.landing-page.dark-mode .glass-action::before {
+    background: rgba(226, 232, 240, 0.9);
+}
+
+body.landing-page.dark-mode .hero-section {
+    background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.16), transparent 60%),
+                radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.18), transparent 60%),
+                #111d33;
+    border-color: rgba(129, 140, 248, 0.25);
+}
+
+body.landing-page.dark-mode .hero-badge {
+    background-color: rgba(129, 140, 248, 0.18);
+    color: #c7d2fe;
+}
+
+body.landing-page.dark-mode .hero-badge .dot {
+    background: linear-gradient(135deg, #a5b4fc, #38bdf8);
+}
+
+body.landing-page.dark-mode .feature-card,
+body.landing-page.dark-mode .process-step,
+body.landing-page.dark-mode .testimonial-card {
+    background: #111d33;
+    border-color: rgba(129, 140, 248, 0.22);
+    box-shadow: 0 20px 36px -26px rgba(2, 6, 23, 0.7);
+}
+
+body.landing-page.dark-mode .feature-icon {
+    background: linear-gradient(135deg, rgba(129, 140, 248, 0.22), rgba(56, 189, 248, 0.2));
+    color: #c7d2fe;
+}
+
+body.landing-page.dark-mode .process-step::after {
+    background: rgba(129, 140, 248, 0.2);
+    color: #c7d2fe;
+}
+
+body.landing-page.dark-mode .bg-white {
+    background-color: #0b1628 !important;
+}
+
+body.landing-page.dark-mode .cta-section {
+    box-shadow: 0 28px 56px -28px rgba(2, 6, 23, 0.65);
+}
+
+body.landing-page.dark-mode .landing-footer {
+    background: #0b1628;
+    border-top: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+body.landing-page.dark-mode .landing-footer .text-muted,
+body.landing-page.dark-mode .landing-footer a {
+    color: #94a3b8;
+}
+
+body.landing-page.dark-mode .landing-footer a:hover {
+    color: #bfdbfe;
+}
+
+body.landing-page.dark-mode .badge.bg-primary-subtle {
+    background-color: rgba(129, 140, 248, 0.25) !important;
+    color: #c7d2fe !important;
+}
+
+body.landing-page.dark-mode .btn-light {
+    background-color: #f8fafc;
+    color: #0f172a;
+    border-color: transparent;
+}
+
+@media (max-width: 991.98px) {
+    body.landing-page.dark-mode .landing-header .navbar-collapse {
+        background: rgba(10, 17, 29, 0.95);
+        box-shadow: 0 30px 46px -28px rgba(2, 6, 23, 0.85);
+    }
+}
