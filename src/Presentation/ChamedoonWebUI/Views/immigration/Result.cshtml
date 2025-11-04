@@ -1,57 +1,48 @@
 @model Chamedoon.Application.Services.Immigration.ImmigrationResult
 @{
     ViewData["Title"] = "نتیجه ارزیابی مهاجرت";
-    Layout = "~/Views/Shared/Layout.cshtml";
+    Layout = "~/Views/Landing/_LandingLayout.cshtml";
 }
-<div class="container mt-100 mt-60">
-    <div class="row justify-content-center">
-        <div class="col-12 text-center">
-            <div class="section-title mb-4 pb-2">
-                <h4 class="title mb-4">مناسب ترین کشور ها طبق شرایط شما</h4>
-                <p class="text-muted para-desc mb-0 mx-auto">
-                    <span class="text-primary fw-bold"> چمدون ;</span>پیشنهاد بهترین راه مهاجرت و بهترین کشور
-                    بر اساس شخصیت و شرایط شما
-                </p>
-            </div>
-        </div><!--end col-->
-    </div><!--end row-->
 
-    <div class="row align-items-center">
-        @{
-            var countryScore = Model.TopCountries.Count();
-        }
+<section class="glass-section">
+    <div class="container">
+        <div class="glass-card immigration-card mb-4">
+            <h2 class="fw-bold mb-2">مناسب‌ترین گزینه‌ها برای مهاجرت</h2>
+            <p class="glass-helper mb-0">
+                بر اساس اطلاعاتی که وارد کردی، مسیرهای زیر بالاترین شانس موفقیت را برایت دارند. رتبه‌بندی بر اساس تطابق شرایط، امتیاز تحصیلی و وضعیت مالی انجام شده است.
+            </p>
+        </div>
 
-        @for (int i = 0; i < countryScore; i++)
+        @if (Model.TopCountries?.Any() == true)
         {
-            var item = Model.TopCountries[i];
-            <div class="col-lg-4 col-md-6 col-12 mt-4 pt-2">
-                <div class="card bg-light shadow rounded border-0">
-                    <div class="bg-primary bg-gradient p-4 text-center rounded-top">
-                        <h4 class="mb-0 card-title title-dark text-light">@item.Country.GetDescription()</h4>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="d-flex justify-content-center mb-4">
-                            <span class="price text-primary fw-bold display-4 mb-0">@item.Score</span>
-                            <span class="h4 mb-0 mt-2 text-primary">%</span>
-                            <span class="h6 align-self-end fw-bold text-uppercase mb-2 ms-2">شانس مهاجرت</span>
+            <div class="score-grid">
+                @for (int i = 0; i < Model.TopCountries.Count; i++)
+                {
+                    var item = Model.TopCountries[i];
+                    <div class="glass-card score-card">
+                        <span class="badge bg-primary-subtle text-primary mb-3">رتبه @(i + 1)</span>
+                        <h3 class="fw-semibold">@item.Country.GetDescription()</h3>
+                        <div class="score-value">
+                            <span>@item.Score</span>
+                            <small class="text-muted">%</small>
                         </div>
-
-                        <ul class="feature list-inline">
-                            <li class="h6 mt-2 fw-normal">
-                                <i data-feather="check-circle" class="fea icon-ex-md text-primarye me-2"></i>
-                                رتبه @(i + 1)
-                            </li>
-                            <li class="h6 mt-2 fw-normal">
-                                <i data-feather="check-circle" class="fea icon-ex-md text-primary me-2"></i>
-                                @item.RecommendedVisaType
-                            </li>
-                        </ul>
-                        <div class="d-grid">
-                            <a href="javascript:void(0)" class="btn btn-primary mt-4 pt-2">جزییات بیشتر</a>
-                        </div>
+                        <p class="glass-helper">مسیر پیشنهادی: @item.RecommendedVisaType</p>
+                        <a href="javascript:void(0)" class="btn-outline-glass mt-3">درخواست مشاوره برای این مسیر</a>
                     </div>
-                </div>
+                }
             </div>
         }
+        else
+        {
+            <div class="glass-card blog-empty-state">
+                <h4 class="fw-semibold mb-2">اطلاعات کافی برای پیشنهاد وجود ندارد</h4>
+                <p class="glass-helper mb-0">لطفاً فرم ارزیابی را با دقت بیشتری تکمیل کن یا اطلاعات بیشتری اضافه کن تا بتوانیم پیشنهاد دقیق‌تری ارائه دهیم.</p>
+            </div>
+        }
+
+        <div class="d-flex flex-wrap gap-3 mt-4">
+            <a asp-controller="Immigration" asp-action="Index" class="btn-outline-glass">ویرایش اطلاعات و ارزیابی مجدد</a>
+            <a asp-controller="Blog" asp-action="Index" class="btn-glass-primary">مطالعه نکات کاربردی مهاجرت</a>
+        </div>
     </div>
+</section>

@@ -1,99 +1,67 @@
-﻿@model Chamedoon.Application.Services.Customers.ViewModel.CustomerDetailsViewModel;
+@model Chamedoon.Application.Services.Customers.ViewModel.CustomerDetailsViewModel
 @{
     Layout = "~/Views/Shared/UserPanelLayout.cshtml";
-    ViewData["Title"] = "ویرایش";
+    ViewData["Title"] = "ویرایش اطلاعات";
 }
 
 @section UserPanelContent {
-    <div class="card border-0 rounded shadow">
-        <div class="card-body">
-            <h5 class="text-md-start text-center">جزئیات شخصی :</h5>
-
-            <form asp-controller="UserPanel" asp-action="Edit" method="post" enctype="multipart/form-data">
-                <div class="mt-3 text-md-start text-center d-sm-flex">
-                    <img id="avatarPreview"
-                         src="@(string.IsNullOrEmpty(Model.ProfileImage) ? "/images/Avatars/Defult/9439682.jpg" : Model.ProfileImage)"
-                         class="avatar float-md-left avatar-medium rounded-circle shadow me-md-4"
-                         alt="Profile Image">
-
-                    <div class="mt-md-4 mt-3 mt-sm-0">
-                        <label for="ProfileImageFile" class="btn btn-primary mt-2">تغییر تصویر</label>
-                        <input type="file" name="ProfileImageFile" id="ProfileImageFile" class="d-none">
-                    </div>
+    <div class="glass-card dashboard-card">
+        <h5>ویرایش اطلاعات شخصی</h5>
+        <p class="glass-helper">اطلاعات دقیق باعث می‌شود پیشنهادهای مهاجرتی بهتر و نزدیک‌تر به نیازهایت نمایش داده شود.</p>
+        <form asp-controller="UserPanel" asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div class="avatar-wrapper mb-4">
+                <img id="avatarPreview" src="@(string.IsNullOrEmpty(Model.ProfileImage) ? "/images/Avatars/Defult/9439682.jpg" : Model.ProfileImage)" alt="تصویر پروفایل">
+                <div class="d-flex flex-column gap-2">
+                    <span class="glass-helper">برای انتخاب تصویر جدید از دکمه زیر استفاده کن.</span>
+                    <label for="ProfileImageFile" class="btn-outline-glass">انتخاب تصویر</label>
+                    <input type="file" name="ProfileImageFile" id="ProfileImageFile" class="d-none" accept="image/*">
                 </div>
-
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">نام  </label>
-                            <div class="form-icon position-relative">
-                                <i class="mdi mdi-account align-middle icons"></i>
-                                <input name="FirstName" id="first" type="text" class="form-control ps-5" value="@Model.FirstName">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">نام خانوادگی </label>
-                            <div class="form-icon position-relative">
-                                <i class="mdi mdi-account-tie align-middle icons"></i>
-                                <input name="LastName" id="last" type="text" class="form-control ps-5" value="@Model.LastName">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label">جنسیت</label>
-                            <div class="form-icon position-relative">
-                                <i class="mdi mdi-gender-male-female align-middle icons"></i>
-                                <select name="Gender" id="gender" class="form-control ps-5">
-                                    @for (int i = 0; i < Model.GenderList.Length; i++)
-                                    {
-                                        <option value="@((Gender)i)" selected="@(Model.Gender == (Gender)i ? "selected" : null)">
-                                            @Model.GenderList[i]
-                                        </option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label class="form-label"> شغل</label>
-                            <div class="form-icon position-relative">
-                                <i class="mdi mdi-briefcase align-middle icons"></i>
-                                <input name="Job" id="occupation" type="text" class="form-control ps-5" value="@Model.Job">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="mb-3">
-                            <label class="form-label">توضیحات </label>
-                            <div class="form-icon position-relative">
-                                <textarea name="Description" id="comments" rows="4" class="form-control ps-5">@Model.Description</textarea>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+            <div class="dashboard-form-grid">
+                <div class="glass-field">
+                    <label class="form-label" for="first">نام</label>
+                    <input name="FirstName" id="first" type="text" class="form-control glass-input" value="@Model.FirstName" />
                 </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <input type="submit" id="submit" name="send" class="btn btn-primary" value="ذخیره تغییرات">
-                    </div>
+                <div class="glass-field">
+                    <label class="form-label" for="last">نام خانوادگی</label>
+                    <input name="LastName" id="last" type="text" class="form-control glass-input" value="@Model.LastName" />
                 </div>
-            </form>
-        </div>
+                <div class="glass-field">
+                    <label class="form-label" for="gender">جنسیت</label>
+                    <select name="Gender" id="gender" class="form-select glass-input">
+                        @for (int i = 0; i < Model.GenderList.Length; i++)
+                        {
+                            <option value="@((Gender)i)" selected="@(Model.Gender == (Gender)i ? "selected" : null)">@Model.GenderList[i]</option>
+                        }
+                    </select>
+                </div>
+                <div class="glass-field">
+                    <label class="form-label" for="occupation">شغل</label>
+                    <input name="Job" id="occupation" type="text" class="form-control glass-input" value="@Model.Job" />
+                </div>
+            </div>
+            <div class="glass-field mt-3">
+                <label class="form-label" for="comments">توضیحات</label>
+                <textarea name="Description" id="comments" rows="4" class="form-control glass-input">@Model.Description</textarea>
+            </div>
+            <button type="submit" class="btn-glass-primary mt-4">ذخیره تغییرات</button>
+        </form>
     </div>
 
     <script>
-        document.getElementById("ProfileImageFile").addEventListener("change", function (event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById("avatarPreview").src = e.target.result;
-                };
-                reader.readAsDataURL(file);
+        document.getElementById('ProfileImageFile')?.addEventListener('change', function (event) {
+            const file = event.target.files?.[0];
+            if (!file) {
+                return;
             }
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const target = document.getElementById('avatarPreview');
+                if (target && e.target?.result) {
+                    target.src = e.target.result;
+                }
+            };
+            reader.readAsDataURL(file);
         });
     </script>
 }

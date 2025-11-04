@@ -154,6 +154,119 @@ body.landing-page.dark-mode .btn-light {
     border-color: transparent;
 }
 
+body.landing-page.dark-mode .glass-card {
+    background: rgba(15, 23, 42, 0.78);
+    border-color: rgba(148, 163, 184, 0.25);
+    box-shadow: 0 32px 56px -28px rgba(2, 6, 23, 0.75);
+}
+
+body.landing-page.dark-mode .glass-card::after {
+    border-color: rgba(148, 163, 184, 0.28);
+}
+
+body.landing-page.dark-mode .glass-input {
+    background: rgba(15, 23, 42, 0.7);
+    border-color: rgba(148, 163, 184, 0.35);
+    color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .glass-input:focus {
+    border-color: rgba(129, 140, 248, 0.6);
+    box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.22);
+    background: rgba(15, 23, 42, 0.8);
+}
+
+body.landing-page.dark-mode .glass-checkbox {
+    color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .glass-checkbox input[type="checkbox"] {
+    border-color: rgba(148, 163, 184, 0.4);
+    background: rgba(15, 23, 42, 0.6);
+}
+
+body.landing-page.dark-mode .btn-outline-glass {
+    background: rgba(15, 23, 42, 0.65);
+    color: #e2e8f0;
+    border-color: rgba(148, 163, 184, 0.35);
+}
+
+body.landing-page.dark-mode .btn-outline-glass:hover,
+body.landing-page.dark-mode .btn-outline-glass:focus {
+    border-color: rgba(129, 140, 248, 0.45);
+    color: #f8fafc;
+}
+
+body.landing-page.dark-mode .btn-google {
+    background: rgba(82, 11, 11, 0.5);
+    border-color: rgba(220, 38, 38, 0.35);
+    color: #fecaca;
+}
+
+body.landing-page.dark-mode .btn-google:hover,
+body.landing-page.dark-mode .btn-google:focus {
+    background: rgba(82, 11, 11, 0.6);
+}
+
+body.landing-page.dark-mode .auth-meta,
+body.landing-page.dark-mode .glass-helper,
+body.landing-page.dark-mode .blog-card .blog-meta,
+body.landing-page.dark-mode .blog-empty-state {
+    color: #cbd5f5;
+}
+
+body.landing-page.dark-mode .auth-divider::before,
+body.landing-page.dark-mode .auth-divider::after,
+body.landing-page.dark-mode .glass-divider {
+    background: linear-gradient(90deg, transparent, rgba(129, 140, 248, 0.35), transparent);
+}
+
+body.landing-page.dark-mode .dashboard-link {
+    background: rgba(15, 23, 42, 0.7);
+    color: #e2e8f0;
+    border-color: rgba(15, 23, 42, 0.7);
+}
+
+body.landing-page.dark-mode .dashboard-link:hover,
+body.landing-page.dark-mode .dashboard-link:focus,
+body.landing-page.dark-mode .dashboard-link.active {
+    border-color: rgba(129, 140, 248, 0.45);
+}
+
+body.landing-page.dark-mode .dashboard-pane,
+body.landing-page.dark-mode .dashboard-card,
+body.landing-page.dark-mode .blog-search-card,
+body.landing-page.dark-mode .blog-detail-card,
+body.landing-page.dark-mode .blog-detail-search,
+body.landing-page.dark-mode .score-card {
+    background: rgba(15, 23, 42, 0.78);
+    border-color: rgba(148, 163, 184, 0.28);
+    color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .profile-details .detail-row {
+    background: rgba(15, 23, 42, 0.6);
+    color: #cbd5f5;
+}
+
+body.landing-page.dark-mode .blog-card {
+    background: rgba(15, 23, 42, 0.72);
+    border-color: rgba(148, 163, 184, 0.25);
+    color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .blog-card .blog-link {
+    color: #c7d2fe;
+}
+
+body.landing-page.dark-mode .blog-card .blog-link:hover {
+    color: #93c5fd;
+}
+
+body.landing-page.dark-mode .modal-step .modal-content {
+    background: rgba(10, 17, 29, 0.95);
+}
+
 @media (max-width: 991.98px) {
     body.landing-page.dark-mode .landing-header .navbar-collapse {
         background: rgba(10, 17, 29, 0.95);

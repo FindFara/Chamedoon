@@ -1,78 +1,55 @@
-﻿@model Chamedoon.Application.Services.Account.Register.ViewModel.RegisterUser_VM;
+@model Chamedoon.Application.Services.Account.Register.ViewModel.RegisterUser_VM
 @{
-    ViewData["Title"] = "ثبت نام";
-    Layout = null;
-}﻿
+    ViewData["Title"] = "ثبت‌نام در چمدون";
+    Layout = "~/Views/Landing/_LandingLayout.cshtml";
+}
 
-<partial name="Styles" />
-<partial name="MetaTags" />
-
-<div class="back-to-home rounded d-none d-sm-block">
-    <a asp-controller="Home" asp-action="Index">
-        <button type="button" class="btn btn-icon btn-primary">
-            <i data-feather="home" class="mdi mdi-home-outline icons"></i>
-        </button>
-    </a>
-</div>
-<!-- شوع آن -->
-<section class="bg-home bg-circle-gradiant d-flex align-items-center" style="background: url('/images/bg.png')">
-    <div class="bg-overlay bg-overlay-white"></div>
+<section class="glass-section auth-section">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-5 col-md-8">
-                <div class="card login-page bg-white shadow rounded border-0">
-                    <div class="card-body">
-                        <h4 class="card-title text-center">ثبت نام</h4>
-                        <form asp-action="Register" method="post" class="login-form mt-4" novalidate>
-                            <div class="row">
-
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        @*<label class="form-label">ایمیل  <span class="text-danger">*</span></label>*@
-                                        <div class="form-icon position-relative">
-                                            <i data-feather="mail" class="mdi mdi-account fea icon-sm icons"></i>
-                                            <input asp-for="Email" type="email" class="form-control ps-5" placeholder="ایمیل">
-                                            @* <div class="mt-2">
-                                                <span asp-validation-for="Email" class="text-danger mt"></span>
-                                            </div> *@
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <div class="form-icon position-relative">
-                                            <i data-feather="key" class="mdi mdi-key fea icon-sm icons"></i>
-                                            <input asp-for="Password" type="password" class="form-control ps-5" placeholder="رمز عبور ">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-danger mt-2">
-                                    @if (ViewData["ErrorMessage"] != null)
-                                    {
-                                        @ViewData["ErrorMessage"]
-                                    }
-                                </div>
-                                <div asp-validation-summary="All" class="text-danger"></div>
-
-
-                                <div class="col-lg-12 mb-0">
-                                    <div class="d-grid">
-                                        <button class="btn btn-primary">ثبت نام</button>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 mt-4 text-center">
-                                    <div class="row">
-                                        <div class="d-grid">
-                                            <a asp-controller="auth" asp-action="login-google" class="btn btn-light"><i class="mdi mdi-google text-danger"></i> ورود با گوگل </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+        <div class="auth-grid">
+            <div class="auth-intro text-lg-end">
+                <span class="badge">شروع تجربه جدید</span>
+                <h1 class="fw-bold">تنها چند کلیک تا دسترسی به نقشه راه مهاجرتی شخصی.</h1>
+                <p class="text-muted mb-4">
+                    با ساخت حساب، مسیرهای پیشنهادی، مدارک موردنیاز و امتیازبندی دقیق را در قالب یک داشبورد شفاف دنبال کن.
+                </p>
+                <ul class="auth-benefits">
+                    <li>پروفایل شخصی با امکان ذخیره مدارک و پیشرفت</li>
+                    <li>دریافت پیشنهاد کشور و نوع ویزا بر اساس شرایط واقعی</li>
+                    <li>دسترسی به محتوای تخصصی و تجربه‌های کاربران</li>
+                </ul>
+            </div>
+            <div class="glass-card auth-card">
+                <div class="auth-card-header">
+                    <h2>ایجاد حساب جدید</h2>
+                    <p class="glass-helper mb-0">اطلاعات دقیق بنویس تا توصیه‌ها متناسب با شرایطت تنظیم شود.</p>
+                </div>
+                <form asp-action="Register" method="post" novalidate>
+                    <div class="glass-field">
+                        <label asp-for="Email" class="form-label">ایمیل</label>
+                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
+                    <div class="glass-field">
+                        <label asp-for="Password" class="form-label">رمز عبور</label>
+                        <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور قدرتمند" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+                    @if (ViewData["ErrorMessage"] != null)
+                    {
+                        <div class="text-danger small">@ViewData["ErrorMessage"]</div>
+                    }
+                    <div class="text-danger small" asp-validation-summary="All"></div>
+                    <button type="submit" class="btn-glass-primary w-100 mt-3">ثبت‌نام و ادامه</button>
+                </form>
+                <div class="auth-divider">یا ثبت‌نام با</div>
+                <a asp-controller="Account" asp-action="login-google" class="btn-google w-100">
+                    <span aria-hidden="true">✨</span>
+                    ثبت‌نام با حساب گوگل
+                </a>
+                <div class="auth-meta text-center">
+                    <span>قبلاً حساب ساخته‌ای؟ <a asp-controller="Account" asp-action="Login">ورود به چمدون</a></span>
+                    <span>با ثبت‌نام، شرایط استفاده و حریم خصوصی چمدون را می‌پذیری.</span>
                 </div>
             </div>
         </div>

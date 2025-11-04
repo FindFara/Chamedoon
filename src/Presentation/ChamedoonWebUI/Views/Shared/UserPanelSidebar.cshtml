@@ -1,47 +1,39 @@
-﻿    <div class="sidebar sticky-bar p-4 rounded shadow-md">
-        <div class="widget mt-4 pt-2">
-            <h6 class="widget-title">تکمیل حساب کاربری  :</h6>
-            <div class="progress-box mt-4">
-                <h6 class="title text-muted">پیش رفتن  </h6>
-                <div class="progress">
-                    <div class="progress-bar position-relative bg-primary" style="width:50%;">
-                        <div class="progress-value d-block text-muted h6">48 / 100</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="widget mt-4">
-            <ul class="list-unstyled sidebar-nav mb-0" id="navmenu-nav">
+@using System
+@{
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    string LinkClass(string action, string controller) =>
+        string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase)
+            ? "dashboard-link active"
+            : "dashboard-link";
+}
 
-                <li class="navbar-item account-menu px-0">
-                    <a asp-controller="UserPanel" asp-action="Index" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                        <span class="h4 mb-0"><i class="mdi mdi-account"></i></span>
-                        <h6 class="mb-0 ms-2">پروفایل </h6>
-                    </a>
-                </li>
-
-                <li class="navbar-item account-menu px-0 mt-2">
-                    <a asp-controller="UserPanel" asp-action="Edit" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                        <span class="h4 mb-0"><i class="mdi mdi-file-edit"></i></span>
-                        <h6 class="mb-0 ms-2">ویرایش حساب کاربری </h6>
-                    </a>
-                </li>
-
-
-                <li class="navbar-item account-menu px-0 mt-2">
-                <a asp-controller="Account" asp-action="ChangePassword" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                        <span class="h4 mb-0"><i class="mdi mdi-lock"></i></span>
-                        <h6 class="mb-0 ms-2">تغییر رمز عبور </h6>
-                    </a>
-                </li>
-
-                <li class="navbar-item account-menu px-0 mt-2">
-                    <a asp-controller="Account" asp-action="Logout" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                        <span class="h4 mb-0"><i class="mdi mdi-logout"></i></span>
-                        <h6 class="mb-0 ms-2">خروج از حساب </h6>
-                    </a>
-                </li>
-            </ul>
+<div class="glass-card dashboard-pane">
+    <h6 class="fw-semibold mb-3">پیشرفت تکمیل حساب</h6>
+    <div class="progress mb-2">
+        <div class="progress-bar" style="width:50%">
+            <span class="visually-hidden">۵۰ درصد</span>
         </div>
     </div>
+    <p class="glass-helper mb-0">با تکمیل اطلاعات پروفایل، پیشنهادهای دقیق‌تری دریافت می‌کنی.</p>
+</div>
 
+<nav class="glass-card dashboard-pane dashboard-menu" aria-label="منوی پنل کاربری">
+    <a asp-controller="UserPanel" asp-action="Index" class="@LinkClass("Index", "UserPanel")">
+        <span aria-hidden="true">👤</span>
+        <span>پروفایل</span>
+    </a>
+    <a asp-controller="UserPanel" asp-action="Edit" class="@LinkClass("Edit", "UserPanel")">
+        <span aria-hidden="true">✏️</span>
+        <span>ویرایش اطلاعات</span>
+    </a>
+    <a asp-controller="Account" asp-action="ChangePassword" class="@LinkClass("ChangePassword", "Account")">
+        <span aria-hidden="true">🔒</span>
+        <span>تغییر رمز عبور</span>
+    </a>
+    <a asp-controller="Account" asp-action="Logout" class="dashboard-link">
+        <span aria-hidden="true">🚪</span>
+        <span>خروج از حساب</span>
+    </a>
+</nav>

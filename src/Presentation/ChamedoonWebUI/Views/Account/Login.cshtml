@@ -1,86 +1,59 @@
-﻿@model Chamedoon.Application.Services.Account.Login.ViewModel.LoginUserViewModel;
+@model Chamedoon.Application.Services.Account.Login.ViewModel.LoginUserViewModel
 @{
-    ViewData["Title"] = "ورود به سایت";
-    Layout = null;
+    ViewData["Title"] = "ورود به چمدون";
+    Layout = "~/Views/Landing/_LandingLayout.cshtml";
 }
-<partial name="Styles" />
-<partial name="MetaTags" />
 
-<div class="back-to-home rounded d-none d-sm-block">
-    <a asp-controller="Home" asp-action="Index">
-        <button type="button" class="btn btn-icon btn-primary">
-            <i data-feather="home" class="mdi mdi-home-outline icons"></i>
-        </button>
-    </a>
-</div>
-<!-- شوع آن -->
-<section class="bg-home bg-circle-gradiant d-flex align-items-center" style="background: url('/images/bg.png')">
-    <div class="bg-overlay bg-overlay-white"></div>
+<section class="glass-section auth-section">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-5 col-md-8">
-                <div class="card login-page bg-white shadow rounded border-0">
-                    <div class="card-body">
-                        <h4 class="card-title text-center"> ورود </h4>
-                        <form asp-action="Login" method="post" class="login-form mt-4" novalidate>
-                            <div class="row">
-
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        @* <label class="form-label">ایمیل  <span class="text-danger">*</span></label> *@
-                                        <div class="form-icon position-relative">
-                                            <i class="mdi mdi-account align-middle icons"></i>
-                                            <input asp-for="Email" type="email" class="form-control ps-5" placeholder="ایمیل">
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        @* <label class="form-label">رمز عبور  <span class="text-danger">*</span></label> *@
-                                        <div class="form-icon position-relative">
-                                            <i data-feather="key" class="mdi mdi-key fea icon-sm icons"></i>
-                                            <input asp-for="Password" type="password" class="form-control ps-5" placeholder="رمز عبور ">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-danger" asp-validation-summary="All"></div>
-
-                                <div class="col-lg-12">
-                                    <div class="d-flex justify-content-between">
-                                        <div class="mb-3">
-
-                                            <div class="text-dark fw-bold">
-                                                <label asp-for="RememberMe" class="text-dark fw-bold">
-                                                    <input asp-for="RememberMe" /> مرا به خاطر بسپار
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <p class="forgot-pass mb-0"><a asp-controller="auth" asp-action="ForgotPassword" class="text-dark fw-bold">فراموشی رمز عبور؟ </a></p>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12 mb-0">
-                                    <div class="d-grid">
-                                        <button class="btn btn-primary">ورود  </button>
-                                    </div>
-                                </div>
-                                <div class="col-12 text-center">
-                                    <p class="mb-0 mt-3"><small class="text-dark me-2">حسابی ندارید؟ </small> <a asp-controller="Account" asp-action="Register" class="text-dark fw-bold">ثبت نام کنید </a></p>
-                                </div>
-
-                                <div class="col-lg-12 mt-4 text-center">
-                                    <div class="row">
-                                        <div class="d-grid">
-                                            <a asp-controller="auth" asp-action="login-google" class="btn btn-light"><i class="mdi mdi-google text-danger"></i> ورود با گوگل </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+        <div class="auth-grid">
+            <div class="auth-intro text-lg-end">
+                <span class="badge">بازگشت به چمدون</span>
+                <h1 class="fw-bold">ورود به حساب کاربری و ادامه مسیر مهاجرتی‌ات.</h1>
+                <p class="text-muted mb-4">
+                    با ورود به حساب می‌توانی روند ارزیابی، مدارک ذخیره‌شده و توصیه‌های هوشمند را ادامه دهی.
+                    اگر هنوز حسابی نداری در چند ثانیه می‌توانی ثبت‌نام کنی.
+                </p>
+                <ul class="auth-benefits">
+                    <li>دسترسی به داشبورد شخصی و سابقه تست مهاجرت</li>
+                    <li>یادآوری هوشمند برای مدارک و زمان‌بندی</li>
+                    <li>پیشنهاد مسیرهای مناسب بر اساس شرایط واقعی تو</li>
+                </ul>
+            </div>
+            <div class="glass-card auth-card">
+                <div class="auth-card-header">
+                    <h2>ورود به حساب</h2>
+                    <p class="glass-helper mb-0">از ایمیل و رمز عبوری که با آن ثبت‌نام کردی استفاده کن.</p>
+                </div>
+                <form asp-action="Login" method="post" novalidate>
+                    <div class="glass-field">
+                        <label asp-for="Email" class="form-label">ایمیل</label>
+                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
+                    <div class="glass-field">
+                        <label asp-for="Password" class="form-label">رمز عبور</label>
+                        <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+                    <div class="auth-secondary-actions mt-2">
+                        <label class="glass-checkbox">
+                            <input asp-for="RememberMe" type="checkbox" />
+                            <span>مرا به خاطر بسپار</span>
+                        </label>
+                        <a asp-controller="Account" asp-action="ForgotPassword" class="text-primary fw-semibold">فراموشی رمز عبور؟</a>
+                    </div>
+                    <div class="text-danger small" asp-validation-summary="All"></div>
+                    <button type="submit" class="btn-glass-primary w-100 mt-3">ورود به چمدون</button>
+                </form>
+                <div class="auth-divider">یا ورود با</div>
+                <a asp-controller="Account" asp-action="login-google" class="btn-google w-100">
+                    <span aria-hidden="true">🔐</span>
+                    ورود با حساب گوگل
+                </a>
+                <div class="auth-meta text-center">
+                    <span>هنوز عضو نیستی؟ <a asp-controller="Account" asp-action="Register">ثبت‌نام سریع</a></span>
+                    <span>در صورت نیاز به راهنمایی با پشتیبانی در تماس باش.</span>
                 </div>
             </div>
         </div>

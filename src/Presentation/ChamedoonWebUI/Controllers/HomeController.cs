@@ -20,7 +20,7 @@ namespace ChamedoonWebUI.Controllers
 
         public IActionResult Landing()
         {
-            return View("Landing");
+            return View("~/Views/Landing/Index.cshtml");
         }
 
         public IActionResult Privacy()

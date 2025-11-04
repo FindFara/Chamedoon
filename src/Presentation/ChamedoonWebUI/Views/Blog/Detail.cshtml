@@ -1,53 +1,47 @@
 @model Chamedoon.Application.Services.Blog.ViewModel.ArticleViewModel
 @{
     ViewData["Title"] = Model.ArticleTitle;
+    Layout = "~/Views/Landing/_LandingLayout.cshtml";
 }
 
-<section class="section mt-5">
+<section class="glass-section">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="card border-0 shadow rounded overflow-hidden mb-4">
-                    <div class="position-relative">
-                        <img src="~/images/blog/@(string.IsNullOrEmpty(Model.ArticleImageName) ? "01.jpg" : Model.ArticleImageName)" class="img-fluid w-100" alt="@Model.ArticleTitle" />
-                        <div class="overlay rounded-top bg-dark" style="opacity:0.4;"></div>
+        <article class="glass-card blog-detail-card mb-4">
+            <div class="blog-detail-header">
+                <img src="~/images/blog/@(string.IsNullOrEmpty(Model.ArticleImageName) ? "01.jpg" : Model.ArticleImageName)" alt="@Model.ArticleTitle" />
+                <div>
+                    <h1 class="fw-bold">@Model.ArticleTitle</h1>
+                    <div class="blog-meta">
+                        <span>✍️ @Model.Writer</span>
                     </div>
-                    <div class="card-body p-4">
-                        <h3 class="card-title mb-3">@Model.ArticleTitle</h3>
-                        <ul class="list-inline text-muted mb-3">
-                            <li class="list-inline-item"><i class="uil uil-user"></i> @Model.Writer</li>
-                        </ul>
-                        <p class="text-muted">@Model.ShortDescription</p>
-                    </div>
-                </div>
-                <!-- Advanced search form on detail page to encourage exploring other articles -->
-                <div class="border rounded p-4">
-                    <h5 class="mb-3">جستجوی مقالات</h5>
-                    <form method="get" asp-action="Index" asp-controller="Blog">
-                        <div class="row g-3 align-items-end">
-                            <div class="col-md-5">
-                                <label for="searchDetail" class="form-label">کلمه کلیدی</label>
-                                <input type="text" id="searchDetail" name="search" class="form-control" placeholder="عنوان یا متن مقاله..." />
-                            </div>
-                            <div class="col-md-3">
-                                <label for="writerDetail" class="form-label">نویسنده</label>
-                                <input type="text" id="writerDetail" name="writer" class="form-control" placeholder="نام نویسنده" />
-                            </div>
-                            <div class="col-md-2">
-                                <label for="dateFromDetail" class="form-label">از تاریخ</label>
-                                <input type="date" id="dateFromDetail" name="dateFrom" class="form-control" />
-                            </div>
-                            <div class="col-md-2">
-                                <label for="dateToDetail" class="form-label">تا تاریخ</label>
-                                <input type="date" id="dateToDetail" name="dateTo" class="form-control" />
-                            </div>
-                            <div class="col-12 mt-3 d-grid">
-                                <button type="submit" class="btn btn-primary">جستجو</button>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
+            <p class="glass-helper mb-0">@Model.ShortDescription</p>
+        </article>
+
+        <div class="glass-card blog-detail-search">
+            <h5 class="fw-semibold mb-3">جستجوی سایر مقالات</h5>
+            <form method="get" asp-action="Index" asp-controller="Blog" class="row g-3 align-items-end">
+                <div class="col-lg-5 col-md-6">
+                    <label for="searchDetail" class="form-label">کلمه کلیدی</label>
+                    <input type="text" id="searchDetail" name="search" class="form-control" placeholder="عنوان یا متن مقاله..." />
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <label for="writerDetail" class="form-label">نویسنده</label>
+                    <input type="text" id="writerDetail" name="writer" class="form-control" placeholder="نام نویسنده" />
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <label for="dateFromDetail" class="form-label">از تاریخ</label>
+                    <input type="date" id="dateFromDetail" name="dateFrom" class="form-control" />
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <label for="dateToDetail" class="form-label">تا تاریخ</label>
+                    <input type="date" id="dateToDetail" name="dateTo" class="form-control" />
+                </div>
+                <div class="col-12 d-grid">
+                    <button type="submit" class="btn-glass-primary">جستجوی مقالات</button>
+                </div>
+            </form>
         </div>
     </div>
 </section>

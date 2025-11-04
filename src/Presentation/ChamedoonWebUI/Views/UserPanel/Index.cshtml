@@ -1,76 +1,50 @@
-﻿@model Chamedoon.Application.Services.Account.Users.ViewModel.UserDetails_VM;
+@model Chamedoon.Application.Services.Account.Users.ViewModel.UserDetails_VM
 @using Chamedoon.Application.Common.Extensions
 @{
     Layout = "~/Views/Shared/UserPanelLayout.cshtml";
-    ViewData["Title"] = "پنل کاربری " + User.Identity.Name;
+    ViewData["Title"] = "پنل کاربری " + User.Identity?.Name;
 }
-<style>
-    .userpanel {
-        top: 100px;
-    }
-</style>
 
 @section UserPanelContent {
-        <div class="card-body card public-profile border-0 rounded shadow-md">
-            <div class="pb-4">
-                <div class="row">
-                    <div class="col-md-6 mt-4">
-                        <h5>جزئیات شخصی :</h5>
-                        <div class="mt-4" style="background: url('/img/bg/bg2.png') center center;">
-                            <div class="d-flex align-items-center">
-                                <i data-feather="mail" class="fea icon-ex-md text-muted me-3"></i>
-                                <div class="flex-1">
-                                    <h6 class="text-primary mb-0">نام کاربری :</h6>
-                                    <a class="text-muted">@Model.UserName</a>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center mt-3">
-                                <i data-feather="mail" class="fea icon-ex-md text-muted me-3"></i>
-                                <div class="flex-1">
-                                    <h6 class="text-primary mb-0">ایمیل :</h6>
-                                    <a href="javascript:void(0)" class="text-muted">@Model.Email</a>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center mt-3">
-                                <i data-feather="bookmark" class="fea icon-ex-md text-muted me-3"></i>
-                                <div class="flex-1">
-                                    <h6 class="text-primary mb-0">مهارت :</h6>
-                                    <a href="javascript:void(0)" class="text-muted">html</a>, <a href="javascript:void(0)" class="text-muted">css</a>, <a href="javascript:void(0)" class="text-muted">js</a>, <a href="javascript:void(0)" class="text-muted">mysql</a>
-                                </div>
-                            </div>
-
-                            <div class="d-flex align-items-center mt-3">
-                                <i data-feather="globe" class="fea icon-ex-md text-muted me-3"></i>
-                                <div class="flex-1">
-                                    <h6 class="text-primary mb-0"> وضعیت حساب :</h6>
-                                    @if (Model.IsBlocked == true)
-                                    {
-                                        <a class="text-muted">فعال</a>
-                                    }
-                                    else
-                                    {
-                                        <a class="text-muted"> غیرفعال</a>
-                                    }
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center mt-3">
-                                <i data-feather="gift" class="fea icon-ex-md text-muted me-3"></i>
-                                <div class="flex-1">
-                                    <h6 class="text-primary mb-0">تاریخ تولد :</h6>
-                                    <p class="text-muted mb-0">تیر 1377</p>
-                                </div>
-                            </div>
-
-                            <div class="d-flex align-items-center mt-3">
-                                <i data-feather="phone" class="fea icon-ex-md text-muted me-3"></i>
-                                <div class="flex-1">
-                                    <h6 class="text-primary mb-0">تاریخ عضویت  :</h6>
-                                    <a href="javascript:void(0)" class="text-muted">@Model.Created.ConvertMiladiToShamsi()</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div class="glass-card dashboard-card">
+        <h5>خلاصه حساب کاربری</h5>
+        <p class="glass-helper">اطلاعات شخصی و وضعیت حساب تو در این بخش نمایش داده می‌شود.</p>
+        <div class="profile-details">
+            <div class="detail-row">
+                <span class="detail-icon" aria-hidden="true">📛</span>
+                <div class="detail-body">
+                    <p class="detail-title">نام کاربری</p>
+                    <p class="detail-value">@Model.UserName</p>
+                </div>
+            </div>
+            <div class="detail-row">
+                <span class="detail-icon" aria-hidden="true">📧</span>
+                <div class="detail-body">
+                    <p class="detail-title">ایمیل</p>
+                    <p class="detail-value">@Model.Email</p>
+                </div>
+            </div>
+            <div class="detail-row">
+                <span class="detail-icon" aria-hidden="true">📅</span>
+                <div class="detail-body">
+                    <p class="detail-title">تاریخ عضویت</p>
+                    <p class="detail-value">@Model.Created.ConvertMiladiToShamsi()</p>
+                </div>
+            </div>
+            <div class="detail-row">
+                <span class="detail-icon" aria-hidden="true">⚙️</span>
+                <div class="detail-body">
+                    <p class="detail-title">وضعیت حساب</p>
+                    <p class="detail-value">@(Model.IsBlocked == true ? "فعال" : "غیرفعال")</p>
+                </div>
+            </div>
+            <div class="detail-row">
+                <span class="detail-icon" aria-hidden="true">🎯</span>
+                <div class="detail-body">
+                    <p class="detail-title">مهارت‌های ثبت‌شده</p>
+                    <p class="detail-value">html، css، js، mysql</p>
                 </div>
             </div>
         </div>
+    </div>
 }
