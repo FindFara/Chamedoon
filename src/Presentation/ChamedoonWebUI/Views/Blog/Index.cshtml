@@ -2,7 +2,6 @@
 @using System.Linq
 @{
     ViewData["Title"] = "وبلاگ";
-    Layout = "~/Views/Landing/_LandingLayout.cshtml";
     var writers = Model.Articles.Select(a => a.Writer).Distinct().ToList();
 }
 

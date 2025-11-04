@@ -1,196 +1,0 @@
-@{
-    Layout = "_LandingLayout";
-    ViewData["Title"] = "صفحه فرود";
-}
-
-<section class="container py-5">
-    <div class="hero-section">
-        <div class="row align-items-center g-5">
-            <div class="col-lg-6 text-center text-lg-end">
-                <span class="hero-badge"><span class="dot"></span> بدون چمدون، کجا می‌خوای بری؟</span>
-                <h1 class="display-5 fw-bold mt-4">پیشنهاد بهترین راه مهاجرت و بهترین کشور بر اساس شخصیت و شرایط تو.</h1>
-                <p class="text-muted mt-3">با چمدون هر بخش از سفر مهاجرتت به صورت گام‌به‌گام پیش می‌رود؛ از شناخت مسیر تا آماده‌سازی مدارک و تجربه زندگی در مقصد جدید.</p>
-                <div class="d-flex flex-wrap justify-content-center justify-content-lg-end gap-3 mt-4">
-                    <a asp-controller="Immigration" asp-action="Index" class="btn btn-primary btn-lg px-4">شروع تست</a>
-                    <a asp-controller="Blog" asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">مشاهده نمونه خروجی</a>
-                </div>
-                <div class="d-flex flex-column flex-sm-row align-items-center gap-3 mt-4 text-muted small justify-content-center justify-content-lg-end">
-                    <div class="d-flex align-items-center gap-2">
-                        <strong class="text-dark fs-5">۱۲هزار+</strong>
-                        تطبیق موفق مقصد
-                    </div>
-                    <span class="vr d-none d-sm-inline"></span>
-                    <span>همراهی ویژه برای دانشجوها، نیروهای متخصص و خانواده‌ها.</span>
-                </div>
-            </div>
-            <div class="col-lg-6 text-center">
-                <img src="~/newtheme/img/hero-illustration.svg" class="hero-illustration" alt="سفر مهاجرت" />
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="features" class="py-5">
-    <div class="container">
-        <div class="row justify-content-center text-center mb-5">
-            <div class="col-lg-7">
-                <span class="text-uppercase text-primary fw-semibold">چرا چمدون؟</span>
-                <h2 class="fw-bold mt-2">همه ابزارهایی که برای حرکت نیاز داری، در قالب بخش‌های منظم.</h2>
-                <p class="text-muted">از انتخاب کشور تا شناخت تجربه کاربران، همه‌چیز در دسترس توست تا با اطمینان تصمیم بگیری.</p>
-            </div>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-3">
-                <div class="feature-card">
-                    <div class="feature-icon">📰</div>
-                    <h5 class="fw-semibold">وبلاگ چمدون</h5>
-                    <p class="text-muted">مطالب متنوع درباره کشورها، انواع ویزا و تجربه‌های واقعی مهاجرها.</p>
-                    <a asp-controller="Blog" asp-action="Index" class="stretched-link text-primary">مطالعه بیشتر</a>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="feature-card">
-                    <div class="feature-icon">🗺️</div>
-                    <h5 class="fw-semibold">کجا مهاجرت کنم؟</h5>
-                    <p class="text-muted">بر اساس شخصیت و موقعیتت بهترین مقصدها به تو پیشنهاد داده می‌شود.</p>
-                    <a asp-controller="Immigration" asp-action="Index" class="stretched-link text-primary">شروع مقایسه</a>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h5 class="fw-semibold">شانس موفقیت</h5>
-                    <p class="text-muted">احتمال موفقیتت برای مقصدهای مختلف محاسبه و ساده توضیح داده می‌شود.</p>
-                    <a asp-controller="Immigration" asp-action="Index" class="stretched-link text-primary">بررسی شانس</a>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="feature-card">
-                    <div class="feature-icon">👥</div>
-                    <h5 class="fw-semibold">تجربه کاربران</h5>
-                    <p class="text-muted">از تجربه دیگر اعضای چمدون در انجمن استفاده کن و سوال بپرس.</p>
-                    <a href="javascript:void(0)" class="stretched-link text-primary">ورود به انجمن</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="process" class="py-5 bg-white">
-    <div class="container">
-        <div class="row align-items-center g-5">
-            <div class="col-lg-5 text-center text-lg-end">
-                <h2 class="fw-bold">یک مسیر شفاف، بخش‌بندی شده و قابل پیگیری.</h2>
-                <p class="text-muted">هر بخش از سفر مهاجرت از کشف تا استقرار با چک‌لیست‌ها و یادآورها پیش روی تو قرار می‌گیرد.</p>
-            </div>
-            <div class="col-lg-7">
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <div class="process-step h-100" data-step="۱">
-                            <h5 class="fw-semibold">کشف</h5>
-                            <p class="text-muted">با تست تعاملی، پروفایل خودت رو بشناس و پیشنهادهای متناسب دریافت کن.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="process-step h-100" data-step="۲">
-                            <h5 class="fw-semibold">آماده‌سازی</h5>
-                            <p class="text-muted">چک‌لیست مدارک و اقدامات لازم رو بر اساس مقصد دلخواهت دنبال کن.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="process-step h-100" data-step="۳">
-                            <h5 class="fw-semibold">اقدام</h5>
-                            <p class="text-muted">جدول زمان‌بندی، هزینه‌ها و مدارک رو قبل از ارسال درخواست مرور کن.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="process-step h-100" data-step="۴">
-                            <h5 class="fw-semibold">استقرار</h5>
-                            <p class="text-muted">نکات طلایی برای شروع زندگی، کار و تحصیل در مقصد جدیدت رو دریافت کن.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="insights" class="py-5">
-    <div class="container">
-        <div class="row g-4 align-items-center">
-            <div class="col-lg-5">
-                <h2 class="fw-bold">هر هفته دیدگاه‌های تازه</h2>
-                <p class="text-muted">از راهنمای انتخاب کشور تا تجربه واقعی مهاجرها، همه چیز در وبلاگ چمدون منتشر می‌شود.</p>
-                <a asp-controller="Blog" asp-action="Index" class="btn btn-outline-primary mt-3">ورود به وبلاگ</a>
-            </div>
-            <div class="col-lg-7">
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <div class="feature-card h-100">
-                            <span class="badge bg-primary-subtle text-primary mb-3">جدیدترین راهنما</span>
-                            <h5 class="fw-semibold">انتخاب بهترین مقصد تحصیلی در ۲۰۲۴</h5>
-                            <p class="text-muted">شرایط پذیرش، هزینه‌ها و مسیرهای اقامت پس از تحصیل رو مقایسه کن.</p>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="feature-card h-100">
-                            <span class="badge bg-primary-subtle text-primary mb-3">تجربه کاربران</span>
-                            <h5 class="fw-semibold">خانواده رحیمی چطور در تورنتو جا افتادند</h5>
-                            <p class="text-muted">از بودجه‌بندی تا یافتن مدرسه مناسب، نکات عملی سفرشون رو بخون.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section id="testimonials" class="py-5 bg-white">
-    <div class="container">
-        <div class="row text-center mb-5">
-            <div class="col">
-                <span class="text-uppercase text-primary fw-semibold">نظرات کاربران</span>
-                <h2 class="fw-bold mt-2">کاربرهای چمدون چه می‌گویند؟</h2>
-            </div>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-4">
-                <div class="testimonial-card">
-                    <p>«نقشه راه بخش‌بندی شده باعث شد پرونده ویزای دانشجویی‌ام دقیق و به‌موقع پیش بره. هر مرحله که تموم می‌شد، به هدفم نزدیک‌تر می‌شدم.»</p>
-                    <h6 class="fw-semibold mb-0">سارا ک.</h6>
-                    <small class="text-muted">مهاجرت تحصیلی به هلند</small>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="testimonial-card">
-                    <p>«پیشنهادهای وبلاگ همیشه تازه و دقیق بود. تونستم سه مقصد کاری مختلف رو با هم مقایسه کنم و بهترینش رو انتخاب کنم.»</p>
-                    <h6 class="fw-semibold mb-0">فرهاد م.</h6>
-                    <small class="text-muted">نیروی متخصص در برلین</small>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="testimonial-card">
-                    <p>«از آماده‌سازی مدارک تا ماه اول بعد از ورود، اپلیکیشن هر جا لازم بود کنارمون بود و تجربه خانواده‌های دیگه رو در اختیارمون گذاشت.»</p>
-                    <h6 class="fw-semibold mb-0">نیلوفر آ.</h6>
-                    <small class="text-muted">جابجایی خانوادگی به کلگری</small>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="py-5">
-    <div class="container">
-        <div class="cta-section text-center text-lg-end">
-            <div class="row align-items-center g-4">
-                <div class="col-lg-8">
-                    <h3 class="fw-bold mb-3">آماده‌ای فصل جدید زندگیت رو شروع کنی؟</h3>
-                    <p class="mb-0">هزاران نفر با چمدون مسیر مهاجرت‌شون رو مدیریت می‌کنن. اولین بخش شخصی‌سازی شده همین حالا منتظر توست.</p>
-                </div>
-                <div class="col-lg-4 text-lg-end">
-                    <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg px-4">ساخت حساب کاربری</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
