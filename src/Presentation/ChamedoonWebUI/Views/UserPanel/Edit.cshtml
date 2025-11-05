@@ -10,7 +10,7 @@
         <p class="glass-helper">اطلاعات دقیق باعث می‌شود پیشنهادهای مهاجرتی بهتر و نزدیک‌تر به نیازهایت نمایش داده شود.</p>
         <form asp-controller="UserPanel" asp-action="Edit" method="post" enctype="multipart/form-data">
             <div class="avatar-wrapper mb-4">
-                <img id="avatarPreview" src="@(string.IsNullOrEmpty(Model.ProfileImage) ? "/images/Avatars/Defult/9439682.jpg" : Model.ProfileImage)" alt="تصویر پروفایل">
+                <img id="avatarPreview" src="@(string.IsNullOrEmpty(Model.ProfileImage) ?"/img/avatar.jpg" : Model.ProfileImage)" alt="تصویر پروفایل">
                 <div class="d-flex flex-column gap-2">
                     <span class="glass-helper">برای انتخاب تصویر جدید از دکمه زیر استفاده کن.</span>
                     <label for="ProfileImageFile" class="btn-outline-glass">انتخاب تصویر</label>

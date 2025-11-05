@@ -189,52 +189,6 @@ body {
     height: 22px;
 }
 
-.glass-action::after {
-    content: attr(data-label);
-    position: absolute;
-    bottom: calc(100% + 0.75rem);
-    left: 50%;
-    transform: translateX(-50%) translateY(6px);
-    background: rgba(15, 23, 42, 0.85);
-    color: #f8fafc;
-    padding: 0.35rem 0.8rem;
-    border-radius: 0.75rem;
-    font-size: 0.78rem;
-    font-weight: 600;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    z-index: 10;
-    box-shadow: 0 12px 22px -14px rgba(15, 23, 42, 0.5);
-}
-
-.glass-action::before {
-    content: "";
-    position: absolute;
-    bottom: calc(100% + 0.3rem);
-    left: 50%;
-    width: 0.75rem;
-    height: 0.75rem;
-    background: rgba(15, 23, 42, 0.85);
-    transform: translateX(-50%) rotate(45deg);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease;
-    z-index: 9;
-}
-
-.glass-action:hover::after,
-.glass-action:focus-visible::after {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-.glass-action:hover::before,
-.glass-action:focus-visible::before {
-    opacity: 1;
-}
-
 .glass-action-register .glass-action-back {
     background: linear-gradient(135deg, #4682eb -20%, #01beff 120%);
 }

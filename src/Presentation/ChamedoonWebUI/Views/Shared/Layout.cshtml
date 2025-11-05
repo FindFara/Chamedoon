@@ -1,6 +1,6 @@
 ﻿@{
     Layout = null;
-    var pageTitle = ViewData["Title"] as string ?? "چمدون";
+    var pageTitle = ViewData["Title"] as string ?? "Chamedoon";
 }
 
 <!DOCTYPE html>
@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@pageTitle - چمدون</title>
-    <link rel="icon" type="image/svg+xml" href="~/newtheme/img/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="~/img/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -22,7 +22,7 @@
         <header class="landing-header">
             <nav class="navbar navbar-expand-lg landing-navbar">
                 <div class="container align-items-lg-center">
-                    <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">چمدون</a>
+                    <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">Chamedoon</a>
                     <div class="landing-center">
                         <div class="collapse navbar-collapse" id="landingNav">
                             <ul class="navbar-nav landing-nav mb-3 mb-lg-0 align-items-lg-center gap-3 gap-lg-4">
@@ -35,17 +35,34 @@
                     </div>
                     <div class="landing-controls">
                         <div class="landing-actions">
-                            <a class="glass-action glass-action-register" asp-controller="Account" asp-action="Register" data-label="ثبت‌نام" aria-label="ثبت‌نام" title="ثبت‌نام">
-                                <span class="glass-action-back"></span>
-                                <span class="glass-action-front">
-                                    <span class="glass-action-icon" aria-hidden="true">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none">
-                                            <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path d="M5.5 20.5c0-3.59 2.91-6.5 6.5-6.5s6.5 2.91 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a class="glass-action glass-action-register" asp-controller="UserPanel" asp-action="Index">
+                                    <span class="glass-action-back"></span>
+                                    <span class="glass-action-front">
+                                        <span class="glass-action-icon" aria-hidden="true">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none">
+                                                <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                                <path d="M5.5 20.5c0-3.59 2.91-6.5 6.5-6.5s6.5 2.91 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </span>
                                     </span>
-                                </span>
-                            </a>
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="glass-action glass-action-register" asp-controller="Account" asp-action="login" data-label="‌ورود" aria-label="ورود" title="ورود">
+                                    <span class="glass-action-back"></span>
+                                    <span class="glass-action-front">
+                                        <span class="glass-action-icon" aria-hidden="true">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none">
+                                                <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                                <path d="M5.5 20.5c0-3.59 2.91-6.5 6.5-6.5s6.5 2.91 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </span>
+                                    </span>
+                                </a>
+                            }
                             <button class="glass-action glass-action-dark" type="button" id="darkModeToggle" data-mode="light" aria-pressed="false" aria-label="حالت شب" data-label="حالت شب" data-label-light="حالت شب" data-label-dark="حالت روز" title="حالت شب">
                                 <span class="glass-action-back"></span>
                                 <span class="glass-action-front">
