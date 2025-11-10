@@ -1,0 +1,78 @@
+@model BlogIndexViewModel
+@{
+    ViewData["Title"] = "مدیریت وبلاگ";
+}
+
+<div class="admin-card mb-4">
+    <div class="d-flex flex-column flex-lg-row align-items-lg-end gap-3">
+        <form asp-area="Admin" asp-controller="Blogs" asp-action="Index" method="get" class="row g-3 flex-grow-1">
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="Search">جستجوی مطلب</label>
+                <input type="text" id="Search" name="search" value="@Model.SearchTerm" class="form-control" placeholder="عنوان یا خلاصه" />
+            </div>
+            <div class="col-12 col-md-4">
+                <label class="form-label" for="Category">دسته‌بندی</label>
+                <select id="Category" name="category" class="form-select">
+                    <option value="">همه دسته‌ها</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category" selected="@(string.Equals(Model.Category, category, StringComparison.OrdinalIgnoreCase) ? "selected" : null)">@category</option>
+                    }
+                </select>
+            </div>
+            <div class="col-12 col-md-2 d-grid align-self-end">
+                <button type="submit" class="btn btn-primary">فیلتر</button>
+            </div>
+        </form>
+        <a asp-area="Admin" asp-controller="Blogs" asp-action="Create" class="btn btn-success align-self-stretch">مطلب جدید</a>
+    </div>
+</div>
+
+<div class="admin-card">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+            <tr>
+                <th>عنوان</th>
+                <th>دسته</th>
+                <th>وضعیت</th>
+                <th class="text-end">تاریخ انتشار</th>
+                <th class="text-end">بازدید</th>
+                <th class="text-end">عملیات</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var post in Model.Posts)
+            {
+                <tr>
+                    <td>
+                        <div class="fw-semibold">@post.Title</div>
+                        <div class="text-muted small">@post.Summary</div>
+                    </td>
+                    <td>@post.Category</td>
+                    <td>
+                        @if (post.IsPublished)
+                        {
+                            <span class="badge bg-success-subtle text-success">منتشر شده</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning-subtle text-warning">پیش‌نویس</span>
+                        }
+                    </td>
+                    <td class="text-end">@post.PublishedOn.ToLocalTime().ToString("yyyy/MM/dd")</td>
+                    <td class="text-end">@post.Views.ToString("N0")</td>
+                    <td class="text-end">
+                        <div class="btn-group btn-group-sm">
+                            <a asp-area="Admin" asp-controller="Blogs" asp-action="Edit" asp-route-id="@post.Id" class="btn btn-outline-secondary">ویرایش</a>
+                            <form asp-area="Admin" asp-controller="Blogs" asp-action="Delete" asp-route-id="@post.Id" method="post" class="d-inline" onsubmit="return confirm('آیا از حذف مطلب مطمئن هستید؟');">
+                                <button type="submit" class="btn btn-outline-danger">حذف</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
