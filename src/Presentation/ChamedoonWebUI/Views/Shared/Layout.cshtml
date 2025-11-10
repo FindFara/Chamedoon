@@ -35,9 +35,8 @@
                     </div>
                     <div class="landing-controls">
                         <div class="landing-actions">
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <a class="glass-action glass-action-register" asp-controller="UserPanel" asp-action="Index">
+                            <div class="dropdown user-menu-dropdown">
+                                <button class="glass-action glass-action-register dropdown-toggle" type="button" id="userMenuToggle" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="حساب کاربری" title="حساب کاربری">
                                     <span class="glass-action-back"></span>
                                     <span class="glass-action-front">
                                         <span class="glass-action-icon" aria-hidden="true">
@@ -47,22 +46,28 @@
                                             </svg>
                                         </span>
                                     </span>
-                                </a>
-                            }
-                            else
-                            {
-                                <a class="glass-action glass-action-register" asp-controller="Account" asp-action="login" data-label="‌ورود" aria-label="ورود" title="ورود">
-                                    <span class="glass-action-back"></span>
-                                    <span class="glass-action-front">
-                                        <span class="glass-action-icon" aria-hidden="true">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="none">
-                                                <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                                <path d="M5.5 20.5c0-3.59 2.91-6.5 6.5-6.5s6.5 2.91 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </span>
-                                    </span>
-                                </a>
-                            }
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userMenuToggle">
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="UserPanel" asp-action="Index">پنل کاربری</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">خروج</a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Account" asp-action="Login">ورود</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Account" asp-action="Register">ثبت‌نام</a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
                             <button class="glass-action glass-action-dark" type="button" id="darkModeToggle" data-mode="light" aria-pressed="false" aria-label="حالت شب" data-label="حالت شب" data-label-light="حالت شب" data-label-dark="حالت روز" title="حالت شب">
                                 <span class="glass-action-back"></span>
                                 <span class="glass-action-front">
