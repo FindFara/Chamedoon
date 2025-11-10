@@ -58,6 +58,13 @@
                                 <ul class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userMenuToggle">
                                     @if (User.Identity.IsAuthenticated)
                                     {
+                                        if (User.IsInRole("Admin"))
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-area="Admin" asp-controller="UserManagement" asp-action="Index">پنل مدیریت</a>
+                                            </li>
+                                            <li><hr class="dropdown-divider" /></li>
+                                        }
                                         <li>
                                             <a class="dropdown-item" asp-controller="UserPanel" asp-action="Index">پنل کاربری</a>
                                         </li>
