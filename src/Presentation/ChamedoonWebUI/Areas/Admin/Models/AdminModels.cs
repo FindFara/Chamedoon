@@ -85,11 +85,11 @@ public class DashboardSummary
     public IReadOnlyList<AdminUser> RecentUsers { get; set; } = Array.Empty<AdminUser>();
     public IReadOnlyList<BlogPost> RecentPosts { get; set; } = Array.Empty<BlogPost>();
 
-    public record PopularPost(string Title, int Views, bool IsPublished);
-
-    public record RoleBreakdown(string RoleName, int UserCount);
-
-    public record PermissionUsage(string PermissionName, int RoleCount);
-
-    public record MonthlyRegistration(string Month, int Count);
 }
+public record PopularPost(string Title, int Views, bool IsPublished);
+
+public record RoleBreakdown(string RoleName, int UserCount);
+
+public record PermissionUsage(string PermissionName, int RoleCount);
+
+public record MonthlyRegistration(string Month, int Count);
