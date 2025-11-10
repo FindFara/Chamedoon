@@ -1,0 +1,52 @@
+@model RoleEditViewModel
+@{
+    ViewData["Title"] = Model.Id.HasValue ? "ویرایش نقش" : "نقش جدید";
+}
+
+<div class="admin-card">
+    <h2 class="h5 mb-4">@ViewData["Title"]</h2>
+    <form asp-area="Admin" asp-controller="Roles" asp-action="@(Model.Id.HasValue ? "Edit" : "Create")" asp-route-id="@Model.Id" method="post">
+        @if (Model.Id.HasValue)
+        {
+            <input type="hidden" asp-for="Id" />
+        }
+        @Html.AntiForgeryToken()
+        <div class="row g-4">
+            <div class="col-12 col-md-6">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" rows="3" class="form-control"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label class="form-label">مجوزها</label>
+                <div class="row g-3">
+                    @foreach (var permission in Model.Permissions)
+                    {
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="SelectedPermissions" value="@permission.Id" id="perm-@permission.Id" @(Model.SelectedPermissions.Contains(permission.Id) ? "checked" : null) />
+                                <label class="form-check-label" for="perm-@permission.Id">
+                                    <span class="fw-semibold">@permission.Name</span>
+                                    <span class="d-block text-muted small">@permission.Description</span>
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <a asp-area="Admin" asp-controller="Roles" asp-action="Index" class="btn btn-outline-secondary">بازگشت</a>
+            <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

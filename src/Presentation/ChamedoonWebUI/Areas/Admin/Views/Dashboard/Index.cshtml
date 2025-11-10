@@ -1,0 +1,180 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "داشبورد مدیریت";
+}
+
+<div class="row g-4">
+    <div class="col-12 col-lg-3">
+        <div class="admin-card h-100">
+            <h3 class="h6 text-muted mb-2">کاربران</h3>
+            <p class="display-6 fw-semibold">@Model.Summary.TotalUsers</p>
+            <p class="text-muted mb-0">@Model.Summary.ActiveUsers فعال | @Model.Summary.NewUsersThisMonth جدید این ماه</p>
+        </div>
+    </div>
+    <div class="col-12 col-lg-3">
+        <div class="admin-card h-100">
+            <h3 class="h6 text-muted mb-2">مطالب وبلاگ</h3>
+            <p class="display-6 fw-semibold">@Model.Summary.TotalBlogPosts</p>
+            <p class="text-muted mb-0">@Model.Summary.PublishedBlogPosts منتشر شده | @Model.Summary.DraftBlogPosts پیش‌نویس</p>
+        </div>
+    </div>
+    <div class="col-12 col-lg-3">
+        <div class="admin-card h-100">
+            <h3 class="h6 text-muted mb-2">بازدید کل</h3>
+            <p class="display-6 fw-semibold">@Model.Summary.TotalViews.ToString("N0")</p>
+            <p class="text-muted mb-0">پربازدیدترین مطلب: @Model.Summary.PopularPosts.FirstOrDefault()?.Title</p>
+        </div>
+    </div>
+    <div class="col-12 col-lg-3">
+        <div class="admin-card h-100">
+            <h3 class="h6 text-muted mb-2">نقش‌های فعال</h3>
+            <p class="display-6 fw-semibold">@Model.Summary.RoleDistribution.Count</p>
+            <p class="text-muted mb-0">مجوزهای تعریف شده: @Model.Summary.PermissionUsage.Count</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-12 col-xl-7">
+        <div class="admin-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h5 mb-0">روند ثبت‌نام کاربران</h2>
+                <span class="text-muted small">۶ ماه اخیر</span>
+            </div>
+            <div class="chart-placeholder">
+                @if (Model.Summary.MonthlyRegistrations.Any())
+                {
+                    <table class="table table-borderless align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th>ماه</th>
+                            <th class="text-end">تعداد ثبت‌نام</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model.Summary.MonthlyRegistrations)
+                        {
+                            <tr>
+                                <td>@item.Month</td>
+                                <td class="text-end fw-semibold">@item.Count</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">داده‌ای برای نمایش موجود نیست.</p>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-5">
+        <div class="admin-card h-100">
+            <h2 class="h5 mb-3">تقسیم کاربران بر اساس نقش</h2>
+            <ul class="list-unstyled mb-0">
+                @foreach (var role in Model.Summary.RoleDistribution)
+                {
+                    <li class="d-flex justify-content-between align-items-center py-2 border-bottom border-light-subtle">
+                        <span>@role.RoleName</span>
+                        <span class="badge bg-primary-subtle text-primary">@role.UserCount نفر</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-12 col-xl-7">
+        <div class="admin-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h5 mb-0">جدیدترین کاربران</h2>
+                <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-sm btn-outline-secondary">مدیریت کاربران</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>نام</th>
+                        <th>ایمیل</th>
+                        <th>نقش</th>
+                        <th class="text-end">تاریخ عضویت</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var user in Model.Summary.RecentUsers)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@user.FullName</td>
+                            <td class="text-muted">@user.Email</td>
+                            <td>@Model.RoleLookup.GetValueOrDefault(user.RoleId, "نامشخص")</td>
+                            <td class="text-end">@user.CreatedAt.ToLocalTime().ToString("yyyy/MM/dd")</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-5">
+        <div class="admin-card h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h5 mb-0">پربازدیدترین مطالب</h2>
+                <a asp-area="Admin" asp-controller="Blogs" asp-action="Index" class="btn btn-sm btn-outline-secondary">مدیریت وبلاگ</a>
+            </div>
+            <ul class="list-group list-group-flush">
+                @foreach (var post in Model.Summary.PopularPosts)
+                {
+                    <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-1 fw-semibold">@post.Title</p>
+                            <small class="text-muted">@((post.IsPublished ? "منتشر شده" : "پیش‌نویس"))</small>
+                        </div>
+                        <span class="badge bg-primary-subtle text-primary">@post.Views.ToString("N0") بازدید</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-12 col-xl-6">
+        <div class="admin-card h-100">
+            <h2 class="h5 mb-3">مجوزها</h2>
+            <ul class="list-unstyled mb-0">
+                @foreach (var permission in Model.Summary.PermissionUsage)
+                {
+                    <li class="d-flex justify-content-between align-items-center py-2 border-bottom border-light-subtle">
+                        <span>@permission.PermissionName</span>
+                        <span class="badge bg-secondary-subtle text-secondary">@permission.RoleCount نقش</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="col-12 col-xl-6">
+        <div class="admin-card h-100">
+            <h2 class="h5 mb-3">آخرین مطالب</h2>
+            <ul class="list-group list-group-flush">
+                @foreach (var post in Model.Summary.RecentPosts)
+                {
+                    <li class="list-group-item bg-transparent">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="mb-1 fw-semibold">@post.Title</p>
+                                <small class="text-muted">@post.Category</small>
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-semibold">@post.PublishedOn.ToLocalTime().ToString("yyyy/MM/dd")</div>
+                                <small class="text-muted">@post.Views.ToString("N0") بازدید</small>
+                            </div>
+                        </div>
+                        <p class="text-muted small mb-0 mt-2">@post.Summary</p>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>
