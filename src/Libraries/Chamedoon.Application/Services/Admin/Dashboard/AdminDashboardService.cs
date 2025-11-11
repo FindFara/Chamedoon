@@ -30,54 +30,39 @@ public class AdminDashboardService : IAdminDashboardService
         var now = DateTime.UtcNow;
         var monthStart = new DateTime(now.Year, now.Month, 1);
 
-        var totalUsersTask = _userRepository.CountUsersAsync(cancellationToken);
-        var activeUsersTask = _userRepository.CountActiveUsersAsync(cancellationToken);
-        var newUsersTask = _userRepository.CountUsersCreatedSinceAsync(monthStart, cancellationToken);
-        var totalPostsTask = _blogRepository.CountArticlesAsync(cancellationToken);
-        var publishedPostsTask = _blogRepository.CountPublishedArticlesAsync(cancellationToken);
-        var totalViewsTask = _blogRepository.SumArticleViewsAsync(cancellationToken);
-        var popularPostsTask = _blogRepository.GetTopArticlesAsync(5, cancellationToken);
-        var roleCountsTask = _userRepository.GetRoleUserCountsAsync(cancellationToken);
-        var rolesTask = _roleRepository.GetRolesAsync(cancellationToken);
-        var permissionUsageTask = _roleRepository.GetPermissionUsageAsync(cancellationToken);
-        var recentUsersTask = _userRepository.GetRecentUsersAsync(5, cancellationToken);
-        var recentPostsTask = _blogRepository.GetRecentArticlesAsync(5, cancellationToken);
-        var monthlyRegistrationsTask = _userRepository.GetMonthlyRegistrationCountsAsync(6, cancellationToken);
-
-        await Task.WhenAll(
-            totalUsersTask,
-            activeUsersTask,
-            newUsersTask,
-            totalPostsTask,
-            publishedPostsTask,
-            totalViewsTask,
-            popularPostsTask,
-            roleCountsTask,
-            rolesTask,
-            permissionUsageTask,
-            recentUsersTask,
-            recentPostsTask,
-            monthlyRegistrationsTask);
+        var totalUsers = await _userRepository.CountUsersAsync(cancellationToken);
+        var activeUsers = await _userRepository.CountActiveUsersAsync(cancellationToken);
+        var newUsers = await _userRepository.CountUsersCreatedSinceAsync(monthStart, cancellationToken);
+        var totalPosts = await _blogRepository.CountArticlesAsync(cancellationToken);
+        var publishedPosts = await _blogRepository.CountPublishedArticlesAsync(cancellationToken);
+        var totalViews = await _blogRepository.SumArticleViewsAsync(cancellationToken);
+        var popularPosts = await _blogRepository.GetTopArticlesAsync(5, cancellationToken);
+        var roleCounts = await _userRepository.GetRoleUserCountsAsync(cancellationToken);
+        var roles = await _roleRepository.GetRolesAsync(cancellationToken);
+        var permissionUsage = await _roleRepository.GetPermissionUsageAsync(cancellationToken);
+        var recentUsers = await _userRepository.GetRecentUsersAsync(5, cancellationToken);
+        var recentPosts = await _blogRepository.GetRecentArticlesAsync(5, cancellationToken);
+        var monthlyRegistrations = await _userRepository.GetMonthlyRegistrationCountsAsync(6, cancellationToken);
 
         var summary = new DashboardSummaryDto
         {
-            TotalUsers = totalUsersTask.Result,
-            ActiveUsers = activeUsersTask.Result,
-            NewUsersThisMonth = newUsersTask.Result,
-            TotalBlogPosts = totalPostsTask.Result,
-            PublishedBlogPosts = publishedPostsTask.Result,
-            DraftBlogPosts = Math.Max(totalPostsTask.Result - publishedPostsTask.Result, 0),
-            TotalViews = totalViewsTask.Result,
-            PopularPosts = popularPostsTask.Result.Select(article => new DashboardPopularPostDto(article.ArticleTitle, article.VisitCount)).ToList(),
-            RoleDistribution = BuildRoleDistribution(roleCountsTask.Result, rolesTask.Result),
-            PermissionUsage = permissionUsageTask.Result
+            TotalUsers = totalUsers,
+            ActiveUsers = activeUsers,
+            NewUsersThisMonth = newUsers,
+            TotalBlogPosts = totalPosts,
+            PublishedBlogPosts = publishedPosts,
+            DraftBlogPosts = Math.Max(totalPosts - publishedPosts, 0),
+            TotalViews = totalViews,
+            PopularPosts = popularPosts.Select(article => new DashboardPopularPostDto(article.ArticleTitle, article.VisitCount)).ToList(),
+            RoleDistribution = BuildRoleDistribution(roleCounts, roles),
+            PermissionUsage = permissionUsage
                 .Where(kvp => !string.IsNullOrWhiteSpace(kvp.Key))
                 .Select(kvp => new DashboardPermissionUsageDto(kvp.Key, kvp.Value))
                 .OrderByDescending(item => item.RoleCount)
                 .ToList(),
-            MonthlyRegistrations = BuildMonthlyRegistrations(monthlyRegistrationsTask.Result),
-            RecentUsers = recentUsersTask.Result.Select(user => user.ToAdminUserDto()).ToList(),
-            RecentPosts = recentPostsTask.Result.Select(article => article.ToAdminBlogPostDto()).ToList()
+            MonthlyRegistrations = BuildMonthlyRegistrations(monthlyRegistrations),
+            RecentUsers = recentUsers.Select(user => user.ToAdminUserDto()).ToList(),
+            RecentPosts = recentPosts.Select(article => article.ToAdminBlogPostDto()).ToList()
         };
 
         return OperationResult<DashboardSummaryDto>.Success(summary);
