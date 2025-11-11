@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace Chamedoon.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -229,6 +227,7 @@ namespace Chamedoon.Infrastructure.Migrations
                     Job = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Gender = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -264,16 +263,6 @@ namespace Chamedoon.Infrastructure.Migrations
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Role",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { 1L, null, "Admin", "ADMIN" },
-                    { 2L, null, "Member", "Member" },
-                    { 3L, null, "Manager", "MANAGER" }
                 });
 
             migrationBuilder.CreateIndex(

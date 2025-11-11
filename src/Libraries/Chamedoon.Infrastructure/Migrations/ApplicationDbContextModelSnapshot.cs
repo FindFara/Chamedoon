@@ -170,26 +170,6 @@ namespace Chamedoon.Infrastructure.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Role", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            Name = "Member",
-                            NormalizedName = "Member"
-                        },
-                        new
-                        {
-                            Id = 3L,
-                            Name = "Manager",
-                            NormalizedName = "MANAGER"
-                        });
                 });
 
             modelBuilder.Entity("Chamedoon.Domin.Entity.Permissions.RolePermission", b =>
