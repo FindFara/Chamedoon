@@ -1,4 +1,5 @@
 @model RolesIndexViewModel
+@using System
 @using System.Linq
 @{
     ViewData["Title"] = "مدیریت نقش‌ها";
@@ -51,8 +52,18 @@
                                         </td>
                                         <td class="text-end">
                                             <div class="d-flex justify-content-end gap-2">
-                                                <a asp-action="Edit" asp-route-id="@role.Id" class="btn btn-sm btn-outline-primary">ویرایش</a>
-                                                <form asp-action="Delete" asp-route-id="@role.Id" method="post" onsubmit="return confirm('آیا از حذف این نقش مطمئن هستید؟');" class="m-0">
+                                                <a
+                                                    asp-action="Edit"
+                                                    asp-route-id="@role.Id"
+                                                    class="btn btn-sm btn-outline-primary">
+                                                    ویرایش
+                                                </a>
+                                                <form
+                                                    asp-action="Delete"
+                                                    asp-route-id="@role.Id"
+                                                    method="post"
+                                                    onsubmit="return confirm('آیا از حذف این نقش مطمئن هستید؟');"
+                                                    class="m-0">
                                                     @Html.AntiForgeryToken()
                                                     <button type="submit" class="btn btn-sm btn-outline-danger">حذف</button>
                                                 </form>
@@ -71,21 +82,23 @@
             <div class="card shadow-sm border-0 h-100">
                 <div class="card-body">
                     <h2 class="h5 mb-4">مجوزهای تعریف‌شده</h2>
-                    @if (!Model.Permissions.Any())
+                    @{ var distinctPermissions = Model.Roles
+                        .SelectMany(role => role.Permissions)
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .OrderBy(name => name)
+                        .ToList(); }
+                    @if (!distinctPermissions.Any())
                     {
                         <p class="text-muted mb-0">مجوزی ثبت نشده است.</p>
                     }
                     else
                     {
-                        <ul class="list-group list-group-flush">
-                            @foreach (var permission in Model.Permissions)
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach (var permission in distinctPermissions)
                             {
-                                <li class="list-group-item bg-transparent px-0">
-                                    <div class="fw-semibold">@permission.Name</div>
-                                    <p class="text-muted small mb-0">@permission.Description</p>
-                                </li>
+                                <span class="badge bg-soft-primary text-primary fw-semibold">@permission</span>
                             }
-                        </ul>
+                        </div>
                     }
                 </div>
             </div>
