@@ -28,7 +28,7 @@ public class UserConfigs : IEntityTypeConfiguration<User>
             NormalizedEmail = "FARA@CHAMEDOON.LOCAL",
             EmailConfirmed = true,
             PhoneNumber = "0000000000",
-            PhoneNumberConfirmed = false,
+            PhoneNumberConfirmed = true,
             TwoFactorEnabled = false,
             LockoutEnabled = false,
             AccessFailedCount = 0,

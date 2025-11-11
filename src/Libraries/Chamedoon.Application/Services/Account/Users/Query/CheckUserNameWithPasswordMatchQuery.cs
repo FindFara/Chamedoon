@@ -33,10 +33,10 @@ public class CheckUserNameAndPasswordMatchHandler : IRequestHandler<CheckUserNam
     public async Task<OperationResult<bool>> Handle(CheckUserNameAndPasswordMatchQuery request, CancellationToken cancellationToken)
     {
         var loginUser = await signinmanager.PasswordSignInAsync(
-             request.UserName,
-             request.LoginUser.Password,
-             request.LoginUser.RememberMe,
-             true);
+            request.UserName,
+            request.LoginUser.Password,
+            request.LoginUser.RememberMe,
+            true);
 
         if (loginUser.IsLockedOut)
             return OperationResult<bool>
@@ -50,3 +50,4 @@ public class CheckUserNameAndPasswordMatchHandler : IRequestHandler<CheckUserNam
 
     #endregion
 }
+
