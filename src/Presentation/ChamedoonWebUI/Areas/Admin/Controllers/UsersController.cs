@@ -1,6 +1,6 @@
-using ChamedoonWebUI.Areas.Admin.Models;
+using Chamedoon.Application.Services.Admin.Common.Models;
+using Chamedoon.Application.Services.Admin.Users;
 using ChamedoonWebUI.Areas.Admin.ViewModels;
-using ChamedoonWebUI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChamedoonWebUI.Areas.Admin.Controllers;
@@ -8,33 +8,31 @@ namespace ChamedoonWebUI.Areas.Admin.Controllers;
 [Area("Admin")]
 public class UsersController : Controller
 {
-    private readonly IAdminDataService _dataService;
+    private readonly IAdminUserService _userService;
 
-    public UsersController(IAdminDataService dataService)
+    public UsersController(IAdminUserService userService)
     {
-        _dataService = dataService;
+        _userService = userService;
     }
 
-    public IActionResult Index(string? search, Guid? roleId)
+    public async Task<IActionResult> Index(string? search, long? roleId, CancellationToken cancellationToken)
     {
-        var users = _dataService.GetUsers();
-        if (!string.IsNullOrWhiteSpace(search))
+        var usersResult = await _userService.GetUsersAsync(search, roleId, cancellationToken);
+        var rolesResult = await _userService.GetRolesAsync(cancellationToken);
+        if (!usersResult.IsSuccess || usersResult.Result is null)
         {
-            users = users
-                .Where(u => u.FullName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                            u.Email.Contains(search, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            return Problem(usersResult.Message);
         }
 
-        if (roleId.HasValue)
+        if (!rolesResult.IsSuccess || rolesResult.Result is null)
         {
-            users = users.Where(u => u.RoleId == roleId.Value).ToList();
+            return Problem(rolesResult.Message);
         }
 
         var model = new UsersIndexViewModel
         {
-            Users = users,
-            Roles = _dataService.GetRoles(),
+            Users = usersResult.Result.Select(UserListItemViewModel.FromDto).ToList(),
+            Roles = rolesResult.Result.Select(role => new RoleOptionViewModel { Id = role.Id, Name = role.Name }).ToList(),
             SearchTerm = search,
             SelectedRoleId = roleId
         };
@@ -42,11 +40,18 @@ public class UsersController : Controller
         return View(model);
     }
 
-    public IActionResult Create()
+    public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
+        var roles = await _userService.GetRolesAsync(cancellationToken);
+        if (!roles.IsSuccess || roles.Result is null)
+        {
+            return Problem(roles.Message);
+        }
+
         var model = new UserEditViewModel
         {
-            Roles = _dataService.GetRoles()
+            Roles = roles.Result.Select(role => new RoleOptionViewModel { Id = role.Id, Name = role.Name }).ToList(),
+            IsActive = true
         };
 
         return View("Edit", model);
@@ -54,52 +59,50 @@ public class UsersController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(UserEditViewModel model)
+    public async Task<IActionResult> Create(UserEditViewModel model, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
-            model.Roles = _dataService.GetRoles();
+            await PopulateRolesAsync(model, cancellationToken);
             return View("Edit", model);
         }
 
-        var user = new AdminUser
+        var input = model.ToInput();
+        var result = await _userService.CreateUserAsync(input, cancellationToken);
+        if (!result.IsSuccess)
         {
-            FullName = model.FullName,
-            Email = model.Email,
-            RoleId = model.RoleId,
-            IsActive = model.IsActive,
-            CreatedAt = DateTime.UtcNow
-        };
+            ModelState.AddModelError(string.Empty, result.Message);
+            await PopulateRolesAsync(model, cancellationToken);
+            return View("Edit", model);
+        }
 
-        _dataService.CreateUser(user);
-        TempData["Success"] = "کاربر جدید با موفقیت اضافه شد.";
+        TempData["Success"] = "کاربر جدید با موفقیت ایجاد شد.";
         return RedirectToAction(nameof(Index));
     }
 
-    public IActionResult Edit(Guid id)
+    public async Task<IActionResult> Edit(long id, CancellationToken cancellationToken)
     {
-        var user = _dataService.GetUser(id);
-        if (user == null)
+        var userResult = await _userService.GetUserAsync(id, cancellationToken);
+        var rolesResult = await _userService.GetRolesAsync(cancellationToken);
+        if (!userResult.IsSuccess || userResult.Result is null)
         {
             return NotFound();
         }
 
-        var model = new UserEditViewModel
+        if (!rolesResult.IsSuccess || rolesResult.Result is null)
         {
-            Id = user.Id,
-            FullName = user.FullName,
-            Email = user.Email,
-            RoleId = user.RoleId,
-            IsActive = user.IsActive,
-            Roles = _dataService.GetRoles()
-        };
+            return Problem(rolesResult.Message);
+        }
+
+        var model = UserEditViewModel.FromDto(userResult.Result);
+        model.Roles = rolesResult.Result.Select(role => new RoleOptionViewModel { Id = role.Id, Name = role.Name }).ToList();
 
         return View(model);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(Guid id, UserEditViewModel model)
+    public async Task<IActionResult> Edit(long id, UserEditViewModel model, CancellationToken cancellationToken)
     {
         if (id != model.Id)
         {
@@ -108,36 +111,41 @@ public class UsersController : Controller
 
         if (!ModelState.IsValid)
         {
-            model.Roles = _dataService.GetRoles();
+            await PopulateRolesAsync(model, cancellationToken);
             return View(model);
         }
 
-        var existing = _dataService.GetUser(id);
-        if (existing == null)
+        var result = await _userService.UpdateUserAsync(model.ToInput(), cancellationToken);
+        if (!result.IsSuccess)
         {
-            return NotFound();
+            ModelState.AddModelError(string.Empty, result.Message);
+            await PopulateRolesAsync(model, cancellationToken);
+            return View(model);
         }
 
-        existing.FullName = model.FullName;
-        existing.Email = model.Email;
-        existing.RoleId = model.RoleId;
-        existing.IsActive = model.IsActive;
-
-        _dataService.UpdateUser(existing);
-        TempData["Success"] = "اطلاعات کاربر به‌روزرسانی شد.";
+        TempData["Success"] = "اطلاعات کاربر با موفقیت به‌روزرسانی شد.";
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Delete(Guid id)
+    public async Task<IActionResult> Delete(long id, CancellationToken cancellationToken)
     {
-        if (!_dataService.DeleteUser(id))
+        var result = await _userService.DeleteUserAsync(id, cancellationToken);
+        if (!result.IsSuccess)
         {
-            return NotFound();
+            return Problem(result.Message);
         }
 
         TempData["Success"] = "کاربر حذف شد.";
         return RedirectToAction(nameof(Index));
+    }
+
+    private async Task PopulateRolesAsync(UserEditViewModel model, CancellationToken cancellationToken)
+    {
+        var roles = await _userService.GetRolesAsync(cancellationToken);
+        model.Roles = roles.IsSuccess && roles.Result is not null
+            ? roles.Result.Select(role => new RoleOptionViewModel { Id = role.Id, Name = role.Name }).ToList()
+            : new List<RoleOptionViewModel>();
     }
 }

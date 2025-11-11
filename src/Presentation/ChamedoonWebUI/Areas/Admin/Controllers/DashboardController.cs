@@ -1,5 +1,5 @@
+using Chamedoon.Application.Services.Admin.Dashboard;
 using ChamedoonWebUI.Areas.Admin.ViewModels;
-using ChamedoonWebUI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChamedoonWebUI.Areas.Admin.Controllers;
@@ -7,24 +7,22 @@ namespace ChamedoonWebUI.Areas.Admin.Controllers;
 [Area("Admin")]
 public class DashboardController : Controller
 {
-    private readonly IAdminDataService _dataService;
+    private readonly IAdminDashboardService _dashboardService;
 
-    public DashboardController(IAdminDataService dataService)
+    public DashboardController(IAdminDashboardService dashboardService)
     {
-        _dataService = dataService;
+        _dashboardService = dashboardService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        var summary = _dataService.GetDashboardSummary();
-        var roles = _dataService.GetRoles().ToDictionary(r => r.Id, r => r.Name);
-
-        var model = new DashboardViewModel
+        var summaryResult = await _dashboardService.GetSummaryAsync(cancellationToken);
+        if (!summaryResult.IsSuccess || summaryResult.Result is null)
         {
-            Summary = summary,
-            RoleLookup = roles
-        };
+            return Problem(summaryResult.Message);
+        }
 
-        return View(model);
+        var viewModel = DashboardViewModel.FromDto(summaryResult.Result);
+        return View(viewModel);
     }
 }

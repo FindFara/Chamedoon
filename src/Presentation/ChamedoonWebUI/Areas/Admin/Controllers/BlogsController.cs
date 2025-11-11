@@ -1,6 +1,5 @@
-using ChamedoonWebUI.Areas.Admin.Models;
+using Chamedoon.Application.Services.Admin.Blogs;
 using ChamedoonWebUI.Areas.Admin.ViewModels;
-using ChamedoonWebUI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChamedoonWebUI.Areas.Admin.Controllers;
@@ -8,42 +7,25 @@ namespace ChamedoonWebUI.Areas.Admin.Controllers;
 [Area("Admin")]
 public class BlogsController : Controller
 {
-    private readonly IAdminDataService _dataService;
+    private readonly IAdminBlogService _blogService;
 
-    public BlogsController(IAdminDataService dataService)
+    public BlogsController(IAdminBlogService blogService)
     {
-        _dataService = dataService;
+        _blogService = blogService;
     }
 
-    public IActionResult Index(string? search, string? category)
+    public async Task<IActionResult> Index(string? search, CancellationToken cancellationToken)
     {
-        var posts = _dataService.GetBlogPosts();
-        var categories = posts
-            .Select(p => p.Category)
-            .Where(c => !string.IsNullOrWhiteSpace(c))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(c => c)
-            .ToList();
-
-        if (!string.IsNullOrWhiteSpace(search))
+        var postsResult = await _blogService.GetPostsAsync(search, cancellationToken);
+        if (!postsResult.IsSuccess || postsResult.Result is null)
         {
-            posts = posts
-                .Where(p => p.Title.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                            p.Summary.Contains(search, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            return Problem(postsResult.Message);
         }
 
-        if (!string.IsNullOrWhiteSpace(category))
+        var model = new BlogsIndexViewModel
         {
-            posts = posts.Where(p => p.Category.Equals(category, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-
-        var model = new BlogIndexViewModel
-        {
-            Posts = posts,
-            SearchTerm = search,
-            Category = category,
-            Categories = categories
+            Posts = postsResult.Result.Select(BlogListItemViewModel.FromDto).ToList(),
+            SearchTerm = search
         };
 
         return View(model);
@@ -56,53 +38,39 @@ public class BlogsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(BlogEditViewModel model)
+    public async Task<IActionResult> Create(BlogEditViewModel model, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
             return View("Edit", model);
         }
 
-        var post = new BlogPost
+        var result = await _blogService.CreatePostAsync(model.ToInput(), cancellationToken);
+        if (!result.IsSuccess)
         {
-            Title = model.Title,
-            Category = model.Category,
-            IsPublished = model.IsPublished,
-            PublishedOn = model.PublishedOn ?? DateTime.UtcNow,
-            Summary = model.Summary,
-            Views = model.Views
-        };
+            ModelState.AddModelError(string.Empty, result.Message);
+            return View("Edit", model);
+        }
 
-        _dataService.CreateBlogPost(post);
-        TempData["Success"] = "مطلب جدید ثبت شد.";
+        TempData["Success"] = "مقاله جدید با موفقیت ایجاد شد.";
         return RedirectToAction(nameof(Index));
     }
 
-    public IActionResult Edit(Guid id)
+    public async Task<IActionResult> Edit(long id, CancellationToken cancellationToken)
     {
-        var post = _dataService.GetBlogPost(id);
-        if (post == null)
+        var postResult = await _blogService.GetPostAsync(id, cancellationToken);
+        if (!postResult.IsSuccess || postResult.Result is null)
         {
             return NotFound();
         }
 
-        var model = new BlogEditViewModel
-        {
-            Id = post.Id,
-            Title = post.Title,
-            Category = post.Category,
-            IsPublished = post.IsPublished,
-            PublishedOn = post.PublishedOn,
-            Summary = post.Summary,
-            Views = post.Views
-        };
-
+        var model = BlogEditViewModel.FromDto(postResult.Result);
         return View(model);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(Guid id, BlogEditViewModel model)
+    public async Task<IActionResult> Edit(long id, BlogEditViewModel model, CancellationToken cancellationToken)
     {
         if (id != model.Id)
         {
@@ -114,34 +82,28 @@ public class BlogsController : Controller
             return View(model);
         }
 
-        var existing = _dataService.GetBlogPost(id);
-        if (existing == null)
+        var result = await _blogService.UpdatePostAsync(model.ToInput(), cancellationToken);
+        if (!result.IsSuccess)
         {
-            return NotFound();
+            ModelState.AddModelError(string.Empty, result.Message);
+            return View(model);
         }
 
-        existing.Title = model.Title;
-        existing.Category = model.Category;
-        existing.IsPublished = model.IsPublished;
-        existing.PublishedOn = model.PublishedOn ?? existing.PublishedOn;
-        existing.Summary = model.Summary;
-        existing.Views = model.Views;
-
-        _dataService.UpdateBlogPost(existing);
-        TempData["Success"] = "مطلب به‌روزرسانی شد.";
+        TempData["Success"] = "مقاله با موفقیت به‌روزرسانی شد.";
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Delete(Guid id)
+    public async Task<IActionResult> Delete(long id, CancellationToken cancellationToken)
     {
-        if (!_dataService.DeleteBlogPost(id))
+        var result = await _blogService.DeletePostAsync(id, cancellationToken);
+        if (!result.IsSuccess)
         {
-            return NotFound();
+            return Problem(result.Message);
         }
 
-        TempData["Success"] = "مطلب حذف شد.";
+        TempData["Success"] = "مقاله حذف شد.";
         return RedirectToAction(nameof(Index));
     }
 }

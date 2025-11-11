@@ -1,6 +1,6 @@
-using ChamedoonWebUI.Areas.Admin.Models;
+using Chamedoon.Application.Services.Admin.Common.Models;
+using Chamedoon.Application.Services.Admin.Roles;
 using ChamedoonWebUI.Areas.Admin.ViewModels;
-using ChamedoonWebUI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChamedoonWebUI.Areas.Admin.Controllers;
@@ -8,29 +8,40 @@ namespace ChamedoonWebUI.Areas.Admin.Controllers;
 [Area("Admin")]
 public class RolesController : Controller
 {
-    private readonly IAdminDataService _dataService;
+    private readonly IAdminRoleService _roleService;
 
-    public RolesController(IAdminDataService dataService)
+    public RolesController(IAdminRoleService roleService)
     {
-        _dataService = dataService;
+        _roleService = roleService;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
+        var rolesResult = await _roleService.GetRolesAsync(cancellationToken);
+        if (!rolesResult.IsSuccess || rolesResult.Result is null)
+        {
+            return Problem(rolesResult.Message);
+        }
+
         var model = new RolesIndexViewModel
         {
-            Roles = _dataService.GetRoles(),
-            Permissions = _dataService.GetPermissions()
+            Roles = rolesResult.Result.Select(RoleListItemViewModel.FromDto).ToList()
         };
 
         return View(model);
     }
 
-    public IActionResult Create()
+    public async Task<IActionResult> Create(CancellationToken cancellationToken)
     {
+        var permissions = await _roleService.GetPermissionNamesAsync(cancellationToken);
+        if (!permissions.IsSuccess || permissions.Result is null)
+        {
+            return Problem(permissions.Message);
+        }
+
         var model = new RoleEditViewModel
         {
-            Permissions = _dataService.GetPermissions()
+            AvailablePermissions = permissions.Result
         };
 
         return View("Edit", model);
@@ -38,49 +49,50 @@ public class RolesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(RoleEditViewModel model)
+    public async Task<IActionResult> Create(RoleEditViewModel model, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
-            model.Permissions = _dataService.GetPermissions();
+            await PopulatePermissionsAsync(model, cancellationToken);
             return View("Edit", model);
         }
 
-        var role = new RoleDefinition
+        var input = model.ToInput();
+        var result = await _roleService.CreateRoleAsync(input, cancellationToken);
+        if (!result.IsSuccess)
         {
-            Name = model.Name,
-            Description = model.Description,
-            PermissionIds = model.SelectedPermissions
-        };
+            ModelState.AddModelError(string.Empty, result.Message);
+            await PopulatePermissionsAsync(model, cancellationToken);
+            return View("Edit", model);
+        }
 
-        _dataService.CreateRole(role);
-        TempData["Success"] = "نقش جدید ثبت شد.";
+        TempData["Success"] = "نقش جدید با موفقیت ایجاد شد.";
         return RedirectToAction(nameof(Index));
     }
 
-    public IActionResult Edit(Guid id)
+    public async Task<IActionResult> Edit(long id, CancellationToken cancellationToken)
     {
-        var role = _dataService.GetRole(id);
-        if (role == null)
+        var roleResult = await _roleService.GetRoleAsync(id, cancellationToken);
+        var permissionsResult = await _roleService.GetPermissionNamesAsync(cancellationToken);
+        if (!roleResult.IsSuccess || roleResult.Result is null)
         {
             return NotFound();
         }
 
-        var model = new RoleEditViewModel
+        if (!permissionsResult.IsSuccess || permissionsResult.Result is null)
         {
-            Id = role.Id,
-            Name = role.Name,
-            Description = role.Description,
-            SelectedPermissions = role.PermissionIds.ToList(),
-            Permissions = _dataService.GetPermissions()
-        };
+            return Problem(permissionsResult.Message);
+        }
+
+        var model = RoleEditViewModel.FromDto(roleResult.Result);
+        model.AvailablePermissions = permissionsResult.Result;
 
         return View(model);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(Guid id, RoleEditViewModel model)
+    public async Task<IActionResult> Edit(long id, RoleEditViewModel model, CancellationToken cancellationToken)
     {
         if (id != model.Id)
         {
@@ -89,35 +101,41 @@ public class RolesController : Controller
 
         if (!ModelState.IsValid)
         {
-            model.Permissions = _dataService.GetPermissions();
+            await PopulatePermissionsAsync(model, cancellationToken);
             return View(model);
         }
 
-        var existing = _dataService.GetRole(id);
-        if (existing == null)
+        var result = await _roleService.UpdateRoleAsync(model.ToInput(), cancellationToken);
+        if (!result.IsSuccess)
         {
-            return NotFound();
+            ModelState.AddModelError(string.Empty, result.Message);
+            await PopulatePermissionsAsync(model, cancellationToken);
+            return View(model);
         }
 
-        existing.Name = model.Name;
-        existing.Description = model.Description;
-        existing.PermissionIds = model.SelectedPermissions;
-
-        _dataService.UpdateRole(existing);
-        TempData["Success"] = "نقش به‌روزرسانی شد.";
+        TempData["Success"] = "اطلاعات نقش با موفقیت به‌روزرسانی شد.";
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Delete(Guid id)
+    public async Task<IActionResult> Delete(long id, CancellationToken cancellationToken)
     {
-        if (!_dataService.DeleteRole(id))
+        var result = await _roleService.DeleteRoleAsync(id, cancellationToken);
+        if (!result.IsSuccess)
         {
-            return NotFound();
+            return Problem(result.Message);
         }
 
         TempData["Success"] = "نقش حذف شد.";
         return RedirectToAction(nameof(Index));
+    }
+
+    private async Task PopulatePermissionsAsync(RoleEditViewModel model, CancellationToken cancellationToken)
+    {
+        var permissions = await _roleService.GetPermissionNamesAsync(cancellationToken);
+        model.AvailablePermissions = permissions.IsSuccess && permissions.Result is not null
+            ? permissions.Result
+            : Array.Empty<string>();
     }
 }

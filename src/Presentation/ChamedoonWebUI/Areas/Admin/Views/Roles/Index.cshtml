@@ -1,66 +1,66 @@
 @model RolesIndexViewModel
 @{
-    ViewData["Title"] = "نقش‌ها و مجوزها";
+    ViewData["Title"] = "مدیریت نقش‌ها";
 }
 
-<div class="admin-card mb-4">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-        <div>
-            <h2 class="h5 mb-1">مدیریت نقش‌ها</h2>
-            <p class="text-muted mb-0">تعریف دسترسی‌ها و هماهنگی تیم را از اینجا مدیریت کنید.</p>
-        </div>
-        <a asp-area="Admin" asp-controller="Roles" asp-action="Create" class="btn btn-success">نقش جدید</a>
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">نقش‌ها</h1>
+        <a asp-action="Create" class="btn btn-primary">افزودن نقش</a>
     </div>
-</div>
 
-<div class="row g-4">
-    <div class="col-12 col-xl-7">
-        <div class="admin-card h-100">
-            <h3 class="h6 text-muted mb-3">لیست نقش‌ها</h3>
-            <div class="table-responsive">
-                <table class="table align-middle">
-                    <thead>
-                    <tr>
-                        <th>نام</th>
-                        <th>توضیحات</th>
-                        <th class="text-end">مجوزها</th>
-                        <th class="text-end">عملیات</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach (var role in Model.Roles)
-                    {
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            @if (!Model.Roles.Any())
+            {
+                <div class="p-4 text-center text-muted">نقشی برای نمایش وجود ندارد.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
                         <tr>
-                            <td class="fw-semibold">@role.Name</td>
-                            <td class="text-muted">@role.Description</td>
-                            <td class="text-end">@role.PermissionIds.Count</td>
-                            <td class="text-end">
-                                <div class="btn-group btn-group-sm">
-                                    <a asp-area="Admin" asp-controller="Roles" asp-action="Edit" asp-route-id="@role.Id" class="btn btn-outline-secondary">ویرایش</a>
-                                    <form asp-area="Admin" asp-controller="Roles" asp-action="Delete" asp-route-id="@role.Id" method="post" class="d-inline" onsubmit="return confirm('آیا از حذف نقش مطمئن هستید؟');">
-                                        <button type="submit" class="btn btn-outline-danger">حذف</button>
-                                    </form>
-                                </div>
-                            </td>
+                            <th>نام نقش</th>
+                            <th>مجوزها</th>
+                            <th class="text-end">عملیات</th>
                         </tr>
-                    }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-xl-5">
-        <div class="admin-card h-100">
-            <h3 class="h6 text-muted mb-3">مجوزهای تعریف شده</h3>
-            <ul class="list-group list-group-flush">
-                @foreach (var permission in Model.Permissions)
-                {
-                    <li class="list-group-item bg-transparent">
-                        <div class="fw-semibold">@permission.Name</div>
-                        <p class="text-muted small mb-0">@permission.Description</p>
-                    </li>
-                }
-            </ul>
+                        </thead>
+                        <tbody>
+                        @foreach (var role in Model.Roles)
+                        {
+                            <tr>
+                                <td>@role.Name</td>
+                                <td>
+                                    @if (!role.Permissions.Any())
+                                    {
+                                        <span class="text-muted">بدون مجوز</span>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex flex-wrap gap-1">
+                                            @foreach (var permission in role.Permissions)
+                                            {
+                                                <span class="badge bg-light text-dark">@permission</span>
+                                            }
+                                        </div>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a asp-action="Edit" asp-route-id="@role.Id" class="btn btn-sm btn-outline-primary">ویرایش</a>
+                                        <form asp-action="Delete" asp-route-id="@role.Id" method="post" onsubmit="return confirm('آیا از حذف این نقش مطمئن هستید؟');" class="m-0">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">حذف</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
     </div>
 </div>

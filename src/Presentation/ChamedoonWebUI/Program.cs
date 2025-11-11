@@ -2,7 +2,6 @@ using Chamedoon.Application;
 using Chamedoon.Domin.Configs;
 using Chamedoon.Infrastructure;
 using ChamedoonWebUI;
-using ChamedoonWebUI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +10,6 @@ builder.Services.AddWebUIServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSingleton<IAdminDataService, AdminDataService>();
-
 builder.Services.Configure<SmtpConfig>(builder.Configuration.GetSection("Smtp"));
 builder.Services.Configure<UrlsConfig>(builder.Configuration.GetSection("Urls"));
 
