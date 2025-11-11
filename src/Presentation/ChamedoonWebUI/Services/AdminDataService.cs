@@ -256,21 +256,21 @@ public class AdminDataService : IAdminDataService
                 .GroupBy(u => new DateTime(u.CreatedAt.Year, u.CreatedAt.Month, 1))
                 .OrderBy(g => g.Key)
                 .TakeLast(6)
-                .Select(g => new MonthlyRegistration(g.Key.ToString("yyyy/MM"), g.Count()))
+                .Select(g => new DashboardSummary.MonthlyRegistration(g.Key.ToString("yyyy/MM"), g.Count()))
                 .ToList();
 
             var popularPosts = _posts
                 .OrderByDescending(p => p.Views)
                 .Take(5)
-                .Select(p => new PopularPost(p.Title, p.Views, p.IsPublished))
+                .Select(p => new DashboardSummary.PopularPost(p.Title, p.Views, p.IsPublished))
                 .ToList();
 
             var roleDistribution = _roles
-                .Select(role => new RoleBreakdown(role.Name, _users.Count(u => u.RoleId == role.Id)))
+                .Select(role => new DashboardSummary.RoleBreakdown(role.Name, _users.Count(u => u.RoleId == role.Id)))
                 .ToList();
 
             var permissionUsage = _permissions
-                .Select(permission => new PermissionUsage(
+                .Select(permission => new DashboardSummary.PermissionUsage(
                     permission.Name,
                     _roles.Count(role => role.PermissionIds.Contains(permission.Id))))
                 .ToList();

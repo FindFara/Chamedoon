@@ -1,44 +1,62 @@
 @model UserEditViewModel
 @{
-    ViewData["Title"] = Model.Id.HasValue ? "ویرایش کاربر" : "کاربر جدید";
+    ViewData["Title"] = Model.IsNew ? "ایجاد کاربر" : "ویرایش کاربر";
 }
 
-<div class="admin-card">
-    <h2 class="h5 mb-4">@ViewData["Title"]</h2>
-    <form asp-area="Admin" asp-controller="Users" asp-action="@(Model.Id.HasValue ? "Edit" : "Create")" asp-route-id="@Model.Id" method="post">
-        @if (Model.Id.HasValue)
-        {
-            <input type="hidden" asp-for="Id" />
-        }
-        @Html.AntiForgeryToken()
-        <div class="row g-4">
-            <div class="col-12 col-md-6">
-                <label asp-for="FullName" class="form-label"></label>
-                <input asp-for="FullName" class="form-control" />
-                <span asp-validation-for="FullName" class="text-danger"></span>
-            </div>
-            <div class="col-12 col-md-6">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="col-12 col-md-6">
-                <label asp-for="RoleId" class="form-label"></label>
-                <select asp-for="RoleId" asp-items="@(new SelectList(Model.Roles, nameof(RoleDefinition.Id), nameof(RoleDefinition.Name)))" class="form-select"></select>
-                <span asp-validation-for="RoleId" class="text-danger"></span>
-            </div>
-            <div class="col-12 col-md-6 d-flex align-items-center mt-4">
-                <div class="form-check form-switch">
-                    <input asp-for="IsActive" class="form-check-input" />
-                    <label asp-for="IsActive" class="form-check-label"></label>
+<div class="container-fluid py-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-transparent">
+            <h1 class="h4 mb-0">@ViewData["Title"]</h1>
+        </div>
+        <div class="card-body">
+            <form asp-action="@(Model.IsNew ? "Create" : "Edit")" asp-route-id="@(Model.IsNew ? null : Model.Id)" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="UserName" class="form-label"></label>
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="RoleId" class="form-label"></label>
+                        <select asp-for="RoleId" class="form-select" asp-items="@(new SelectList(Model.Roles, nameof(RoleOptionViewModel.Id), nameof(RoleOptionViewModel.Name)))">
+                            <option value="">بدون نقش</option>
+                        </select>
+                        <span asp-validation-for="RoleId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span class="form-text text-muted">@((Model.IsNew) ? "کلمه عبور برای کاربر جدید الزامی است." : "در صورت عدم تغییر خالی بگذارید.")</span>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center">
+                        <div class="form-check mt-4">
+                            <input asp-for="IsActive" class="form-check-input" />
+                            <label asp-for="IsActive" class="form-check-label"></label>
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">بازگشت</a>
+                    <button type="submit" class="btn btn-primary">ذخیره</button>
+                </div>
+            </form>
         </div>
-        <div class="d-flex justify-content-end gap-2 mt-4">
-            <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn btn-outline-secondary">بازگشت</a>
-            <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
-        </div>
-    </form>
+    </div>
 </div>
 
 @section Scripts {

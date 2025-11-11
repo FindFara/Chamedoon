@@ -3,73 +3,91 @@
     ViewData["Title"] = "مدیریت کاربران";
 }
 
-<div class="admin-card mb-4">
-    <div class="d-flex flex-column flex-lg-row align-items-lg-end gap-3">
-        <form asp-area="Admin" asp-controller="Users" asp-action="Index" method="get" class="row g-3 flex-grow-1">
-            <div class="col-12 col-md-6">
-                <label class="form-label" for="Search">جستجوی کاربر</label>
-                <input type="text" id="Search" name="search" class="form-control" value="@Model.SearchTerm" placeholder="نام یا ایمیل" />
-            </div>
-            <div class="col-12 col-md-4">
-                <label class="form-label" for="RoleId">نقش</label>
-                <select id="RoleId" name="roleId" class="form-select">
-                    <option value="">همه نقش‌ها</option>
-                    @foreach (var role in Model.Roles)
-                    {
-                        <option value="@role.Id" selected="@(Model.SelectedRoleId == role.Id ? "selected" : null)">@role.Name</option>
-                    }
-                </select>
-            </div>
-            <div class="col-12 col-md-2 d-grid align-self-end">
-                <button type="submit" class="btn btn-primary">فیلتر</button>
-            </div>
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">کاربران</h1>
+        <a asp-action="Create" class="btn btn-primary">افزودن کاربر جدید</a>
+    </div>
+
+    <form method="get" class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label for="search" class="form-label">جستجو</label>
+                    <input id="search" name="search" value="@Model.SearchTerm" class="form-control" placeholder="نام یا ایمیل" />
+                </div>
+                <div class="col-md-4">
+                    <label for="roleId" class="form-label">نقش</label>
+                    <select id="roleId" name="roleId" class="form-select">
+                        <option value="">همه نقش‌ها</option>
+                        @foreach (var role in Model.Roles)
+                        {
+                            <option value="@role.Id" @(Model.SelectedRoleId == role.Id ? "selected" : string.Empty)>@role.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-outline-primary w-100">اعمال فیلتر</button>
+                </div>
         </form>
         <a asp-area="Admin" asp-controller="Users" asp-action="Create" class="btn btn-success align-self-stretch">کاربر جدید</a>
-    </div>
-</div>
+            </div>
+        </div>
+    </form>
 
-<div class="admin-card">
-    <div class="table-responsive">
-        <table class="table align-middle">
-            <thead>
-            <tr>
-                <th>نام</th>
-                <th>ایمیل</th>
-                <th>نقش</th>
-                <th>وضعیت</th>
-                <th class="text-end">تاریخ عضویت</th>
-                <th class="text-end">عملیات</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var user in Model.Users)
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            @if (!Model.Users.Any())
             {
-                <tr>
-                    <td class="fw-semibold">@user.FullName</td>
-                    <td class="text-muted">@user.Email</td>
-                    <td>@Model.Roles.FirstOrDefault(r => r.Id == user.RoleId)?.Name</td>
-                    <td>
-                        @if (user.IsActive)
-                        {
-                            <span class="badge bg-success-subtle text-success">فعال</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-secondary-subtle text-secondary">غیرفعال</span>
-                        }
-                    </td>
-                    <td class="text-end">@user.CreatedAt.ToLocalTime().ToString("yyyy/MM/dd")</td>
-                    <td class="text-end">
-                        <div class="btn-group btn-group-sm">
-                            <a asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-id="@user.Id" class="btn btn-outline-secondary">ویرایش</a>
-                            <form asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-id="@user.Id" method="post" class="d-inline" onsubmit="return confirm('آیا از حذف کاربر مطمئن هستید؟');">
-                                <button type="submit" class="btn btn-outline-danger">حذف</button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
+                <div class="p-4 text-center text-muted">کاربری برای نمایش وجود ندارد.</div>
             }
-            </tbody>
-        </table>
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>نام</th>
+                            <th>ایمیل</th>
+                            <th>نقش</th>
+                            <th>وضعیت</th>
+                            <th>تاریخ ایجاد</th>
+                            <th class="text-end">عملیات</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr>
+                                <td>@(string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName)</td>
+                                <td>@user.Email</td>
+                                <td>@(string.IsNullOrWhiteSpace(user.RoleName) ? "-" : user.RoleName)</td>
+                                <td>
+                                    @if (user.IsActive)
+                                    {
+                                        <span class="badge bg-success">فعال</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">غیرفعال</span>
+                                    }
+                                </td>
+                                <td>@user.CreatedAt.ToString("yyyy/MM/dd")</td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-outline-primary">ویرایش</a>
+                                        <form asp-action="Delete" asp-route-id="@user.Id" method="post" onsubmit="return confirm('آیا از حذف این کاربر مطمئن هستید؟');" class="m-0">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">حذف</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
     </div>
 </div>
