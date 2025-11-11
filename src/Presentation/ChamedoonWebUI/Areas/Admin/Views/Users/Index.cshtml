@@ -1,4 +1,5 @@
 @model UsersIndexViewModel
+@using System.Linq
 @{
     ViewData["Title"] = "مدیریت کاربران";
 }
@@ -9,9 +10,9 @@
         <a asp-action="Create" class="btn btn-primary">افزودن کاربر جدید</a>
     </div>
 
-    <form method="get" class="card shadow-sm border-0 mb-4">
+    <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
-            <div class="row g-3 align-items-end">
+            <form method="get" class="row g-3 align-items-end">
                 <div class="col-md-5">
                     <label for="search" class="form-label">جستجو</label>
                     <input id="search" name="search" value="@Model.SearchTerm" class="form-control" placeholder="نام یا ایمیل" />
@@ -29,11 +30,9 @@
                 <div class="col-md-3">
                     <button type="submit" class="btn btn-outline-primary w-100">اعمال فیلتر</button>
                 </div>
-        </form>
-        <a asp-area="Admin" asp-controller="Users" asp-action="Create" class="btn btn-success align-self-stretch">کاربر جدید</a>
-            </div>
+            </form>
         </div>
-    </form>
+    </div>
 
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
