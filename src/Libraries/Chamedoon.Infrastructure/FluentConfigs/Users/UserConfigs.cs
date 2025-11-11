@@ -36,7 +36,8 @@ public class UserConfigs : IEntityTypeConfiguration<User>
             LastModified = SeedTimestamp,
             SecurityStamp = "A7E549A7-3F8B-451E-91FA-1796BB7D35DD",
             ConcurrencyStamp = "7C4049E0-28D8-4F73-8B3B-521C8AA86E01",
-            PasswordHash = "AQAAAAIAAYagAAAAENOL+hqKevXrCIxtNuT/pOk0vKIrqTX3JwxqjQOnZ1O4RUpUj70uXwG6mcdFB1tj3w=="
+            // Default password: Fara@123
+            PasswordHash = "AQEAAAAQJwAADwAAACAAAAAvb3VjaGFtZWRvb24AAADwGfC0Y4T7PTPHl5K5BozOUhniKY8lf2LaALSFDyNS+g=="
         };
 
         var memberUser = new User
@@ -56,7 +57,8 @@ public class UserConfigs : IEntityTypeConfiguration<User>
             LastModified = SeedTimestamp,
             SecurityStamp = "B2C44D4B-6A05-4940-9F35-8840AD54ABCE",
             ConcurrencyStamp = "8A1F656C-5E34-47A9-9F77-EDBE4F400C53",
-            PasswordHash = "AQAAAAIAAYagAAAAENOL+hqKevXrCIxtNuT/pOk0vKIrqTX3JwxqjQOnZ1O4RUpUj70uXwG6mcdFB1tj3w=="
+            // Default password: Member@123
+            PasswordHash = "AQEAAAAQJwAADwAAACAAAABtZW1iZXJzYWx0MDAwMDDIAETRsvsP9Xirew+tTpAHhWVbhKuWDfkVWKfs6VtaEw=="
         };
 
         builder.HasData(adminUser, memberUser);
