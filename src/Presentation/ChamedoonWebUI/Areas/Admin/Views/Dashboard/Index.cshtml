@@ -30,7 +30,9 @@
                 <div class="card-body">
                     <h6 class="text-muted mb-2">کل مقالات</h6>
                     <h3 class="fw-bold">@Model.TotalBlogPosts.ToString("N0")</h3>
-                    <p class="text-muted mb-0">@Model.PublishedBlogPosts.ToString("N0") منتشر شده | @Model.DraftBlogPosts.ToString("N0") پیش‌نویس</p>
+                    <p class="text-muted mb-0">
+                        @Model.PublishedBlogPosts.ToString("N0") منتشر شده | @Model.DraftBlogPosts.ToString("N0") پیش‌نویس
+                    </p>
                 </div>
             </div>
         </div>
@@ -61,23 +63,23 @@
                         <div class="table-responsive">
                             <table class="table align-middle mb-0">
                                 <thead>
-                                <tr>
-                                    <th>نام</th>
-                                    <th>ایمیل</th>
-                                    <th>نقش</th>
-                                    <th>تاریخ ایجاد</th>
-                                </tr>
+                                    <tr>
+                                        <th>نام</th>
+                                        <th>ایمیل</th>
+                                        <th>نقش</th>
+                                        <th>تاریخ ایجاد</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                @foreach (var user in Model.RecentUsers)
-                                {
-                                    <tr>
-                                        <td>@(string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName)</td>
-                                        <td>@user.Email</td>
-                                        <td>@(string.IsNullOrWhiteSpace(user.RoleName) ? "-" : user.RoleName)</td>
-                                        <td>@user.CreatedAt.ToString("yyyy/MM/dd")</td>
-                                    </tr>
-                                }
+                                    @foreach (var user in Model.RecentUsers)
+                                    {
+                                        <tr>
+                                            <td>@(string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName)</td>
+                                            <td>@user.Email</td>
+                                            <td>@(string.IsNullOrWhiteSpace(user.RoleName) ? "-" : user.RoleName)</td>
+                                            <td>@user.CreatedAt.ToString("yyyy/MM/dd")</td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -100,23 +102,23 @@
                         <div class="table-responsive">
                             <table class="table align-middle mb-0">
                                 <thead>
-                                <tr>
-                                    <th>عنوان</th>
-                                    <th>نویسنده</th>
-                                    <th>بازدید</th>
-                                    <th>تاریخ</th>
-                                </tr>
+                                    <tr>
+                                        <th>عنوان</th>
+                                        <th>نویسنده</th>
+                                        <th>بازدید</th>
+                                        <th>تاریخ</th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                @foreach (var post in Model.RecentPosts)
-                                {
-                                    <tr>
-                                        <td>@post.Title</td>
-                                        <td>@post.Writer</td>
-                                        <td>@post.VisitCount.ToString("N0")</td>
-                                        <td>@post.CreatedAt.ToString("yyyy/MM/dd")</td>
-                                    </tr>
-                                }
+                                    @foreach (var post in Model.RecentPosts)
+                                    {
+                                        <tr>
+                                            <td>@post.Title</td>
+                                            <td>@post.Writer</td>
+                                            <td>@post.VisitCount.ToString("N0")</td>
+                                            <td>@post.CreatedAt.ToString("yyyy/MM/dd")</td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
