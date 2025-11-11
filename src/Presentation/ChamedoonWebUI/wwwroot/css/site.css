@@ -33,12 +33,14 @@ body {
 
 .landing-navbar {
     background: transparent;
+    padding-block: 0.85rem;
 }
 
 .landing-header .navbar > .container {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    gap: clamp(0.75rem, 2.4vw, 2.25rem);
 }
 
 .landing-header .landing-center {
@@ -62,10 +64,8 @@ body {
 .landing-header .landing-controls {
     display: flex;
     align-items: center;
-    gap: clamp(0.55rem, 1.8vw, 1.25rem);
+    gap: clamp(0.65rem, 1.5vw, 1.25rem);
     margin-inline-start: auto;
-    flex-wrap: nowrap;
-    justify-content: flex-end;
 }
 
 .landing-header .landing-controls > * {
@@ -74,8 +74,48 @@ body {
 
 .landing-header .landing-actions {
     display: flex;
-    gap: clamp(0.4rem, 1.4vw, 0.85rem);
     align-items: center;
+    gap: clamp(0.55rem, 1.25vw, 1rem);
+}
+
+.user-menu-dropdown {
+    position: relative;
+}
+
+.user-menu-dropdown .dropdown-toggle::after {
+    display: none;
+}
+
+.user-menu-dropdown .dropdown-menu {
+    min-width: 184px;
+    padding: 0.5rem 0;
+    border-radius: 14px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 20px 42px -28px rgba(15, 23, 42, 0.35);
+    backdrop-filter: blur(18px);
+    margin-top: 0.65rem;
+    inset-inline-end: 0;
+    inset-inline-start: auto;
+    direction: rtl;
+    text-align: right;
+}
+
+.user-menu-dropdown .dropdown-item {
+    padding: 0.55rem 1.2rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.user-menu-dropdown li + li .dropdown-item {
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.user-menu-dropdown .dropdown-item:hover,
+.user-menu-dropdown .dropdown-item:focus {
+    background: rgba(79, 70, 229, 0.12);
+    color: var(--primary);
 }
 
 .landing-header .navbar-collapse.show,
@@ -91,20 +131,20 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: clamp(36px, 4.8vw, 44px);
-    height: clamp(36px, 4.8vw, 44px);
-    border: 1px solid rgba(79, 70, 229, 0.35);
-    border-radius: 16px;
+    width: clamp(38px, 4.6vw, 44px);
+    height: clamp(38px, 4.6vw, 44px);
+    border: 1px solid rgba(79, 70, 229, 0.28);
+    border-radius: 14px;
     padding: 0;
     color: var(--primary);
     background-color: rgba(255, 255, 255, 0.7);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
 }
 
 .landing-header .navbar-toggler:hover {
     background-color: rgba(79, 70, 229, 0.12);
-    border-color: rgba(79, 70, 229, 0.5);
-    box-shadow: 0 16px 34px -22px rgba(79, 70, 229, 0.6);
+    border-color: rgba(79, 70, 229, 0.45);
+    box-shadow: 0 16px 34px -22px rgba(79, 70, 229, 0.45);
     transform: translateY(-1px);
 }
 
@@ -119,104 +159,76 @@ body {
     background-size: 100% 100%;
 }
 
-.glass-action {
-    position: relative;
+.icon-button {
     display: inline-flex;
-    min-width: 40px;
-    width: 40px;
-    height: 40px;
-    border-radius: 16px;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-    text-decoration: none;
-    perspective: 520px;
-    transform-style: preserve-3d;
-    transition: transform 0.3s ease;
-    -webkit-appearance: none;
-    appearance: none;
-}
-
-.glass-action:focus-visible {
-    outline: none;
-}
-
-.glass-action:focus-visible .glass-action-front {
-    box-shadow: 0 0 0 4px rgba(147, 197, 253, 0.35);
-}
-
-.glass-action-back {
-    position: absolute;
-    inset: 0;
-    border-radius: 16px;
-    transform: rotateZ(14deg);
-    transform-origin: bottom right;
-    transition: transform 0.35s ease, box-shadow 0.35s ease;
-    box-shadow: 16px 0 40px rgba(15, 23, 42, 0.18);
-}
-
-.glass-action-front {
-    position: absolute;
-    inset: 0;
-    display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.38);
-    backdrop-filter: blur(22px);
-    color: #ffffff;
-    transform-origin: top left;
-    transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
-    overflow: hidden;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    background: rgba(255, 255, 255, 0.65);
+    color: var(--text-dark);
     padding: 0;
+    transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-.glass-action:hover .glass-action-back,
-.glass-action:focus-visible .glass-action-back {
-    transform: translateZ(28px) rotateZ(14deg) rotateX(-18deg) rotateY(-18deg);
-    box-shadow: 18px 16px 48px rgba(37, 99, 235, 0.45);
+.icon-button:hover,
+.icon-button:focus-visible {
+    color: var(--primary);
+    background: rgba(79, 70, 229, 0.12);
+    border-color: rgba(79, 70, 229, 0.4);
+    box-shadow: 0 16px 32px -22px rgba(79, 70, 229, 0.45);
+    transform: translateY(-1px);
 }
 
-.glass-action:hover .glass-action-front,
-.glass-action:focus-visible .glass-action-front {
-    transform: translateZ(80px) translateY(-6px) rotateX(14deg) rotateY(14deg);
-    background: rgba(255, 255, 255, 0.45);
+.icon-button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
 }
 
-.glass-action-icon svg {
+.icon-button svg {
     width: 22px;
     height: 22px;
 }
 
-.glass-action-register .glass-action-back {
-    background: linear-gradient(135deg, #4682eb -20%, #01beff 120%);
+.theme-toggle-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 
-.glass-action-dark .glass-action-back {
-    background: linear-gradient(135deg, #5c46eb -20%, #013fff 120%);
+.theme-toggle .icon-moon,
+.theme-toggle .icon-sun {
+    transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
-.glass-action-dark .icon-sun {
-    display: none;
+.theme-toggle .icon-moon {
+    opacity: 1;
+    transform: scale(1);
 }
 
-.glass-action-dark[data-mode='dark'] .icon-moon {
-    display: none;
+.theme-toggle .icon-sun {
+    position: absolute;
+    opacity: 0;
+    transform: scale(0.75);
 }
 
-.glass-action-dark[data-mode='dark'] .icon-sun {
-    display: inline;
+.theme-toggle[data-mode='dark'] .icon-moon {
+    opacity: 0;
+    transform: scale(0.75);
 }
 
-.glass-action,
-.glass-action:visited {
-    color: inherit;
+.theme-toggle[data-mode='dark'] .icon-sun {
+    opacity: 1;
+    transform: scale(1);
 }
 
 .landing-header .nav-link {
     font-weight: 500;
     color: var(--text-dark);
+    transition: color 0.2s ease;
 }
 
 .landing-header .nav-link:hover,
@@ -224,20 +236,54 @@ body {
     color: var(--primary);
 }
 
-.landing-header .navbar-brand {
-    font-size: 1.35rem;
-    display: flex;
+.landing-logo {
+    display: inline-flex;
     align-items: center;
     gap: 0.75rem;
+    padding: 0;
+    margin: 0;
+    color: var(--text-dark);
+    text-decoration: none;
+    text-transform: none;
 }
 
-.landing-header .navbar-brand::before {
-    content: "";
-    width: 0.6rem;
-    height: 0.6rem;
-    border-radius: 999px;
+.landing-logo:hover,
+.landing-logo:focus {
+    color: var(--text-dark);
+}
+
+.landing-logo .logo-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
-    box-shadow: 0 0 0 6px rgba(79, 70, 229, 0.12);
+    color: #ffffff;
+    box-shadow: 0 14px 34px -20px rgba(79, 70, 229, 0.6);
+}
+
+.landing-logo .logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.05;
+}
+
+.landing-logo .logo-text-en {
+    font-size: clamp(1.05rem, 2.6vw, 1.35rem);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.landing-logo .logo-text-fa {
+    font-size: clamp(0.75rem, 1.4vw, 0.92rem);
+    font-weight: 500;
+    color: var(--text-muted);
 }
 
 .btn-cta-glass {
