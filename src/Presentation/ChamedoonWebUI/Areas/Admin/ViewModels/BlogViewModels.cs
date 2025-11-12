@@ -47,15 +47,15 @@ public class BlogEditViewModel
 
     [Display(Name = "خلاصه")]
     [Required(ErrorMessage = "وارد کردن خلاصه الزامی است.")]
-    [MaxLength(500, ErrorMessage = "حداکثر ۵۰۰ کاراکتر مجاز است.")]
+    [MaxLength(2000, ErrorMessage = "حداکثر ۲۰۰۰ کاراکتر مجاز است.")]
     public string ShortDescription { get; set; } = string.Empty;
 
     [Display(Name = "متن مقاله")]
     [Required(ErrorMessage = "وارد کردن متن مقاله الزامی است.")]
     public string ArticleDescription { get; set; } = string.Empty;
 
-    [Display(Name = "تصویر")]
-    public string? ImageName { get; set; }
+    [Display(Name = "تصویر مقاله")]
+    public string? ImageData { get; set; }
 
     [Display(Name = "تعداد بازدید")]
     [Range(0, long.MaxValue, ErrorMessage = "تعداد بازدید نامعتبر است.")]
@@ -69,7 +69,7 @@ public class BlogEditViewModel
             Writer = Writer,
             ShortDescription = ShortDescription,
             ArticleDescription = ArticleDescription,
-            ImageName = ImageName,
+            ImageName = ImageData,
             VisitCount = VisitCount
         };
 
@@ -81,7 +81,7 @@ public class BlogEditViewModel
             Writer = dto.Writer,
             ShortDescription = dto.ShortDescription,
             ArticleDescription = dto.ArticleDescription,
-            ImageName = dto.ImageName,
+            ImageData = dto.ImageName,
             VisitCount = dto.VisitCount
         };
 }

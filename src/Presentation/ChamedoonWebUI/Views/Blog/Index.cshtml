@@ -62,15 +62,16 @@
             <div class="blog-grid">
                 @foreach (var item in Model.Articles)
                 {
-                    var imageName = !string.IsNullOrEmpty(item.ArticleImageName)
+                    var hasCustomImage = !string.IsNullOrWhiteSpace(item.ArticleImageName);
+                    var imageSrc = hasCustomImage && item.ArticleImageName!.StartsWith("data:image", System.StringComparison.OrdinalIgnoreCase)
                         ? item.ArticleImageName
-                        : "01.jpg";
+                        : Url.Content($"~/images/blog/{(hasCustomImage ? item.ArticleImageName : "01.jpg")}");
                     <article class="glass-card blog-card">
-                        <img src="~/images/blog/@imageName" alt="@item.ArticleTitle" />
+                        <img src="@imageSrc" alt="@item.ArticleTitle" />
                         <div class="blog-body">
                             <a asp-controller="Blog" asp-action="Detail" asp-route-id="@item.Id" class="stretched-link"></a>
                             <h5 class="fw-semibold">@item.ArticleTitle</h5>
-                            <p class="glass-helper mb-0">@item.ShortDescription</p>
+                            <p class="glass-helper mb-0">@Html.Raw(item.ShortDescription)</p>
                             <div class="blog-meta">
                                 <span>✍️ @item.Writer</span>
                                 <a asp-controller="Blog" asp-action="Detail" asp-route-id="@item.Id" class="blog-link">ادامه مطلب</a>

@@ -1,13 +1,18 @@
 @model Chamedoon.Application.Services.Blog.ViewModel.ArticleViewModel
 @{
     ViewData["Title"] = Model.ArticleTitle;
+    var heroImage = string.IsNullOrWhiteSpace(Model.ArticleImageName)
+        ? Url.Content("~/images/blog/01.jpg")
+        : (Model.ArticleImageName!.StartsWith("data:image", System.StringComparison.OrdinalIgnoreCase)
+            ? Model.ArticleImageName
+            : Url.Content($"~/images/blog/{Model.ArticleImageName}"));
 }
 
 <section class="glass-section">
     <div class="container">
         <article class="glass-card blog-detail-card mb-4">
             <div class="blog-detail-header">
-                <img src="~/images/blog/@(string.IsNullOrEmpty(Model.ArticleImageName) ? "01.jpg" : Model.ArticleImageName)" alt="@Model.ArticleTitle" />
+                <img src="@heroImage" alt="@Model.ArticleTitle" class="blog-detail-cover" />
                 <div>
                     <h1 class="fw-bold">@Model.ArticleTitle</h1>
                     <div class="blog-meta">
@@ -15,7 +20,10 @@
                     </div>
                 </div>
             </div>
-            <p class="glass-helper mb-0">@Model.ShortDescription</p>
+            <p class="glass-helper mb-3">@Html.Raw(Model.ShortDescription)</p>
+            <div class="blog-detail-content">
+                @Html.Raw(Model.ArticleDescription)
+            </div>
         </article>
 
         <div class="glass-card blog-detail-search">
@@ -44,3 +52,131 @@
         </div>
     </div>
 </section>
+
+<style>
+    .blog-detail-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 0.75rem;
+        margin: 1.5rem auto;
+        display: block;
+    }
+
+    .blog-detail-content pre {
+        position: relative;
+        padding: 1.25rem;
+        border-radius: 0.75rem;
+        background: #0f172a;
+        color: #e2e8f0;
+        overflow: auto;
+        direction: ltr;
+        text-align: left;
+        font-size: 0.9rem;
+    }
+
+    .blog-detail-content code {
+        font-family: "Fira Code", "Courier New", monospace;
+    }
+
+    .code-toolbar {
+        position: relative;
+    }
+
+    .code-toolbar .code-toolbar-header {
+        position: absolute;
+        top: 0.35rem;
+        inset-inline-end: 0.75rem;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .code-toolbar .code-language-badge {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+        border-radius: 999px;
+        padding: 0.15rem 0.65rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .code-toolbar .copy-code-button {
+        border: 0;
+        background: rgba(148, 163, 184, 0.25);
+        color: #f8fafc;
+        border-radius: 999px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+        transition: background 0.2s ease;
+    }
+
+    .code-toolbar .copy-code-button:hover,
+    .code-toolbar .copy-code-button:focus {
+        background: rgba(59, 130, 246, 0.45);
+        outline: none;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/common.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const themeHref = 'https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css';
+            if (!document.querySelector(`link[href="${themeHref}"]`)) {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = themeHref;
+                document.head.appendChild(link);
+            }
+
+            document.querySelectorAll('.blog-detail-content pre code').forEach(function (block) {
+                hljs.highlightElement(block);
+
+                const pre = block.parentElement;
+                if (!pre) {
+                    return;
+                }
+
+                pre.classList.add('code-toolbar');
+
+                if (!pre.querySelector('.code-toolbar-header')) {
+                    const header = document.createElement('div');
+                    header.className = 'code-toolbar-header';
+
+                    const languageClass = Array.from(block.classList).find(cls => cls.startsWith('language-'));
+                    const language = languageClass ? languageClass.replace('language-', '').toUpperCase() : 'CODE';
+
+                    const badge = document.createElement('span');
+                    badge.className = 'code-language-badge';
+                    badge.textContent = language;
+
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'copy-code-button';
+                    button.textContent = 'کپی';
+
+                    button.addEventListener('click', function () {
+                        const text = block.innerText;
+                        navigator.clipboard.writeText(text).then(function () {
+                            const original = button.textContent;
+                            button.textContent = 'کپی شد!';
+                            setTimeout(function () {
+                                button.textContent = original;
+                            }, 2000);
+                        }).catch(function () {
+                            button.textContent = 'خطا';
+                            setTimeout(function () {
+                                button.textContent = 'کپی';
+                            }, 2000);
+                        });
+                    });
+
+                    header.appendChild(badge);
+                    header.appendChild(button);
+                    pre.appendChild(header);
+                }
+            });
+        });
+    </script>
+}
