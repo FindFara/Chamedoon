@@ -1,0 +1,25 @@
+.blog-detail-card {
+    padding: clamp(1.75rem, 3vw, 2.5rem);
+    display: grid;
+    gap: 1rem;
+}
+
+.blog-detail-header {
+    display: grid;
+    gap: 1rem;
+    align-items: start;
+}
+
+.blog-detail-header img {
+    border-radius: 1.5rem;
+    box-shadow: 0 22px 46px -28px rgba(15, 23, 42, 0.35);
+}
+
+.blog-detail-card .blog-meta {
+    width: 100%;
+    justify-content: space-between;
+}
+
+.blog-detail-card .blog-meta-info {
+    flex: 1 1 auto;
+}

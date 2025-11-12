@@ -1,0 +1,13 @@
+@model ChamedoonWebUI.Models.BlogArticleCardModel
+<article class="glass-card blog-card">
+    <img src="@Model.ImageUrl" alt="@Model.Title" />
+    <div class="blog-body">
+        <a href="@Model.DetailUrl" class="stretched-link" aria-hidden="true" tabindex="-1"></a>
+        <h5 class="fw-semibold">@Model.Title</h5>
+        <p class="glass-helper blog-summary mb-0">@Model.ShortDescription</p>
+        <div class="blog-card-footer">
+            <partial name="Partials/_ArticleMeta" model="Model.Meta" />
+            <a href="@Model.DetailUrl" class="blog-link">@Model.ReadMoreLabel</a>
+        </div>
+    </div>
+</article>

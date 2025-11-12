@@ -1,9 +1,31 @@
 @model Chamedoon.Application.Services.Blog.ViewModel.ArticleViewModel
 @using System
 @using System.Globalization
+@using ChamedoonWebUI.Models
 @{
     ViewData["Title"] = Model.ArticleTitle;
     var culture = CultureInfo.GetCultureInfo("fa-IR");
+    var detailPath = Url.Action("Detail", "Blog", new { id = Model.Id }) ?? "#";
+    var shareUrl = Url.Action("Detail", "Blog", new { id = Model.Id }, Context.Request.Scheme);
+    var metaModel = new BlogArticleMetaModel
+    {
+        Writer = Model.Writer ?? string.Empty,
+        VisitCountText = Model.VisitCount.ToString("N0", culture),
+        VisitLabel = "تعداد بازدید",
+        ShareUrl = shareUrl ?? detailPath,
+        ShareTitle = Model.ArticleTitle,
+        ShareText = Model.ShortDescription
+    };
+    var searchModel = new BlogSearchFormModel
+    {
+        FormIdPrefix = "blogDetail",
+        Action = "Index",
+        Controller = "Blog",
+        SubmitLabel = "جستجوی مقالات",
+        SubmitButtonClass = "btn-glass-primary",
+        KeywordPlaceholder = "عنوان یا متن مقاله...",
+        WriterPlaceholder = "نام نویسنده"
+    };
     Func<string?, string> resolveArticleImage = imageName =>
     {
         if (string.IsNullOrWhiteSpace(imageName))
@@ -36,19 +58,7 @@
                 <img src="@resolveArticleImage(Model.ArticleImageName)" alt="@Model.ArticleTitle" />
                 <div>
                     <h1 class="fw-bold">@Model.ArticleTitle</h1>
-                    <div class="blog-meta">
-                        <div class="blog-meta-info">
-                            <span class="blog-meta-author">✍️ @Model.Writer</span>
-                            <span class="blog-meta-divider" aria-hidden="true">•</span>
-                            <span class="blog-meta-views" aria-label="تعداد بازدید">
-                                <svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
-                                    <path d="M12 5.25c5.52 0 9.41 4.35 10.61 6.01a1.25 1.25 0 0 1 0 1.48C21.41 14.39 17.52 18.75 12 18.75S2.59 14.39 1.39 12.74a1.25 1.25 0 0 1 0-1.48C2.59 9.6 6.48 5.25 12 5.25Zm0 2c-4.35 0-7.71 3.29-8.91 4.75 1.2 1.46 4.56 4.75 8.91 4.75s7.71-3.29 8.91-4.75c-1.2-1.46-4.56-4.75-8.91-4.75Zm0 1.75a3.25 3.25 0 1 1 0 6.5 3.25 3.25 0 0 1 0-6.5Zm0 2a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"></path>
-                                </svg>
-                                @Model.VisitCount.ToString("N0", culture)
-                                <span class="blog-meta-views-label">بازدید</span>
-                            </span>
-                        </div>
-                    </div>
+                    <partial name="Partials/_ArticleMeta" model="metaModel" />
                 </div>
             </div>
             <p class="glass-helper mb-0">@Model.ShortDescription</p>
@@ -56,92 +66,21 @@
 
         <div class="glass-card blog-detail-search">
             <h5 class="fw-semibold mb-3">جستجوی سایر مقالات</h5>
-            <form method="get" asp-action="Index" asp-controller="Blog" class="row g-3 align-items-end">
-                <div class="col-lg-5 col-md-6">
-                    <label for="searchDetail" class="form-label">کلمه کلیدی</label>
-                    <input type="text" id="searchDetail" name="search" class="form-control" placeholder="عنوان یا متن مقاله..." />
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <label for="writerDetail" class="form-label">نویسنده</label>
-                    <input type="text" id="writerDetail" name="writer" class="form-control" placeholder="نام نویسنده" />
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <label for="dateFromDetailDisplay" class="form-label">از تاریخ</label>
-                    <div class="jalali-input-wrapper">
-                        <button type="button"
-                                class="jalali-input-trigger"
-                                data-target="#dateFromDetailDisplay"
-                                aria-label="باز کردن تقویم">
-                            <svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
-                                <path d="M7 2a1 1 0 0 1 1 1v1h8V3a1 1 0 1 1 2 0v1h1.75A2.25 2.25 0 0 1 22 6.25v13.5A2.25 2.25 0 0 1 19.75 22H4.25A2.25 2.25 0 0 1 2 19.75V6.25A2.25 2.25 0 0 1 4.25 4H6V3a1 1 0 0 1 1-1Zm13.25 6.5H3.75v11.25c0 .414.336.75.75.75h15c.414 0 .75-.336.75-.75Z"></path>
-                                <path d="M7.75 11h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1 0-1.5Zm6 0h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 1 1 0-1.5Zm-6 4h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 1 1 0-1.5Zm6 0h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 1 1 0-1.5Z"></path>
-                            </svg>
-                        </button>
-                        <input type="text"
-                               id="dateFromDetailDisplay"
-                               class="form-control jalali-date-input"
-                               placeholder="انتخاب تاریخ شمسی"
-                               autocomplete="off"
-                               inputmode="numeric"
-                               dir="ltr"
-                               data-alt-field="#dateFromDetailValue"
-                               data-initial-value="" />
-                        <button type="button"
-                                class="jalali-clear-button"
-                                data-target="#dateFromDetailDisplay"
-                                data-alt="#dateFromDetailValue"
-                                aria-label="حذف تاریخ">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <input type="hidden" id="dateFromDetailValue" name="dateFrom" value="" />
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <label for="dateToDetailDisplay" class="form-label">تا تاریخ</label>
-                    <div class="jalali-input-wrapper">
-                        <button type="button"
-                                class="jalali-input-trigger"
-                                data-target="#dateToDetailDisplay"
-                                aria-label="باز کردن تقویم">
-                            <svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
-                                <path d="M7 2a1 1 0 0 1 1 1v1h8V3a1 1 0 1 1 2 0v1h1.75A2.25 2.25 0 0 1 22 6.25v13.5A2.25 2.25 0 0 1 19.75 22H4.25A2.25 2.25 0 0 1 2 19.75V6.25A2.25 2.25 0 0 1 4.25 4H6V3a1 1 0 0 1 1-1Zm13.25 6.5H3.75v11.25c0 .414.336.75.75.75h15c.414 0 .75-.336.75-.75Z"></path>
-                                <path d="M7.75 11h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1 0-1.5Zm6 0h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 1 1 0-1.5Zm-6 4h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 1 1 0-1.5Zm6 0h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 1 1 0-1.5Z"></path>
-                            </svg>
-                        </button>
-                        <input type="text"
-                               id="dateToDetailDisplay"
-                               class="form-control jalali-date-input"
-                               placeholder="انتخاب تاریخ شمسی"
-                               autocomplete="off"
-                               inputmode="numeric"
-                               dir="ltr"
-                               data-alt-field="#dateToDetailValue"
-                               data-initial-value="" />
-                        <button type="button"
-                                class="jalali-clear-button"
-                                data-target="#dateToDetailDisplay"
-                                data-alt="#dateToDetailValue"
-                                aria-label="حذف تاریخ">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <input type="hidden" id="dateToDetailValue" name="dateTo" value="" />
-                </div>
-                <div class="col-12 d-grid">
-                    <button type="submit" class="btn-glass-primary">جستجوی مقالات</button>
-                </div>
-            </form>
+            <partial name="Partials/_SearchForm" model="searchModel" />
         </div>
     </div>
 </section>
 
 @section Styles {
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.css" integrity="sha384-G7oizPQ+fPyA9xx0ScE6rKsn7BNQYXT33yHuEq+nCgtgK6IqKsZN1OtNLkwKo6k6" crossorigin="anonymous" />
+    <link rel="stylesheet" href="~/css/blog/detail.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/blog/meta.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/blog/search.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/components/datepicker.css" asp-append-version="true" />
 }
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
-    <script src="~/js/blog.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@majidh1/jalalidatepicker/dist/jalalidatepicker.min.js" integrity="sha384-Z3cr0UyAeMZZpMzQy51VCZHKktHG5bBg8TsFSxKxBd9Mu+m6nH2MA0/QRPq1aEQJ" crossorigin="anonymous"></script>
+    <script src="~/js/components/jalali-datepicker.js" asp-append-version="true"></script>
+    <script src="~/js/blog/share.js" asp-append-version="true"></script>
 }

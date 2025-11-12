@@ -1,0 +1,125 @@
+@model ChamedoonWebUI.Models.BlogSearchFormModel
+@using System.Globalization
+@using System.Linq
+@{
+    var prefix = Model.FormIdPrefix ?? "blog";
+    var keywordId = $"{prefix}Search";
+    var writerId = $"{prefix}Writer";
+    var dateFromDisplayId = $"{prefix}DateFromDisplay";
+    var dateToDisplayId = $"{prefix}DateToDisplay";
+    var dateFromHiddenId = $"{prefix}DateFrom";
+    var dateToHiddenId = $"{prefix}DateTo";
+    var submitClass = string.IsNullOrWhiteSpace(Model.SubmitButtonClass) ? "btn-primary" : Model.SubmitButtonClass;
+    var culture = CultureInfo.GetCultureInfo("fa-IR");
+    var initialDateFrom = Model.DateFrom?.ToString("yyyy-MM-dd", culture) ?? string.Empty;
+    var initialDateTo = Model.DateTo?.ToString("yyyy-MM-dd", culture) ?? string.Empty;
+}
+<form method="get" asp-action="@Model.Action" asp-controller="@Model.Controller" class="row g-3 align-items-end blog-search-form">
+    <div class="col-lg-4 col-md-6">
+        <label for="@keywordId" class="form-label">@Model.KeywordLabel</label>
+        <input type="text"
+               id="@keywordId"
+               name="search"
+               class="form-control"
+               placeholder="@Model.KeywordPlaceholder"
+               value="@Model.Search" />
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <label for="@writerId" class="form-label">@Model.WriterLabel</label>
+        @if (Model.WriterOptions?.Any() == true)
+        {
+            <select id="@writerId" name="writer" class="form-select">
+                <option value="">همه</option>
+                @foreach (var option in Model.WriterOptions)
+                {
+                    if (string.Equals(Model.Writer, option, StringComparison.OrdinalIgnoreCase))
+                    {
+                        <option value="@option" selected>@option</option>
+                    }
+                    else
+                    {
+                        <option value="@option">@option</option>
+                    }
+                }
+            </select>
+        }
+        else
+        {
+            <input type="text"
+                   id="@writerId"
+                   name="writer"
+                   class="form-control"
+                   placeholder="@Model.WriterPlaceholder"
+                   value="@Model.Writer" />
+        }
+    </div>
+    <div class="col-lg-2 col-md-6">
+        <label for="@dateFromDisplayId" class="form-label">از تاریخ</label>
+        <div class="jalali-input-wrapper">
+            <button type="button"
+                    class="jalali-input-trigger"
+                    data-target="#@dateFromDisplayId"
+                    aria-label="باز کردن تقویم">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
+                    <path d="M7 2a1 1 0 0 1 1 1v1h8V3a1 1 0 1 1 2 0v1h1.75A2.25 2.25 0 0 1 22 6.25v13.5A2.25 2.25 0 0 1 19.75 22H4.25A2.25 2.25 0 0 1 2 19.75V6.25A2.25 2.25 0 0 1 4.25 4H6V3a1 1 0 0 1 1-1Zm13.25 6.5H3.75v11.25c0 .414.336.75.75.75h15c.414 0 .75-.336.75-.75Z"></path>
+                    <path d="M7.75 11h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1 0-1.5Zm6 0h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 1 1 0-1.5Zm-6 4h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 1 1 0-1.5Zm6 0h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 1 1 0-1.5Z"></path>
+                </svg>
+            </button>
+            <input type="text"
+                   id="@dateFromDisplayId"
+                   class="form-control jalali-date-input"
+                   placeholder="انتخاب تاریخ شمسی"
+                   autocomplete="off"
+                   inputmode="numeric"
+                   dir="ltr"
+                   data-alt-field="#@dateFromHiddenId"
+                   data-initial-value="@initialDateFrom" />
+            <button type="button"
+                    class="jalali-clear-button"
+                    data-target="#@dateFromDisplayId"
+                    aria-label="حذف تاریخ">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <input type="hidden" id="@dateFromHiddenId" name="dateFrom" value="@initialDateFrom" />
+    </div>
+    <div class="col-lg-2 col-md-6">
+        <label for="@dateToDisplayId" class="form-label">تا تاریخ</label>
+        <div class="jalali-input-wrapper">
+            <button type="button"
+                    class="jalali-input-trigger"
+                    data-target="#@dateToDisplayId"
+                    aria-label="باز کردن تقویم">
+                <svg viewBox="0 0 24 24" role="img" aria-hidden="true" focusable="false">
+                    <path d="M7 2a1 1 0 0 1 1 1v1h8V3a1 1 0 1 1 2 0v1h1.75A2.25 2.25 0 0 1 22 6.25v13.5A2.25 2.25 0 0 1 19.75 22H4.25A2.25 2.25 0 0 1 2 19.75V6.25A2.25 2.25 0 0 1 4.25 4H6V3a1 1 0 0 1 1-1Zm13.25 6.5H3.75v11.25c0 .414.336.75.75.75h15c.414 0 .75-.336.75-.75Z"></path>
+                    <path d="M7.75 11h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 1 1 0-1.5Zm6 0h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 1 1 0-1.5Zm-6 4h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 1 1 0-1.5Zm6 0h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 1 1 0-1.5Z"></path>
+                </svg>
+            </button>
+            <input type="text"
+                   id="@dateToDisplayId"
+                   class="form-control jalali-date-input"
+                   placeholder="انتخاب تاریخ شمسی"
+                   autocomplete="off"
+                   inputmode="numeric"
+                   dir="ltr"
+                   data-alt-field="#@dateToHiddenId"
+                   data-initial-value="@initialDateTo" />
+            <button type="button"
+                    class="jalali-clear-button"
+                    data-target="#@dateToDisplayId"
+                    aria-label="حذف تاریخ">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <input type="hidden" id="@dateToHiddenId" name="dateTo" value="@initialDateTo" />
+    </div>
+    <div class="col-lg-1 col-12 d-grid">
+        <button type="submit" class="@submitClass">@Model.SubmitLabel</button>
+    </div>
+    @if (Model.ShowReset)
+    {
+        <div class="col-lg-1 col-12 d-grid">
+            <a asp-action="@Model.Action" asp-controller="@Model.Controller" class="btn btn-light">بازنشانی</a>
+        </div>
+    }
+</form>

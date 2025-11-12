@@ -1,0 +1,92 @@
+.blog-meta {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.blog-meta-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: inherit;
+    flex-wrap: wrap;
+}
+
+.blog-meta-author,
+.blog-meta-views {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.blog-meta-divider {
+    opacity: 0.5;
+}
+
+.blog-meta-views svg,
+.blog-meta-author svg {
+    width: 1rem;
+    height: 1rem;
+    fill: currentColor;
+}
+
+.blog-meta-views-label {
+    font-size: 0.8em;
+    opacity: 0.75;
+}
+
+.blog-meta-share {
+    display: inline-flex;
+    align-items: center;
+}
+
+.blog-share-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(148, 163, 184, 0.4);
+    background-color: rgba(255, 255, 255, 0.85);
+    color: var(--text-muted);
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.blog-meta .blog-share-button {
+    margin-inline-start: 0.35rem;
+}
+
+.blog-share-button svg {
+    width: 1rem;
+    height: 1rem;
+    fill: currentColor;
+}
+
+.blog-share-button:hover,
+.blog-share-button:focus-visible {
+    color: var(--primary);
+    background-color: rgba(79, 70, 229, 0.12);
+    border-color: rgba(79, 70, 229, 0.45);
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.blog-share-button.share-success {
+    border-color: rgba(16, 185, 129, 0.6);
+    color: #059669;
+}
+
+.blog-share-button.share-error {
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #dc2626;
+}
+
+@media (max-width: 576px) {
+    .blog-meta-divider {
+        display: none;
+    }
+}

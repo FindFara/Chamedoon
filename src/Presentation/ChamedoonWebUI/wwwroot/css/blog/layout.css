@@ -1,0 +1,19 @@
+.blog-hero {
+    margin-bottom: clamp(2.5rem, 4vw, 3.5rem);
+    text-align: center;
+    display: grid;
+    gap: 1rem;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+.blog-empty-state {
+    text-align: center;
+    padding: 2.5rem;
+    border-radius: 1.25rem;
+    background: rgba(248, 250, 252, 0.75);
+}
