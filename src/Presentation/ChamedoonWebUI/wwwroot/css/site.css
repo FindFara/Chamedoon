@@ -1124,6 +1124,37 @@ a:hover {
     padding: 0.65rem 1rem;
 }
 
+.persian-date-field {
+    position: relative;
+}
+
+.persian-date-display {
+    cursor: pointer;
+    text-align: right;
+}
+
+.persian-date-display.has-value {
+    direction: rtl;
+}
+
+.persian-date-native {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.persian-date-native.is-visible {
+    position: static;
+    width: 100%;
+    height: auto;
+    opacity: 1;
+    pointer-events: auto;
+    margin-top: 0.5rem;
+}
+
 .blog-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -1148,6 +1179,14 @@ a:hover {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+}
+
+.blog-card-description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .blog-card .blog-meta {
@@ -1176,6 +1215,24 @@ a:hover {
     padding: clamp(1.75rem, 3vw, 2.5rem);
     display: grid;
     gap: 1rem;
+}
+
+@media (max-width: 576px) {
+    .blog-search-card .row {
+        --bs-gutter-x: 0.75rem;
+        --bs-gutter-y: 0.75rem;
+    }
+
+    .blog-search-card .form-control,
+    .blog-search-card .form-select {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    .blog-search-card .btn-glass-primary {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.95rem;
+    }
 }
 
 .blog-detail-search {

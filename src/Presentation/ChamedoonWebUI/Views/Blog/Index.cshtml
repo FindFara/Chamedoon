@@ -1,8 +1,21 @@
 @model ChamedoonWebUI.Models.BlogIndexViewModel
 @using System.Linq
-@{
+@using System.Globalization
+@{ 
     ViewData["Title"] = "وبلاگ";
     var writers = Model.Articles.Select(a => a.Writer).Distinct().ToList();
+    Func<DateTime, string> toPersianDate = date =>
+    {
+        var calendar = new PersianCalendar();
+        var year = calendar.GetYear(date);
+        var month = calendar.GetMonth(date);
+        var day = calendar.GetDayOfMonth(date);
+        return $"{year:0000}/{month:00}/{day:00}";
+    };
+    var dateFromValue = Model.DateFrom?.ToString("yyyy-MM-dd");
+    var dateToValue = Model.DateTo?.ToString("yyyy-MM-dd");
+    var dateFromDisplay = Model.DateFrom.HasValue ? toPersianDate(Model.DateFrom.Value) : string.Empty;
+    var dateToDisplay = Model.DateTo.HasValue ? toPersianDate(Model.DateTo.Value) : string.Empty;
 }
 
 <section class="glass-section">
@@ -13,11 +26,10 @@
         </div>
 
         <div class="glass-card blog-search-card mb-4">
-            <h5 class="fw-semibold mb-3">جستجوی پیشرفته</h5>
             <form method="get" asp-action="Index" asp-controller="Blog" class="row g-3 align-items-end">
                 <div class="col-lg-4 col-md-6">
-                    <label for="search" class="form-label">کلمه کلیدی</label>
-                    <input type="text" id="search" name="search" class="form-control" placeholder="عنوان یا متن مقاله..." value="@Model.Search" />
+                    <label for="search" class="form-label">عنوان مقاله</label>
+                    <input type="text" id="search" name="search" class="form-control" placeholder="جستجو در عنوان مقاله" value="@Model.Search" />
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <label for="writer" class="form-label">نویسنده</label>
@@ -38,11 +50,17 @@
                 </div>
                 <div class="col-lg-2 col-md-6">
                     <label for="dateFrom" class="form-label">از تاریخ</label>
-                    <input type="date" id="dateFrom" name="dateFrom" class="form-control" value="@(Model.DateFrom?.ToString("yyyy-MM-dd"))" />
+                    <div class="persian-date-field">
+                        <input type="text" id="dateFromDisplay" class="form-control persian-date-display" data-target="#dateFrom" placeholder="انتخاب تاریخ شمسی" value="@dateFromDisplay" />
+                        <input type="date" id="dateFrom" name="dateFrom" class="persian-date-native" value="@dateFromValue" lang="fa-IR" dir="rtl" />
+                    </div>
                 </div>
                 <div class="col-lg-2 col-md-6">
                     <label for="dateTo" class="form-label">تا تاریخ</label>
-                    <input type="date" id="dateTo" name="dateTo" class="form-control" value="@(Model.DateTo?.ToString("yyyy-MM-dd"))" />
+                    <div class="persian-date-field">
+                        <input type="text" id="dateToDisplay" class="form-control persian-date-display" data-target="#dateTo" placeholder="انتخاب تاریخ شمسی" value="@dateToDisplay" />
+                        <input type="date" id="dateTo" name="dateTo" class="persian-date-native" value="@dateToValue" lang="fa-IR" dir="rtl" />
+                    </div>
                 </div>
                 <div class="col-lg-1 col-12 d-grid">
                     <button type="submit" class="btn-glass-primary">جستجو</button>
@@ -62,16 +80,15 @@
             <div class="blog-grid">
                 @foreach (var item in Model.Articles)
                 {
-                    var hasCustomImage = !string.IsNullOrWhiteSpace(item.ArticleImageName);
-                    var imageSrc = hasCustomImage && item.ArticleImageName!.StartsWith("data:image", System.StringComparison.OrdinalIgnoreCase)
+                    var imageName = !string.IsNullOrEmpty(item.ArticleImageName)
                         ? item.ArticleImageName
-                        : Url.Content($"~/images/blog/{(hasCustomImage ? item.ArticleImageName : "01.jpg")}");
+                        : "01.jpg";
                     <article class="glass-card blog-card">
-                        <img src="@imageSrc" alt="@item.ArticleTitle" />
+                        <img src="~/images/blog/@imageName" alt="@item.ArticleTitle" />
                         <div class="blog-body">
                             <a asp-controller="Blog" asp-action="Detail" asp-route-id="@item.Id" class="stretched-link"></a>
                             <h5 class="fw-semibold">@item.ArticleTitle</h5>
-                            <p class="glass-helper mb-0">@Html.Raw(item.ShortDescription)</p>
+                            <p class="glass-helper mb-0 blog-card-description">@item.ShortDescription</p>
                             <div class="blog-meta">
                                 <span>✍️ @item.Writer</span>
                                 <a asp-controller="Blog" asp-action="Detail" asp-route-id="@item.Id" class="blog-link">ادامه مطلب</a>
@@ -103,3 +120,79 @@
         }
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const formatPersianDate = (isoDate) => {
+                if (!isoDate) {
+                    return '';
+                }
+                const date = new Date(isoDate);
+                if (Number.isNaN(date.getTime())) {
+                    return '';
+                }
+                const formatter = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+                return formatter.format(date);
+            };
+
+            document.querySelectorAll('.persian-date-display').forEach((displayInput) => {
+                const targetSelector = displayInput.getAttribute('data-target');
+                if (!targetSelector) {
+                    return;
+                }
+                const nativeInput = document.querySelector(targetSelector);
+                if (!nativeInput) {
+                    return;
+                }
+
+                const syncFromNative = () => {
+                    if (nativeInput.value) {
+                        displayInput.value = formatPersianDate(nativeInput.value);
+                        displayInput.classList.add('has-value');
+                    } else {
+                        displayInput.value = '';
+                        displayInput.classList.remove('has-value');
+                    }
+                };
+
+                if (typeof nativeInput.showPicker !== 'function') {
+                    nativeInput.classList.add('is-visible');
+                    nativeInput.classList.add('form-control');
+                    displayInput.classList.add('d-none');
+                    return;
+                }
+
+                syncFromNative();
+
+                displayInput.addEventListener('click', () => {
+                    try {
+                        nativeInput.showPicker();
+                    } catch (error) {
+                        nativeInput.focus();
+                    }
+                });
+
+                displayInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Backspace' || event.key === 'Delete') {
+                        nativeInput.value = '';
+                        syncFromNative();
+                        event.preventDefault();
+                        return;
+                    }
+                    if (event.key === 'Tab') {
+                        return;
+                    }
+                    event.preventDefault();
+                });
+
+                nativeInput.addEventListener('change', syncFromNative);
+                nativeInput.addEventListener('input', syncFromNative);
+            });
+        });
+    </script>
+}
