@@ -18,6 +18,10 @@
     var dateToDisplay = Model.DateTo.HasValue ? toPersianDate(Model.DateTo.Value) : string.Empty;
 }
 
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@babakhani/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css" />
+}
+
 <section class="glass-section">
     <div class="container">
         <div class="blog-hero">
@@ -49,17 +53,17 @@
                     </select>
                 </div>
                 <div class="col-lg-2 col-md-6">
-                    <label for="dateFrom" class="form-label">از تاریخ</label>
-                    <div class="persian-date-field">
-                        <input type="text" id="dateFromDisplay" class="form-control persian-date-display" data-target="#dateFrom" placeholder="انتخاب تاریخ شمسی" value="@dateFromDisplay" />
-                        <input type="date" id="dateFrom" name="dateFrom" class="persian-date-native" value="@dateFromValue" lang="fa-IR" dir="rtl" />
+                    <label for="dateFromPicker" class="form-label">از تاریخ</label>
+                    <div class="persian-datepicker-field">
+                        <input type="text" id="dateFromPicker" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ شمسی" value="@dateFromDisplay" autocomplete="off" />
+                        <input type="hidden" id="dateFrom" name="dateFrom" value="@dateFromValue" />
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-6">
-                    <label for="dateTo" class="form-label">تا تاریخ</label>
-                    <div class="persian-date-field">
-                        <input type="text" id="dateToDisplay" class="form-control persian-date-display" data-target="#dateTo" placeholder="انتخاب تاریخ شمسی" value="@dateToDisplay" />
-                        <input type="date" id="dateTo" name="dateTo" class="persian-date-native" value="@dateToValue" lang="fa-IR" dir="rtl" />
+                    <label for="dateToPicker" class="form-label">تا تاریخ</label>
+                    <div class="persian-datepicker-field">
+                        <input type="text" id="dateToPicker" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ شمسی" value="@dateToDisplay" autocomplete="off" />
+                        <input type="hidden" id="dateTo" name="dateTo" value="@dateToValue" />
                     </div>
                 </div>
                 <div class="col-lg-1 col-12 d-grid">
@@ -83,15 +87,30 @@
                     var imageName = !string.IsNullOrEmpty(item.ArticleImageName)
                         ? item.ArticleImageName
                         : "01.jpg";
+                    var visitCountText = item.VisitCount.ToString("N0", CultureInfo.CreateSpecificCulture("fa-IR"));
+                    var shareUrl = Url.Action("Detail", "Blog", new { id = item.Id }, Context.Request.Scheme);
                     <article class="glass-card blog-card">
                         <img src="~/images/blog/@imageName" alt="@item.ArticleTitle" />
                         <div class="blog-body">
                             <a asp-controller="Blog" asp-action="Detail" asp-route-id="@item.Id" class="stretched-link"></a>
                             <h5 class="fw-semibold">@item.ArticleTitle</h5>
                             <p class="glass-helper mb-0 blog-card-description">@item.ShortDescription</p>
+                            <a asp-controller="Blog" asp-action="Detail" asp-route-id="@item.Id" class="blog-link blog-read-more">ادامه مطلب</a>
                             <div class="blog-meta">
-                                <span>✍️ @item.Writer</span>
-                                <a asp-controller="Blog" asp-action="Detail" asp-route-id="@item.Id" class="blog-link">ادامه مطلب</a>
+                                <span class="blog-meta-item" aria-label="@visitCountText بازدید">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></circle>
+                                    </svg>
+                                    <span>@visitCountText</span>
+                                </span>
+                                <button type="button" class="blog-share-button" data-share-url="@shareUrl" data-share-title="@item.ArticleTitle" aria-label="اشتراک‌گذاری مطلب @item.ArticleTitle" title="اشتراک‌گذاری">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path d="M8 7.5 12 4l4 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <path d="M12 4v11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </article>
@@ -122,76 +141,105 @@
 </section>
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babakhani/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const formatPersianDate = (isoDate) => {
-                if (!isoDate) {
-                    return '';
+            const setupDatepicker = (inputSelector, hiddenSelector, initialValue) => {
+                const $input = window.jQuery(inputSelector);
+                if (!$input.length) {
+                    return;
                 }
-                const date = new Date(isoDate);
-                if (Number.isNaN(date.getTime())) {
-                    return '';
-                }
-                const formatter = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
+
+                $input.persianDatepicker({
+                    format: 'YYYY/MM/DD',
+                    altField: hiddenSelector,
+                    altFormat: 'YYYY-MM-DD',
+                    autoClose: true,
+                    initialValue: false,
+                    calendar: {
+                        type: 'persian',
+                        persian: {
+                            leapYearMode: 'astronomical'
+                        }
+                    },
+                    navigator: {
+                        text: {
+                            btnNextText: 'بعدی',
+                            btnPrevText: 'قبلی'
+                        }
+                    },
+                    toolbox: {
+                        calendarSwitch: {
+                            enabled: false
+                        }
+                    }
                 });
-                return formatter.format(date);
+
+                const instance = $input.data('datepicker');
+
+                if (initialValue && instance) {
+                    try {
+                        const persian = new persianDate(new Date(initialValue));
+                        instance.setDate(persian);
+                    } catch (error) {
+                        // اگر مقدار اولیه نامعتبر باشد، آن را نادیده می‌گیریم
+                    }
+                }
+
+                $input.on('input', function () {
+                    if (!this.value) {
+                        window.jQuery(hiddenSelector).val('');
+                    }
+                });
             };
 
-            document.querySelectorAll('.persian-date-display').forEach((displayInput) => {
-                const targetSelector = displayInput.getAttribute('data-target');
-                if (!targetSelector) {
-                    return;
-                }
-                const nativeInput = document.querySelector(targetSelector);
-                if (!nativeInput) {
-                    return;
-                }
+            const initialDateFrom = '@(dateFromValue ?? string.Empty)';
+            const initialDateTo = '@(dateToValue ?? string.Empty)';
 
-                const syncFromNative = () => {
-                    if (nativeInput.value) {
-                        displayInput.value = formatPersianDate(nativeInput.value);
-                        displayInput.classList.add('has-value');
-                    } else {
-                        displayInput.value = '';
-                        displayInput.classList.remove('has-value');
-                    }
-                };
+            setupDatepicker('#dateFromPicker', '#dateFrom', initialDateFrom);
+            setupDatepicker('#dateToPicker', '#dateTo', initialDateTo);
 
-                if (typeof nativeInput.showPicker !== 'function') {
-                    nativeInput.classList.add('is-visible');
-                    nativeInput.classList.add('form-control');
-                    displayInput.classList.add('d-none');
-                    return;
-                }
+            const notifyShare = (button, message) => {
+                button.classList.add('is-shared');
+                button.setAttribute('data-share-feedback', message);
+                window.setTimeout(() => {
+                    button.classList.remove('is-shared');
+                    button.removeAttribute('data-share-feedback');
+                }, 2000);
+            };
 
-                syncFromNative();
-
-                displayInput.addEventListener('click', () => {
-                    try {
-                        nativeInput.showPicker();
-                    } catch (error) {
-                        nativeInput.focus();
-                    }
-                });
-
-                displayInput.addEventListener('keydown', (event) => {
-                    if (event.key === 'Backspace' || event.key === 'Delete') {
-                        nativeInput.value = '';
-                        syncFromNative();
-                        event.preventDefault();
+            document.querySelectorAll('.blog-share-button').forEach((button) => {
+                button.addEventListener('click', async () => {
+                    const url = button.getAttribute('data-share-url');
+                    const title = button.getAttribute('data-share-title');
+                    if (!url) {
                         return;
                     }
-                    if (event.key === 'Tab') {
-                        return;
-                    }
-                    event.preventDefault();
-                });
 
-                nativeInput.addEventListener('change', syncFromNative);
-                nativeInput.addEventListener('input', syncFromNative);
+                    if (navigator.share) {
+                        try {
+                            await navigator.share({ title, url });
+                            notifyShare(button, 'ارسال شد');
+                            return;
+                        } catch (error) {
+                            // کاربر اشتراک‌گذاری را لغو کرده است یا پشتیبانی نمی‌شود
+                        }
+                    }
+
+                    if (navigator.clipboard && window.isSecureContext) {
+                        try {
+                            await navigator.clipboard.writeText(url);
+                            notifyShare(button, 'کپی شد');
+                            return;
+                        } catch (error) {
+                            // در صورت عدم موفقیت از حالت پیش‌فرض استفاده می‌کنیم
+                        }
+                    }
+
+                    notifyShare(button, 'لینک: ' + url);
+                });
             });
         });
     </script>
