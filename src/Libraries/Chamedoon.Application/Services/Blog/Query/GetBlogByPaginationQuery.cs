@@ -42,9 +42,7 @@ namespace Chamedoon.Application.Services.Blog.Query
             {
                 var term = request.Search.Trim();
                 query = query.Where(a =>
-                    a.ArticleTitle.Contains(term) ||
-                    a.ShortDescription.Contains(term) ||
-                    a.ArticleDescription.Contains(term));
+                    a.ArticleTitle.Contains(term));
             }
 
             if (!string.IsNullOrWhiteSpace(request.Writer))
