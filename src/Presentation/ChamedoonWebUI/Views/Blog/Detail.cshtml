@@ -1,13 +1,37 @@
 @model Chamedoon.Application.Services.Blog.ViewModel.ArticleViewModel
+@using System
 @{
     ViewData["Title"] = Model.ArticleTitle;
+    Func<string?, string> resolveArticleImage = imageName =>
+    {
+        if (string.IsNullOrWhiteSpace(imageName))
+        {
+            return Url.Content("~/images/blog/01.jpg");
+        }
+
+        var trimmed = imageName.Trim();
+
+        if (Uri.TryCreate(trimmed, UriKind.Absolute, out _))
+        {
+            return trimmed;
+        }
+
+        trimmed = trimmed.TrimStart('~').TrimStart('/');
+
+        if (trimmed.Contains("/"))
+        {
+            return Url.Content($"~/{trimmed}");
+        }
+
+        return Url.Content($"~/images/blog/{trimmed}");
+    };
 }
 
 <section class="glass-section">
     <div class="container">
         <article class="glass-card blog-detail-card mb-4">
             <div class="blog-detail-header">
-                <img src="~/images/blog/@(string.IsNullOrEmpty(Model.ArticleImageName) ? "01.jpg" : Model.ArticleImageName)" alt="@Model.ArticleTitle" />
+                <img src="@resolveArticleImage(Model.ArticleImageName)" alt="@Model.ArticleTitle" />
                 <div>
                     <h1 class="fw-bold">@Model.ArticleTitle</h1>
                     <div class="blog-meta">
@@ -30,12 +54,30 @@
                     <input type="text" id="writerDetail" name="writer" class="form-control" placeholder="نام نویسنده" />
                 </div>
                 <div class="col-lg-2 col-md-6">
-                    <label for="dateFromDetail" class="form-label">از تاریخ</label>
-                    <input type="date" id="dateFromDetail" name="dateFrom" class="form-control" />
+                    <label for="dateFromDetailDisplay" class="form-label">از تاریخ</label>
+                    <input type="text"
+                           id="dateFromDetailDisplay"
+                           class="form-control jalali-date-input"
+                           placeholder="انتخاب تاریخ شمسی"
+                           autocomplete="off"
+                           inputmode="numeric"
+                           dir="ltr"
+                           data-alt-field="#dateFromDetailValue"
+                           data-initial-value="" />
+                    <input type="hidden" id="dateFromDetailValue" name="dateFrom" value="" />
                 </div>
                 <div class="col-lg-2 col-md-6">
-                    <label for="dateToDetail" class="form-label">تا تاریخ</label>
-                    <input type="date" id="dateToDetail" name="dateTo" class="form-control" />
+                    <label for="dateToDetailDisplay" class="form-label">تا تاریخ</label>
+                    <input type="text"
+                           id="dateToDetailDisplay"
+                           class="form-control jalali-date-input"
+                           placeholder="انتخاب تاریخ شمسی"
+                           autocomplete="off"
+                           inputmode="numeric"
+                           dir="ltr"
+                           data-alt-field="#dateToDetailValue"
+                           data-initial-value="" />
+                    <input type="hidden" id="dateToDetailValue" name="dateTo" value="" />
                 </div>
                 <div class="col-12 d-grid">
                     <button type="submit" class="btn-glass-primary">جستجوی مقالات</button>
@@ -44,3 +86,14 @@
         </div>
     </div>
 </section>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css" />
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+    <script src="~/js/blog.js" asp-append-version="true"></script>
+}
