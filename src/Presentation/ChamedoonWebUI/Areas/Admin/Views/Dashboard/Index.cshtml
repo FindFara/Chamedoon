@@ -1,5 +1,6 @@
 @model DashboardViewModel
 @using System.Linq
+@using System.Text.Json
 @{
     ViewData["Title"] = "داشبورد";
 }
@@ -58,6 +59,46 @@
                     <h6 class="text-muted mb-2">بازدید مقالات</h6>
                     <h3 class="fw-bold mb-2">@Model.TotalViews.ToString("N0")</h3>
                     <p class="text-muted small mb-0">مجموع بازدیدهای ثبت‌شده برای تمام مقالات</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-1">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">روند ثبت‌نام کاربران</h5>
+                    <span class="text-muted small">ماه‌های اخیر</span>
+                </div>
+                <div class="card-body">
+                    @if (Model.MonthlyRegistrations.Any())
+                    {
+                        <canvas id="monthlyRegistrationsChart" height="240" role="img" aria-label="نمودار ثبت‌نام کاربران"></canvas>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">داده‌ای برای نمایش وجود ندارد.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">بازدید مقالات</h5>
+                    <span class="text-muted small">محبوب‌ترین مقالات</span>
+                </div>
+                <div class="card-body">
+                    @if (Model.PopularPosts.Any())
+                    {
+                        <canvas id="blogViewsChart" height="240" role="img" aria-label="نمودار بازدید مقالات"></canvas>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">بازدیدی برای نمایش وجود ندارد.</p>
+                    }
                 </div>
             </div>
         </div>
@@ -239,7 +280,7 @@
                             {
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>@record.Month</span>
-                                    <span class="badge bg-light text-dark">@record.Count.ToString("N0") کاربر</span>
+                                    <span class="badge bg-soft-info">@record.Count.ToString("N0") کاربر</span>
                                 </li>
                             }
                         </ul>
@@ -253,3 +294,156 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" integrity="sha384-A0Bxsv6QwgR61RLlYk8d30cFcpH8KRJY6K6yS+br71bxURav6U2lZGp2GoW9RRjz" crossorigin="anonymous"></script>
+    <script>
+        (function () {
+            const monthlyData = @Html.Raw(JsonSerializer.Serialize(Model.MonthlyRegistrations.Select(item => new { item.Month, item.Count })));
+            const blogViewsData = @Html.Raw(JsonSerializer.Serialize(Model.PopularPosts.Select(item => new { item.Title, item.VisitCount })));
+
+            const monthlyCanvas = document.getElementById('monthlyRegistrationsChart');
+            const blogCanvas = document.getElementById('blogViewsChart');
+
+            let monthlyChart;
+            let blogChart;
+
+            const toRgba = (color, alpha = 0.25) => {
+                const hex = color.trim().replace('#', '');
+                if (!/^([\da-f]{3}|[\da-f]{6})$/i.test(hex)) {
+                    return color;
+                }
+                const normalized = hex.length === 3
+                    ? hex.split('').map(char => char + char).join('')
+                    : hex;
+                const r = parseInt(normalized.substring(0, 2), 16);
+                const g = parseInt(normalized.substring(2, 4), 16);
+                const b = parseInt(normalized.substring(4, 6), 16);
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            };
+
+            const buildCharts = () => {
+                const styles = getComputedStyle(document.body);
+                const textColor = styles.getPropertyValue('--admin-text').trim() || '#1f2937';
+                const mutedColor = styles.getPropertyValue('--admin-muted').trim() || '#6b7280';
+                const borderColor = styles.getPropertyValue('--admin-border').trim() || 'rgba(229, 231, 235, 0.6)';
+                const accentColor = styles.getPropertyValue('--admin-accent').trim() || '#2563eb';
+
+                if (monthlyCanvas && monthlyData.length) {
+                    monthlyChart?.destroy();
+                    monthlyChart = new Chart(monthlyCanvas, {
+                        type: 'line',
+                        data: {
+                            labels: monthlyData.map(item => item.Month),
+                            datasets: [{
+                                label: 'کاربران جدید',
+                                data: monthlyData.map(item => item.Count),
+                                tension: 0.35,
+                                fill: true,
+                                borderWidth: 3,
+                                borderColor: accentColor,
+                                backgroundColor: toRgba(accentColor, 0.18),
+                                pointBackgroundColor: accentColor,
+                                pointBorderColor: accentColor
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: textColor,
+                                        font: {
+                                            family: 'Vazirmatn, IRANSans, sans-serif'
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    ticks: {
+                                        color: mutedColor
+                                    },
+                                    grid: {
+                                        color: toRgba(borderColor, 0.4)
+                                    }
+                                },
+                                y: {
+                                    ticks: {
+                                        color: mutedColor
+                                    },
+                                    grid: {
+                                        color: toRgba(borderColor, 0.35)
+                                    },
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+
+                if (blogCanvas && blogViewsData.length) {
+                    blogChart?.destroy();
+                    blogChart = new Chart(blogCanvas, {
+                        type: 'bar',
+                        data: {
+                            labels: blogViewsData.map(item => item.Title),
+                            datasets: [{
+                                label: 'تعداد بازدید',
+                                data: blogViewsData.map(item => item.VisitCount),
+                                backgroundColor: toRgba(accentColor, 0.6),
+                                borderColor: accentColor,
+                                borderWidth: 2,
+                                borderRadius: 12,
+                                maxBarThickness: 42
+                            }]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: textColor,
+                                        font: {
+                                            family: 'Vazirmatn, IRANSans, sans-serif'
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    ticks: {
+                                        color: mutedColor,
+                                        callback(value) {
+                                            const label = this.getLabelForValue(value);
+                                            return label.length > 16 ? `${label.substring(0, 16)}…` : label;
+                                        }
+                                    },
+                                    grid: {
+                                        display: false
+                                    }
+                                },
+                                y: {
+                                    ticks: {
+                                        color: mutedColor
+                                    },
+                                    grid: {
+                                        color: toRgba(borderColor, 0.35)
+                                    },
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+            };
+
+            if (monthlyCanvas || blogCanvas) {
+                buildCharts();
+                window.addEventListener('admin-theme-change', () => {
+                    window.requestAnimationFrame(buildCharts);
+                });
+            }
+        })();
+    </script>
+}
