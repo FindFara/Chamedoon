@@ -295,6 +295,10 @@ body.landing-page.dark-mode .blog-card .blog-link:hover {
     color: #93c5fd;
 }
 
+body.landing-page.dark-mode .blog-share-button.is-shared::after {
+    background: rgba(30, 64, 175, 0.95);
+}
+
 body.landing-page.dark-mode .modal-step .modal-content {
     background: rgba(10, 17, 29, 0.95);
 }
