@@ -23,7 +23,15 @@
                         <option value="">همه نقش‌ها</option>
                         @foreach (var role in Model.Roles)
                         {
-                            <option value="@role.Id" @(Model.SelectedRoleId == role.Id ? "selected" : string.Empty)>@role.Name</option>
+                            var isSelected = Model.SelectedRoleId == role.Id;
+                            if (isSelected)
+                            {
+                                <option value="@role.Id" selected>@role.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@role.Id">@role.Name</option>
+                            }
                         }
                     </select>
                 </div>
