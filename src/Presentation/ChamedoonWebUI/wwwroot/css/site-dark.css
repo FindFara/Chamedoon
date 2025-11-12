@@ -295,6 +295,23 @@ body.landing-page.dark-mode .blog-card .blog-link:hover {
     color: #93c5fd;
 }
 
+body.landing-page.dark-mode .blog-share-button {
+    background: rgba(30, 41, 59, 0.85);
+    border-color: rgba(148, 163, 184, 0.4);
+    color: #cbd5f5;
+}
+
+body.landing-page.dark-mode .blog-share-button:hover,
+body.landing-page.dark-mode .blog-share-button:focus {
+    background: rgba(129, 140, 248, 0.12);
+    border-color: rgba(129, 140, 248, 0.45);
+    color: #c7d2fe;
+}
+
+body.landing-page.dark-mode .blog-share-button.is-shared::after {
+    background: rgba(30, 64, 175, 0.95);
+}
+
 body.landing-page.dark-mode .modal-step .modal-content {
     background: rgba(10, 17, 29, 0.95);
 }
