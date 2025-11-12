@@ -74,6 +74,60 @@
         });
     };
 
+    var showPicker = function ($input) {
+        if (!$input || !$input.length) {
+            return;
+        }
+
+        $input.trigger("focus");
+
+        var method = $input[pluginName];
+        if (typeof method === "function") {
+            try {
+                method.call($input, "show");
+            } catch (error) {
+                // ignore failures from unsupported APIs
+            }
+        }
+    };
+
+    var clearPicker = function ($button) {
+        var targetSelector = $button.data("target");
+        if (!targetSelector) {
+            return;
+        }
+
+        var $input = $(targetSelector);
+        if (!$input.length) {
+            return;
+        }
+
+        $input.val("");
+
+        var altSelector = $button.data("alt") || $input.data("altField");
+        if (altSelector) {
+            var $altField = $(altSelector);
+            if ($altField.length) {
+                $altField.val("");
+            }
+        }
+    };
+
+    $(document).on("click", ".jalali-input-trigger", function (event) {
+        event.preventDefault();
+        var targetSelector = $(this).data("target");
+        if (!targetSelector) {
+            return;
+        }
+
+        showPicker($(targetSelector));
+    });
+
+    $(document).on("click", ".jalali-clear-button", function (event) {
+        event.preventDefault();
+        clearPicker($(this));
+    });
+
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", onReady);
     } else {

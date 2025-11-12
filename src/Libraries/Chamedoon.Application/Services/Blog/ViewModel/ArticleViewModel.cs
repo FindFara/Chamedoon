@@ -10,6 +10,7 @@ namespace Chamedoon.Application.Services.Blog.ViewModel
         public string Writer { get; set; }
         public string ArticleDescription { get; set; }
         public string ShortDescription { get; set; }
+        public long VisitCount { get; set; }
         public string? ArticleImageName { get; set; } = string.Empty;
     }
 }
