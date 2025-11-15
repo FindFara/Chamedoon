@@ -13,6 +13,8 @@
     box-shadow: 0 40px 80px -40px rgba(15, 23, 42, 0.25);
     overflow: hidden;
     padding-block: clamp(2.5rem, 5vw, 4rem);
+    max-width: 1040px;
+    margin-inline: auto;
 }
 
 .about-page .about-hero-badge {
@@ -191,6 +193,56 @@
 
 .about-page .cta-card a {
     color: #fff;
+}
+
+body.landing-page.dark-mode .about-page .about-hero {
+    background: radial-gradient(circle at top right, rgba(129, 140, 248, 0.18), transparent 60%),
+        radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.18), transparent 60%),
+        #111d33;
+    border-color: rgba(129, 140, 248, 0.28);
+    box-shadow: 0 48px 80px -44px rgba(2, 6, 23, 0.82);
+}
+
+body.landing-page.dark-mode .about-page .about-hero-badge {
+    background: rgba(129, 140, 248, 0.18);
+    color: #c7d2fe;
+}
+
+body.landing-page.dark-mode .about-page .bio-timeline::before {
+    background: linear-gradient(180deg, rgba(129, 140, 248, 0.4), transparent 90%);
+}
+
+body.landing-page.dark-mode .about-page .bio-step {
+    background: rgba(15, 23, 42, 0.78);
+    border-color: rgba(129, 140, 248, 0.28);
+    box-shadow: 0 32px 60px -34px rgba(2, 6, 23, 0.85);
+    color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .about-page .bio-step::before {
+    background: rgba(129, 140, 248, 0.25);
+    color: #c7d2fe;
+    box-shadow: 0 18px 36px -24px rgba(2, 6, 23, 0.75);
+}
+
+body.landing-page.dark-mode .about-page .about-values {
+    background: #0b1628;
+}
+
+body.landing-page.dark-mode .about-page .about-values-list li {
+    background: rgba(15, 23, 42, 0.75);
+    border-color: rgba(129, 140, 248, 0.25);
+    color: #cbd5f5;
+}
+
+body.landing-page.dark-mode .about-page .team-card {
+    background: rgba(15, 23, 42, 0.78);
+    border-color: rgba(129, 140, 248, 0.25);
+    box-shadow: 0 28px 52px -32px rgba(2, 6, 23, 0.8);
+}
+
+body.landing-page.dark-mode .about-page .cta-card {
+    box-shadow: 0 48px 84px -44px rgba(2, 6, 23, 0.82);
 }
 
 @keyframes orbit-spin {
