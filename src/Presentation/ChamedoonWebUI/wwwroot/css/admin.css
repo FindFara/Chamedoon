@@ -149,6 +149,45 @@ body.dark-mode .table thead {
     background: var(--admin-surface);
 }
 
+.theme-toggle {
+    border-radius: 999px;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.theme-toggle .theme-icon {
+    font-size: 1.1rem;
+    line-height: 1;
+}
+
+.theme-toggle.btn-outline-secondary:hover,
+.theme-toggle.btn-outline-light:hover {
+    background-color: rgba(148, 163, 184, 0.12);
+}
+
+.btn-outline-light {
+    color: #f8fafc;
+}
+
+body.dark-mode .btn-outline-light {
+    color: var(--admin-text);
+    border-color: var(--admin-border);
+}
+
+body.dark-mode .theme-toggle {
+    background: transparent;
+}
+
+.chart-container {
+    min-height: 260px;
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
 .alert {
     border-radius: 1rem;
     border: none;

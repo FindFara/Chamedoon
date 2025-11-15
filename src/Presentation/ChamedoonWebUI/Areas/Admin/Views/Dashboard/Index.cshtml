@@ -1,7 +1,17 @@
 @model DashboardViewModel
 @using System.Linq
+@using System.Text.Json
+@using System.Text.Encodings.Web
 @{
     ViewData["Title"] = "داشبورد";
+    var jsonOptions = new JsonSerializerOptions
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
+    var monthlyRegistrationLabels = Model.MonthlyRegistrations.Select(item => item.Month).ToList();
+    var monthlyRegistrationValues = Model.MonthlyRegistrations.Select(item => item.Count).ToList();
+    var popularPostLabels = Model.PopularPosts.Select(item => item.Title).ToList();
+    var popularPostViews = Model.PopularPosts.Select(item => item.VisitCount).ToList();
 }
 
 <div class="container-fluid py-4">
@@ -58,6 +68,48 @@
                     <h6 class="text-muted mb-2">بازدید مقالات</h6>
                     <h3 class="fw-bold mb-2">@Model.TotalViews.ToString("N0")</h3>
                     <p class="text-muted small mb-0">مجموع بازدیدهای ثبت‌شده برای تمام مقالات</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-1">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">روند ثبت‌نام کاربران</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.MonthlyRegistrations.Any())
+                    {
+                        <div class="chart-container">
+                            <canvas id="monthlyUsersChart" aria-label="نمودار کاربران جدید" role="img"></canvas>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">داده‌ای برای نمایش نمودار ثبت‌نام موجود نیست.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">بازدید مقالات</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.PopularPosts.Any())
+                    {
+                        <div class="chart-container">
+                            <canvas id="blogViewsChart" aria-label="نمودار بازدید مقالات" role="img"></canvas>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">برای نمایش نمودار بازدید اطلاعاتی موجود نیست.</p>
+                    }
                 </div>
             </div>
         </div>
@@ -253,3 +305,164 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        (function () {
+            const monthlyLabels = @Html.Raw(JsonSerializer.Serialize(monthlyRegistrationLabels, jsonOptions));
+            const monthlyValues = @Html.Raw(JsonSerializer.Serialize(monthlyRegistrationValues, jsonOptions));
+            const blogLabels = @Html.Raw(JsonSerializer.Serialize(popularPostLabels, jsonOptions));
+            const blogValues = @Html.Raw(JsonSerializer.Serialize(popularPostViews, jsonOptions));
+
+            const charts = [];
+
+            const hexToRgba = (hex, alpha) => {
+                if (!hex) {
+                    return `rgba(37, 99, 235, ${alpha})`;
+                }
+
+                const normalized = hex.trim();
+                if (!normalized.startsWith('#')) {
+                    return normalized;
+                }
+
+                let value = normalized.substring(1);
+                if (value.length === 3) {
+                    value = value.split('').map(char => char + char).join('');
+                }
+
+                const intValue = parseInt(value, 16);
+                const r = (intValue >> 16) & 255;
+                const g = (intValue >> 8) & 255;
+                const b = intValue & 255;
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            };
+
+            const getColors = () => {
+                const style = getComputedStyle(document.body);
+                return {
+                    accent: style.getPropertyValue('--admin-accent').trim() || '#2563eb',
+                    text: style.getPropertyValue('--admin-text').trim() || '#1f2937',
+                    muted: style.getPropertyValue('--admin-muted').trim() || '#6b7280',
+                    border: style.getPropertyValue('--admin-border').trim() || 'rgba(229, 231, 235, 0.7)',
+                    surface: style.getPropertyValue('--admin-surface').trim() || '#ffffff'
+                };
+            };
+
+            const applyColors = (chart) => {
+                const colors = getColors();
+                const dataset = chart.data.datasets[0];
+
+                if (chart.config.type === 'line') {
+                    dataset.borderColor = colors.accent;
+                    dataset.backgroundColor = hexToRgba(colors.accent, 0.2);
+                    dataset.pointBackgroundColor = colors.surface;
+                    dataset.pointBorderColor = colors.accent;
+                    dataset.pointHoverBackgroundColor = colors.accent;
+                    dataset.pointHoverBorderColor = colors.surface;
+                } else if (chart.config.type === 'bar') {
+                    dataset.backgroundColor = hexToRgba(colors.accent, 0.75);
+                    dataset.borderColor = colors.accent;
+                }
+
+                chart.options.plugins = chart.options.plugins || {};
+                chart.options.plugins.legend = chart.options.plugins.legend || {};
+                chart.options.plugins.legend.labels = chart.options.plugins.legend.labels || {};
+                chart.options.plugins.legend.labels.color = colors.muted;
+
+                chart.options.plugins.tooltip = chart.options.plugins.tooltip || {};
+                chart.options.plugins.tooltip.backgroundColor = colors.surface;
+                chart.options.plugins.tooltip.titleColor = colors.text;
+                chart.options.plugins.tooltip.bodyColor = colors.text;
+                chart.options.plugins.tooltip.borderColor = colors.border;
+                chart.options.plugins.tooltip.borderWidth = 1;
+
+                if (chart.options.scales?.x) {
+                    chart.options.scales.x.ticks = chart.options.scales.x.ticks || {};
+                    chart.options.scales.x.grid = chart.options.scales.x.grid || {};
+                    chart.options.scales.x.ticks.color = colors.muted;
+                    chart.options.scales.x.grid.color = colors.border;
+                }
+
+                if (chart.options.scales?.y) {
+                    chart.options.scales.y.ticks = chart.options.scales.y.ticks || {};
+                    chart.options.scales.y.grid = chart.options.scales.y.grid || {};
+                    chart.options.scales.y.ticks.color = colors.muted;
+                    chart.options.scales.y.grid.color = colors.border;
+                }
+
+                chart.update();
+            };
+
+            const monthlyCanvas = document.getElementById('monthlyUsersChart');
+            if (monthlyCanvas && monthlyLabels.length && monthlyValues.length) {
+                const monthlyUsersChart = new Chart(monthlyCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: monthlyLabels,
+                        datasets: [{
+                            label: 'کاربران جدید',
+                            data: monthlyValues,
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+
+                charts.push(monthlyUsersChart);
+                applyColors(monthlyUsersChart);
+            }
+
+            const blogCanvas = document.getElementById('blogViewsChart');
+            if (blogCanvas && blogLabels.length && blogValues.length) {
+                const blogViewsChart = new Chart(blogCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: blogLabels,
+                        datasets: [{
+                            label: 'بازدید',
+                            data: blogValues,
+                            borderWidth: 1,
+                            borderRadius: 8,
+                            maxBarThickness: 48
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+
+                charts.push(blogViewsChart);
+                applyColors(blogViewsChart);
+            }
+
+            window.addEventListener('adminThemeChanged', () => {
+                charts.forEach(applyColors);
+            });
+        })();
+    </script>
+}
