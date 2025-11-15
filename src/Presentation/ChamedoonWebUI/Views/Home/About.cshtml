@@ -2,8 +2,9 @@
     ViewData["Title"] = "درباره ما";
 }
 
+<div class="about-page">
 <section class="about-hero py-5">
-    <div class="container">
+    <div class="container about-container">
         <div class="row align-items-center g-5">
             <div class="col-lg-6 text-center text-lg-end">
                 <span class="badge rounded-pill text-bg-light about-hero-badge">داستان تیم چمدون</span>
@@ -29,7 +30,7 @@
 </section>
 
 <section class="about-steps py-5">
-    <div class="container">
+    <div class="container about-container">
         <div class="row justify-content-center text-center mb-5">
             <div class="col-lg-8">
                 <span class="text-uppercase text-primary fw-semibold">بایو تیمی</span>
@@ -63,7 +64,7 @@
 </section>
 
 <section class="about-values py-5 bg-white">
-    <div class="container">
+    <div class="container about-container">
         <div class="row g-4 align-items-center">
             <div class="col-lg-5">
                 <h2 class="fw-bold">چمدون یعنی همراهی انسانی + تکنولوژی هوشمند</h2>
@@ -95,7 +96,7 @@
 </section>
 
 <section class="about-cta py-5">
-    <div class="container">
+    <div class="container about-container">
         <div class="cta-card">
             <div>
                 <h2 class="fw-bold mb-3">به خانواده چمدون خوش آمدی!</h2>
@@ -105,206 +106,10 @@
         </div>
     </div>
 </section>
+</div>
 
 @section Styles {
-    <style>
-        .about-hero {
-            position: relative;
-            background: radial-gradient(circle at top right, rgba(79, 70, 229, 0.12), transparent 55%),
-                        radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.12), transparent 55%),
-                        #ffffff;
-            border-radius: 2rem;
-            border: 1px solid rgba(79, 70, 229, 0.15);
-            box-shadow: 0 40px 80px -40px rgba(15, 23, 42, 0.25);
-            overflow: hidden;
-        }
-
-        .about-hero-badge {
-            background: rgba(79, 70, 229, 0.1);
-            color: var(--primary);
-            font-weight: 600;
-            letter-spacing: 0.08em;
-        }
-
-        .about-hero-visual {
-            position: relative;
-            aspect-ratio: 1 / 1;
-            max-width: 420px;
-            margin: 0 auto;
-        }
-
-        .about-hero-avatar {
-            position: absolute;
-            inset: 50% auto auto 50%;
-            transform: translate(-50%, -50%);
-            width: clamp(160px, 34vw, 220px);
-            height: clamp(160px, 34vw, 220px);
-            border-radius: 2.5rem;
-            background: linear-gradient(135deg, #4f46e5, #0ea5e9);
-            color: #fff;
-            display: grid;
-            place-items: center;
-            text-align: center;
-            gap: 0.4rem;
-            box-shadow: 0 35px 60px -30px rgba(79, 70, 229, 0.6);
-        }
-
-        .avatar-initials {
-            font-size: clamp(2.2rem, 6vw, 3.2rem);
-            font-weight: 700;
-            letter-spacing: 0.08em;
-        }
-
-        .avatar-caption {
-            font-size: 1rem;
-            text-transform: uppercase;
-            opacity: 0.85;
-        }
-
-        .orbit {
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            border: 1px dashed rgba(79, 70, 229, 0.25);
-            animation: orbit-spin 16s linear infinite;
-        }
-
-        .orbit-secondary {
-            inset: 12%;
-            animation-duration: 20s;
-            border-color: rgba(14, 165, 233, 0.25);
-        }
-
-        .bio-timeline {
-            position: relative;
-            padding: 1rem 1.5rem;
-            display: grid;
-            gap: 1.5rem;
-        }
-
-        .bio-timeline::before {
-            content: "";
-            position: absolute;
-            inset-block: 0;
-            inset-inline-start: calc(1.5rem + 12px);
-            width: 2px;
-            background: linear-gradient(180deg, rgba(79, 70, 229, 0.3), transparent 90%);
-        }
-
-        .bio-step {
-            position: relative;
-            padding: 1.75rem 1.75rem 1.75rem 1.25rem;
-            background: rgba(255, 255, 255, 0.92);
-            border-radius: 1.5rem;
-            border: 1px solid rgba(79, 70, 229, 0.18);
-            box-shadow: 0 24px 48px -30px rgba(15, 23, 42, 0.28);
-            transform: translateY(32px);
-            opacity: 0;
-            transition: transform 0.6s ease, opacity 0.6s ease;
-            transition-delay: calc(var(--step-index) * 0.12s);
-        }
-
-        .bio-step::before {
-            content: attr(data-step);
-            position: absolute;
-            inset-inline-start: -0.75rem;
-            inset-block-start: 1.6rem;
-            width: 2.75rem;
-            height: 2.75rem;
-            border-radius: 1rem;
-            background: rgba(79, 70, 229, 0.18);
-            color: var(--primary);
-            font-weight: 700;
-            display: grid;
-            place-items: center;
-            box-shadow: 0 18px 35px -25px rgba(79, 70, 229, 0.5);
-        }
-
-        .bio-step.is-visible {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .about-values-list {
-            list-style: none;
-            padding: 0;
-            margin: 2rem 0 0;
-            display: grid;
-            gap: 1rem;
-        }
-
-        .about-values-list li {
-            background: rgba(248, 250, 252, 0.85);
-            border-radius: 1.2rem;
-            padding: 1rem 1.25rem;
-            border: 1px solid rgba(148, 163, 184, 0.3);
-        }
-
-        .about-team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .team-card {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 1.5rem;
-            padding: 1.75rem;
-            border: 1px solid rgba(79, 70, 229, 0.18);
-            box-shadow: 0 24px 45px -32px rgba(15, 23, 42, 0.28);
-            transform: translateY(24px);
-            opacity: 0;
-            animation: teamCardIn 0.65s ease forwards;
-            animation-delay: calc(var(--card-order) * 0.12s + 0.1s);
-        }
-
-        .about-cta {
-            position: relative;
-        }
-
-        .cta-card {
-            background: linear-gradient(135deg, rgba(79, 70, 229, 0.95), rgba(14, 165, 233, 0.9));
-            border-radius: 2rem;
-            padding: clamp(2rem, 5vw, 3.5rem);
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1.5rem;
-            color: #fff;
-        }
-
-        .cta-card p {
-            color: rgba(255, 255, 255, 0.85);
-        }
-
-        .cta-card a {
-            color: #fff;
-        }
-
-        @keyframes orbit-spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes teamCardIn {
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .bio-timeline::before {
-                inset-inline-start: 24px;
-            }
-
-            .bio-step {
-                padding: 1.5rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="~/css/about.css" asp-append-version="true" />
 }
 
 @section Scripts {
