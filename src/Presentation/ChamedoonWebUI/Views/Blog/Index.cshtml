@@ -1,0 +1,195 @@
+@model ChamedoonWebUI.Models.BlogIndexViewModel
+@using System.Linq
+@using System.Globalization
+@using ChamedoonWebUI.Models
+@{ 
+    ViewData["Title"] = "وبلاگ";
+    var writers = Model.Articles.Select(a => a.Writer).Distinct().ToList();
+    var fallbackBlogImage = Url.Content("~/img/blog-placeholder.svg");
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/persian-datepicker.css" asp-append-version="true" />
+}
+
+<section class="glass-section">
+    <div class="container">
+        <div class="blog-hero">
+            <h1 class="fw-bold">کاوش در تجربه‌های مهاجرت و زندگی در کشورهای مختلف.</h1>
+            <p class="glass-helper mb-0">مقالات چمدون توسط تیم تحقیق و کاربران باتجربه نوشته شده‌اند تا مسیر مهاجرت را برایت شفاف کنند.</p>
+        </div>
+
+        <div class="glass-card blog-search-card mb-4">
+            @await Html.PartialAsync("_SearchForm", new BlogSearchFormViewModel
+            {
+                Search = Model.Search,
+                Writer = Model.Writer,
+                DateFrom = Model.DateFrom,
+                DateTo = Model.DateTo,
+                Writers = writers,
+                FieldIdSuffix = string.Empty,
+                SubmitLabel = "جستجو"
+            })
+        </div>
+
+        @if (!Model.Articles.Any())
+        {
+            <div class="glass-card blog-empty-state">
+                <h4 class="fw-semibold mb-2">مقاله‌ای مطابق فیلترها یافت نشد</h4>
+                <p class="glass-helper mb-0">فیلترها را تغییر بده یا کلمه کلیدی دیگری وارد کن تا نتایج بیشتری نمایش داده شود.</p>
+            </div>
+        }
+        else
+        {
+            <div class="blog-grid">
+                @foreach (var item in Model.Articles)
+                {
+                    var imageSrc = string.IsNullOrWhiteSpace(item.ArticleImageName)
+                        ? fallbackBlogImage
+                        : (item.ArticleImageName!.StartsWith("data:image", System.StringComparison.OrdinalIgnoreCase)
+                            || item.ArticleImageName.StartsWith("http", System.StringComparison.OrdinalIgnoreCase))
+                            ? item.ArticleImageName
+                            : Url.Content($"~/images/blog/{item.ArticleImageName}");
+                    var visitCountText = item.VisitCount.ToString("N0", CultureInfo.CreateSpecificCulture("fa-IR"));
+                    var shareUrl = Url.Action("Detail", "Blog", new { id = item.Id }, Context.Request.Scheme);
+                    <article class="glass-card blog-card">
+                        <img src="@imageSrc" alt="@item.ArticleTitle" />
+                        <div class="blog-body">
+                            <a asp-controller="Blog" asp-action="Detail" asp-route-id="@item.Id" class="stretched-link"></a>
+                            <h5 class="fw-semibold">@item.ArticleTitle</h5>
+                            <p class="glass-helper mb-0 blog-card-description">@item.ShortDescription</p>
+                            <div class="blog-footer">
+                                <a asp-controller="Blog" asp-action="Detail" asp-route-id="@item.Id" class="blog-link blog-read-more">ادامه مطلب</a>
+                                <div class="blog-meta">
+                                    <span class="blog-meta-item" aria-label="@visitCountText بازدید">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></circle>
+                                        </svg>
+                                        <span>@visitCountText</span>
+                                    </span>
+                                    <button type="button" class="blog-share-button" data-share-url="@shareUrl" data-share-title="@item.ArticleTitle" aria-label="اشتراک‌گذاری مطلب @item.ArticleTitle" title="اشتراک‌گذاری">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path d="M4 12.75v7.5a.75.75 0 0 0 .75.75h13.5a.75.75 0 0 0 .75-.75v-7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M12 3.75 16.5 8.25M12 3.75 7.5 8.25" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            <path d="M12 3.75v12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="صفحه‌های وبلاگ" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : string.Empty)">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)" asp-route-search="@Model.Search" asp-route-writer="@Model.Writer" asp-route-dateFrom="@(Model.DateFrom?.ToString("yyyy-MM-dd"))" asp-route-dateTo="@(Model.DateTo?.ToString("yyyy-MM-dd"))">قبلی</a>
+                    </li>
+                    @for (var i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : string.Empty)">
+                            <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-search="@Model.Search" asp-route-writer="@Model.Writer" asp-route-dateFrom="@(Model.DateFrom?.ToString("yyyy-MM-dd"))" asp-route-dateTo="@(Model.DateTo?.ToString("yyyy-MM-dd"))">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : string.Empty)">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)" asp-route-search="@Model.Search" asp-route-writer="@Model.Writer" asp-route-dateFrom="@(Model.DateFrom?.ToString("yyyy-MM-dd"))" asp-route-dateTo="@(Model.DateTo?.ToString("yyyy-MM-dd"))">بعدی</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/persian-datepicker.js" asp-append-version="true"></script>
+    <script>
+        (function () {
+            const initBlogPage = () => {
+                if (window.PersianDatePicker && typeof window.PersianDatePicker.init === 'function') {
+                    window.PersianDatePicker.init();
+                }
+
+                const notifyShare = (button, message) => {
+                    button.classList.add('is-shared');
+                    button.setAttribute('data-share-feedback', message);
+                    window.setTimeout(() => {
+                        button.classList.remove('is-shared');
+                        button.removeAttribute('data-share-feedback');
+                    }, 2000);
+                };
+
+                const copyToClipboard = async (text) => {
+                    if (!text) {
+                        return false;
+                    }
+
+                    if (navigator.clipboard && window.isSecureContext) {
+                        try {
+                            await navigator.clipboard.writeText(text);
+                            return true;
+                        } catch (error) {
+                            // fallback to legacy approach
+                        }
+                    }
+
+                    try {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = text;
+                        textArea.setAttribute('readonly', '');
+                        textArea.style.position = 'fixed';
+                        textArea.style.opacity = '0';
+
+                        const container = document.body || document.documentElement;
+                        container.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+
+                        const successful = document.execCommand('copy');
+                        textArea.remove();
+                        return successful;
+                    } catch (error) {
+                        return false;
+                    }
+                };
+
+                document.querySelectorAll('.blog-share-button').forEach((button) => {
+                    button.addEventListener('click', async () => {
+                        const url = button.getAttribute('data-share-url');
+                        const title = button.getAttribute('data-share-title');
+                        if (!url) {
+                            return;
+                        }
+
+                        if (navigator.share) {
+                            try {
+                                await navigator.share({ title, url });
+                                notifyShare(button, 'ارسال شد');
+                                return;
+                            } catch (error) {
+                                // کاربر اشتراک‌گذاری را لغو کرده است یا پشتیبانی نمی‌شود
+                            }
+                        }
+
+                        if (await copyToClipboard(url)) {
+                            notifyShare(button, 'کپی شد');
+                            return;
+                        }
+
+                        notifyShare(button, 'لینک: ' + url);
+                    });
+                });
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initBlogPage, { once: true });
+            } else {
+                initBlogPage();
+            }
+        })();
+    </script>
+}

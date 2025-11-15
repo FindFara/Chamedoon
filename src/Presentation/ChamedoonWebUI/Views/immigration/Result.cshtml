@@ -1,0 +1,47 @@
+@model Chamedoon.Application.Services.Immigration.ImmigrationResult
+@{
+    ViewData["Title"] = "نتیجه ارزیابی مهاجرت";
+}
+
+<section class="glass-section">
+    <div class="container">
+        <div class="glass-card immigration-card mb-4">
+            <h2 class="fw-bold mb-2">مناسب‌ترین گزینه‌ها برای مهاجرت</h2>
+            <p class="glass-helper mb-0">
+                بر اساس اطلاعاتی که وارد کردی، مسیرهای زیر بالاترین شانس موفقیت را برایت دارند. رتبه‌بندی بر اساس تطابق شرایط، امتیاز تحصیلی و وضعیت مالی انجام شده است.
+            </p>
+        </div>
+
+        @if (Model.TopCountries?.Any() == true)
+        {
+            <div class="score-grid">
+                @for (int i = 0; i < Model.TopCountries.Count; i++)
+                {
+                    var item = Model.TopCountries[i];
+                    <div class="glass-card score-card">
+                        <span class="badge bg-primary-subtle text-primary mb-3">رتبه @(i + 1)</span>
+                        <h3 class="fw-semibold">@item.Country.GetDescription()</h3>
+                        <div class="score-value">
+                            <span>@item.Score</span>
+                            <small class="text-muted">%</small>
+                        </div>
+                        <p class="glass-helper">مسیر پیشنهادی: @item.RecommendedVisaType</p>
+                        <a href="javascript:void(0)" class="btn-outline-glass mt-3">درخواست مشاوره برای این مسیر</a>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="glass-card blog-empty-state">
+                <h4 class="fw-semibold mb-2">اطلاعات کافی برای پیشنهاد وجود ندارد</h4>
+                <p class="glass-helper mb-0">لطفاً فرم ارزیابی را با دقت بیشتری تکمیل کن یا اطلاعات بیشتری اضافه کن تا بتوانیم پیشنهاد دقیق‌تری ارائه دهیم.</p>
+            </div>
+        }
+
+        <div class="d-flex flex-wrap gap-3 mt-4">
+            <a asp-controller="Immigration" asp-action="Index" class="btn-outline-glass">ویرایش اطلاعات و ارزیابی مجدد</a>
+            <a asp-controller="Blog" asp-action="Index" class="btn-glass-primary">مطالعه نکات کاربردی مهاجرت</a>
+        </div>
+    </div>
+</section>

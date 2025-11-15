@@ -1,0 +1,196 @@
+@model BlogEditViewModel
+@{
+    ViewData["Title"] = Model.Id.HasValue ? "ویرایش مقاله" : "ایجاد مقاله";
+}
+
+@{
+    var previewSrc = string.Empty;
+    if (!string.IsNullOrWhiteSpace(Model.ImageData))
+    {
+        previewSrc = Model.ImageData.StartsWith("data:image", System.StringComparison.OrdinalIgnoreCase)
+            ? Model.ImageData
+            : Url.Content($"~/images/blog/{Model.ImageData}");
+    }
+}
+
+<div class="container-fluid py-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-transparent">
+            <h1 class="h4 mb-0">@ViewData["Title"]</h1>
+        </div>
+        <div class="card-body">
+            <form asp-action="@(Model.Id.HasValue ? "Edit" : "Create")" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" data-blog-editor="true">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Title" class="form-label"></label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Writer" class="form-label"></label>
+                        <input asp-for="Writer" class="form-control" />
+                        <span asp-validation-for="Writer" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="ShortDescription" class="form-label"></label>
+                        <textarea asp-for="ShortDescription" class="form-control rich-text-short" rows="3"></textarea>
+                        <span asp-validation-for="ShortDescription" class="text-danger"></span>
+                    </div>
+                    <div class="col-12">
+                        <label asp-for="ArticleDescription" class="form-label"></label>
+                        <textarea asp-for="ArticleDescription" class="form-control rich-text-long" rows="6"></textarea>
+                        <span asp-validation-for="ArticleDescription" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ImageData" class="form-label"></label>
+                        <input asp-for="ImageData" type="hidden" />
+                        <input type="file" id="imageUploader" class="form-control" accept="image/*" />
+                        <div class="form-text">فرمت‌های مجاز: JPG, PNG, WEBP. تصویر به صورت Base64 ذخیره می‌شود.</div>
+                        <span asp-validation-for="ImageData" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="VisitCount" class="form-label"></label>
+                        <input asp-for="VisitCount" class="form-control" />
+                        <span asp-validation-for="VisitCount" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="card shadow-sm mt-3">
+                        <div class="card-body text-center">
+                            <p class="fw-semibold mb-2">پیش‌نمایش تصویر مقاله</p>
+                            <img id="blogImagePreview" src="@previewSrc" alt="پیش‌نمایش تصویر" class="img-fluid rounded @(string.IsNullOrWhiteSpace(Model.ImageData) ? "d-none" : string.Empty)" />
+                            <button type="button" class="btn btn-sm btn-outline-danger mt-3 @(string.IsNullOrWhiteSpace(Model.ImageData) ? "d-none" : string.Empty)" id="clearImageButton">حذف تصویر</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">بازگشت</a>
+                    <button type="submit" class="btn btn-primary">ذخیره</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        (function () {
+            tinymce.init({
+                selector: 'textarea.rich-text-short',
+                menubar: false,
+                directionality: 'rtl',
+                min_height: 220,
+                plugins: 'lists link emoticons paste',
+                toolbar: 'undo redo | bold italic underline forecolor backcolor | bullist numlist | link emoticons | removeformat',
+                paste_as_text: false,
+                branding: false
+            });
+
+            tinymce.init({
+                selector: 'textarea.rich-text-long',
+                menubar: true,
+                directionality: 'rtl',
+                min_height: 420,
+                plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount codesample',
+                toolbar: 'undo redo | styles | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image codesample table | removeformat preview fullscreen',
+                automatic_uploads: true,
+                file_picker_types: 'image',
+                images_file_types: 'jpg,jpeg,png,gif,webp',
+                images_upload_handler: function (blobInfo, success, failure) {
+                    try {
+                        const dataUrl = 'data:' + blobInfo.blob().type + ';base64,' + blobInfo.base64();
+                        success(dataUrl);
+                    } catch (error) {
+                        failure('امکان بارگذاری تصویر وجود ندارد.');
+                    }
+                },
+                branding: false,
+                content_style: 'body { font-family: Vazirmatn, sans-serif; } pre, code { direction: ltr; text-align: left; }'
+            });
+
+            const form = document.querySelector('form[data-blog-editor]') ?? document.querySelector('form');
+            form?.addEventListener('submit', function () {
+                if (window.tinymce) {
+                    tinymce.triggerSave();
+                }
+            });
+
+            const uploader = document.getElementById('imageUploader');
+            const hiddenInput = document.getElementById('ImageData');
+            const preview = document.getElementById('blogImagePreview');
+            const clearButton = document.getElementById('clearImageButton');
+
+            const toggleClearButton = function (visible) {
+                if (!clearButton) {
+                    return;
+                }
+                if (visible) {
+                    clearButton.classList.remove('d-none');
+                } else {
+                    clearButton.classList.add('d-none');
+                }
+            };
+
+            const updatePreview = function (dataUrl) {
+                if (!preview) {
+                    return;
+                }
+                if (dataUrl) {
+                    preview.src = dataUrl;
+                    preview.classList.remove('d-none');
+                    toggleClearButton(true);
+                } else {
+                    preview.removeAttribute('src');
+                    preview.classList.add('d-none');
+                    toggleClearButton(false);
+                }
+            };
+
+            uploader?.addEventListener('change', function (event) {
+                const file = event.target.files?.[0];
+                if (!file) {
+                    return;
+                }
+
+                if (!file.type.startsWith('image/')) {
+                    alert('لطفاً یک فایل تصویری انتخاب کنید.');
+                    event.target.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const result = e.target?.result;
+                    if (typeof result === 'string') {
+                        if (hiddenInput) {
+                            hiddenInput.value = result;
+                        }
+                        updatePreview(result);
+                    }
+                };
+                reader.onerror = function () {
+                    alert('خواندن فایل با مشکل مواجه شد.');
+                };
+                reader.readAsDataURL(file);
+            });
+
+            clearButton?.addEventListener('click', function () {
+                if (hiddenInput) {
+                    hiddenInput.value = '';
+                }
+                if (uploader) {
+                    uploader.value = '';
+                }
+                updatePreview('');
+            });
+        })();
+    </script>
+}
+

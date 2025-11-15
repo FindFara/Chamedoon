@@ -164,7 +164,7 @@ public class AccountController : Controller
     [HttpGet("login-google")] 
     public async Task<IActionResult> LoginWithGoogle()
     {
-        var redirectUrl = Url.Action("google-callback", "auth");
+        var redirectUrl = Url.Action(nameof(GoogleCallback), "Account");
 
         var result = await _mediator.Send(new ExternalLoginCommand { Provider = GoogleDefaults.AuthenticationScheme, RedirectUrl = redirectUrl });
         if (!result.IsSuccess || result.Result is null)
@@ -175,7 +175,7 @@ public class AccountController : Controller
     [HttpGet("google-callback")]
     public async Task<IActionResult> GoogleCallback(string returnUrl = "/")
     {
-        var result = _mediator.Send(new ExternalLoginCallbackQuery()).Result;
+        var result = await _mediator.Send(new ExternalLoginCallbackQuery());
 
         if (result.IsSuccess)
         {
@@ -201,6 +201,7 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid)
             return View();
+
         var resetlink = $"{_urls.AppUrl}/auth/ResetPassword";
         var result = await _mediator.Send(new ForgotPasswordQuery { Email = email, ResetLinkAction = resetlink });
 

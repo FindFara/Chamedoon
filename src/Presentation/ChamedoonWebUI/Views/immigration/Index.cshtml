@@ -1,0 +1,306 @@
+@model Chamedoon.Application.Services.Immigration.ImmigrationInput
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using Chamedoon.Application.Services.Immigration
+@{
+    ViewData["Title"] = "محاسبه امتیاز مهاجرت";
+}
+
+<section class="glass-section">
+    <div class="container">
+        <div class="immigration-hero">
+            <div class="glass-card immigration-card">
+                <h3 class="fw-bold mb-3">ارزیابی هوشمند مسیر مهاجرتی تو.</h3>
+                <p>
+                    با پاسخ به چند سوال درباره سابقه تحصیلی، شغلی و علایقت، بهترین کشورها و مسیرهای مهاجرتی مناسب برایت پیشنهاد می‌شود.
+                    نتایج این ارزیابی در داشبورد شخصی‌ات ذخیره خواهد شد.
+                </p>
+                <div class="immigration-actions mt-4">
+                    <button type="button" class="btn-glass-primary" data-bs-toggle="modal" data-bs-target="#modalStep1">
+                        شروع ارزیابی
+                    </button>
+                    <a asp-controller="Blog" asp-action="Index" class="btn-outline-glass">مطالعه نکات قبل از مهاجرت</a>
+                </div>
+                <ul class="auth-benefits mt-4">
+                    <li>محاسبه امتیاز بر اساس جدیدترین معیارهای مهاجرتی</li>
+                    <li>پیشنهاد ترکیبی کشور و نوع ویزا با توجه به شرایطت</li>
+                    <li>تحلیل شانس موفقیت و قدم‌های بعدی در قالب گزارش واضح</li>
+                </ul>
+            </div>
+            <div class="immigration-hero-visual">
+                <img src="~/images/app.svg" alt="فرآیند ارزیابی مهاجرت" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<form id="immigrationForm" asp-action="Calculate" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="modal fade modal-step" id="modalStep1" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-step-heading">
+                        <span class="step-badge">۱ از ۴</span>
+                        <h5 class="modal-title">اطلاعات پایه</h5>
+                        <p class="modal-subtitle">برای شروع، سن و سابقه شغلی خود را وارد کن.</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر سن" title="سن بین ۱۸ تا ۲۹ سال بیشترین امتیاز را دریافت می‌کند.">!</span>
+                            <label for="Age" class="form-label">سن</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <input asp-for="Age" class="form-control glass-input" type="number" min="0" />
+                        </div>
+                    </div>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر دسته شغلی" title="دسته‌های پرتقاضا امتیاز بیشتری دارند.">!</span>
+                            <label for="JobCategory" class="form-label">دسته شغلی</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <select asp-for="JobCategory" class="form-select glass-input" asp-items="Html.GetEnumSelectList<JobCategoryType>()"></select>
+                        </div>
+                    </div>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر عنوان شغلی" title="عنوان‌های تخصصی یک امتیاز اضافه دریافت می‌کنند.">!</span>
+                            <label for="JobTitle" class="form-label">عنوان شغل (اختیاری)</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <input asp-for="JobTitle" class="form-control glass-input" type="text" />
+                        </div>
+                    </div>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر سابقه کاری" title="سابقه بیشتر از ۷ سال بیشترین امتیاز را دارد.">!</span>
+                            <label for="WorkExperienceYears" class="form-label">سابقه کاری (سال)</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <input asp-for="WorkExperienceYears" class="form-control glass-input" type="number" min="0" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-glass-primary" onclick="showNextModal('modalStep1','modalStep2')">مرحله بعد</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-step" id="modalStep2" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-step-heading">
+                        <span class="step-badge">۲ از ۴</span>
+                        <h5 class="modal-title">تحصیلات و زبان</h5>
+                        <p class="modal-subtitle">سطح تحصیلات و مدارک زبان تأثیر مستقیمی بر امتیاز دارد.</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر دسته رشته" title="رشته‌های فنی و درمانی امتیاز هم‌افزایی دارند.">!</span>
+                            <label for="FieldCategory" class="form-label">دسته رشته یا شغل</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <select asp-for="FieldCategory" class="form-select glass-input" asp-items="Html.GetEnumSelectList<FieldCategoryType>()"></select>
+                        </div>
+                    </div>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر مقطع" title="تحصیلات بالاتر امتیاز بیشتری دارد.">!</span>
+                            <label for="DegreeLevel" class="form-label">مقطع تحصیلی</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <select asp-for="DegreeLevel" class="form-select glass-input" asp-items="Html.GetEnumSelectList<DegreeLevelType>()"></select>
+                        </div>
+                    </div>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر مدرک زبان" title="مدارک بین‌المللی معتبر امتیاز بیشتری دارند.">!</span>
+                            <label for="LanguageCertificate" class="form-label">مدرک زبان</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <select asp-for="LanguageCertificate" class="form-select glass-input" asp-items="Html.GetEnumSelectList<LanguageCertificateType>()"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline-glass" onclick="showPreviousModal('modalStep2','modalStep1')">مرحله قبل</button>
+                    <button type="button" class="btn-glass-primary" onclick="showNextModal('modalStep2','modalStep3')">مرحله بعد</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-step" id="modalStep3" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-step-heading">
+                        <span class="step-badge">۳ از ۴</span>
+                        <h5 class="modal-title">نوع ویزا و وضعیت فردی</h5>
+                        <p class="modal-subtitle">میزان سرمایه و وضعیت تاهل مسیرهای پیشنهادی را تغییر می‌دهد.</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر سرمایه" title="میزان سرمایه در مسیرهای سرمایه‌گذاری اثرگذار است.">!</span>
+                            <label for="InvestmentAmount" class="form-label">میزان سرمایه (دلار/یورو)</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <input asp-for="InvestmentAmount" class="form-control glass-input" type="number" min="0" step="1000" />
+                        </div>
+                    </div>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر وضعیت تاهل" title="افراد متأهل امتیاز بیشتری می‌گیرند.">!</span>
+                            <label for="MaritalStatus" class="form-label">وضعیت تاهل</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <select asp-for="MaritalStatus" class="form-select glass-input" asp-items="Html.GetEnumSelectList<MaritalStatusType>()"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline-glass" onclick="showPreviousModal('modalStep3','modalStep2')">مرحله قبل</button>
+                    <button type="button" class="btn-glass-primary" onclick="showNextModal('modalStep3','modalStep4')">مرحله بعد</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-step" id="modalStep4" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-step-heading">
+                        <span class="step-badge">۴ از ۴</span>
+                        <h5 class="modal-title">جزئیات تکمیلی</h5>
+                        <p class="modal-subtitle">علایق تحصیلی و تیپ شخصیتی را مشخص کن تا پیشنهاد دقیق‌تری دریافت کنی.</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر تمایل به تحصیل" title="تمایل به تحصیل امتیاز مسیرهای آموزشی را افزایش می‌دهد.">!</span>
+                            <span class="field-hint-title">آیا تمایل به ادامه تحصیل داری؟</span>
+                        </div>
+                        <div class="field-hint-control">
+                            <div class="form-check form-switch">
+                                <input asp-for="WillingToStudy" class="form-check-input" type="checkbox" role="switch" />
+                                <label class="form-check-label" for="WillingToStudy">بله</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field-hint">
+                        <div class="field-hint-header">
+                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر تیپ شخصیتی" title="تیپ شخصیتی مناسب با فرهنگ کشور مقصد هم‌خوانی دارد.">!</span>
+                            <label for="MBTIPersonality" class="form-label">شخصیت MBTI</label>
+                        </div>
+                        <div class="field-hint-control">
+                            <select asp-for="MBTIPersonality" class="form-select glass-input" asp-items="Html.GetEnumSelectList<PersonalityType>()"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline-glass" onclick="showPreviousModal('modalStep4','modalStep3')">مرحله قبل</button>
+                    <button type="submit" class="btn-glass-primary">محاسبه امتیاز</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            const prefersTouch = window.matchMedia('(hover: none)').matches;
+
+            tooltipTriggerList.forEach(function (triggerEl) {
+                const tooltip = new bootstrap.Tooltip(triggerEl, {
+                    trigger: prefersTouch ? 'manual' : 'hover focus',
+                    boundary: document.body
+                });
+
+                triggerEl.addEventListener('keydown', function (event) {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        tooltip.toggle();
+                    }
+                });
+
+                if (prefersTouch) {
+                    triggerEl.addEventListener('click', function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        tooltip.toggle();
+                    });
+                }
+            });
+
+            if (prefersTouch) {
+                document.addEventListener('click', function (event) {
+                    tooltipTriggerList.forEach(function (triggerEl) {
+                        const tooltipInstance = bootstrap.Tooltip.getInstance(triggerEl);
+                        if (!tooltipInstance) {
+                            return;
+                        }
+
+                        const tip = tooltipInstance.tip || (typeof tooltipInstance.getTipElement === 'function' ? tooltipInstance.getTipElement() : null);
+
+                        if (triggerEl.contains(event.target)) {
+                            return;
+                        }
+
+                        if (tip && tip.contains && tip.contains(event.target)) {
+                            return;
+                        }
+
+                        tooltipInstance.hide();
+                    });
+                });
+            }
+
+            document.querySelectorAll('.modal-step').forEach(function (modalEl) {
+                modalEl.addEventListener('hide.bs.modal', function () {
+                    tooltipTriggerList.forEach(function (triggerEl) {
+                        const tooltipInstance = bootstrap.Tooltip.getInstance(triggerEl);
+                        if (tooltipInstance) {
+                            tooltipInstance.hide();
+                        }
+                    });
+                });
+            });
+        });
+
+        function showNextModal(currentId, nextId) {
+            const currentModal = bootstrap.Modal.getInstance(document.getElementById(currentId));
+            if (currentModal) {
+                currentModal.hide();
+            }
+            const nextModal = new bootstrap.Modal(document.getElementById(nextId));
+            nextModal.show();
+        }
+
+        function showPreviousModal(currentId, prevId) {
+            const currentModal = bootstrap.Modal.getInstance(document.getElementById(currentId));
+            if (currentModal) {
+                currentModal.hide();
+            }
+            const prevModal = new bootstrap.Modal(document.getElementById(prevId));
+            prevModal.show();
+        }
+    </script>
+}

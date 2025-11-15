@@ -18,6 +18,11 @@ namespace ChamedoonWebUI.Controllers
             return View();
         }
 
+        public IActionResult Landing()
+        {
+            return View("~/Views/Landing/Index.cshtml");
+        }
+
         public IActionResult Privacy()
         {
             return View();

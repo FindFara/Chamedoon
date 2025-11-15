@@ -1,0 +1,45 @@
+@model RoleEditViewModel
+@{
+    ViewData["Title"] = Model.Id.HasValue ? "ویرایش نقش" : "ایجاد نقش";
+}
+
+<div class="container-fluid py-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-transparent">
+            <h1 class="h4 mb-0">@ViewData["Title"]</h1>
+        </div>
+        <div class="card-body">
+            <form asp-action="@(Model.Id.HasValue ? "Edit" : "Create")" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SelectedPermissions" class="form-label">مجوزهای موجود</label>
+                    <select asp-for="SelectedPermissions" class="form-select" multiple size="6" asp-items="@(new SelectList(Model.AvailablePermissions))"></select>
+                    <span class="form-text text-muted">برای انتخاب چند مورد کلید Ctrl یا Shift را نگه دارید.</span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="AdditionalPermissions" class="form-label"></label>
+                    <textarea asp-for="AdditionalPermissions" class="form-control" rows="3" placeholder="نمونه: مدیریت-کاربران, مدیریت-نقش‌ها"></textarea>
+                    <span asp-validation-for="AdditionalPermissions" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary">بازگشت</a>
+                    <button type="submit" class="btn btn-primary">ذخیره</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

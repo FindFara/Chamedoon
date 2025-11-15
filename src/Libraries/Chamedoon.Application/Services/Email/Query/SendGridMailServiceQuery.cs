@@ -1,14 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using SendGrid;
-using SendGrid.Helpers.Mail;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
-using System.Net;
-using System.Threading.Tasks;
+﻿using Chamedoon.Domin.Configs;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Chamedoon.Domin.Configs;
+using System.Net;
+using System.Net.Mail;
 
 namespace Chamedoon.Application.Services.Email.Query
 {
@@ -20,23 +14,13 @@ namespace Chamedoon.Application.Services.Email.Query
     public class SendGridMailService : IEmailService
     {
         private SmtpConfig _smtpSettings;
+        private ILogger<SendGridMailService> _logger;
 
-        public SendGridMailService(IOptions<SmtpConfig> smtpOptions)
+        public SendGridMailService(IOptions<SmtpConfig> smtpOptions, ILogger<SendGridMailService> logger)
         {
             _smtpSettings = smtpOptions.Value;
+            _logger = logger;
         }
-
-        //public async Task SendEmailAsync(string toEmail, string subject, string content)
-        //{
-        //    //TODO : set apikey in appsetting
-        //    var apiKey = _configuration["SendGridAPIKey"];
-        //    var client = new SendGridClient(apiKey);
-        //    var from = new EmailAddress("test@authdemo.com", "JWT Auth Demo");
-        //    var to = new EmailAddress(toEmail);
-        //    var msg = MailHelper.CreateSingleEmail(from, to, subject, content, content);
-        //    var response = await client.SendEmailAsync(msg);
-        //}
-
         public async Task SendMail(string toEmail, string subject, string content)
         {
             try
@@ -60,12 +44,11 @@ namespace Chamedoon.Application.Services.Email.Query
 
                 await client.SendMailAsync(message);
             }
-            catch (Exception EV)
+            catch (Exception ex)
             {
-
+                _logger.LogError($"SendMail has error {ex}");
                 throw;
             }
-
         }
     }
 }

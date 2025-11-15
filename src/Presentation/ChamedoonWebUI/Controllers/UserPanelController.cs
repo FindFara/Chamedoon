@@ -59,7 +59,6 @@ namespace ChamedoonWebUI.Controllers
                 UpsertCustomerViewModel = mapper.Map<UpsertCustomerViewModel>(user),
             });
 
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Edit", "UserPanel");
         }
         #endregion
