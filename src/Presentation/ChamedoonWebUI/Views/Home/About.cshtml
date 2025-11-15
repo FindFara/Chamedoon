@@ -1,0 +1,117 @@
+@{
+    ViewData["Title"] = "درباره ما";
+}
+
+<div class="about-page">
+<section class="container py-5 about-hero-section">
+    <div class="hero-section about-hero-card">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 text-center text-lg-end">
+                <span class="badge rounded-pill text-bg-light about-hero-badge">داستان تیم چمدون</span>
+                <h1 class="fw-bold display-5 mt-3">ما مسیر مهاجرت را مرحله‌به‌مرحله شفاف و همراهانه می‌کنیم.</h1>
+                <p class="text-muted lead">تیم چندرشته‌ای چمدون با تجربه سفر، تکنولوژی و مشاوره کنار هم جمع شده تا برای هر مهاجر نقشه راه شخصی‌سازی‌شده‌ای بسازد.</p>
+                <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-end">
+                    <a asp-controller="Immigration" asp-action="Index" class="btn btn-primary px-4">شروع تست مهاجرت</a>
+                    <a asp-controller="Blog" asp-action="Index" class="btn btn-outline-secondary px-4">مطالعه وبلاگ</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-hero-visual">
+                    <div class="orbit orbit-primary"></div>
+                    <div class="orbit orbit-secondary"></div>
+                    <div class="about-hero-avatar">
+                        <span class="avatar-initials">CH</span>
+                        <span class="avatar-caption">Crew</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-steps py-5">
+    <div class="container about-container">
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-lg-8">
+                <span class="text-uppercase text-primary fw-semibold">بایو تیمی</span>
+                <h2 class="fw-bold mt-2">چهار فصل از داستان تیم چمدون</h2>
+                <p class="text-muted">هر گام با الهام از نیاز واقعی مهاجرها طراحی شده است؛ از لحظه جرقه اولیه تا خلق محصولی که هر روز دقیق‌تر می‌شود.</p>
+            </div>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <div class="bio-timeline">
+                    <article class="bio-step" data-step="۱" style="--step-index:1">
+                        <h3>جرقه از دل تجربه شخصی</h3>
+                        <p>سال ۱۳۹۸ چند عضو تیم بعد از تجربه مهاجرت تحصیلی و کاری متوجه شدند نبود یک راهنمای فارسی‌زبان و مرحله‌ای چقدر فرساینده است. ایده چمدون همان‌جا شکل گرفت.</p>
+                    </article>
+                    <article class="bio-step" data-step="۲" style="--step-index:2">
+                        <h3>ترکیب تخصص‌های مکمل</h3>
+                        <p>طراح تجربه کاربری، مشاور حقوقی مهاجرت، تحلیل‌گر داده و توسعه‌دهنده محصول هسته اولیه تیم را ساختند تا دید چندبعدی داشته باشیم.</p>
+                    </article>
+                    <article class="bio-step" data-step="۳" style="--step-index:3">
+                        <h3>ساخت نقشه راه پویا</h3>
+                        <p>با بررسی بیش از ۵۰۰ پرونده واقعی، الگوریتم‌های پیشنهاد مقصد و چک‌لیست‌های قابل پیگیری را طراحی کردیم تا هر کاربر مسیر مخصوص خودش را داشته باشد.</p>
+                    </article>
+                    <article class="bio-step" data-step="۴" style="--step-index:4">
+                        <h3>رشد با همراهی جامعه</h3>
+                        <p>امروز چمدون با جامعه‌ای از مهاجران، منتورها و متخصصان مهاجرت آپدیت می‌شود و هر بازخورد را به یک مرحله تازه تبدیل می‌کند.</p>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-values py-5 bg-white">
+    <div class="container about-container">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-5">
+                <h2 class="fw-bold">چمدون یعنی همراهی انسانی + تکنولوژی هوشمند</h2>
+                <p class="text-muted">ما باور داریم تصمیم مهاجرت فقط یک فرم یا چک‌لیست نیست. کنار هوش مصنوعی، تجربه انسانی اعضای تیم همیشه حضور دارد.</p>
+                <ul class="about-values-list">
+                    <li><strong>شفافیت:</strong> همه اطلاعات با زبان ساده و بدون اغراق در اختیار کاربر قرار می‌گیرد.</li>
+                    <li><strong>همدلی:</strong> هر تصمیم محصولی بر اساس گفتگو با کاربران واقعی شکل می‌گیرد.</li>
+                    <li><strong>پیشرفت مداوم:</strong> هر فصل با داده‌های تازه و شرکای جدید سرویس‌ها را توسعه می‌دهیم.</li>
+                </ul>
+            </div>
+            <div class="col-lg-7">
+                <div class="about-team-grid">
+                    <div class="team-card" style="--card-order:1">
+                        <h4>تیم محصول</h4>
+                        <p>طراحی تجربه سفر دیجیتال و ساخت ابزارهای تعاملی برای ارزیابی مسیر مهاجرت.</p>
+                    </div>
+                    <div class="team-card" style="--card-order:2">
+                        <h4>تیم حقوقی و تحقیق</h4>
+                        <p>به‌روزرسانی قوانین ویزا و آماده‌سازی راهنماهای معتبر برای مقاصد پرطرفدار.</p>
+                    </div>
+                    <div class="team-card" style="--card-order:3">
+                        <h4>تیم جامعه و محتوا</h4>
+                        <p>برگزاری رویدادهای آنلاین، مصاحبه با مهاجران و تولید محتوا برای وبلاگ چمدون.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-cta py-5">
+    <div class="container about-container">
+        <div class="cta-card">
+            <div>
+                <h2 class="fw-bold mb-3">به خانواده چمدون خوش آمدی!</h2>
+                <p class="mb-0 text-muted">اگر دوست داری با ما همکاری کنی یا تجربه مهاجرتت را به اشتراک بگذاری، خوشحال می‌شویم از طریق ایمیل <a href="mailto:team@chamedoon.com">team@chamedoon.com</a> با ما در ارتباط باشی.</p>
+            </div>
+            <a asp-controller="Account" asp-action="Register" class="btn btn-primary px-4">شروع همکاری</a>
+        </div>
+    </div>
+</section>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/about.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/about.js" asp-append-version="true"></script>
+}
