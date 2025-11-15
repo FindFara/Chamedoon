@@ -103,8 +103,14 @@ body.admin-shell {
     transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.admin-header-actions .return-link span:first-child {
-    font-size: 1.1rem;
+.admin-header-actions .return-link {
+    padding: 0;
+    width: 2.75rem;
+}
+
+.admin-header-actions .return-link span,
+.theme-toggle .theme-icon {
+    font-size: 1.15rem;
     line-height: 1;
 }
 
@@ -198,9 +204,29 @@ body.dark-mode .table thead {
     width: 2.75rem;
 }
 
-.theme-toggle .theme-icon {
-    font-size: 1.1rem;
-    line-height: 1;
+.text-muted {
+    color: var(--admin-muted) !important;
+}
+
+.admin-card .badge {
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+
+body.dark-mode .admin-card .badge.bg-light {
+    background-color: rgba(148, 163, 184, 0.18) !important;
+    color: var(--admin-text) !important;
+    border-color: rgba(148, 163, 184, 0.28);
+}
+
+.list-group-item {
+    background-color: var(--admin-card-bg);
+    color: var(--admin-text);
+    border-color: var(--admin-card-border);
+}
+
+body.dark-mode .list-group-item {
+    background-color: rgba(15, 23, 42, 0.65);
 }
 
 .theme-toggle.btn-outline-secondary:hover,
