@@ -1292,6 +1292,10 @@ a:hover {
     width: 100%;
 }
 
+.blog-detail-layout > [class*="col-"] > .blog-detail-search {
+    align-self: flex-start;
+}
+
 .blog-detail-card {
     padding: clamp(1.75rem, 3vw, 2.5rem);
     display: flex;
