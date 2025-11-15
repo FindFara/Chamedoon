@@ -50,11 +50,26 @@
     <div class="col-lg-3 col-md-6">
         <label for="@writerId" class="form-label">نویسنده</label>
         <select id="@writerId" name="writer" class="form-select">
-            <option value="" @(string.IsNullOrEmpty(writerValue) ? "selected" : string.Empty)>همه</option>
+            @if (string.IsNullOrEmpty(writerValue))
+            {
+                <option value="" selected>همه</option>
+            }
+            else
+            {
+                <option value="">همه</option>
+            }
+
             @foreach (var w in writers)
             {
                 var isSelected = string.Equals(writerValue, w, StringComparison.OrdinalIgnoreCase);
-                <option value="@w" @(isSelected ? "selected" : null)>@w</option>
+                if (isSelected)
+                {
+                    <option value="@w" selected>@w</option>
+                }
+                else
+                {
+                    <option value="@w">@w</option>
+                }
             }
         </select>
     </div>
