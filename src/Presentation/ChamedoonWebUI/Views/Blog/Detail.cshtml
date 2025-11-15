@@ -8,7 +8,7 @@
         : (Model.ArticleImageName!.StartsWith("data:image", System.StringComparison.OrdinalIgnoreCase)
             || Model.ArticleImageName.StartsWith("http", System.StringComparison.OrdinalIgnoreCase))
             ? Model.ArticleImageName
-            : Url.Content($"~/images/blog/{Model.ArticleImageName}"));
+            : Url.Content($"~/images/blog/{Model.ArticleImageName}");
 }
 
 @section Styles {
