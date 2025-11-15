@@ -24,7 +24,7 @@
 
     <div class="row g-4">
         <div class="col-sm-6 col-xl-3">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-body">
                     <h6 class="text-muted mb-2">کل کاربران</h6>
                     <div class="d-flex align-items-baseline justify-content-between">
@@ -37,7 +37,7 @@
         </div>
 
         <div class="col-sm-6 col-xl-3">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-body">
                     <h6 class="text-muted mb-2">کاربران فعال</h6>
                     <div class="d-flex align-items-baseline justify-content-between">
@@ -50,7 +50,7 @@
         </div>
 
         <div class="col-sm-6 col-xl-3">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-body">
                     <h6 class="text-muted mb-2">کل مقالات</h6>
                     <div class="d-flex align-items-baseline justify-content-between">
@@ -63,7 +63,7 @@
         </div>
 
         <div class="col-sm-6 col-xl-3">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-body">
                     <h6 class="text-muted mb-2">بازدید مقالات</h6>
                     <h3 class="fw-bold mb-2">@Model.TotalViews.ToString("N0")</h3>
@@ -75,7 +75,7 @@
 
     <div class="row g-4 mt-1">
         <div class="col-lg-6">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">روند ثبت‌نام کاربران</h5>
                 </div>
@@ -95,7 +95,7 @@
         </div>
 
         <div class="col-lg-6">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">بازدید مقالات</h5>
                 </div>
@@ -117,7 +117,7 @@
 
     <div class="row g-4 mt-1">
         <div class="col-lg-6">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">کاربران اخیر</h5>
                 </div>
@@ -157,7 +157,7 @@
         </div>
 
         <div class="col-lg-6">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">مقالات اخیر</h5>
                 </div>
@@ -199,7 +199,7 @@
 
     <div class="row g-4 mt-1">
         <div class="col-lg-6">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-header bg-transparent">
                     <h5 class="mb-0">محبوب‌ترین مقالات</h5>
                 </div>
@@ -225,7 +225,7 @@
         </div>
 
         <div class="col-lg-6">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-header bg-transparent">
                     <h5 class="mb-0">توزیع نقش‌ها</h5>
                 </div>
@@ -253,7 +253,7 @@
 
     <div class="row g-4 mt-1">
         <div class="col-lg-6">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-header bg-transparent">
                     <h5 class="mb-0">استفاده از مجوزها</h5>
                 </div>
@@ -279,7 +279,7 @@
         </div>
 
         <div class="col-lg-6">
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-header bg-transparent">
                     <h5 class="mb-0">ثبت‌نام ماه‌های اخیر</h5>
                 </div>
@@ -307,9 +307,13 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" integrity="sha384-A5T07NpSVrSi+jmpBhN5Y4ejygntE+EukCDdm42H2h5t+dCblqkvCPdRtiGio/nN" crossorigin="anonymous"></script>
     <script>
         (function () {
+            if (typeof window.Chart === 'undefined') {
+                console.warn('Chart.js is not available.');
+                return;
+            }
             const monthlyLabels = @Html.Raw(JsonSerializer.Serialize(monthlyRegistrationLabels, jsonOptions));
             const monthlyValues = @Html.Raw(JsonSerializer.Serialize(monthlyRegistrationValues, jsonOptions));
             const blogLabels = @Html.Raw(JsonSerializer.Serialize(popularPostLabels, jsonOptions));
