@@ -1294,8 +1294,11 @@ a:hover {
 
 .blog-detail-card {
     padding: clamp(1.75rem, 3vw, 2.5rem);
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: clamp(1rem, 2vw, 1.5rem);
+    overflow: hidden;
+    isolation: isolate;
 }
 
 .blog-detail-header {
@@ -1397,6 +1400,13 @@ a:hover {
     display: flow-root;
     overflow-wrap: anywhere;
     word-break: break-word;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.blog-detail-content * {
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .blog-detail-content > * + * {
