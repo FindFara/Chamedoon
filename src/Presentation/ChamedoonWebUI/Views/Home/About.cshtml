@@ -1,0 +1,324 @@
+@{
+    ViewData["Title"] = "درباره ما";
+}
+
+<section class="about-hero py-5">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 text-center text-lg-end">
+                <span class="badge rounded-pill text-bg-light about-hero-badge">داستان تیم چمدون</span>
+                <h1 class="fw-bold display-5 mt-3">ما مسیر مهاجرت را مرحله‌به‌مرحله شفاف و همراهانه می‌کنیم.</h1>
+                <p class="text-muted lead">تیم چندرشته‌ای چمدون با تجربه سفر، تکنولوژی و مشاوره کنار هم جمع شده تا برای هر مهاجر نقشه راه شخصی‌سازی‌شده‌ای بسازد.</p>
+                <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-end">
+                    <a asp-controller="Immigration" asp-action="Index" class="btn btn-primary px-4">شروع تست مهاجرت</a>
+                    <a asp-controller="Blog" asp-action="Index" class="btn btn-outline-secondary px-4">مطالعه وبلاگ</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="about-hero-visual">
+                    <div class="orbit orbit-primary"></div>
+                    <div class="orbit orbit-secondary"></div>
+                    <div class="about-hero-avatar">
+                        <span class="avatar-initials">CH</span>
+                        <span class="avatar-caption">Crew</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-steps py-5">
+    <div class="container">
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-lg-8">
+                <span class="text-uppercase text-primary fw-semibold">بایو تیمی</span>
+                <h2 class="fw-bold mt-2">چهار فصل از داستان تیم چمدون</h2>
+                <p class="text-muted">هر گام با الهام از نیاز واقعی مهاجرها طراحی شده است؛ از لحظه جرقه اولیه تا خلق محصولی که هر روز دقیق‌تر می‌شود.</p>
+            </div>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <div class="bio-timeline">
+                    <article class="bio-step" data-step="۱" style="--step-index:1">
+                        <h3>جرقه از دل تجربه شخصی</h3>
+                        <p>سال ۱۳۹۸ چند عضو تیم بعد از تجربه مهاجرت تحصیلی و کاری متوجه شدند نبود یک راهنمای فارسی‌زبان و مرحله‌ای چقدر فرساینده است. ایده چمدون همان‌جا شکل گرفت.</p>
+                    </article>
+                    <article class="bio-step" data-step="۲" style="--step-index:2">
+                        <h3>ترکیب تخصص‌های مکمل</h3>
+                        <p>طراح تجربه کاربری، مشاور حقوقی مهاجرت، تحلیل‌گر داده و توسعه‌دهنده محصول هسته اولیه تیم را ساختند تا دید چندبعدی داشته باشیم.</p>
+                    </article>
+                    <article class="bio-step" data-step="۳" style="--step-index:3">
+                        <h3>ساخت نقشه راه پویا</h3>
+                        <p>با بررسی بیش از ۵۰۰ پرونده واقعی، الگوریتم‌های پیشنهاد مقصد و چک‌لیست‌های قابل پیگیری را طراحی کردیم تا هر کاربر مسیر مخصوص خودش را داشته باشد.</p>
+                    </article>
+                    <article class="bio-step" data-step="۴" style="--step-index:4">
+                        <h3>رشد با همراهی جامعه</h3>
+                        <p>امروز چمدون با جامعه‌ای از مهاجران، منتورها و متخصصان مهاجرت آپدیت می‌شود و هر بازخورد را به یک مرحله تازه تبدیل می‌کند.</p>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-values py-5 bg-white">
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-5">
+                <h2 class="fw-bold">چمدون یعنی همراهی انسانی + تکنولوژی هوشمند</h2>
+                <p class="text-muted">ما باور داریم تصمیم مهاجرت فقط یک فرم یا چک‌لیست نیست. کنار هوش مصنوعی، تجربه انسانی اعضای تیم همیشه حضور دارد.</p>
+                <ul class="about-values-list">
+                    <li><strong>شفافیت:</strong> همه اطلاعات با زبان ساده و بدون اغراق در اختیار کاربر قرار می‌گیرد.</li>
+                    <li><strong>همدلی:</strong> هر تصمیم محصولی بر اساس گفتگو با کاربران واقعی شکل می‌گیرد.</li>
+                    <li><strong>پیشرفت مداوم:</strong> هر فصل با داده‌های تازه و شرکای جدید سرویس‌ها را توسعه می‌دهیم.</li>
+                </ul>
+            </div>
+            <div class="col-lg-7">
+                <div class="about-team-grid">
+                    <div class="team-card" style="--card-order:1">
+                        <h4>تیم محصول</h4>
+                        <p>طراحی تجربه سفر دیجیتال و ساخت ابزارهای تعاملی برای ارزیابی مسیر مهاجرت.</p>
+                    </div>
+                    <div class="team-card" style="--card-order:2">
+                        <h4>تیم حقوقی و تحقیق</h4>
+                        <p>به‌روزرسانی قوانین ویزا و آماده‌سازی راهنماهای معتبر برای مقاصد پرطرفدار.</p>
+                    </div>
+                    <div class="team-card" style="--card-order:3">
+                        <h4>تیم جامعه و محتوا</h4>
+                        <p>برگزاری رویدادهای آنلاین، مصاحبه با مهاجران و تولید محتوا برای وبلاگ چمدون.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-cta py-5">
+    <div class="container">
+        <div class="cta-card">
+            <div>
+                <h2 class="fw-bold mb-3">به خانواده چمدون خوش آمدی!</h2>
+                <p class="mb-0 text-muted">اگر دوست داری با ما همکاری کنی یا تجربه مهاجرتت را به اشتراک بگذاری، خوشحال می‌شویم از طریق ایمیل <a href="mailto:team@chamedoon.com">team@chamedoon.com</a> با ما در ارتباط باشی.</p>
+            </div>
+            <a asp-controller="Account" asp-action="Register" class="btn btn-primary px-4">شروع همکاری</a>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        .about-hero {
+            position: relative;
+            background: radial-gradient(circle at top right, rgba(79, 70, 229, 0.12), transparent 55%),
+                        radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.12), transparent 55%),
+                        #ffffff;
+            border-radius: 2rem;
+            border: 1px solid rgba(79, 70, 229, 0.15);
+            box-shadow: 0 40px 80px -40px rgba(15, 23, 42, 0.25);
+            overflow: hidden;
+        }
+
+        .about-hero-badge {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+            letter-spacing: 0.08em;
+        }
+
+        .about-hero-visual {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .about-hero-avatar {
+            position: absolute;
+            inset: 50% auto auto 50%;
+            transform: translate(-50%, -50%);
+            width: clamp(160px, 34vw, 220px);
+            height: clamp(160px, 34vw, 220px);
+            border-radius: 2.5rem;
+            background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+            color: #fff;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            gap: 0.4rem;
+            box-shadow: 0 35px 60px -30px rgba(79, 70, 229, 0.6);
+        }
+
+        .avatar-initials {
+            font-size: clamp(2.2rem, 6vw, 3.2rem);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .avatar-caption {
+            font-size: 1rem;
+            text-transform: uppercase;
+            opacity: 0.85;
+        }
+
+        .orbit {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 1px dashed rgba(79, 70, 229, 0.25);
+            animation: orbit-spin 16s linear infinite;
+        }
+
+        .orbit-secondary {
+            inset: 12%;
+            animation-duration: 20s;
+            border-color: rgba(14, 165, 233, 0.25);
+        }
+
+        .bio-timeline {
+            position: relative;
+            padding: 1rem 1.5rem;
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .bio-timeline::before {
+            content: "";
+            position: absolute;
+            inset-block: 0;
+            inset-inline-start: calc(1.5rem + 12px);
+            width: 2px;
+            background: linear-gradient(180deg, rgba(79, 70, 229, 0.3), transparent 90%);
+        }
+
+        .bio-step {
+            position: relative;
+            padding: 1.75rem 1.75rem 1.75rem 1.25rem;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(79, 70, 229, 0.18);
+            box-shadow: 0 24px 48px -30px rgba(15, 23, 42, 0.28);
+            transform: translateY(32px);
+            opacity: 0;
+            transition: transform 0.6s ease, opacity 0.6s ease;
+            transition-delay: calc(var(--step-index) * 0.12s);
+        }
+
+        .bio-step::before {
+            content: attr(data-step);
+            position: absolute;
+            inset-inline-start: -0.75rem;
+            inset-block-start: 1.6rem;
+            width: 2.75rem;
+            height: 2.75rem;
+            border-radius: 1rem;
+            background: rgba(79, 70, 229, 0.18);
+            color: var(--primary);
+            font-weight: 700;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 18px 35px -25px rgba(79, 70, 229, 0.5);
+        }
+
+        .bio-step.is-visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .about-values-list {
+            list-style: none;
+            padding: 0;
+            margin: 2rem 0 0;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .about-values-list li {
+            background: rgba(248, 250, 252, 0.85);
+            border-radius: 1.2rem;
+            padding: 1rem 1.25rem;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .about-team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .team-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 1.5rem;
+            padding: 1.75rem;
+            border: 1px solid rgba(79, 70, 229, 0.18);
+            box-shadow: 0 24px 45px -32px rgba(15, 23, 42, 0.28);
+            transform: translateY(24px);
+            opacity: 0;
+            animation: teamCardIn 0.65s ease forwards;
+            animation-delay: calc(var(--card-order) * 0.12s + 0.1s);
+        }
+
+        .about-cta {
+            position: relative;
+        }
+
+        .cta-card {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.95), rgba(14, 165, 233, 0.9));
+            border-radius: 2rem;
+            padding: clamp(2rem, 5vw, 3.5rem);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            color: #fff;
+        }
+
+        .cta-card p {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .cta-card a {
+            color: #fff;
+        }
+
+        @keyframes orbit-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes teamCardIn {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .bio-timeline::before {
+                inset-inline-start: 24px;
+            }
+
+            .bio-step {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        (function () {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.35 });
+
+            document.querySelectorAll('.bio-step').forEach((step) => observer.observe(step));
+        })();
+    </script>
+}
