@@ -1,9 +1,12 @@
 .about-page .about-container {
-    max-width: 1080px;
     margin-inline: auto;
 }
 
-.about-page .about-hero {
+.about-page .about-hero-section {
+    padding-top: clamp(2.5rem, 8vw, 5rem);
+}
+
+.about-page .about-hero-card {
     position: relative;
     background: radial-gradient(circle at top right, rgba(79, 70, 229, 0.12), transparent 55%),
         radial-gradient(circle at bottom left, rgba(14, 165, 233, 0.12), transparent 55%),
@@ -12,8 +15,7 @@
     border: 1px solid rgba(79, 70, 229, 0.15);
     box-shadow: 0 40px 80px -40px rgba(15, 23, 42, 0.25);
     overflow: hidden;
-    padding-block: clamp(2.5rem, 5vw, 4rem);
-    max-width: 1040px;
+    padding: clamp(2.5rem, 6vw, 4rem) clamp(1.75rem, 5vw, 3rem);
     margin-inline: auto;
 }
 
@@ -195,7 +197,7 @@
     color: #fff;
 }
 
-body.landing-page.dark-mode .about-page .about-hero {
+body.landing-page.dark-mode .about-page .about-hero-card {
     background: radial-gradient(circle at top right, rgba(129, 140, 248, 0.18), transparent 60%),
         radial-gradient(circle at bottom left, rgba(56, 189, 248, 0.18), transparent 60%),
         #111d33;
