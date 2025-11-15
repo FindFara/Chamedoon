@@ -1,0 +1,78 @@
+@model ChamedoonWebUI.Models.BlogSearchFormViewModel
+@using System
+@using System.Globalization
+@using System.Linq
+@{
+    string suffix = Model?.FieldIdSuffix ?? string.Empty;
+    string BuildId(string baseId) => string.IsNullOrEmpty(suffix) ? baseId : $"{baseId}{suffix}";
+
+    var writers = (Model?.Writers ?? Enumerable.Empty<string>())
+        .Where(w => !string.IsNullOrWhiteSpace(w))
+        .Distinct()
+        .ToList();
+
+    var searchValue = Model?.Search ?? string.Empty;
+    var writerValue = Model?.Writer ?? string.Empty;
+    var dateFromValue = Model?.DateFrom?.ToString("yyyy-MM-dd");
+    var dateToValue = Model?.DateTo?.ToString("yyyy-MM-dd");
+
+    string FormatPersianDate(DateTime? date)
+    {
+        if (!date.HasValue)
+        {
+            return string.Empty;
+        }
+
+        var calendar = new PersianCalendar();
+        var year = calendar.GetYear(date.Value);
+        var month = calendar.GetMonth(date.Value);
+        var day = calendar.GetDayOfMonth(date.Value);
+        return $"{year:0000}/{month:00}/{day:00}";
+    }
+
+    var dateFromDisplay = FormatPersianDate(Model?.DateFrom);
+    var dateToDisplay = FormatPersianDate(Model?.DateTo);
+    var submitLabel = string.IsNullOrWhiteSpace(Model?.SubmitLabel) ? "جستجوی مقالات" : Model!.SubmitLabel!;
+
+    var searchId = BuildId("search");
+    var writerId = BuildId("writer");
+    var dateFromPickerId = BuildId("dateFromPicker");
+    var dateFromHiddenId = BuildId("dateFrom");
+    var dateToPickerId = BuildId("dateToPicker");
+    var dateToHiddenId = BuildId("dateTo");
+}
+
+<form method="get" asp-action="Index" asp-controller="Blog" class="row g-3 align-items-end blog-search-form">
+    <div class="col-lg-4 col-md-6">
+        <label for="@searchId" class="form-label">عنوان مقاله</label>
+        <input type="text" id="@searchId" name="search" class="form-control" placeholder="جستجو در عنوان مقاله" value="@searchValue" />
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <label for="@writerId" class="form-label">نویسنده</label>
+        <select id="@writerId" name="writer" class="form-select">
+            <option value="" @(string.IsNullOrEmpty(writerValue) ? "selected" : string.Empty)>همه</option>
+            @foreach (var w in writers)
+            {
+                var isSelected = string.Equals(writerValue, w, StringComparison.OrdinalIgnoreCase);
+                <option value="@w" @(isSelected ? "selected" : null)>@w</option>
+            }
+        </select>
+    </div>
+    <div class="col-lg-2 col-md-6">
+        <label for="@dateFromPickerId" class="form-label">از تاریخ</label>
+        <div class="persian-datepicker-field">
+            <input type="text" id="@dateFromPickerId" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ شمسی" value="@dateFromDisplay" autocomplete="off" data-persian-picker data-alt-field="@($"#{dateFromHiddenId}")" />
+            <input type="hidden" id="@dateFromHiddenId" name="dateFrom" value="@dateFromValue" />
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-6">
+        <label for="@dateToPickerId" class="form-label">تا تاریخ</label>
+        <div class="persian-datepicker-field">
+            <input type="text" id="@dateToPickerId" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ شمسی" value="@dateToDisplay" autocomplete="off" data-persian-picker data-alt-field="@($"#{dateToHiddenId}")" />
+            <input type="hidden" id="@dateToHiddenId" name="dateTo" value="@dateToValue" />
+        </div>
+    </div>
+    <div class="col-lg-1 col-12 d-grid">
+        <button type="submit" class="btn-glass-primary">@submitLabel</button>
+    </div>
+</form>

@@ -1246,8 +1246,16 @@ a:hover {
 }
 
 .blog-detail-layout {
-    display: grid;
-    gap: clamp(1.5rem, 3vw, 2.5rem);
+    --bs-gutter-x: clamp(1.5rem, 3vw, 2.5rem);
+    --bs-gutter-y: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.blog-detail-layout > [class*="col-"] {
+    display: flex;
+}
+
+.blog-detail-layout > [class*="col-"] > * {
+    width: 100%;
 }
 
 .blog-detail-card {
@@ -1312,16 +1320,13 @@ a:hover {
     padding: clamp(1.5rem, 2.5vw, 2rem);
 }
 
-.blog-detail-search form {
+.blog-detail-search .blog-search-form {
     width: 100%;
-}
-
-.blog-detail-search .row {
     --bs-gutter-y: 1rem;
 }
 
-.blog-detail-search .row > [class^="col-"],
-.blog-detail-search .row > [class*=" col-"] {
+.blog-detail-search .blog-search-form > [class^="col-"],
+.blog-detail-search .blog-search-form > [class*=" col-"] {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
@@ -1333,15 +1338,103 @@ a:hover {
     min-height: 3rem;
 }
 
-@media (min-width: 992px) {
-    .blog-detail-layout {
-        grid-template-columns: minmax(0, 2.5fr) minmax(0, 1fr);
-        align-items: start;
-    }
+.blog-detail-content {
+    display: flow-root;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
 
-    .blog-detail-search {
-        align-self: start;
-    }
+.blog-detail-content > * + * {
+    margin-top: 1.5rem;
+}
+
+.blog-detail-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+    margin: 1.5rem auto;
+    display: block;
+}
+
+.blog-detail-content pre {
+    position: relative;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    background: #0f172a;
+    color: #e2e8f0;
+    overflow: auto;
+    direction: ltr;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.blog-detail-content code {
+    font-family: "Fira Code", "Courier New", monospace;
+}
+
+.code-toolbar {
+    position: relative;
+}
+
+.code-toolbar .code-toolbar-header {
+    position: absolute;
+    top: 0.35rem;
+    inset-inline-end: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.code-toolbar .code-language-badge {
+    background: rgba(59, 130, 246, 0.2);
+    color: #3b82f6;
+    border-radius: 999px;
+    padding: 0.15rem 0.65rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.code-toolbar .copy-code-button {
+    border: 0;
+    background: rgba(148, 163, 184, 0.25);
+    color: #f8fafc;
+    border-radius: 999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: background 0.2s ease;
+}
+
+.code-toolbar .copy-code-button:hover,
+.code-toolbar .copy-code-button:focus {
+    background: rgba(59, 130, 246, 0.45);
+    outline: none;
+}
+
+.blog-detail-content table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow-x: auto;
+    display: block;
+}
+
+.blog-detail-content table tbody,
+.blog-detail-content table thead,
+.blog-detail-content table tr {
+    width: 100%;
+}
+
+.blog-detail-content table th,
+.blog-detail-content table td {
+    padding: 0.75rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.blog-detail-content iframe,
+.blog-detail-content video {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 1rem;
 }
 
 .blog-empty-state {

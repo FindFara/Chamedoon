@@ -1,22 +1,11 @@
 @model ChamedoonWebUI.Models.BlogIndexViewModel
 @using System.Linq
 @using System.Globalization
+@using ChamedoonWebUI.Models
 @{ 
     ViewData["Title"] = "وبلاگ";
     var writers = Model.Articles.Select(a => a.Writer).Distinct().ToList();
     var fallbackBlogImage = Url.Content("~/img/blog-placeholder.svg");
-    Func<DateTime, string> toPersianDate = date =>
-    {
-        var calendar = new PersianCalendar();
-        var year = calendar.GetYear(date);
-        var month = calendar.GetMonth(date);
-        var day = calendar.GetDayOfMonth(date);
-        return $"{year:0000}/{month:00}/{day:00}";
-    };
-    var dateFromValue = Model.DateFrom?.ToString("yyyy-MM-dd");
-    var dateToValue = Model.DateTo?.ToString("yyyy-MM-dd");
-    var dateFromDisplay = Model.DateFrom.HasValue ? toPersianDate(Model.DateFrom.Value) : string.Empty;
-    var dateToDisplay = Model.DateTo.HasValue ? toPersianDate(Model.DateTo.Value) : string.Empty;
 }
 
 @section Styles {
@@ -31,46 +20,16 @@
         </div>
 
         <div class="glass-card blog-search-card mb-4">
-            <form method="get" asp-action="Index" asp-controller="Blog" class="row g-3 align-items-end">
-                <div class="col-lg-4 col-md-6">
-                    <label for="search" class="form-label">عنوان مقاله</label>
-                    <input type="text" id="search" name="search" class="form-control" placeholder="جستجو در عنوان مقاله" value="@Model.Search" />
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <label for="writer" class="form-label">نویسنده</label>
-                    <select id="writer" name="writer" class="form-select">
-                        <option value="">همه</option>
-                        @foreach (var w in writers)
-                        {
-                            if (Model.Writer == w)
-                            {
-                                <option value="@w" selected>@w</option>
-                            }
-                            else
-                            {
-                                <option value="@w">@w</option>
-                            }
-                        }
-                    </select>
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <label for="dateFromPicker" class="form-label">از تاریخ</label>
-                    <div class="persian-datepicker-field">
-                        <input type="text" id="dateFromPicker" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ شمسی" value="@dateFromDisplay" autocomplete="off" data-persian-picker data-alt-field="#dateFrom" />
-                        <input type="hidden" id="dateFrom" name="dateFrom" value="@dateFromValue" />
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <label for="dateToPicker" class="form-label">تا تاریخ</label>
-                    <div class="persian-datepicker-field">
-                        <input type="text" id="dateToPicker" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ شمسی" value="@dateToDisplay" autocomplete="off" data-persian-picker data-alt-field="#dateTo" />
-                        <input type="hidden" id="dateTo" name="dateTo" value="@dateToValue" />
-                    </div>
-                </div>
-                <div class="col-lg-1 col-12 d-grid">
-                    <button type="submit" class="btn-glass-primary">جستجو</button>
-                </div>
-            </form>
+            @await Html.PartialAsync("_SearchForm", new BlogSearchFormViewModel
+            {
+                Search = Model.Search,
+                Writer = Model.Writer,
+                DateFrom = Model.DateFrom,
+                DateTo = Model.DateTo,
+                Writers = writers,
+                FieldIdSuffix = string.Empty,
+                SubmitLabel = "جستجو"
+            })
         </div>
 
         @if (!Model.Articles.Any())

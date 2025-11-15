@@ -1,4 +1,5 @@
 @model Chamedoon.Application.Services.Blog.ViewModel.ArticleViewModel
+@using ChamedoonWebUI.Models
 @{ 
     ViewData["Title"] = Model.ArticleTitle;
     var fallbackBlogImage = Url.Content("~/img/blog-placeholder.svg");
@@ -10,162 +11,53 @@
             : Url.Content($"~/images/blog/{Model.ArticleImageName}"));
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/persian-datepicker.css" asp-append-version="true" />
+}
+
 <section class="glass-section">
     <div class="container">
-        <div class="blog-detail-layout">
-            <article class="glass-card blog-detail-card">
-                <div class="blog-detail-header">
-                    <img src="@heroImage" alt="@Model.ArticleTitle" class="blog-detail-cover" />
-                    <div class="blog-detail-summary">
-                        <h1 class="fw-bold">@Model.ArticleTitle</h1>
-                        <div class="blog-meta">
-                            <span>✍️ @Model.Writer</span>
+        <div class="row g-4 g-xl-5 blog-detail-layout">
+            <div class="col-12 col-lg-8">
+                <article class="glass-card blog-detail-card">
+                    <div class="blog-detail-header">
+                        <img src="@heroImage" alt="@Model.ArticleTitle" class="blog-detail-cover" />
+                        <div class="blog-detail-summary">
+                            <h1 class="fw-bold">@Model.ArticleTitle</h1>
+                            <div class="blog-meta">
+                                <span>✍️ @Model.Writer</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="glass-helper mb-3 blog-detail-excerpt">@Html.Raw(Model.ShortDescription)</div>
-                <div class="blog-detail-content">
-                    @Html.Raw(Model.ArticleDescription)
-                </div>
-            </article>
-
-            <aside class="glass-card blog-detail-search">
-                <h5 class="fw-semibold mb-3">جستجوی سایر مقالات</h5>
-                <form method="get" asp-action="Index" asp-controller="Blog" class="row g-3 align-items-end">
-                    <div class="col-12">
-                        <label for="searchDetail" class="form-label">کلمه کلیدی</label>
-                        <input type="text" id="searchDetail" name="search" class="form-control" placeholder="عنوان یا متن مقاله..." />
+                    <div class="glass-helper mb-3 blog-detail-excerpt">@Html.Raw(Model.ShortDescription)</div>
+                    <div class="blog-detail-content">
+                        @Html.Raw(Model.ArticleDescription)
                     </div>
-                    <div class="col-12">
-                        <label for="writerDetail" class="form-label">نویسنده</label>
-                        <input type="text" id="writerDetail" name="writer" class="form-control" placeholder="نام نویسنده" />
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <label for="dateFromDetail" class="form-label">از تاریخ</label>
-                        <input type="date" id="dateFromDetail" name="dateFrom" class="form-control" />
-                    </div>
-                    <div class="col-lg-6 col-md-6">
-                        <label for="dateToDetail" class="form-label">تا تاریخ</label>
-                        <input type="date" id="dateToDetail" name="dateTo" class="form-control" />
-                    </div>
-                    <div class="col-12 d-grid">
-                        <button type="submit" class="btn-glass-primary">جستجوی مقالات</button>
-                    </div>
-                </form>
-            </aside>
+                </article>
+            </div>
+            <div class="col-12 col-lg-4">
+                <aside class="glass-card blog-detail-search blog-search-card">
+                    <h5 class="fw-semibold mb-3">جستجوی سایر مقالات</h5>
+                    @await Html.PartialAsync("_SearchForm", new BlogSearchFormViewModel
+                    {
+                        FieldIdSuffix = "Detail",
+                        SubmitLabel = "جستجوی مقالات"
+                    })
+                </aside>
+            </div>
         </div>
     </div>
 </section>
 
-<style>
-    .blog-detail-card {
-        overflow: hidden;
-    }
-
-    .blog-detail-content img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 0.75rem;
-        margin: 1.5rem auto;
-        display: block;
-    }
-
-    .blog-detail-content {
-        display: flow-root;
-        overflow-wrap: anywhere;
-        word-break: break-word;
-    }
-
-    .blog-detail-content > * + * {
-        margin-top: 1.5rem;
-    }
-
-    .blog-detail-content pre {
-        position: relative;
-        padding: 1.25rem;
-        border-radius: 0.75rem;
-        background: #0f172a;
-        color: #e2e8f0;
-        overflow: auto;
-        direction: ltr;
-        text-align: left;
-        font-size: 0.9rem;
-    }
-
-    .blog-detail-content code {
-        font-family: "Fira Code", "Courier New", monospace;
-    }
-
-    .code-toolbar {
-        position: relative;
-    }
-
-    .code-toolbar .code-toolbar-header {
-        position: absolute;
-        top: 0.35rem;
-        inset-inline-end: 0.75rem;
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-    }
-
-    .code-toolbar .code-language-badge {
-        background: rgba(59, 130, 246, 0.2);
-        color: #3b82f6;
-        border-radius: 999px;
-        padding: 0.15rem 0.65rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-    }
-
-    .code-toolbar .copy-code-button {
-        border: 0;
-        background: rgba(148, 163, 184, 0.25);
-        color: #f8fafc;
-        border-radius: 999px;
-        padding: 0.25rem 0.75rem;
-        font-size: 0.75rem;
-        font-weight: 500;
-        transition: background 0.2s ease;
-    }
-
-    .code-toolbar .copy-code-button:hover,
-    .code-toolbar .copy-code-button:focus {
-        background: rgba(59, 130, 246, 0.45);
-        outline: none;
-    }
-
-    .blog-detail-content table {
-        width: 100%;
-        border-collapse: collapse;
-        overflow-x: auto;
-        display: block;
-    }
-
-    .blog-detail-content table tbody,
-    .blog-detail-content table thead,
-    .blog-detail-content table tr {
-        width: 100%;
-    }
-
-    .blog-detail-content table th,
-    .blog-detail-content table td {
-        padding: 0.75rem;
-        border: 1px solid rgba(15, 23, 42, 0.08);
-    }
-
-    .blog-detail-content iframe,
-    .blog-detail-content video {
-        width: 100%;
-        max-width: 100%;
-        border-radius: 1rem;
-    }
-</style>
-
 @section Scripts {
+    <script src="~/js/persian-datepicker.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/common.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            if (window.PersianDatePicker && typeof window.PersianDatePicker.init === 'function') {
+                window.PersianDatePicker.init();
+            }
+
             const themeHref = 'https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css';
             if (!document.querySelector(`link[href="${themeHref}"]`)) {
                 const link = document.createElement('link');
