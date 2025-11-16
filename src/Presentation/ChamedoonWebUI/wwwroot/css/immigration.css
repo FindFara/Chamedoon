@@ -301,7 +301,7 @@
 
 .chart-row {
     display: grid;
-    grid-template-columns: 1fr 2fr auto;
+    grid-template-columns: 1.2fr 2.6fr auto auto;
     gap: 0.75rem;
     align-items: center;
 }
@@ -313,7 +313,7 @@
 
 .chart-bar {
     position: relative;
-    height: 12px;
+    height: 14px;
     border-radius: 999px;
     background: rgba(148, 163, 184, 0.25);
     overflow: hidden;
@@ -327,13 +327,11 @@
     transition: width 0.5s ease;
 }
 
-.chart-bar .chart-value {
-    position: absolute;
-    inset-inline-end: 0.5rem;
-    top: 50%;
-    transform: translateY(-50%);
+.chart-value {
     font-weight: 700;
     color: var(--text-dark);
+    min-width: 56px;
+    text-align: end;
 }
 
 .chart-hint {

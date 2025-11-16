@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Chamedoon.Application.Services.Immigration;
 using MediatR;
@@ -16,6 +17,23 @@ public class ImmigrationController : Controller
     [HttpGet]
     public IActionResult Index()
     {
+        if (TempData.TryGetValue("ImmigrationInput", out var rawInput) && rawInput is string json)
+        {
+            try
+            {
+                var restored = JsonSerializer.Deserialize<ImmigrationInput>(json);
+                if (restored is not null)
+                {
+                    TempData.Keep("ImmigrationInput");
+                    return View(restored);
+                }
+            }
+            catch (JsonException)
+            {
+                // fallback to default model
+            }
+        }
+
         return View(new ImmigrationInput());
     }
 
@@ -27,6 +45,9 @@ public class ImmigrationController : Controller
         {
             return View("Index", input);
         }
+
+        TempData["ImmigrationInput"] = JsonSerializer.Serialize(input);
+
         var result = await _mediator.Send(new ImmigrationQuery { Input = input });
         return View("Result", result);
     }
