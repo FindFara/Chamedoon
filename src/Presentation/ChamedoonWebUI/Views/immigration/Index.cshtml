@@ -1,306 +1,215 @@
 @model Chamedoon.Application.Services.Immigration.ImmigrationInput
-@using Microsoft.AspNetCore.Mvc.Rendering
 @using Chamedoon.Application.Services.Immigration
 @{
-    ViewData["Title"] = "محاسبه امتیاز مهاجرت";
+    ViewData["Title"] = "ارزیابی مهاجرت";
 }
 
-<section class="glass-section">
+@section Styles {
+    <link rel="stylesheet" href="~/css/immigration.css" asp-append-version="true" />
+}
+
+<section class="immigration-page">
     <div class="container">
         <div class="immigration-hero">
-            <div class="glass-card immigration-card">
-                <h3 class="fw-bold mb-3">ارزیابی هوشمند مسیر مهاجرتی تو.</h3>
-                <p>
-                    با پاسخ به چند سوال درباره سابقه تحصیلی، شغلی و علایقت، بهترین کشورها و مسیرهای مهاجرتی مناسب برایت پیشنهاد می‌شود.
-                    نتایج این ارزیابی در داشبورد شخصی‌ات ذخیره خواهد شد.
-                </p>
-                <div class="immigration-actions mt-4">
-                    <button type="button" class="btn-glass-primary" data-bs-toggle="modal" data-bs-target="#modalStep1">
-                        شروع ارزیابی
-                    </button>
-                    <a asp-controller="Blog" asp-action="Index" class="btn-outline-glass">مطالعه نکات قبل از مهاجرت</a>
+            <div class="hero-copy">
+                <span class="immigration-badge">
+                    <span aria-hidden="true">🧳</span>
+                    ارزیابی هوشمند مهاجرت
+                </span>
+                <h1>بهترین کشور و مسیر مهاجرتی متناسب با تو را در چند دقیقه پیدا کن.</h1>
+                <p class="text-muted mb-2">با پاسخ به چند سوال کوتاه در مورد سن، تحصیلات و علایقت، شانس موفقیتت در مسیرهای مختلف محاسبه می‌شود و یک گزارش خلاصه دریافت می‌کنی.</p>
+                <div class="immigration-meta">
+                    <span class="meta-pill" aria-label="پوشش مسیرهای تحصیلی و کاری">🎯 مسیرهای کاری و تحصیلی</span>
+                    <span class="meta-pill" aria-label="پیشنهاد ویزای متناسب">🧭 پیشنهاد ویزا</span>
+                    <span class="meta-pill" aria-label="گزارش ذخیره‌شده در داشبورد">💾 ذخیره در داشبورد</span>
                 </div>
-                <ul class="auth-benefits mt-4">
-                    <li>محاسبه امتیاز بر اساس جدیدترین معیارهای مهاجرتی</li>
-                    <li>پیشنهاد ترکیبی کشور و نوع ویزا با توجه به شرایطت</li>
-                    <li>تحلیل شانس موفقیت و قدم‌های بعدی در قالب گزارش واضح</li>
-                </ul>
+                <div class="immigration-actions">
+                    <a href="#immigrationForm" class="btn btn-primary px-4" data-scroll-target="immigrationForm">شروع ارزیابی</a>
+                    <a asp-controller="Blog" asp-action="Index" class="btn btn-outline-secondary px-4">مطالعه تجربه‌های موفق</a>
+                </div>
             </div>
-            <div class="immigration-hero-visual">
+            <div class="immigration-visual">
                 <img src="~/images/app.svg" alt="فرآیند ارزیابی مهاجرت" />
+            </div>
+        </div>
+
+        <div class="row g-4 align-items-start mt-4">
+            <div class="col-lg-7">
+                <div class="glass-card immigration-form-card" id="immigrationForm">
+                    <div class="form-heading">
+                        <div>
+                            <h3 class="fw-bold">فرم ارزیابی</h3>
+                            <p class="immigration-helper mb-0">اطلاعات را کامل کن تا پیشنهاد شخصی‌سازی‌شده‌ای بگیری.</p>
+                        </div>
+                        <div class="form-progress" data-form-progress aria-label="درصد تکمیل فرم"></div>
+                    </div>
+
+                    <form asp-action="Calculate" method="post" novalidate>
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
+
+                        <div class="immigration-step">
+                            <div class="step-title">
+                                <span class="step-badge" aria-hidden="true">1</span>
+                                <span>اطلاعات پایه</span>
+                            </div>
+                            <div class="immigration-form-grid">
+                                <div class="immigration-field">
+                                    <label for="Age" class="field-label">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="سن بین ۱۸ تا ۲۹ سال بیشترین امتیاز را دارد.">؟</span>
+                                        سن
+                                    </label>
+                                    <input asp-for="Age" class="form-control" type="number" min="0" />
+                                    <span asp-validation-for="Age" class="text-danger small"></span>
+                                </div>
+                                <div class="immigration-field">
+                                    <label for="JobCategory" class="field-label">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="دسته‌های پرتقاضا امتیاز بیشتری دارند.">؟</span>
+                                        دسته شغلی
+                                    </label>
+                                    <select asp-for="JobCategory" class="form-select" asp-items="Html.GetEnumSelectList<JobCategoryType>()"></select>
+                                    <span asp-validation-for="JobCategory" class="text-danger small"></span>
+                                </div>
+                                <div class="immigration-field">
+                                    <label for="JobTitle" class="field-label">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="عنوان‌های تخصصی یک امتیاز اضافه دریافت می‌کنند.">؟</span>
+                                        عنوان شغل (اختیاری)
+                                    </label>
+                                    <input asp-for="JobTitle" class="form-control" type="text" />
+                                    <span asp-validation-for="JobTitle" class="text-danger small"></span>
+                                </div>
+                                <div class="immigration-field">
+                                    <label for="WorkExperienceYears" class="field-label">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="سابقه بیشتر از ۷ سال بیشترین امتیاز را دارد.">؟</span>
+                                        سابقه کاری (سال)
+                                    </label>
+                                    <input asp-for="WorkExperienceYears" class="form-control" type="number" min="0" />
+                                    <span asp-validation-for="WorkExperienceYears" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="immigration-step">
+                            <div class="step-title">
+                                <span class="step-badge" aria-hidden="true">2</span>
+                                <span>تحصیلات و زبان</span>
+                            </div>
+                            <div class="immigration-form-grid">
+                                <div class="immigration-field">
+                                    <label for="FieldCategory" class="field-label">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="رشته‌های فنی و درمانی امتیاز هم‌افزایی دارند.">؟</span>
+                                        دسته رشته یا شغل
+                                    </label>
+                                    <select asp-for="FieldCategory" class="form-select" asp-items="Html.GetEnumSelectList<FieldCategoryType>()"></select>
+                                    <span asp-validation-for="FieldCategory" class="text-danger small"></span>
+                                </div>
+                                <div class="immigration-field">
+                                    <label for="DegreeLevel" class="field-label">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="تحصیلات بالاتر امتیاز بیشتری دارد.">؟</span>
+                                        مقطع تحصیلی
+                                    </label>
+                                    <select asp-for="DegreeLevel" class="form-select" asp-items="Html.GetEnumSelectList<DegreeLevelType>()"></select>
+                                    <span asp-validation-for="DegreeLevel" class="text-danger small"></span>
+                                </div>
+                                <div class="immigration-field">
+                                    <label for="LanguageCertificate" class="field-label">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="مدارک بین‌المللی معتبر امتیاز بیشتری دارند.">؟</span>
+                                        مدرک زبان
+                                    </label>
+                                    <select asp-for="LanguageCertificate" class="form-select" asp-items="Html.GetEnumSelectList<LanguageCertificateType>()"></select>
+                                    <span asp-validation-for="LanguageCertificate" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="immigration-step">
+                            <div class="step-title">
+                                <span class="step-badge" aria-hidden="true">3</span>
+                                <span>نوع ویزا و وضعیت فردی</span>
+                            </div>
+                            <div class="immigration-form-grid">
+                                <div class="immigration-field">
+                                    <label for="InvestmentAmount" class="field-label">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="میزان سرمایه در مسیرهای سرمایه‌گذاری اثرگذار است.">؟</span>
+                                        میزان سرمایه (دلار/یورو)
+                                    </label>
+                                    <input asp-for="InvestmentAmount" class="form-control" type="number" min="0" step="1000" />
+                                    <span asp-validation-for="InvestmentAmount" class="text-danger small"></span>
+                                </div>
+                                <div class="immigration-field">
+                                    <label for="MaritalStatus" class="field-label">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="افراد متأهل امتیاز بیشتری دریافت می‌کنند.">؟</span>
+                                        وضعیت تاهل
+                                    </label>
+                                    <select asp-for="MaritalStatus" class="form-select" asp-items="Html.GetEnumSelectList<MaritalStatusType>()"></select>
+                                    <span asp-validation-for="MaritalStatus" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="immigration-step">
+                            <div class="step-title">
+                                <span class="step-badge" aria-hidden="true">4</span>
+                                <span>علایق و تیپ شخصیتی</span>
+                            </div>
+                            <div class="immigration-form-grid">
+                                <div class="immigration-field">
+                                    <label class="field-label" for="WillingToStudy">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="تمایل به تحصیل مسیرهای آموزشی را برجسته می‌کند.">؟</span>
+                                        تمایل به ادامه تحصیل
+                                    </label>
+                                    <div class="form-check form-switch">
+                                        <input asp-for="WillingToStudy" class="form-check-input" type="checkbox" role="switch" />
+                                        <label class="form-check-label" for="WillingToStudy">بله، تحصیل را در نظر دارم</label>
+                                    </div>
+                                    <span asp-validation-for="WillingToStudy" class="text-danger small"></span>
+                                </div>
+                                <div class="immigration-field">
+                                    <label for="MBTIPersonality" class="field-label">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="تیپ شخصیتی برای تطبیق فرهنگی استفاده می‌شود.">؟</span>
+                                        شخصیت MBTI (اختیاری)
+                                    </label>
+                                    <select asp-for="MBTIPersonality" class="form-select" asp-items="Html.GetEnumSelectList<PersonalityType>()"></select>
+                                    <span asp-validation-for="MBTIPersonality" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="immigration-actions">
+                            <button type="submit" class="btn btn-primary px-4">محاسبه شانس مهاجرت</button>
+                            <a asp-controller="Blog" asp-action="Index" class="btn btn-outline-secondary px-4">نمونه گزارش‌ها</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="immigration-side-card">
+                    <h5 class="mb-2">چه چیزی دریافت می‌کنی؟</h5>
+                    <ul class="mb-3">
+                        <li><span class="dot" aria-hidden="true"></span><span>سه کشور پیشنهادی با توضیح دلایل تناسب.</span></li>
+                        <li><span class="dot" aria-hidden="true"></span><span>نوع ویزای مناسب، زمان‌بندی و گام‌های بعدی.</span></li>
+                        <li><span class="dot" aria-hidden="true"></span><span>توضیح بازار کار، تحصیل و اقتصاد هر کشور.</span></li>
+                    </ul>
+                    <div class="immigration-summary">
+                        <div class="summary-card">
+                            <div class="fw-bold">۴ دقیقه</div>
+                            <small class="immigration-helper">میانگین زمان تکمیل فرم</small>
+                        </div>
+                        <div class="summary-card">
+                            <div class="fw-bold">+۱۲ هزار</div>
+                            <small class="immigration-helper">ارزیابی موفق تا امروز</small>
+                        </div>
+                        <div class="summary-card">
+                            <div class="fw-bold">گزارش ذخیره می‌شود</div>
+                            <small class="immigration-helper">هر زمان خواستی قابل ویرایش است</small>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<form id="immigrationForm" asp-action="Calculate" method="post">
-    @Html.AntiForgeryToken()
-
-    <div class="modal fade modal-step" id="modalStep1" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-step-heading">
-                        <span class="step-badge">۱ از ۴</span>
-                        <h5 class="modal-title">اطلاعات پایه</h5>
-                        <p class="modal-subtitle">برای شروع، سن و سابقه شغلی خود را وارد کن.</p>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="field-hint">
-                        <div class="field-hint-header">
-                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر سن" title="سن بین ۱۸ تا ۲۹ سال بیشترین امتیاز را دریافت می‌کند.">!</span>
-                            <label for="Age" class="form-label">سن</label>
-                        </div>
-                        <div class="field-hint-control">
-                            <input asp-for="Age" class="form-control glass-input" type="number" min="0" />
-                        </div>
-                    </div>
-                    <div class="field-hint">
-                        <div class="field-hint-header">
-                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر دسته شغلی" title="دسته‌های پرتقاضا امتیاز بیشتری دارند.">!</span>
-                            <label for="JobCategory" class="form-label">دسته شغلی</label>
-                        </div>
-                        <div class="field-hint-control">
-                            <select asp-for="JobCategory" class="form-select glass-input" asp-items="Html.GetEnumSelectList<JobCategoryType>()"></select>
-                        </div>
-                    </div>
-                    <div class="field-hint">
-                        <div class="field-hint-header">
-                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر عنوان شغلی" title="عنوان‌های تخصصی یک امتیاز اضافه دریافت می‌کنند.">!</span>
-                            <label for="JobTitle" class="form-label">عنوان شغل (اختیاری)</label>
-                        </div>
-                        <div class="field-hint-control">
-                            <input asp-for="JobTitle" class="form-control glass-input" type="text" />
-                        </div>
-                    </div>
-                    <div class="field-hint">
-                        <div class="field-hint-header">
-                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر سابقه کاری" title="سابقه بیشتر از ۷ سال بیشترین امتیاز را دارد.">!</span>
-                            <label for="WorkExperienceYears" class="form-label">سابقه کاری (سال)</label>
-                        </div>
-                        <div class="field-hint-control">
-                            <input asp-for="WorkExperienceYears" class="form-control glass-input" type="number" min="0" />
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-glass-primary" onclick="showNextModal('modalStep1','modalStep2')">مرحله بعد</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade modal-step" id="modalStep2" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-step-heading">
-                        <span class="step-badge">۲ از ۴</span>
-                        <h5 class="modal-title">تحصیلات و زبان</h5>
-                        <p class="modal-subtitle">سطح تحصیلات و مدارک زبان تأثیر مستقیمی بر امتیاز دارد.</p>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="field-hint">
-                        <div class="field-hint-header">
-                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر دسته رشته" title="رشته‌های فنی و درمانی امتیاز هم‌افزایی دارند.">!</span>
-                            <label for="FieldCategory" class="form-label">دسته رشته یا شغل</label>
-                        </div>
-                        <div class="field-hint-control">
-                            <select asp-for="FieldCategory" class="form-select glass-input" asp-items="Html.GetEnumSelectList<FieldCategoryType>()"></select>
-                        </div>
-                    </div>
-                    <div class="field-hint">
-                        <div class="field-hint-header">
-                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر مقطع" title="تحصیلات بالاتر امتیاز بیشتری دارد.">!</span>
-                            <label for="DegreeLevel" class="form-label">مقطع تحصیلی</label>
-                        </div>
-                        <div class="field-hint-control">
-                            <select asp-for="DegreeLevel" class="form-select glass-input" asp-items="Html.GetEnumSelectList<DegreeLevelType>()"></select>
-                        </div>
-                    </div>
-                    <div class="field-hint">
-                        <div class="field-hint-header">
-                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر مدرک زبان" title="مدارک بین‌المللی معتبر امتیاز بیشتری دارند.">!</span>
-                            <label for="LanguageCertificate" class="form-label">مدرک زبان</label>
-                        </div>
-                        <div class="field-hint-control">
-                            <select asp-for="LanguageCertificate" class="form-select glass-input" asp-items="Html.GetEnumSelectList<LanguageCertificateType>()"></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-outline-glass" onclick="showPreviousModal('modalStep2','modalStep1')">مرحله قبل</button>
-                    <button type="button" class="btn-glass-primary" onclick="showNextModal('modalStep2','modalStep3')">مرحله بعد</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade modal-step" id="modalStep3" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-step-heading">
-                        <span class="step-badge">۳ از ۴</span>
-                        <h5 class="modal-title">نوع ویزا و وضعیت فردی</h5>
-                        <p class="modal-subtitle">میزان سرمایه و وضعیت تاهل مسیرهای پیشنهادی را تغییر می‌دهد.</p>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="field-hint">
-                        <div class="field-hint-header">
-                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر سرمایه" title="میزان سرمایه در مسیرهای سرمایه‌گذاری اثرگذار است.">!</span>
-                            <label for="InvestmentAmount" class="form-label">میزان سرمایه (دلار/یورو)</label>
-                        </div>
-                        <div class="field-hint-control">
-                            <input asp-for="InvestmentAmount" class="form-control glass-input" type="number" min="0" step="1000" />
-                        </div>
-                    </div>
-                    <div class="field-hint">
-                        <div class="field-hint-header">
-                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر وضعیت تاهل" title="افراد متأهل امتیاز بیشتری می‌گیرند.">!</span>
-                            <label for="MaritalStatus" class="form-label">وضعیت تاهل</label>
-                        </div>
-                        <div class="field-hint-control">
-                            <select asp-for="MaritalStatus" class="form-select glass-input" asp-items="Html.GetEnumSelectList<MaritalStatusType>()"></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-outline-glass" onclick="showPreviousModal('modalStep3','modalStep2')">مرحله قبل</button>
-                    <button type="button" class="btn-glass-primary" onclick="showNextModal('modalStep3','modalStep4')">مرحله بعد</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade modal-step" id="modalStep4" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-step-heading">
-                        <span class="step-badge">۴ از ۴</span>
-                        <h5 class="modal-title">جزئیات تکمیلی</h5>
-                        <p class="modal-subtitle">علایق تحصیلی و تیپ شخصیتی را مشخص کن تا پیشنهاد دقیق‌تری دریافت کنی.</p>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="field-hint">
-                        <div class="field-hint-header">
-                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر تمایل به تحصیل" title="تمایل به تحصیل امتیاز مسیرهای آموزشی را افزایش می‌دهد.">!</span>
-                            <span class="field-hint-title">آیا تمایل به ادامه تحصیل داری؟</span>
-                        </div>
-                        <div class="field-hint-control">
-                            <div class="form-check form-switch">
-                                <input asp-for="WillingToStudy" class="form-check-input" type="checkbox" role="switch" />
-                                <label class="form-check-label" for="WillingToStudy">بله</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="field-hint">
-                        <div class="field-hint-header">
-                            <span class="field-hint-icon" data-bs-toggle="tooltip" data-bs-placement="bottom" tabindex="0" role="button" aria-label="راهنمای تاثیر تیپ شخصیتی" title="تیپ شخصیتی مناسب با فرهنگ کشور مقصد هم‌خوانی دارد.">!</span>
-                            <label for="MBTIPersonality" class="form-label">شخصیت MBTI</label>
-                        </div>
-                        <div class="field-hint-control">
-                            <select asp-for="MBTIPersonality" class="form-select glass-input" asp-items="Html.GetEnumSelectList<PersonalityType>()"></select>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-outline-glass" onclick="showPreviousModal('modalStep4','modalStep3')">مرحله قبل</button>
-                    <button type="submit" class="btn-glass-primary">محاسبه امتیاز</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
-
 @section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            const prefersTouch = window.matchMedia('(hover: none)').matches;
-
-            tooltipTriggerList.forEach(function (triggerEl) {
-                const tooltip = new bootstrap.Tooltip(triggerEl, {
-                    trigger: prefersTouch ? 'manual' : 'hover focus',
-                    boundary: document.body
-                });
-
-                triggerEl.addEventListener('keydown', function (event) {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                        event.preventDefault();
-                        tooltip.toggle();
-                    }
-                });
-
-                if (prefersTouch) {
-                    triggerEl.addEventListener('click', function (event) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        tooltip.toggle();
-                    });
-                }
-            });
-
-            if (prefersTouch) {
-                document.addEventListener('click', function (event) {
-                    tooltipTriggerList.forEach(function (triggerEl) {
-                        const tooltipInstance = bootstrap.Tooltip.getInstance(triggerEl);
-                        if (!tooltipInstance) {
-                            return;
-                        }
-
-                        const tip = tooltipInstance.tip || (typeof tooltipInstance.getTipElement === 'function' ? tooltipInstance.getTipElement() : null);
-
-                        if (triggerEl.contains(event.target)) {
-                            return;
-                        }
-
-                        if (tip && tip.contains && tip.contains(event.target)) {
-                            return;
-                        }
-
-                        tooltipInstance.hide();
-                    });
-                });
-            }
-
-            document.querySelectorAll('.modal-step').forEach(function (modalEl) {
-                modalEl.addEventListener('hide.bs.modal', function () {
-                    tooltipTriggerList.forEach(function (triggerEl) {
-                        const tooltipInstance = bootstrap.Tooltip.getInstance(triggerEl);
-                        if (tooltipInstance) {
-                            tooltipInstance.hide();
-                        }
-                    });
-                });
-            });
-        });
-
-        function showNextModal(currentId, nextId) {
-            const currentModal = bootstrap.Modal.getInstance(document.getElementById(currentId));
-            if (currentModal) {
-                currentModal.hide();
-            }
-            const nextModal = new bootstrap.Modal(document.getElementById(nextId));
-            nextModal.show();
-        }
-
-        function showPreviousModal(currentId, prevId) {
-            const currentModal = bootstrap.Modal.getInstance(document.getElementById(currentId));
-            if (currentModal) {
-                currentModal.hide();
-            }
-            const prevModal = new bootstrap.Modal(document.getElementById(prevId));
-            prevModal.show();
-        }
-    </script>
+    <script src="~/js/immigration.js" asp-append-version="true"></script>
 }

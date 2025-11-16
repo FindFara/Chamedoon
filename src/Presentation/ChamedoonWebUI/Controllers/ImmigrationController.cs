@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Chamedoon.Application.Services.Immigration;
 using MediatR;
 
-namespace Chamedoon.WebAPI.Controllers;
+namespace ChamedoonWebUI.Controllers;
 
 public class ImmigrationController : Controller
 {
