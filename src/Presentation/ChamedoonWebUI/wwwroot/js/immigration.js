@@ -94,11 +94,40 @@
         updateProgress();
     };
 
+    const initScoreChart = () => {
+        const chart = document.querySelector('[data-score-chart]');
+        if (!chart) return;
+
+        chart.querySelectorAll('.chart-bar').forEach((bar, index) => {
+            const score = Number(bar.dataset.score || 0);
+            const clamped = Math.max(0, Math.min(100, Math.round(score)));
+            const fill = bar.querySelector('.chart-fill');
+            if (fill) {
+                requestAnimationFrame(() => fill.style.setProperty('--fill', `${clamped}%`));
+            }
+            const value = bar.querySelector('.chart-value');
+            if (value) {
+                value.textContent = `${clamped}%`;
+            }
+        });
+    };
+
+    const initPdfDownload = () => {
+        const downloadButton = document.querySelector('[data-download-pdf]');
+        if (!downloadButton) return;
+
+        downloadButton.addEventListener('click', () => {
+            window.print();
+        });
+    };
+
     const init = () => {
         initTooltips();
         initFieldHighlight();
         initScrollButtons();
         initProgress();
+        initScoreChart();
+        initPdfDownload();
     };
 
     if (document.readyState === 'loading') {

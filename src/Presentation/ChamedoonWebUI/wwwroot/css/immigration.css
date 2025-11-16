@@ -142,7 +142,13 @@
     border-radius: 1rem;
     border-color: rgba(148, 163, 184, 0.45);
     padding: 0.7rem 1rem;
+    padding-inline-end: 2.9rem;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.immigration-field .form-select {
+    background-position: left 1rem center;
+    background-size: 16px 12px;
 }
 
 .immigration-field.is-focused .form-control,
@@ -264,6 +270,77 @@
     border: 1px solid rgba(148, 163, 184, 0.25);
 }
 
+.result-insights {
+    padding: clamp(1.35rem, 3vw, 1.75rem);
+    border-radius: 1.25rem;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.insights-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.insight-pill {
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    background: rgba(79, 70, 229, 0.12);
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.score-chart {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.chart-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr auto;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.chart-label {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.chart-bar {
+    position: relative;
+    height: 12px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.25);
+    overflow: hidden;
+}
+
+.chart-bar .chart-fill {
+    position: absolute;
+    inset: 0;
+    width: var(--fill, 0%);
+    background: linear-gradient(120deg, var(--primary), var(--secondary));
+    transition: width 0.5s ease;
+}
+
+.chart-bar .chart-value {
+    position: absolute;
+    inset-inline-end: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.chart-hint {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
 .immigration-result-grid {
     display: grid;
     gap: 1.2rem;
@@ -336,6 +413,15 @@
         flex-direction: column;
         align-items: flex-start;
     }
+
+    .chart-row {
+        grid-template-columns: 1fr;
+        gap: 0.35rem;
+    }
+
+    .chart-bar {
+        height: 14px;
+    }
 }
 
 body.landing-page.dark-mode .immigration-form-card,
@@ -352,6 +438,16 @@ body.landing-page.dark-mode .immigration-empty {
     background: linear-gradient(140deg, rgba(79, 70, 229, 0.2), rgba(14, 165, 233, 0.12));
     color: #e2e8f0;
     border-color: rgba(148, 163, 184, 0.3);
+}
+
+body.landing-page.dark-mode .result-insights {
+    background: rgba(15, 23, 42, 0.7);
+    border-color: rgba(148, 163, 184, 0.35);
+}
+
+body.landing-page.dark-mode .insight-pill {
+    background: rgba(79, 70, 229, 0.3);
+    color: #cbd5f5;
 }
 
 body.landing-page.dark-mode .immigration-field .form-control,
@@ -371,6 +467,27 @@ body.landing-page.dark-mode .immigration-result-card .mini-meta span {
 
 body.landing-page.dark-mode .immigration-result-card .mini-meta span {
     background: rgba(255, 255, 255, 0.04);
+}
+
+body.landing-page.dark-mode .chart-label,
+body.landing-page.dark-mode .chart-value,
+body.landing-page.dark-mode .chart-hint {
+    color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .chart-bar {
+    background: rgba(148, 163, 184, 0.35);
+}
+
+body.landing-page.dark-mode .immigration-meta .meta-pill {
+    background: rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .immigration-hero h1,
+body.landing-page.dark-mode .immigration-hero p,
+body.landing-page.dark-mode .immigration-side-card h5 {
+    color: #e5e7eb;
 }
 
 body.landing-page.dark-mode .validation-summary {

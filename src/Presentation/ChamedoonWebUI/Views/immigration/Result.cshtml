@@ -1,5 +1,6 @@
 @model Chamedoon.Application.Services.Immigration.ImmigrationResult
 @using Chamedoon.Application.Services.Immigration
+@using System.Linq
 @{
     ViewData["Title"] = "نتیجه ارزیابی مهاجرت";
 }
@@ -25,6 +26,36 @@
 
         @if (Model.TopCountries?.Any() == true)
         {
+            var averageScore = Math.Round(Model.TopCountries.Average(c => c.Score), 0);
+            <div class="result-insights glass-card mb-4">
+                <div class="insights-header">
+                    <div>
+                        <h4 class="fw-bold mb-1">خلاصه بصری نتیجه</h4>
+                        <p class="immigration-helper mb-0">امتیاز هر کشور و میانگین کلی را در یک نگاه ببین و خروجی را به شکل PDF ذخیره کن.</p>
+                    </div>
+                    <div class="insight-pill">میانگین کل: @averageScore%</div>
+                </div>
+                <div class="score-chart" data-score-chart>
+                    @for (int i = 0; i < Model.TopCountries.Count; i++)
+                    {
+                        var item = Model.TopCountries[i];
+                        var score = Math.Round(item.Score, 0);
+                        <div class="chart-row">
+                            <div class="chart-label">@item.Country.GetDescription()</div>
+                            <div class="chart-bar" data-score="@score" aria-label="@score درصد">
+                                <span class="chart-fill"></span>
+                                <span class="chart-value">@score%</span>
+                            </div>
+                            <div class="chart-hint">@item.RecommendedVisaType</div>
+                        </div>
+                    }
+                </div>
+                <div class="immigration-actions mt-3">
+                    <a asp-controller="Immigration" asp-action="Index" class="btn btn-outline-secondary">ویرایش اطلاعات</a>
+                    <button type="button" class="btn btn-primary" data-download-pdf>دریافت PDF نتیجه</button>
+                </div>
+            </div>
+
             <div class="immigration-result-grid">
                 @for (int i = 0; i < Model.TopCountries.Count; i++)
                 {
