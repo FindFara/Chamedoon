@@ -36,18 +36,23 @@
                     </div>
                     <div class="insight-pill">میانگین کل: @averageScore%</div>
                 </div>
-                <div class="score-chart" data-score-chart>
+                <div class="score-rings" data-score-rings>
                     @for (int i = 0; i < Model.TopCountries.Count; i++)
                     {
                         var item = Model.TopCountries[i];
                         var score = Math.Round(item.Score, 0);
-                        <div class="chart-row">
-                            <div class="chart-label">@item.Country.GetDescription()</div>
-                            <div class="chart-bar" data-score="@score" aria-label="@score درصد">
-                                <span class="chart-fill"></span>
+                        <div class="ring-card" data-score="@score">
+                            <div class="ring-visual" role="img" aria-label="@item.Country.GetDescription() با امتیاز @score درصد">
+                                <div class="ring" aria-hidden="true"></div>
+                                <div class="ring-center">
+                                    <span class="ring-value">@score%</span>
+                                    <span class="ring-label">@item.Country.GetDescription()</span>
+                                </div>
                             </div>
-                            <div class="chart-value">@score%</div>
-                            <div class="chart-hint">@item.RecommendedVisaType</div>
+                            <div class="ring-meta">
+                                <span class="visa-pill">@item.RecommendedVisaType</span>
+                                <span class="ring-hint">@(!string.IsNullOrWhiteSpace(item.PersonalityReport) ? item.PersonalityReport : "تناسب فرهنگی متعادل")</span>
+                            </div>
                         </div>
                     }
                 </div>
