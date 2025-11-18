@@ -101,11 +101,19 @@
         rings.querySelectorAll('.ring-card').forEach((card) => {
             const score = Number(card.dataset.score || 0);
             const clamped = Math.max(0, Math.min(100, Math.round(score)));
-            const ring = card.querySelector('.ring');
+            const progress = card.querySelector('[data-ring-progress]');
             const label = card.querySelector('.ring-value');
+            const radius = 58;
+            const circumference = 2 * Math.PI * radius;
 
-            if (ring) {
-                requestAnimationFrame(() => ring.style.setProperty('--value', clamped));
+            if (progress) {
+                progress.style.strokeDasharray = `${circumference}`;
+                progress.style.strokeDashoffset = `${circumference}`;
+
+                requestAnimationFrame(() => {
+                    const offset = circumference - (clamped / 100) * circumference;
+                    progress.style.strokeDashoffset = `${offset}`;
+                });
             }
 
             if (label) {
@@ -136,32 +144,51 @@
         };
     })();
 
-    const drawRing = (doc, cx, cy, radius, score) => {
-        const clamped = Math.max(0, Math.min(100, score));
-        const endAngle = (-90 + (clamped / 100) * 360) * (Math.PI / 180);
+    const createRingImage = (score, accent = '#6366f1') => {
+        const clamped = Math.max(0, Math.min(100, Number(score) || 0));
+        const size = 180;
+        const radius = 60;
+        const center = size / 2;
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return '';
+
+        ctx.translate(center, center);
+        ctx.save();
+
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
+        ctx.lineWidth = 12;
+        ctx.stroke();
+
         const startAngle = -Math.PI / 2;
-        const steps = Math.max(18, Math.round(clamped / 2));
+        const endAngle = startAngle + (Math.PI * 2 * clamped) / 100;
+        const gradient = ctx.createLinearGradient(-radius, -radius, radius, radius);
+        gradient.addColorStop(0, accent);
+        gradient.addColorStop(1, '#a5b4fc');
 
-        doc.setDrawColor(226, 232, 240);
-        doc.setLineWidth(10);
-        doc.circle(cx, cy, radius);
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, startAngle, endAngle);
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 12;
+        ctx.lineCap = 'round';
+        ctx.stroke();
 
-        doc.setDrawColor(99, 102, 241);
-        doc.setLineCap('round');
-        doc.setLineWidth(10);
+        ctx.font = 'bold 20px Inter, Vazirmatn, sans-serif';
+        ctx.fillStyle = '#0f172a';
+        ctx.textAlign = 'center';
+        ctx.fillText(`${clamped}%`, 0, 6);
 
-        let prev = { x: cx + radius * Math.cos(startAngle), y: cy + radius * Math.sin(startAngle) };
-        for (let i = 1; i <= steps; i++) {
-            const t = startAngle + ((endAngle - startAngle) * i) / steps;
-            const next = { x: cx + radius * Math.cos(t), y: cy + radius * Math.sin(t) };
-            doc.line(prev.x, prev.y, next.x, next.y);
-            prev = next;
-        }
+        ctx.font = '14px Inter, Vazirmatn, sans-serif';
+        ctx.fillStyle = '#475569';
+        ctx.fillText('امتیاز', 0, 26);
 
-        doc.setLineWidth(1);
-        doc.setTextColor(15, 23, 42);
-        doc.setFontSize(12);
-        doc.text(`${clamped}%`, cx, cy + 4, { align: 'center' });
+        ctx.restore();
+        return canvas.toDataURL('image/png');
     };
 
     const initPdfDownload = () => {
@@ -177,6 +204,8 @@
         } catch (error) {
             console.error('Failed to parse export data', error);
         }
+
+        const accentPalette = ['#6366f1', '#0ea5e9', '#8b5cf6', '#10b981'];
 
         downloadButton.addEventListener('click', async () => {
             const originalText = downloadButton.textContent;
@@ -244,6 +273,9 @@
 
                     const cardX = margin + (cardWidth + gap) * col;
 
+                    const accent = accentPalette[index % accentPalette.length];
+                    const ringImage = createRingImage(item.score, accent);
+
                     doc.setFillColor(255, 255, 255);
                     doc.setDrawColor(226, 232, 240);
                     doc.roundedRect(cardX, cardY, cardWidth, cardHeight, 12, 12, 'FD');
@@ -260,7 +292,9 @@
                     doc.setFontSize(11);
                     doc.text(item.visa || 'ویزای پیشنهادی', cardX + cardWidth - 12, cardY + 52, { align: 'right' });
 
-                    drawRing(doc, cardX + 60, cardY + 86, 32, Number(item.score || 0));
+                    if (ringImage) {
+                        doc.addImage(ringImage, 'PNG', cardX + 18, cardY + 18, 84, 84);
+                    }
 
                     doc.setTextColor(31, 41, 55);
                     doc.setFontSize(10);

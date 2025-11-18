@@ -41,9 +41,19 @@
                     {
                         var item = Model.TopCountries[i];
                         var score = Math.Round(item.Score, 0);
+                        var gradientId = $"ring-grad-{i}";
                         <div class="ring-card" data-score="@score">
                             <div class="ring-visual" role="img" aria-label="@item.Country.GetDescription() با امتیاز @score درصد">
-                                <div class="ring" aria-hidden="true"></div>
+                                <svg class="ring" viewBox="0 0 140 140" aria-hidden="true">
+                                    <defs>
+                                        <linearGradient id="@gradientId" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.95" />
+                                            <stop offset="100%" stop-color="var(--primary-soft)" stop-opacity="0.8" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle class="ring-track" cx="70" cy="70" r="58" />
+                                    <circle class="ring-progress" cx="70" cy="70" r="58" stroke="url(#@gradientId)" data-ring-progress />
+                                </svg>
                                 <div class="ring-center">
                                     <span class="ring-value">@score%</span>
                                     <span class="ring-label">@item.Country.GetDescription()</span>
