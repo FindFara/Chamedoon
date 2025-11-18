@@ -159,6 +159,82 @@
         doc.setFont('Vazir');
     };
 
+
+    const drawPersonIcon = (doc, x, y, scale = 1, colors = { fill: '#eef2ff', stroke: '#c7d2fe', accent: '#818cf8' }) => {
+        doc.setDrawColor(colors.stroke);
+        doc.setFillColor(colors.fill);
+        doc.circle(x + 12 * scale, y + 10 * scale, 8 * scale, 'FD');
+
+        doc.roundedRect(x + 4 * scale, y + 18 * scale, 16 * scale, 14 * scale, 6 * scale, 6 * scale, 'FD');
+        doc.roundedRect(x + 2 * scale, y + 30 * scale, 20 * scale, 16 * scale, 6 * scale, 6 * scale, 'FD');
+
+        doc.setFillColor(colors.accent);
+        doc.circle(x + 20 * scale, y + 14 * scale, 3 * scale, 'F');
+    };
+
+    const drawPdfHeader = (doc, { pageWidth, margin, averageScore, generatedAt, headerHeight }) => {
+        doc.setFillColor(99, 102, 241);
+        doc.rect(0, 0, pageWidth, headerHeight, 'F');
+
+        doc.setFillColor(79, 70, 229);
+        doc.rect(0, headerHeight - 28, pageWidth, 28, 'F');
+
+        doc.setFillColor(167, 139, 250);
+        doc.circle(margin + 36, headerHeight - 24, 26, 'F');
+
+        drawPersonIcon(doc, margin - 6, margin + 4, 1.4, {
+            fill: '#eef2ff',
+            stroke: '#c7d2fe',
+            accent: '#c7d2fe'
+        });
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(18);
+        doc.text('گزارش خلاصه مهاجرت', pageWidth - margin, margin + 26, { align: 'right' });
+
+        doc.setFontSize(12);
+        doc.text('نتیجه بر اساس آخرین پاسخ‌های شما تولید شد. برای اشتراک یا چاپ از این نسخه استفاده کن.', pageWidth - margin, margin + 48, { align: 'right' });
+
+        doc.setTextColor(226, 232, 240);
+        doc.setFontSize(11);
+        doc.text(`میانگین کل: ${averageScore}%  •  تاریخ تولید: ${generatedAt}`, pageWidth - margin, margin + 68, { align: 'right' });
+
+        doc.setFillColor(255, 255, 255);
+        doc.roundedRect(pageWidth - margin - 160, headerHeight - 42, 160, 30, 10, 10, 'F');
+        doc.setTextColor(99, 102, 241);
+        doc.setFontSize(11);
+        doc.text('آماده‌ی اشتراک و چاپ', pageWidth - margin - 16, headerHeight - 22, { align: 'right' });
+
+        doc.setFillColor(79, 70, 229);
+        doc.circle(pageWidth - margin - 12, headerHeight - 27, 4, 'F');
+    };
+
+    const drawPdfFooter = (doc, { pageWidth, pageHeight, margin, footerHeight, pageNumber }) => {
+        const footerTop = pageHeight - footerHeight;
+        doc.setFillColor(248, 250, 252);
+        doc.rect(0, footerTop, pageWidth, footerHeight, 'F');
+
+        doc.setDrawColor(226, 232, 240);
+        doc.line(margin, footerTop + 12, pageWidth - margin, footerTop + 12);
+
+        doc.setTextColor(99, 102, 241);
+        doc.setFontSize(11);
+        doc.text('chamedoon.ir', pageWidth - margin, footerTop + 30, { align: 'right' });
+
+        doc.setTextColor(71, 85, 105);
+        doc.setFontSize(10);
+        doc.text('این گزارش توسط چمدون ساخته شد. نسخه چاپی برای ارائه رسمی نگه‌داری شود.', pageWidth - margin, footerTop + 48, { align: 'right' });
+
+        drawPersonIcon(doc, margin - 2, footerTop + 16, 1.1, {
+            fill: '#e0f2fe',
+            stroke: '#bae6fd',
+            accent: '#0ea5e9'
+        });
+
+        doc.setTextColor(148, 163, 184);
+        doc.text(`صفحه ${pageNumber}`, margin + 32, footerTop + 42);
+    };
+
     const createRingImage = (score, accent = '#6366f1') => {
         const clamped = Math.max(0, Math.min(100, Number(score) || 0));
         const size = 180;
@@ -235,42 +311,25 @@
                 const pageHeight = doc.internal.pageSize.getHeight();
                 const margin = 36;
                 const contentWidth = pageWidth - margin * 2;
+                const headerHeight = 140;
+                const footerHeight = 70;
 
                 const generatedAt = new Date().toLocaleDateString('fa-IR');
-                const heroHeight = 130;
 
-                doc.setFillColor(238, 242, 255);
-                doc.roundedRect(margin, margin, contentWidth, heroHeight, 12, 12, 'F');
-                doc.setDrawColor(199, 210, 254);
-                doc.roundedRect(margin, margin, contentWidth, heroHeight, 12, 12, 'S');
+                const renderPageChrome = (pageNumber) => {
+                    drawPdfHeader(doc, { pageWidth, margin, averageScore, generatedAt, headerHeight });
+                    drawPdfFooter(doc, { pageWidth, pageHeight, margin, footerHeight, pageNumber });
+                    return margin + headerHeight + 16;
+                };
 
-                doc.setTextColor(49, 46, 129);
-                doc.setFontSize(18);
-                doc.text('گزارش خلاصه مهاجرت', pageWidth - margin, margin + 28, { align: 'right' });
+                let pageNumber = 1;
+                let cursorY = renderPageChrome(pageNumber);
 
-                doc.setTextColor(71, 85, 105);
-                doc.setFontSize(12);
-                doc.text('نتیجه بر اساس آخرین پاسخ‌های شما تولید شد. برای اشتراک یا چاپ از این نسخه استفاده کن.', pageWidth - margin, margin + 48, {
-                    align: 'right'
-                });
-                doc.text(`میانگین کل: ${averageScore}%  •  تاریخ تولید: ${generatedAt}`, pageWidth - margin, margin + 68, { align: 'right' });
-
-                doc.setFillColor(226, 232, 240);
-                doc.circle(margin + 54, margin + 54, 28, 'F');
-                doc.setFillColor(99, 102, 241);
-                doc.circle(margin + 54, margin + 54, 12, 'F');
-
-                const badgeY = margin + heroHeight - 18;
-                doc.setFillColor(255, 255, 255);
-                doc.roundedRect(pageWidth - margin - 120, badgeY, 120, 26, 8, 8, 'F');
-                doc.setTextColor(99, 102, 241);
-                doc.text('گزارش آماده', pageWidth - margin - 12, badgeY + 17, { align: 'right' });
-
-                let cursorY = margin + heroHeight + 20;
                 const cardsPerRow = 2;
                 const gap = 14;
                 const cardWidth = (contentWidth - gap) / cardsPerRow;
-                const cardHeight = 160;
+                const cardHeight = 170;
+                const contentBottom = () => pageHeight - footerHeight - margin;
 
                 let row = 0;
                 exportData.forEach((item, index) => {
@@ -279,10 +338,11 @@
                         row += 1;
                     }
 
-                    let cardY = cursorY + row * (cardHeight + 12);
-                    if (cardY + cardHeight + margin > pageHeight) {
+                    let cardY = cursorY + row * (cardHeight + 16);
+                    if (cardY + cardHeight > contentBottom()) {
                         doc.addPage();
-                        cursorY = margin;
+                        pageNumber += 1;
+                        cursorY = renderPageChrome(pageNumber);
                         row = 0;
                         cardY = cursorY;
                     }
@@ -309,16 +369,16 @@
                     doc.text(item.visa || 'ویزای پیشنهادی', cardX + cardWidth - 12, cardY + 52, { align: 'right' });
 
                     if (ringImage) {
-                        doc.addImage(ringImage, 'PNG', cardX + 18, cardY + 18, 84, 84);
+                        doc.addImage(ringImage, 'PNG', cardX + 18, cardY + 24, 84, 84);
                     }
 
                     doc.setTextColor(31, 41, 55);
                     doc.setFontSize(10);
                     const detailX = cardX + cardWidth - 130;
-                    doc.text(`شخصیت: ${item.personality || '-'}`, detailX, cardY + 78, { align: 'right' });
-                    doc.text(`کار: ${item.job || '-'}`, detailX, cardY + 94, { align: 'right' });
-                    doc.text(`تحصیل: ${item.education || '-'}`, detailX, cardY + 110, { align: 'right' });
-                    doc.text(`اقتصاد: ${item.economy || '-'}`, detailX, cardY + 126, { align: 'right' });
+                    doc.text(`شخصیت: ${item.personality || '-'}`, detailX, cardY + 86, { align: 'right' });
+                    doc.text(`کار: ${item.job || '-'}`, detailX, cardY + 104, { align: 'right' });
+                    doc.text(`تحصیل: ${item.education || '-'}`, detailX, cardY + 122, { align: 'right' });
+                    doc.text(`اقتصاد: ${item.economy || '-'}`, detailX, cardY + 140, { align: 'right' });
                 });
 
                 doc.save('immigration-report.pdf');
