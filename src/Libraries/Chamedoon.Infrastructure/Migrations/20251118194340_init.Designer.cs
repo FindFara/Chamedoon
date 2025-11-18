@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chamedoon.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251111081749_init")]
+    [Migration("20251118194340_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -139,6 +139,21 @@ namespace Chamedoon.Infrastructure.Migrations
 
                     b.Property<string>("ProfileImage")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("SubscriptionEndDateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SubscriptionPlanId")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime?>("SubscriptionStartDateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UsedEvaluations")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.HasKey("Id");
 

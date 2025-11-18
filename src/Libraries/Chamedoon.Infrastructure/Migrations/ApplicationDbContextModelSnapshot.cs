@@ -148,7 +148,9 @@ namespace Chamedoon.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<int>("UsedEvaluations")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
 
                     b.HasKey("Id");
 

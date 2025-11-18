@@ -228,6 +228,10 @@ namespace Chamedoon.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: false),
+                    SubscriptionPlanId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    SubscriptionStartDateUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    SubscriptionEndDateUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UsedEvaluations = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
