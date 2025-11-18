@@ -68,7 +68,6 @@
                 </div>
                 <div class="immigration-actions mt-3">
                     <a asp-controller="Immigration" asp-action="Index" class="btn btn-outline-secondary">ویرایش اطلاعات</a>
-                    <button type="button" class="btn btn-primary" data-download-pdf>دریافت PDF نتیجه</button>
                 </div>
             </div>
 
@@ -110,18 +109,6 @@
                     </article>
                 }
             </div>
-            <script type="application/json" id="immigration-export-data" data-average="@averageScore">
-                @Html.Raw(JsonSerializer.Serialize(Model.TopCountries.Select(item => new
-                {
-                    country = item.Country.GetDescription(),
-                    score = Math.Round(item.Score, 0),
-                    visa = item.RecommendedVisaType,
-                    personality = string.IsNullOrWhiteSpace(item.PersonalityReport) ? "-" : item.PersonalityReport,
-                    job = string.IsNullOrWhiteSpace(item.JobInfo) ? "-" : item.JobInfo,
-                    education = string.IsNullOrWhiteSpace(item.EducationInfo) ? "-" : item.EducationInfo,
-                    economy = string.IsNullOrWhiteSpace(item.EconomyInfo) ? "-" : item.EconomyInfo
-                })))
-            </script>
         }
         else
         {
