@@ -32,6 +32,7 @@ public class AdminDashboardService : IAdminDashboardService
 
         var totalUsers = await _userRepository.CountUsersAsync(cancellationToken);
         var activeUsers = await _userRepository.CountActiveUsersAsync(cancellationToken);
+        var usersWithActiveSubscription = await _userRepository.CountActiveSubscriptionsAsync(cancellationToken);
         var newUsers = await _userRepository.CountUsersCreatedSinceAsync(monthStart, cancellationToken);
         var totalPosts = await _blogRepository.CountArticlesAsync(cancellationToken);
         var publishedPosts = await _blogRepository.CountPublishedArticlesAsync(cancellationToken);
@@ -53,6 +54,7 @@ public class AdminDashboardService : IAdminDashboardService
             PublishedBlogPosts = publishedPosts,
             DraftBlogPosts = Math.Max(totalPosts - publishedPosts, 0),
             TotalViews = totalViews,
+            UsersWithActiveSubscription = usersWithActiveSubscription,
             PopularPosts = popularPosts.Select(article => new DashboardPopularPostDto(article.ArticleTitle, article.VisitCount)).ToList(),
             RoleDistribution = BuildRoleDistribution(roleCounts, roles),
             PermissionUsage = permissionUsage

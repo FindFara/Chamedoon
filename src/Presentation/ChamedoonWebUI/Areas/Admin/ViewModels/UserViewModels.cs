@@ -23,6 +23,8 @@ public class UserListItemViewModel
     public string? RoleName { get; init; }
     public bool IsActive { get; init; }
     public DateTime CreatedAt { get; init; }
+    public string? SubscriptionPlanTitle { get; init; }
+    public DateTime? SubscriptionEndDateUtc { get; init; }
 
     public static UserListItemViewModel FromDto(AdminUserDto dto)
         => new()
@@ -34,7 +36,9 @@ public class UserListItemViewModel
             RoleId = dto.RoleId,
             RoleName = dto.RoleName,
             IsActive = dto.IsActive,
-            CreatedAt = dto.CreatedAt
+            CreatedAt = dto.CreatedAt,
+            SubscriptionPlanTitle = dto.SubscriptionPlanTitle,
+            SubscriptionEndDateUtc = dto.SubscriptionEndDateUtc
         };
 }
 
@@ -42,6 +46,12 @@ public class RoleOptionViewModel
 {
     public long Id { get; init; }
     public string Name { get; init; } = string.Empty;
+}
+
+public class SubscriptionPlanOptionViewModel
+{
+    public string Id { get; init; } = string.Empty;
+    public string Title { get; init; } = string.Empty;
 }
 
 public class UserEditViewModel : IValidatableObject
@@ -71,6 +81,18 @@ public class UserEditViewModel : IValidatableObject
     public string? Password { get; set; }
 
     public IEnumerable<RoleOptionViewModel> Roles { get; set; } = Array.Empty<RoleOptionViewModel>();
+    public IEnumerable<SubscriptionPlanOptionViewModel> Plans { get; set; } = Array.Empty<SubscriptionPlanOptionViewModel>();
+    [Display(Name = "اشتراک فعال")]
+    public string? SubscriptionPlanId { get; set; }
+
+    [Display(Name = "تاریخ شروع اشتراک")]
+    public DateTime? SubscriptionStartDateUtc { get; set; }
+
+    [Display(Name = "تاریخ پایان اشتراک")]
+    public DateTime? SubscriptionEndDateUtc { get; set; }
+
+    [Display(Name = "استعلام‌های استفاده‌شده")]
+    public int UsedEvaluations { get; set; }
 
     public bool IsNew => !Id.HasValue;
 
@@ -83,7 +105,11 @@ public class UserEditViewModel : IValidatableObject
             FullName = FullName,
             RoleId = RoleId,
             IsActive = IsActive,
-            Password = Password
+            Password = Password,
+            SubscriptionPlanId = SubscriptionPlanId,
+            SubscriptionStartDateUtc = SubscriptionStartDateUtc,
+            SubscriptionEndDateUtc = SubscriptionEndDateUtc,
+            UsedEvaluations = UsedEvaluations
         };
 
     public static UserEditViewModel FromDto(AdminUserDto dto)
@@ -94,7 +120,11 @@ public class UserEditViewModel : IValidatableObject
             UserName = dto.UserName,
             FullName = dto.FullName,
             RoleId = dto.RoleId,
-            IsActive = dto.IsActive
+            IsActive = dto.IsActive,
+            SubscriptionPlanId = dto.SubscriptionPlanId,
+            SubscriptionStartDateUtc = dto.SubscriptionStartDateUtc,
+            SubscriptionEndDateUtc = dto.SubscriptionEndDateUtc,
+            UsedEvaluations = dto.UsedEvaluations
         };
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -102,6 +132,11 @@ public class UserEditViewModel : IValidatableObject
         if (IsNew && string.IsNullOrWhiteSpace(Password))
         {
             yield return new ValidationResult("وارد کردن کلمه عبور برای کاربر جدید الزامی است.", new[] { nameof(Password) });
+        }
+
+        if (UsedEvaluations < 0)
+        {
+            yield return new ValidationResult("تعداد استعلام نمی‌تواند منفی باشد.", new[] { nameof(UsedEvaluations) });
         }
     }
 }

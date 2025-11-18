@@ -167,6 +167,16 @@ public class AdminUserRepository : IAdminUserRepository
     public Task<int> CountUsersCreatedSinceAsync(DateTime since, CancellationToken cancellationToken)
         => _userManager.Users.CountAsync(u => u.Created >= since, cancellationToken);
 
+    public Task<int> CountActiveSubscriptionsAsync(CancellationToken cancellationToken)
+    {
+        var now = DateTime.UtcNow;
+        return _context.Customers.CountAsync(customer =>
+            !string.IsNullOrWhiteSpace(customer.SubscriptionPlanId) &&
+            customer.SubscriptionEndDateUtc.HasValue &&
+            customer.SubscriptionEndDateUtc.Value > now,
+            cancellationToken);
+    }
+
     public async Task<Dictionary<long, int>> GetRoleUserCountsAsync(CancellationToken cancellationToken)
     {
         return await _context.UserRole
@@ -233,6 +243,10 @@ public class AdminUserRepository : IAdminUserRepository
             existing.LastName = customer.LastName;
             existing.Description = customer.Description;
             existing.Job = customer.Job;
+            existing.SubscriptionPlanId = customer.SubscriptionPlanId;
+            existing.SubscriptionStartDateUtc = customer.SubscriptionStartDateUtc;
+            existing.SubscriptionEndDateUtc = customer.SubscriptionEndDateUtc;
+            existing.UsedEvaluations = customer.UsedEvaluations;
         }
     }
 

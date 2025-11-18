@@ -13,6 +13,7 @@ public class DashboardViewModel
     public int PublishedBlogPosts { get; init; }
     public int DraftBlogPosts { get; init; }
     public long TotalViews { get; init; }
+    public int UsersWithActiveSubscription { get; init; }
     public IReadOnlyList<DashboardPopularPostViewModel> PopularPosts { get; init; } = Array.Empty<DashboardPopularPostViewModel>();
     public IReadOnlyList<DashboardRoleDistributionViewModel> RoleDistribution { get; init; } = Array.Empty<DashboardRoleDistributionViewModel>();
     public IReadOnlyList<DashboardPermissionUsageViewModel> PermissionUsage { get; init; } = Array.Empty<DashboardPermissionUsageViewModel>();
@@ -31,6 +32,7 @@ public class DashboardViewModel
             PublishedBlogPosts = dto.PublishedBlogPosts,
             DraftBlogPosts = dto.DraftBlogPosts,
             TotalViews = dto.TotalViews,
+            UsersWithActiveSubscription = dto.UsersWithActiveSubscription,
             PopularPosts = dto.PopularPosts.Select(item => new DashboardPopularPostViewModel(item.Title, item.VisitCount)).ToList(),
             RoleDistribution = dto.RoleDistribution.Select(item => new DashboardRoleDistributionViewModel(item.RoleName, item.UserCount)).ToList(),
             PermissionUsage = dto.PermissionUsage.Select(item => new DashboardPermissionUsageViewModel(item.PermissionName, item.RoleCount)).ToList(),

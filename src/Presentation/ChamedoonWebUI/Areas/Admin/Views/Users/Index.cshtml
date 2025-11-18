@@ -57,6 +57,7 @@
                             <th>نام</th>
                             <th>ایمیل</th>
                             <th>نقش</th>
+                            <th>اشتراک</th>
                             <th>وضعیت</th>
                             <th>تاریخ ایجاد</th>
                             <th class="text-end">عملیات</th>
@@ -69,6 +70,22 @@
                                 <td>@(string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName)</td>
                                 <td>@user.Email</td>
                                 <td>@(string.IsNullOrWhiteSpace(user.RoleName) ? "-" : user.RoleName)</td>
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(user.SubscriptionPlanTitle))
+                                    {
+                                        <div class="d-flex flex-column">
+                                            <strong>@user.SubscriptionPlanTitle</strong>
+                                            @if (user.SubscriptionEndDateUtc is not null)
+                                            {
+                                                <small class="text-muted">تا @user.SubscriptionEndDateUtc?.ToString("yyyy/MM/dd")</small>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
                                 <td>
                                     @if (user.IsActive)
                                     {

@@ -8,7 +8,12 @@ public record AdminUserDto(
     long? RoleId,
     string? RoleName,
     bool IsActive,
-    DateTime CreatedAt);
+    DateTime CreatedAt,
+    string? SubscriptionPlanId,
+    string? SubscriptionPlanTitle,
+    DateTime? SubscriptionStartDateUtc,
+    DateTime? SubscriptionEndDateUtc,
+    int UsedEvaluations);
 
 public class AdminUserInput
 {
@@ -19,6 +24,10 @@ public class AdminUserInput
     public long? RoleId { get; set; }
     public bool IsActive { get; set; } = true;
     public string? Password { get; set; }
+    public string? SubscriptionPlanId { get; set; }
+    public DateTime? SubscriptionStartDateUtc { get; set; }
+    public DateTime? SubscriptionEndDateUtc { get; set; }
+    public int UsedEvaluations { get; set; }
 }
 
 public record MonthlyRegistrationCount(int Year, int Month, int Count);

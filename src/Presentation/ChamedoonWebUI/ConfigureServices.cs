@@ -58,7 +58,7 @@ public static class ConfigureServices
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         });
 
-        services.AddSingleton<SubscriptionMemoryStore>();
+        services.AddScoped<SubscriptionService>();
 
         return services;
     }

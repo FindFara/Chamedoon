@@ -1,6 +1,9 @@
+using System.Linq;
 using Chamedoon.Application.Services.Admin.Common.Models;
 using Chamedoon.Application.Services.Admin.Users;
+using Chamedoon.Application.Services.Subscription;
 using ChamedoonWebUI.Areas.Admin.ViewModels;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChamedoonWebUI.Areas.Admin.Controllers;
@@ -9,10 +12,12 @@ namespace ChamedoonWebUI.Areas.Admin.Controllers;
 public class UsersController : Controller
 {
     private readonly IAdminUserService _userService;
+    private readonly IMediator _mediator;
 
-    public UsersController(IAdminUserService userService)
+    public UsersController(IAdminUserService userService, IMediator mediator)
     {
         _userService = userService;
+        _mediator = mediator;
     }
 
     public async Task<IActionResult> Index(string? search, long? roleId, CancellationToken cancellationToken)
@@ -54,6 +59,8 @@ public class UsersController : Controller
             IsActive = true
         };
 
+        await PopulatePlansAsync(model, cancellationToken);
+
         return View("Edit", model);
     }
 
@@ -64,6 +71,7 @@ public class UsersController : Controller
         if (!ModelState.IsValid)
         {
             await PopulateRolesAsync(model, cancellationToken);
+            await PopulatePlansAsync(model, cancellationToken);
             return View("Edit", model);
         }
 
@@ -96,6 +104,7 @@ public class UsersController : Controller
 
         var model = UserEditViewModel.FromDto(userResult.Result);
         model.Roles = rolesResult.Result.Select(role => new RoleOptionViewModel { Id = role.Id, Name = role.Name }).ToList();
+        await PopulatePlansAsync(model, cancellationToken);
 
         return View(model);
     }
@@ -112,6 +121,7 @@ public class UsersController : Controller
         if (!ModelState.IsValid)
         {
             await PopulateRolesAsync(model, cancellationToken);
+            await PopulatePlansAsync(model, cancellationToken);
             return View(model);
         }
 
@@ -120,6 +130,7 @@ public class UsersController : Controller
         {
             ModelState.AddModelError(string.Empty, result.Message);
             await PopulateRolesAsync(model, cancellationToken);
+            await PopulatePlansAsync(model, cancellationToken);
             return View(model);
         }
 
@@ -147,5 +158,11 @@ public class UsersController : Controller
         model.Roles = roles.IsSuccess && roles.Result is not null
             ? roles.Result.Select(role => new RoleOptionViewModel { Id = role.Id, Name = role.Name }).ToList()
             : new List<RoleOptionViewModel>();
+    }
+
+    private async Task PopulatePlansAsync(UserEditViewModel model, CancellationToken cancellationToken)
+    {
+        var plans = await _mediator.Send(new GetSubscriptionPlansQuery(), cancellationToken);
+        model.Plans = plans.Select(plan => new SubscriptionPlanOptionViewModel { Id = plan.Id, Title = plan.Title }).ToList();
     }
 }

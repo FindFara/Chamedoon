@@ -44,59 +44,57 @@
             </div>
         }
 
-        <div class="row g-4">
+        <div class="subscription-grid">
             @foreach (var plan in Model.Plans)
             {
                 var isCurrent = Model.CurrentSubscription?.PlanId == plan.Id;
-                <div class="col-md-4">
-                    <div class="subscription-card @(plan.IncludesAI ? "subscription-card--ai" : string.Empty) @(isCurrent ? "subscription-card--active" : string.Empty)">
-                        <div class="card-header">
-                            <div>
-                                <p class="card-duration">@plan.DurationLabel</p>
-                                <h3 class="card-title">@plan.Title</h3>
-                            </div>
-                            @if (plan.IncludesAI)
-                            {
-                                <span class="pill">هوش مصنوعی</span>
-                            }
-                            else if (plan.EvaluationLimit is null)
-                            {
-                                <span class="pill pill-secondary">نامحدود</span>
-                            }
+                <article class="subscription-card @(plan.IncludesAI ? "subscription-card--ai" : string.Empty) @(isCurrent ? "subscription-card--active" : string.Empty)">
+                    <div class="card-header">
+                        <div>
+                            <p class="card-duration">@plan.DurationLabel</p>
+                            <h3 class="card-title">@plan.Title</h3>
                         </div>
-                        <p class="card-price">@plan.Price.ToString("N0") <span>تومان</span></p>
-                        <ul class="feature-list">
-                            @foreach (var feature in plan.Features)
-                            {
-                                <li>
-                                    <span aria-hidden="true">✔</span>
-                                    <span>@feature</span>
-                                </li>
-                            }
-                            @if (plan.EvaluationLimit is not null)
-                            {
-                                <li>
-                                    <span aria-hidden="true">🎯</span>
-                                    <span>حداکثر @plan.EvaluationLimit استعلام در ماه</span>
-                                </li>
-                            }
-                            else
-                            {
-                                <li>
-                                    <span aria-hidden="true">♾️</span>
-                                    <span>استعلام نامحدود بدون محدودیت</span>
-                                </li>
-                            }
-                        </ul>
-                        <form asp-action="Subscribe" method="post" class="mt-3">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="planId" value="@plan.Id" />
-                            <button type="submit" class="btn btn-primary w-100" @(isCurrent ? "disabled" : string.Empty)>
-                                @(isCurrent ? "فعال شده" : "شروع اشتراک")
-                            </button>
-                        </form>
+                        @if (plan.IncludesAI)
+                        {
+                            <span class="pill">هوش مصنوعی</span>
+                        }
+                        else if (plan.EvaluationLimit is null)
+                        {
+                            <span class="pill pill-secondary">نامحدود</span>
+                        }
                     </div>
-                </div>
+                    <p class="card-price">@plan.Price.ToString("N0") <span>تومان</span></p>
+                    <ul class="feature-list">
+                        @foreach (var feature in plan.Features)
+                        {
+                            <li>
+                                <span aria-hidden="true">✔</span>
+                                <span>@feature</span>
+                            </li>
+                        }
+                        @if (plan.EvaluationLimit is not null)
+                        {
+                            <li>
+                                <span aria-hidden="true">🎯</span>
+                                <span>حداکثر @plan.EvaluationLimit استعلام در ماه</span>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <span aria-hidden="true">♾️</span>
+                                <span>استعلام نامحدود بدون محدودیت</span>
+                            </li>
+                        }
+                    </ul>
+                    <form asp-action="Subscribe" method="post" class="mt-3">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="planId" value="@plan.Id" />
+                        <button type="submit" class="btn btn-primary w-100" @(isCurrent ? "disabled" : string.Empty)>
+                            @(isCurrent ? "فعال شده" : "شروع اشتراک")
+                        </button>
+                    </form>
+                </article>
             }
         </div>
     </div>

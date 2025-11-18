@@ -1,104 +1,118 @@
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
+using Chamedoon.Application.Common.Interfaces;
+using Chamedoon.Domin.Entity.Customers;
+using Chamedoon.Domin.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chamedoon.Application.Services.Subscription;
 
-public class SubscriptionMemoryStore
+public static class SubscriptionPlanCatalog
 {
-    private readonly IReadOnlyList<SubscriptionPlan> _plans;
-    private readonly ConcurrentDictionary<string, SubscriptionStatus> _subscriptions;
-
-    public SubscriptionMemoryStore()
+    public static readonly IReadOnlyList<SubscriptionPlan> Plans = new List<SubscriptionPlan>
     {
-        _plans = new List<SubscriptionPlan>
+        new()
         {
-            new()
+            Id = "starter",
+            Title = "اشتراک پایه",
+            DurationLabel = "یک ماهه",
+            Price = 120_000,
+            EvaluationLimit = 3,
+            IncludesAI = false,
+            Features = new[]
             {
-                Id = "starter",
-                Title = "اشتراک پایه",
-                DurationLabel = "یک ماهه",
-                Price = 120_000,
-                EvaluationLimit = 3,
-                IncludesAI = false,
-                Features = new[]
-                {
-                    "۳ استعلام مهاجرتی دقیق",
-                    "دسترسی به داشبورد و ذخیره‌سازی نتایج",
-                    "پشتیبانی ایمیلی"
-                }
-            },
-            new()
-            {
-                Id = "unlimited",
-                Title = "اشتراک نامحدود",
-                DurationLabel = "یک ماهه",
-                Price = 170_000,
-                EvaluationLimit = null,
-                IncludesAI = false,
-                Features = new[]
-                {
-                    "استعلام نامحدود در طول ماه",
-                    "آپدیت لحظه‌ای مسیرهای مهاجرتی",
-                    "پشتیبانی ویژه"
-                }
-            },
-            new()
-            {
-                Id = "ai_pro",
-                Title = "هوش مصنوعی + نامحدود",
-                DurationLabel = "یک ماهه",
-                Price = 220_000,
-                EvaluationLimit = null,
-                IncludesAI = true,
-                Features = new[]
-                {
-                    "استعلام نامحدود",
-                    "بهینه‌سازی پاسخ‌ها با هوش مصنوعی",
-                    "تحلیل سریع‌تر برای پرونده‌های پیچیده"
-                }
+                "۳ استعلام مهاجرتی دقیق",
+                "دسترسی به داشبورد و ذخیره‌سازی نتایج",
+                "پشتیبانی ایمیلی"
             }
-        };
+        },
+        new()
+        {
+            Id = "unlimited",
+            Title = "اشتراک نامحدود",
+            DurationLabel = "یک ماهه",
+            Price = 170_000,
+            EvaluationLimit = null,
+            IncludesAI = false,
+            Features = new[]
+            {
+                "استعلام نامحدود در طول ماه",
+                "آپدیت لحظه‌ای مسیرهای مهاجرتی",
+                "پشتیبانی ویژه"
+            }
+        },
+        new()
+        {
+            Id = "ai_pro",
+            Title = "هوش مصنوعی + نامحدود",
+            DurationLabel = "یک ماهه",
+            Price = 220_000,
+            EvaluationLimit = null,
+            IncludesAI = true,
+            Features = new[]
+            {
+                "استعلام نامحدود",
+                "بهینه‌سازی پاسخ‌ها با هوش مصنوعی",
+                "تحلیل سریع‌تر برای پرونده‌های پیچیده"
+            }
+        }
+    };
 
-        _subscriptions = new ConcurrentDictionary<string, SubscriptionStatus>();
+    public static SubscriptionPlan? Find(string? planId)
+        => Plans.FirstOrDefault(plan => plan.Id.Equals(planId ?? string.Empty, StringComparison.OrdinalIgnoreCase));
+}
+
+public class SubscriptionService
+{
+    private readonly IApplicationDbContext _context;
+
+    public SubscriptionService(IApplicationDbContext context)
+    {
+        _context = context;
     }
 
-    public IReadOnlyList<SubscriptionPlan> GetPlans() => _plans;
+    public Task<IReadOnlyList<SubscriptionPlan>> GetPlansAsync() => Task.FromResult(SubscriptionPlanCatalog.Plans);
 
-    public SubscriptionStatus? GetCurrentSubscription(ClaimsPrincipal user)
+    public async Task<SubscriptionStatus?> GetCurrentSubscriptionAsync(ClaimsPrincipal user, CancellationToken cancellationToken)
     {
-        var userKey = GetUserKey(user);
-        if (string.IsNullOrWhiteSpace(userKey))
+        var userId = GetUserId(user);
+        if (!userId.HasValue)
         {
             return null;
         }
 
-        if (_subscriptions.TryGetValue(userKey, out var status))
+        var customer = await _context.Customers
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == userId.Value, cancellationToken);
+
+        if (customer is null || string.IsNullOrWhiteSpace(customer.SubscriptionPlanId))
         {
-            if (status.EndDateUtc <= DateTime.UtcNow)
-            {
-                _subscriptions.TryRemove(userKey, out _);
-                return null;
-            }
-
-            var plan = _plans.FirstOrDefault(p => p.Id == status.PlanId);
-            if (plan is null)
-            {
-                return null;
-            }
-
-            status.PlanTitle = plan.Title;
-            status.IncludesAI = plan.IncludesAI;
-            status.EvaluationLimit = plan.EvaluationLimit;
-            return status;
+            return null;
         }
 
-        return null;
+        if (customer.SubscriptionEndDateUtc.HasValue && customer.SubscriptionEndDateUtc.Value <= DateTime.UtcNow)
+        {
+            return null;
+        }
+
+        var plan = SubscriptionPlanCatalog.Find(customer.SubscriptionPlanId);
+        if (plan is null)
+        {
+            return null;
+        }
+
+        return new SubscriptionStatus
+        {
+            PlanId = plan.Id,
+            PlanTitle = plan.Title,
+            IncludesAI = plan.IncludesAI,
+            EvaluationLimit = plan.EvaluationLimit,
+            UsedEvaluations = customer.UsedEvaluations,
+            StartDateUtc = customer.SubscriptionStartDateUtc ?? DateTime.UtcNow,
+            EndDateUtc = customer.SubscriptionEndDateUtc ?? DateTime.UtcNow
+        };
     }
 
-    public SubscriptionCheckResult CheckEligibility(ClaimsPrincipal user)
+    public async Task<SubscriptionCheckResult> CheckEligibilityAsync(ClaimsPrincipal user, CancellationToken cancellationToken)
     {
         var result = new SubscriptionCheckResult
         {
@@ -110,7 +124,7 @@ public class SubscriptionMemoryStore
             return result;
         }
 
-        result.CurrentSubscription = GetCurrentSubscription(user);
+        result.CurrentSubscription = await GetCurrentSubscriptionAsync(user, cancellationToken);
         result.HasActiveSubscription = result.CurrentSubscription != null;
 
         if (result.CurrentSubscription is { EvaluationLimit: not null } subscription)
@@ -121,47 +135,72 @@ public class SubscriptionMemoryStore
         return result;
     }
 
-    public void ActivatePlan(ClaimsPrincipal user, string planId)
+    public async Task ActivatePlanAsync(ClaimsPrincipal user, string planId, CancellationToken cancellationToken)
     {
-        var plan = _plans.FirstOrDefault(p => p.Id.Equals(planId, StringComparison.OrdinalIgnoreCase));
-        var userKey = GetUserKey(user);
+        var plan = SubscriptionPlanCatalog.Find(planId);
+        var userId = GetUserId(user);
 
-        if (plan is null || string.IsNullOrWhiteSpace(userKey))
+        if (plan is null || !userId.HasValue)
         {
             return;
         }
 
-        var status = new SubscriptionStatus
+        var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == userId.Value, cancellationToken);
+        if (customer is null)
         {
-            PlanId = plan.Id,
-            PlanTitle = plan.Title,
-            StartDateUtc = DateTime.UtcNow,
-            EndDateUtc = DateTime.UtcNow.AddMonths(1),
-            EvaluationLimit = plan.EvaluationLimit,
-            IncludesAI = plan.IncludesAI,
-            UsedEvaluations = 0
-        };
+            var account = await _context.User.FirstOrDefaultAsync(u => u.Id == userId.Value, cancellationToken);
+            if (account is null)
+            {
+                return;
+            }
 
-        _subscriptions.AddOrUpdate(userKey, status, (_, _) => status);
+            customer = new Customer
+            {
+                Id = account.Id,
+                User = account,
+                Gender = Gender.Unknown
+            };
+
+            await _context.Customers.AddAsync(customer, cancellationToken);
+        }
+
+        customer.SubscriptionPlanId = plan.Id;
+        customer.SubscriptionStartDateUtc = DateTime.UtcNow;
+        customer.SubscriptionEndDateUtc = DateTime.UtcNow.AddMonths(1);
+        customer.UsedEvaluations = 0;
+
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public void RegisterImmigrationUsage(ClaimsPrincipal user)
+    public async Task RegisterImmigrationUsageAsync(ClaimsPrincipal user, CancellationToken cancellationToken)
     {
-        var userKey = GetUserKey(user);
-        if (string.IsNullOrWhiteSpace(userKey))
+        var userId = GetUserId(user);
+        if (!userId.HasValue)
         {
             return;
         }
 
-        if (_subscriptions.TryGetValue(userKey, out var status) && status.EvaluationLimit is not null)
+        var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == userId.Value, cancellationToken);
+        var plan = SubscriptionPlanCatalog.Find(customer?.SubscriptionPlanId);
+
+        if (customer is null || plan is null || plan.EvaluationLimit is null)
         {
-            status.UsedEvaluations++;
+            return;
         }
+
+        if (customer.SubscriptionEndDateUtc.HasValue && customer.SubscriptionEndDateUtc.Value <= DateTime.UtcNow)
+        {
+            return;
+        }
+
+        customer.UsedEvaluations = Math.Min(customer.UsedEvaluations + 1, plan.EvaluationLimit.Value);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    private static string? GetUserKey(ClaimsPrincipal user)
+    private static long? GetUserId(ClaimsPrincipal user)
     {
-        return user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.Identity?.Name;
+        var idValue = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.Identity?.Name;
+        return long.TryParse(idValue, out var id) ? id : null;
     }
 }
 

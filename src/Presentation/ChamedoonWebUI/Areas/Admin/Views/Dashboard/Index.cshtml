@@ -12,6 +12,8 @@
     var monthlyRegistrationValues = Model.MonthlyRegistrations.Select(item => item.Count).ToList();
     var popularPostLabels = Model.PopularPosts.Select(item => item.Title).ToList();
     var popularPostViews = Model.PopularPosts.Select(item => item.VisitCount).ToList();
+    var subscriptionLabels = new List<string> { "کاربران ثبت‌نام‌شده", "کاربران با اشتراک فعال" };
+    var subscriptionValues = new List<int> { Model.TotalUsers, Model.UsersWithActiveSubscription };
 }
 
 <div class="container-fluid py-4">
@@ -45,6 +47,19 @@
                         <span class="text-muted">از @Model.TotalUsers.ToString("N0")</span>
                     </div>
                     <p class="text-muted small mb-0">کاربران دارای دسترسی فعال در سامانه</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">کاربران با اشتراک فعال</h6>
+                    <div class="d-flex align-items-baseline justify-content-between">
+                        <h3 class="fw-bold mb-0">@Model.UsersWithActiveSubscription.ToString("N0")</h3>
+                        <span class="text-muted">از @Model.TotalUsers.ToString("N0")</span>
+                    </div>
+                    <p class="text-muted small mb-0">تعداد حساب‌هایی که اشتراک جاری دارند.</p>
                 </div>
             </div>
         </div>
@@ -109,6 +124,26 @@
                     else
                     {
                         <p class="text-muted mb-0">برای نمایش نمودار بازدید اطلاعاتی موجود نیست.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">کاربران دارای اشتراک</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.TotalUsers > 0)
+                    {
+                        <div class="chart-container">
+                            <canvas id="subscriptionUsersChart" aria-label="نمودار کاربران دارای اشتراک" role="img"></canvas>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">هنوز کاربری ثبت نشده است.</p>
                     }
                 </div>
             </div>
@@ -318,6 +353,8 @@
             const monthlyValues = @Html.Raw(JsonSerializer.Serialize(monthlyRegistrationValues, jsonOptions));
             const blogLabels = @Html.Raw(JsonSerializer.Serialize(popularPostLabels, jsonOptions));
             const blogValues = @Html.Raw(JsonSerializer.Serialize(popularPostViews, jsonOptions));
+            const subscriptionLabels = @Html.Raw(JsonSerializer.Serialize(subscriptionLabels, jsonOptions));
+            const subscriptionValues = @Html.Raw(JsonSerializer.Serialize(subscriptionValues, jsonOptions));
 
             const charts = [];
 
@@ -462,6 +499,38 @@
 
                 charts.push(blogViewsChart);
                 applyColors(blogViewsChart);
+            }
+
+            const subscriptionCanvas = document.getElementById('subscriptionUsersChart');
+            if (subscriptionCanvas && subscriptionLabels.length && subscriptionValues.length) {
+                const subscriptionChart = new Chart(subscriptionCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: subscriptionLabels,
+                        datasets: [{
+                            label: 'کاربران',
+                            data: subscriptionValues,
+                            borderWidth: 1,
+                            borderRadius: 8,
+                            maxBarThickness: 48
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+
+                charts.push(subscriptionChart);
+                applyColors(subscriptionChart);
             }
 
             window.addEventListener('adminThemeChanged', () => {

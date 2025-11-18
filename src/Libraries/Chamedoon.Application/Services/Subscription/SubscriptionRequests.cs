@@ -15,77 +15,75 @@ public record RegisterSubscriptionUsageCommand(ClaimsPrincipal User) : IRequest;
 
 public class GetSubscriptionPlansQueryHandler : IRequestHandler<GetSubscriptionPlansQuery, IReadOnlyList<SubscriptionPlan>>
 {
-    private readonly SubscriptionMemoryStore _store;
+    private readonly SubscriptionService _service;
 
-    public GetSubscriptionPlansQueryHandler(SubscriptionMemoryStore store)
+    public GetSubscriptionPlansQueryHandler(SubscriptionService service)
     {
-        _store = store;
+        _service = service;
     }
 
     public Task<IReadOnlyList<SubscriptionPlan>> Handle(GetSubscriptionPlansQuery request, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_store.GetPlans());
+        return _service.GetPlansAsync();
     }
 }
 
 public class GetSubscriptionStatusQueryHandler : IRequestHandler<GetSubscriptionStatusQuery, SubscriptionStatus?>
 {
-    private readonly SubscriptionMemoryStore _store;
+    private readonly SubscriptionService _service;
 
-    public GetSubscriptionStatusQueryHandler(SubscriptionMemoryStore store)
+    public GetSubscriptionStatusQueryHandler(SubscriptionService service)
     {
-        _store = store;
+        _service = service;
     }
 
     public Task<SubscriptionStatus?> Handle(GetSubscriptionStatusQuery request, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_store.GetCurrentSubscription(request.User));
+        return _service.GetCurrentSubscriptionAsync(request.User, cancellationToken);
     }
 }
 
 public class CheckSubscriptionEligibilityQueryHandler : IRequestHandler<CheckSubscriptionEligibilityQuery, SubscriptionCheckResult>
 {
-    private readonly SubscriptionMemoryStore _store;
+    private readonly SubscriptionService _service;
 
-    public CheckSubscriptionEligibilityQueryHandler(SubscriptionMemoryStore store)
+    public CheckSubscriptionEligibilityQueryHandler(SubscriptionService service)
     {
-        _store = store;
+        _service = service;
     }
 
     public Task<SubscriptionCheckResult> Handle(CheckSubscriptionEligibilityQuery request, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_store.CheckEligibility(request.User));
+        return _service.CheckEligibilityAsync(request.User, cancellationToken);
     }
 }
 
 public class ActivateSubscriptionCommandHandler : IRequestHandler<ActivateSubscriptionCommand>
 {
-    private readonly SubscriptionMemoryStore _store;
+    private readonly SubscriptionService _service;
 
-    public ActivateSubscriptionCommandHandler(SubscriptionMemoryStore store)
+    public ActivateSubscriptionCommandHandler(SubscriptionService service)
     {
-        _store = store;
+        _service = service;
     }
 
-    public Task Handle(ActivateSubscriptionCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ActivateSubscriptionCommand request, CancellationToken cancellationToken)
     {
-        _store.ActivatePlan(request.User, request.PlanId);
-        return Task.CompletedTask;
+        await _service.ActivatePlanAsync(request.User, request.PlanId, cancellationToken);
     }
 }
 
 public class RegisterSubscriptionUsageCommandHandler : IRequestHandler<RegisterSubscriptionUsageCommand>
 {
-    private readonly SubscriptionMemoryStore _store;
+    private readonly SubscriptionService _service;
 
-    public RegisterSubscriptionUsageCommandHandler(SubscriptionMemoryStore store)
+    public RegisterSubscriptionUsageCommandHandler(SubscriptionService service)
     {
-        _store = store;
+        _service = service;
     }
 
-    public Task Handle(RegisterSubscriptionUsageCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RegisterSubscriptionUsageCommand request, CancellationToken cancellationToken)
     {
-        _store.RegisterImmigrationUsage(request.User);
-        return Task.CompletedTask;
+        await _service.RegisterImmigrationUsageAsync(request.User, cancellationToken);
     }
 }
