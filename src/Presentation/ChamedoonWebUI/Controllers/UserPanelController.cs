@@ -8,6 +8,7 @@ using Chamedoon.Application.Services.Customers.Query;
 using Chamedoon.Application.Services.Customers.Command;
 using AutoMapper;
 using Chamedoon.Application.Services.Customers.ViewModel;
+using Chamedoon.Application.Services.Subscription;
 using System.Security.Claims;
 
 namespace ChamedoonWebUI.Controllers
@@ -27,6 +28,7 @@ namespace ChamedoonWebUI.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await mediator.Send(new GetUserDetailsQuery { UserName = User.Identity.Name });
+            ViewBag.SubscriptionStatus = await mediator.Send(new GetSubscriptionStatusQuery(User));
             return View(user.Result);
         }
         #endregion
