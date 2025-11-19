@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Chamedoon.Application.Services.Admin.Common.Models;
+using Chamedoon.Domin.Enums;
 
 namespace ChamedoonWebUI.Areas.Admin.ViewModels;
 
@@ -22,6 +23,8 @@ public class DashboardViewModel
     public IReadOnlyList<DashboardMonthlyRegistrationViewModel> MonthlyBlogViews { get; init; } = Array.Empty<DashboardMonthlyRegistrationViewModel>();
     public IReadOnlyList<UserListItemViewModel> RecentUsers { get; init; } = Array.Empty<UserListItemViewModel>();
     public IReadOnlyList<BlogListItemViewModel> RecentPosts { get; init; } = Array.Empty<BlogListItemViewModel>();
+    public DashboardPaymentSummaryViewModel PaymentSummary { get; init; } = new();
+    public IReadOnlyList<DashboardPaymentActivityViewModel> RecentPayments { get; init; } = Array.Empty<DashboardPaymentActivityViewModel>();
 
     public static DashboardViewModel FromDto(DashboardSummaryDto dto)
     {
@@ -42,9 +45,35 @@ public class DashboardViewModel
             MonthlyActiveSubscriptions = dto.MonthlyActiveSubscriptions.Select(item => new DashboardMonthlyRegistrationViewModel(item.Month, item.Count)).ToList(),
             MonthlyBlogViews = dto.MonthlyBlogViews.Select(item => new DashboardMonthlyRegistrationViewModel(item.Month, item.Count)).ToList(),
             RecentUsers = dto.RecentUsers.Select(UserListItemViewModel.FromDto).ToList(),
-            RecentPosts = dto.RecentPosts.Select(BlogListItemViewModel.FromDto).ToList()
+            RecentPosts = dto.RecentPosts.Select(BlogListItemViewModel.FromDto).ToList(),
+            PaymentSummary = new DashboardPaymentSummaryViewModel
+            {
+                SuccessfulAmount = dto.PaymentSummary.SuccessfulAmount,
+                SuccessfulCount = dto.PaymentSummary.SuccessfulCount,
+                FailedCount = dto.PaymentSummary.FailedCount,
+                PendingCount = dto.PaymentSummary.PendingCount
+            },
+            RecentPayments = dto.RecentPayments.Select(item => new DashboardPaymentActivityViewModel(
+                item.CustomerName,
+                item.PlanTitle ?? "اشتراک",
+                ToStatusLabel(item.Status),
+                item.Amount,
+                item.CreatedAtUtc,
+                item.PaidAtUtc,
+                item.TrackId,
+                item.Status)).ToList()
         };
     }
+
+    private static string ToStatusLabel(PaymentStatus status) => status switch
+    {
+        PaymentStatus.Paid => "موفق",
+        PaymentStatus.Pending => "در انتظار",
+        PaymentStatus.Redirected => "در انتظار",
+        PaymentStatus.Failed => "ناموفق",
+        PaymentStatus.Cancelled => "لغو شده",
+        _ => status.ToString()
+    };
 }
 
 public record DashboardPopularPostViewModel(string Title, long VisitCount);
@@ -54,3 +83,21 @@ public record DashboardRoleDistributionViewModel(string RoleName, int UserCount)
 public record DashboardPermissionUsageViewModel(string PermissionName, int RoleCount);
 
 public record DashboardMonthlyRegistrationViewModel(string Month, int Count);
+
+public class DashboardPaymentSummaryViewModel
+{
+    public long SuccessfulAmount { get; init; }
+    public int SuccessfulCount { get; init; }
+    public int FailedCount { get; init; }
+    public int PendingCount { get; init; }
+}
+
+public record DashboardPaymentActivityViewModel(
+    string CustomerName,
+    string PlanTitle,
+    string StatusLabel,
+    int Amount,
+    DateTime CreatedAtUtc,
+    DateTime? PaidAtUtc,
+    string? TrackId,
+    PaymentStatus Status);

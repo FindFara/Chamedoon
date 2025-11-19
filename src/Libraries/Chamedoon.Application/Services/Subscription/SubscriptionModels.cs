@@ -141,18 +141,27 @@ public class SubscriptionService
 
     public async Task ActivatePlanAsync(ClaimsPrincipal user, string planId, CancellationToken cancellationToken)
     {
-        var plan = SubscriptionPlanCatalog.Find(planId);
         var userId = GetUserId(user);
-
-        if (plan is null || !userId.HasValue)
+        if (!userId.HasValue)
         {
             return;
         }
 
-        var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == userId.Value, cancellationToken);
+        await ActivatePlanForUserAsync(userId.Value, planId, cancellationToken);
+    }
+
+    public async Task ActivatePlanForUserAsync(long userId, string planId, CancellationToken cancellationToken)
+    {
+        var plan = SubscriptionPlanCatalog.Find(planId);
+        if (plan is null)
+        {
+            return;
+        }
+
+        var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == userId, cancellationToken);
         if (customer is null)
         {
-            var account = await _context.User.FirstOrDefaultAsync(u => u.Id == userId.Value, cancellationToken);
+            var account = await _context.User.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
             if (account is null)
             {
                 return;

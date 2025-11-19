@@ -2,6 +2,7 @@
 @using System.Linq
 @using System.Text.Json
 @using System.Text.Encodings.Web
+@using Chamedoon.Domin.Enums
 @{
     ViewData["Title"] = "داشبورد";
     var jsonOptions = new JsonSerializerOptions
@@ -13,6 +14,15 @@
     var monthlySubscriptionValues = Model.MonthlyActiveSubscriptions.Select(item => item.Count).ToList();
     var monthlyBlogViewLabels = Model.MonthlyBlogViews.Select(item => item.Month).ToList();
     var monthlyBlogViewValues = Model.MonthlyBlogViews.Select(item => item.Count).ToList();
+    string PaymentStatusClass(PaymentStatus status) => status switch
+    {
+        PaymentStatus.Paid => "bg-success",
+        PaymentStatus.Pending => "bg-warning text-dark",
+        PaymentStatus.Redirected => "bg-warning text-dark",
+        PaymentStatus.Failed => "bg-danger",
+        PaymentStatus.Cancelled => "bg-secondary",
+        _ => "bg-secondary"
+    };
 }
 
 <div class="container-fluid py-4">
@@ -82,6 +92,35 @@
                     <h6 class="text-muted mb-2">بازدید مقالات</h6>
                     <h3 class="fw-bold mb-2">@Model.TotalViews.ToString("N0")</h3>
                     <p class="text-muted small mb-0">مجموع بازدیدهای ثبت‌شده برای تمام مقالات</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-1">
+        <div class="col-lg-6 col-xl-4">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">پرداخت‌های موفق (۳۰ روز اخیر)</h6>
+                    <h3 class="fw-bold mb-1">@Model.PaymentSummary.SuccessfulAmount.ToString("N0") <small class="text-muted">تومان</small></h3>
+                    <p class="text-muted small mb-0">@Model.PaymentSummary.SuccessfulCount.ToString("N0") تراکنش با موفقیت انجام شده</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-xl-4">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-body">
+                    <h6 class="text-muted mb-2">وضعیت تراکنش‌ها</h6>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">در انتظار تایید</span>
+                            <span class="badge bg-warning text-dark rounded-pill">@Model.PaymentSummary.PendingCount.ToString("N0")</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">ناموفق / لغو شده</span>
+                            <span class="badge bg-danger rounded-pill">@Model.PaymentSummary.FailedCount.ToString("N0")</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -206,10 +245,57 @@
                     else
                     {
                         <p class="text-muted mb-0">مقاله‌ای ثبت نشده است.</p>
+                }
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">پرداخت‌های اخیر</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentPayments.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>کاربر</th>
+                                        <th>پلن</th>
+                                        <th>مبلغ</th>
+                                        <th>وضعیت</th>
+                                        <th class="text-nowrap">تاریخ ایجاد</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var payment in Model.RecentPayments)
+                                    {
+                                        <tr>
+                                            <td>@payment.CustomerName</td>
+                                            <td>@payment.PlanTitle</td>
+                                            <td>@payment.Amount.ToString("N0") <small class="text-muted">تومان</small></td>
+                                            <td>
+                                                <span class="badge @PaymentStatusClass(payment.Status)">@payment.StatusLabel</span>
+                                            </td>
+                                            <td class="text-nowrap">
+                                                <div>@payment.CreatedAtUtc.ToString("yyyy/MM/dd")</div>
+                                                <small class="text-muted">@payment.CreatedAtUtc.ToString("HH:mm")</small>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">تراکنشی برای نمایش موجود نیست.</p>
                     }
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <div class="row g-4 mt-1">

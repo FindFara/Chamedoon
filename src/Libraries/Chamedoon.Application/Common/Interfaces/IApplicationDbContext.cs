@@ -1,6 +1,7 @@
 ﻿using Chamedoon.Domin.Entity.Blogs;
 using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Permissions;
+using Chamedoon.Domin.Entity.Payments;
 using Chamedoon.Domin.Entity.Users;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,6 +30,11 @@ namespace Chamedoon.Application.Common.Interfaces
 
         #region Customer
         public DbSet<Customer> Customers { get; set; }
+        #endregion
+
+        #region Payments
+        public DbSet<PaymentRequest> PaymentRequests { get; set; }
+        public DbSet<PaymentResponse> PaymentResponses { get; set; }
         #endregion
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);

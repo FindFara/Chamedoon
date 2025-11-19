@@ -17,5 +17,6 @@ namespace Chamedoon.Domin.Entity.Customers
         public DateTime? SubscriptionEndDateUtc { get; set; }
         public int UsedEvaluations { get; set; }
         public User User { get; set; }
+        public ICollection<Payments.PaymentRequest> PaymentRequests { get; set; } = new List<Payments.PaymentRequest>();
     }
 }

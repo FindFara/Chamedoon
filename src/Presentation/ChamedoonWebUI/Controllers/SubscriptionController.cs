@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using ChamedoonWebUI.Models;
 using Chamedoon.Application.Services.Subscription;
+using Chamedoon.Application.Services.Payments;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -58,8 +59,20 @@ public class SubscriptionController : Controller
             });
         }
 
-        await _mediator.Send(new ActivateSubscriptionCommand(User, planId));
-        TempData["SubscriptionMessage"] = "اشتراک شما فعال شد و آماده شروع ارزیابی هستی.";
-        return RedirectToAction(nameof(Index));
+        var callbackUrl = Url.Action("Callback", "Payment", values: null, protocol: Request.Scheme);
+        if (string.IsNullOrWhiteSpace(callbackUrl))
+        {
+            TempData["SubscriptionMessage"] = "آدرس بازگشت پرداخت تنظیم نشده است.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        var paymentResult = await _mediator.Send(new StartSubscriptionPaymentCommand(User, planId, callbackUrl));
+        if (!paymentResult.IsSuccess || string.IsNullOrWhiteSpace(paymentResult.RedirectUrl))
+        {
+            TempData["SubscriptionMessage"] = paymentResult.ErrorMessage ?? "خطایی در شروع فرآیند پرداخت رخ داد.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        return Redirect(paymentResult.RedirectUrl);
     }
 }
