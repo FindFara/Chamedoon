@@ -4,7 +4,6 @@
 @{
     Layout = "~/Views/Shared/UserPanelLayout.cshtml";
     ViewData["Title"] = "پنل کاربری " + User.Identity?.Name;
-    var subscriptionStatus = ViewBag.SubscriptionStatus as SubscriptionStatus;
 }
 
 @section UserPanelContent {
@@ -40,37 +39,6 @@
                     else
                     {
                         <p class="detail-value">@joinDate</p>
-                    }
-                </div>
-            </div>
-            <div class="detail-row">
-                <span class="detail-icon" aria-hidden="true">⚙️</span>
-                <div class="detail-body">
-                    <p class="detail-title">وضعیت حساب</p>
-                    <p class="detail-value">@(Model.IsBlocked == true ? "فعال" : "غیرفعال")</p>
-                </div>
-            </div>
-            <div class="detail-row">
-                <span class="detail-icon" aria-hidden="true">💎</span>
-                <div class="detail-body">
-                    <p class="detail-title">وضعیت اشتراک</p>
-                    @if (subscriptionStatus is null)
-                    {
-                        <p class="detail-value mb-0">اشتراکی فعال نشده است.</p>
-                        <small class="text-muted">از <a asp-controller="Subscription" asp-action="Index">صفحه اشتراک‌ها</a> می‌توانی شروع کنی.</small>
-                    }
-                    else
-                    {
-                        <p class="detail-value mb-0">@subscriptionStatus.PlanTitle</p>
-                        <small class="text-muted d-block">@subscriptionStatus.RemainingDays روز باقی مانده</small>
-                        @if (subscriptionStatus.EvaluationLimit is null)
-                        {
-                            <small class="text-muted">استعلام نامحدود فعال است.</small>
-                        }
-                        else
-                        {
-                            <small class="text-muted">@subscriptionStatus.UsedEvaluations از @subscriptionStatus.EvaluationLimit استعلام استفاده شده</small>
-                        }
                     }
                 </div>
             </div>

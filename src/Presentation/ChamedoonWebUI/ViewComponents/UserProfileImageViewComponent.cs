@@ -12,11 +12,22 @@ namespace ChamedoonWebUI.Components
         {
             this.mediator = mediator;
         }
-        public async Task<IViewComponentResult> InvokeAsync()
+
+        public async Task<IViewComponentResult> InvokeAsync(string viewName = "Profile")
         {
             var username = User?.Identity?.Name;
-            var customer =await mediator.Send(new GetCustomerProfileQuery { UserName = username });
-            return View("Profile", customer.Result);
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return View(viewName, null);
+            }
+
+            var customer = await mediator.Send(new GetCustomerProfileQuery { UserName = username });
+            if (!customer.IsSuccess || customer.Result is null)
+            {
+                return View(viewName, null);
+            }
+
+            return View(viewName, customer.Result);
         }
     }
 }

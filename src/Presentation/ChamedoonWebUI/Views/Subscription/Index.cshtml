@@ -1,4 +1,5 @@
 @model ChamedoonWebUI.Models.SubscriptionPageViewModel
+@using System.Linq
 @{
     ViewData["Title"] = "انتخاب اشتراک";
 }
@@ -11,28 +12,28 @@
     <div class="container">
         <div class="subscription-hero">
             <div>
-                <p class="subscription-tag">ارزیابی شانس مهاجرت</p>
-                <h1>پلن اشتراک مخصوص خودت را انتخاب کن</h1>
-                <p class="subscription-lead">تمام پلن‌ها با تخفیف ویژه خرید اول فعال می‌شوند و روی موبایل هم می‌توانی همه گزینه‌ها را کنار هم ببینی.</p>
+                <p class="subscription-tag">ارزیابی سریع</p>
+                <h1>سه پلن ساده برای شروع</h1>
+                <p class="subscription-lead">تمام پلن‌ها یک‌ماهه هستند و با تخفیف خرید اول فعال می‌شوند.</p>
             </div>
             <div class="subscription-status">
                 <p class="subscription-status__title">وضعیت اشتراک فعلی</p>
                 @if (Model.CurrentSubscription is null)
                 {
-                    <p class="subscription-status__value text-muted mb-2">فعلاً اشتراکی برایت ثبت نشده.</p>
-                    <p class="subscription-status__meta">روی یکی از پلن‌ها بزن و سریع فعالش کن.</p>
+                    <p class="subscription-status__value text-muted mb-1">فعلاً اشتراکی ثبت نشده.</p>
+                    <p class="subscription-status__meta mb-0">یکی از پلن‌ها را انتخاب کن و مستقیم وارد ارزیابی شو.</p>
                 }
                 else
                 {
                     <p class="subscription-status__value">@Model.CurrentSubscription.PlanTitle</p>
-                    <p class="subscription-status__meta">@Model.CurrentSubscription.RemainingDays روز باقی مانده</p>
+                    <p class="subscription-status__meta mb-1">@Model.CurrentSubscription.RemainingDays روز باقی مانده</p>
                     @if (Model.CurrentSubscription.EvaluationLimit is null)
                     {
-                        <p class="subscription-status__meta">استعلام نامحدود فعال است.</p>
+                        <p class="subscription-status__meta mb-0">استعلام نامحدود فعال است.</p>
                     }
                     else
                     {
-                        <p class="subscription-status__meta">@Model.CurrentSubscription.UsedEvaluations از @Model.CurrentSubscription.EvaluationLimit استعلام استفاده شده</p>
+                        <p class="subscription-status__meta mb-0">@Model.CurrentSubscription.UsedEvaluations از @Model.CurrentSubscription.EvaluationLimit استعلام استفاده شده</p>
                     }
                 }
             </div>
@@ -50,64 +51,35 @@
             {
                 var plan = Model.Plans[index];
                 var isCurrent = Model.CurrentSubscription?.PlanId == plan.Id;
+                var highlights = plan.Features.Take(3).ToList();
+                var limitLabel = plan.EvaluationLimit is null ? "استعلام نامحدود" : $"{plan.EvaluationLimit} استعلام";
                 <article class="plan-card @(plan.IncludesAI ? "plan-card--ai" : string.Empty) @(isCurrent ? "plan-card--active" : string.Empty)" role="listitem">
-                    <div class="plan-card__head">
-                        <div class="plan-card__badge">
-                            <span class="plan-card__index">@((index + 1).ToString("00"))</span>
-                            <div>
-                                <small>اشتراک ماهانه</small>
-                                <strong>@plan.DurationLabel</strong>
-                            </div>
-                        </div>
-                        @if (plan.IncludesAI)
-                        {
-                            <span class="plan-card__pill plan-card__pill--ai">+ هوش مصنوعی</span>
-                        }
-                        else if (plan.EvaluationLimit is null)
-                        {
-                            <span class="plan-card__pill">نامحدود</span>
-                        }
-                        else
-                        {
-                            <span class="plan-card__pill">@plan.EvaluationLimit استعلام</span>
-                        }
-                    </div>
-                    <div class="plan-card__body">
+                    <header class="plan-card__head">
                         <div>
+                            <span class="plan-card__badge">پلن @plan.DurationLabel</span>
                             <h3>@plan.Title</h3>
-                            <ul class="plan-card__features">
-                                @foreach (var feature in plan.Features)
-                                {
-                                    <li>
-                                        <span aria-hidden="true">✔</span>
-                                        <span>@feature</span>
-                                    </li>
-                                }
-                                @if (plan.EvaluationLimit is null)
-                                {
-                                    <li>
-                                        <span aria-hidden="true">♾️</span>
-                                        <span>استعلام نامحدود بدون محدودیت</span>
-                                    </li>
-                                }
-                                else
-                                {
-                                    <li>
-                                        <span aria-hidden="true">🎯</span>
-                                        <span>حداکثر @plan.EvaluationLimit استعلام در هر دوره</span>
-                                    </li>
-                                }
-                            </ul>
                         </div>
+                        <span class="plan-card__pill">
+                            @(plan.IncludesAI ? "هوش مصنوعی" : limitLabel)
+                        </span>
+                    </header>
+                    <div class="plan-card__body">
+                        <ul class="plan-card__features">
+                            @foreach (var feature in highlights)
+                            {
+                                <li>@feature</li>
+                            }
+                            <li class="plan-card__limit">@limitLabel</li>
+                        </ul>
                         <div class="plan-card__pricing">
                             <div class="plan-card__amounts">
                                 <span class="plan-card__current">@plan.Price.ToString("N0") <small>تومان</small></span>
                                 <span class="plan-card__old">@plan.OriginalPrice.ToString("N0") تومان</span>
                             </div>
-                            <span class="plan-card__discount">@plan.SavingsAmount.ToString("N0") تومان تخفیف خرید اول</span>
+                            <span class="plan-card__discount">@plan.SavingsAmount.ToString("N0") تومان تخفیف</span>
                             @if (plan.DiscountPercent > 0)
                             {
-                                <span class="plan-card__percent">%@plan.DiscountPercent ارزان‌تر</span>
+                                <span class="plan-card__percent">%@plan.DiscountPercent کمتر</span>
                             }
                             <form asp-action="Subscribe" method="post">
                                 @Html.AntiForgeryToken()
