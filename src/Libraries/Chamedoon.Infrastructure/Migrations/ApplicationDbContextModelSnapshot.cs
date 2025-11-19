@@ -137,6 +137,19 @@ namespace Chamedoon.Infrastructure.Migrations
                     b.Property<string>("ProfileImage")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("SubscriptionEndDateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("SubscriptionPlanId")
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.Property<DateTime?>("SubscriptionStartDateUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UsedEvaluations")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Customers");

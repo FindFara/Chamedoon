@@ -1,21 +1,47 @@
 @using System
+@using Chamedoon.Application.Services.Subscription
 @{
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    var subscriptionStatus = ViewBag.SubscriptionStatus as SubscriptionStatus;
     string LinkClass(string action, string controller) =>
         string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase) &&
         string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase)
             ? "dashboard-link active"
             : "dashboard-link";
 }
-<div class="glass-card dashboard-pane">
-    <h6 class="fw-semibold mb-3">پیشرفت تکمیل حساب</h6>
-    <div class="progress mb-2">
-        <div class="progress-bar" style="width:50%">
-            <span class="visually-hidden">۵۰ درصد</span>
-        </div>
+<div class="glass-card dashboard-pane panel-subscription-card">
+    <div class="panel-subscription-illustration" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="42" height="42" fill="none">
+            <rect x="8" y="14" width="48" height="34" rx="8" stroke="currentColor" stroke-width="2.2" />
+            <path d="M20 14v-3.5a4.5 4.5 0 0 1 4.5-4.5h15a4.5 4.5 0 0 1 4.5 4.5V14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+            <path d="M16 28h32" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+            <path d="M20 38h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+            <path d="M36 38h8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+        </svg>
     </div>
-    <p class="glass-helper mb-0">با تکمیل اطلاعات پروفایل، پیشنهادهای دقیق‌تری دریافت می‌کنی.</p>
+    <div class="panel-subscription-body">
+        <span class="panel-subscription-label">وضعیت اشتراک</span>
+        @if (subscriptionStatus is null)
+        {
+            <p class="panel-subscription-title mb-0">بدون اشتراک فعال</p>
+            <p class="panel-subscription-meta mb-0">با انتخاب پلن، ارزیابی را سریع شروع کن.</p>
+        }
+        else
+        {
+            <p class="panel-subscription-title mb-0">@subscriptionStatus.PlanTitle</p>
+            <p class="panel-subscription-meta mb-1">@subscriptionStatus.RemainingDays روز باقی مانده</p>
+            if (subscriptionStatus.EvaluationLimit is int limit)
+            {
+                <span class="panel-subscription-chip">@subscriptionStatus.UsedEvaluations / @limit استعلام</span>
+            }
+            else
+            {
+                <span class="panel-subscription-chip">استعلام نامحدود</span>
+            }
+        }
+        <a asp-controller="Subscription" asp-action="Index" class="panel-subscription-link">مدیریت اشتراک</a>
+    </div>
 </div>
 
 <nav class="glass-card dashboard-pane dashboard-menu" aria-label="منوی پنل کاربری">

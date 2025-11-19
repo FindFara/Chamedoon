@@ -1,0 +1,7 @@
+@model Chamedoon.Application.Services.Customers.ViewModel.CustomerProfileViewModel
+@if (!string.IsNullOrWhiteSpace(Model?.ProfileImage))
+{
+    <span class="user-avatar-thumb" title="@Model.FirstName" aria-hidden="true">
+        <img src="@Model.ProfileImage" alt="@Model.FirstName" loading="lazy" decoding="async" />
+    </span>
+}

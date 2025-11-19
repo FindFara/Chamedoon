@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Chamedoon.Application.Services.Admin.Common.Models;
 using Chamedoon.Domin.Entity.Blogs;
 
 namespace Chamedoon.Application.Common.Interfaces.Admin;
@@ -15,4 +16,5 @@ public interface IAdminBlogRepository
     Task<long> SumArticleViewsAsync(CancellationToken cancellationToken);
     Task<List<Article>> GetTopArticlesAsync(int count, CancellationToken cancellationToken);
     Task<List<Article>> GetRecentArticlesAsync(int count, CancellationToken cancellationToken);
+    Task<IReadOnlyList<MonthlyRegistrationCount>> GetMonthlyArticleViewCountsAsync(int months, CancellationToken cancellationToken);
 }

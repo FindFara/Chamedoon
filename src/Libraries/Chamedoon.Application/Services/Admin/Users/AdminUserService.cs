@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text;
 using Chamedoon.Application.Common.Interfaces.Admin;
@@ -47,7 +48,7 @@ public class AdminUserService : IAdminUserService
         }
 
         var user = BuildUserEntity(input);
-        var customer = BuildCustomer(input.FullName);
+        var customer = BuildCustomer(input);
 
         var result = await _userRepository.CreateUserAsync(user, input.Password!, input.RoleId, customer, cancellationToken);
         if (!result.Result.Succeeded)
@@ -74,7 +75,7 @@ public class AdminUserService : IAdminUserService
         var user = BuildUserEntity(input);
         user.Id = input.Id.Value;
 
-        var customer = BuildCustomer(input.FullName);
+        var customer = BuildCustomer(input);
 
         var result = await _userRepository.UpdateUserAsync(user, input.RoleId, input.Password, customer, cancellationToken);
         if (!result.Succeeded)
@@ -126,21 +127,37 @@ public class AdminUserService : IAdminUserService
         };
     }
 
-    private static Customer? BuildCustomer(string? fullName)
+    private static Customer? BuildCustomer(AdminUserInput input)
     {
-        if (string.IsNullOrWhiteSpace(fullName))
+        if (string.IsNullOrWhiteSpace(input.FullName) && string.IsNullOrWhiteSpace(input.SubscriptionPlanId))
         {
             return null;
         }
 
-        var parts = fullName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        var firstName = parts.Length > 0 ? parts[0] : fullName;
+        var parts = (input.FullName ?? string.Empty).Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var firstName = parts.Length > 0 ? parts[0] : input.FullName;
         var lastName = parts.Length > 1 ? string.Join(' ', parts.Skip(1)) : string.Empty;
+
+        var startDate = input.SubscriptionStartDateUtc;
+        if (!string.IsNullOrWhiteSpace(input.SubscriptionPlanId) && startDate is null)
+        {
+            startDate = DateTime.UtcNow;
+        }
+
+        var endDate = input.SubscriptionEndDateUtc;
+        if (!string.IsNullOrWhiteSpace(input.SubscriptionPlanId) && endDate is null)
+        {
+            endDate = (startDate ?? DateTime.UtcNow).AddMonths(1);
+        }
 
         return new Customer
         {
             FirstName = firstName,
-            LastName = lastName
+            LastName = lastName,
+            SubscriptionPlanId = string.IsNullOrWhiteSpace(input.SubscriptionPlanId) ? null : input.SubscriptionPlanId,
+            SubscriptionStartDateUtc = startDate,
+            SubscriptionEndDateUtc = endDate,
+            UsedEvaluations = input.UsedEvaluations
         };
     }
 

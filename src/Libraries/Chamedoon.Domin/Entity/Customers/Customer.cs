@@ -12,6 +12,10 @@ namespace Chamedoon.Domin.Entity.Customers
         public string? Description { get; set; }
         public string? ProfileImage { get; set; }
         public Gender Gender { get; set; }
+        public string? SubscriptionPlanId { get; set; }
+        public DateTime? SubscriptionStartDateUtc { get; set; }
+        public DateTime? SubscriptionEndDateUtc { get; set; }
+        public int UsedEvaluations { get; set; }
         public User User { get; set; }
     }
 }

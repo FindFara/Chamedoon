@@ -13,10 +13,13 @@ public class DashboardViewModel
     public int PublishedBlogPosts { get; init; }
     public int DraftBlogPosts { get; init; }
     public long TotalViews { get; init; }
+    public int UsersWithActiveSubscription { get; init; }
     public IReadOnlyList<DashboardPopularPostViewModel> PopularPosts { get; init; } = Array.Empty<DashboardPopularPostViewModel>();
     public IReadOnlyList<DashboardRoleDistributionViewModel> RoleDistribution { get; init; } = Array.Empty<DashboardRoleDistributionViewModel>();
     public IReadOnlyList<DashboardPermissionUsageViewModel> PermissionUsage { get; init; } = Array.Empty<DashboardPermissionUsageViewModel>();
     public IReadOnlyList<DashboardMonthlyRegistrationViewModel> MonthlyRegistrations { get; init; } = Array.Empty<DashboardMonthlyRegistrationViewModel>();
+    public IReadOnlyList<DashboardMonthlyRegistrationViewModel> MonthlyActiveSubscriptions { get; init; } = Array.Empty<DashboardMonthlyRegistrationViewModel>();
+    public IReadOnlyList<DashboardMonthlyRegistrationViewModel> MonthlyBlogViews { get; init; } = Array.Empty<DashboardMonthlyRegistrationViewModel>();
     public IReadOnlyList<UserListItemViewModel> RecentUsers { get; init; } = Array.Empty<UserListItemViewModel>();
     public IReadOnlyList<BlogListItemViewModel> RecentPosts { get; init; } = Array.Empty<BlogListItemViewModel>();
 
@@ -31,10 +34,13 @@ public class DashboardViewModel
             PublishedBlogPosts = dto.PublishedBlogPosts,
             DraftBlogPosts = dto.DraftBlogPosts,
             TotalViews = dto.TotalViews,
+            UsersWithActiveSubscription = dto.UsersWithActiveSubscription,
             PopularPosts = dto.PopularPosts.Select(item => new DashboardPopularPostViewModel(item.Title, item.VisitCount)).ToList(),
             RoleDistribution = dto.RoleDistribution.Select(item => new DashboardRoleDistributionViewModel(item.RoleName, item.UserCount)).ToList(),
             PermissionUsage = dto.PermissionUsage.Select(item => new DashboardPermissionUsageViewModel(item.PermissionName, item.RoleCount)).ToList(),
             MonthlyRegistrations = dto.MonthlyRegistrations.Select(item => new DashboardMonthlyRegistrationViewModel(item.Month, item.Count)).ToList(),
+            MonthlyActiveSubscriptions = dto.MonthlyActiveSubscriptions.Select(item => new DashboardMonthlyRegistrationViewModel(item.Month, item.Count)).ToList(),
+            MonthlyBlogViews = dto.MonthlyBlogViews.Select(item => new DashboardMonthlyRegistrationViewModel(item.Month, item.Count)).ToList(),
             RecentUsers = dto.RecentUsers.Select(UserListItemViewModel.FromDto).ToList(),
             RecentPosts = dto.RecentPosts.Select(BlogListItemViewModel.FromDto).ToList()
         };

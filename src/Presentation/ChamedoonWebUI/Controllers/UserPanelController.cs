@@ -8,6 +8,7 @@ using Chamedoon.Application.Services.Customers.Query;
 using Chamedoon.Application.Services.Customers.Command;
 using AutoMapper;
 using Chamedoon.Application.Services.Customers.ViewModel;
+using Chamedoon.Application.Services.Subscription;
 using System.Security.Claims;
 
 namespace ChamedoonWebUI.Controllers
@@ -27,6 +28,7 @@ namespace ChamedoonWebUI.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await mediator.Send(new GetUserDetailsQuery { UserName = User.Identity.Name });
+            ViewBag.SubscriptionStatus = await mediator.Send(new GetSubscriptionStatusQuery(User));
             return View(user.Result);
         }
         #endregion
@@ -37,6 +39,7 @@ namespace ChamedoonWebUI.Controllers
         public async Task<IActionResult> Edit()
         {
             var Customer = await mediator.Send(new GetUserAndCustomerDetailsQuery { UserName = User.Identity.Name });
+            ViewBag.SubscriptionStatus = await mediator.Send(new GetSubscriptionStatusQuery(User));
 
             return View(Customer.Result);
         }
@@ -47,7 +50,10 @@ namespace ChamedoonWebUI.Controllers
         public async Task<IActionResult> Edit(EditUser_VM user)
         {
             if (!ModelState.IsValid)
+            {
+                ViewBag.SubscriptionStatus = await mediator.Send(new GetSubscriptionStatusQuery(User));
                 return View(user);
+            }
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(userId))

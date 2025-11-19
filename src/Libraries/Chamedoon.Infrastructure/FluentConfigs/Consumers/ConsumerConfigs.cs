@@ -9,7 +9,11 @@ namespace Chamedoon.Infrastructure.FluentConfigs.Customers
     {
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
+            builder.Property(c => c.SubscriptionPlanId)
+                .HasMaxLength(64);
 
+            builder.Property(c => c.UsedEvaluations)
+                .HasDefaultValue(0);
         }
     }
 }

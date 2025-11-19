@@ -1,4 +1,5 @@
 ﻿using Chamedoon.Application.Services.Customers.Query;
+using Chamedoon.Application.Services.Customers.ViewModel;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,11 +13,22 @@ namespace ChamedoonWebUI.Components
         {
             this.mediator = mediator;
         }
-        public async Task<IViewComponentResult> InvokeAsync()
+
+        public async Task<IViewComponentResult> InvokeAsync(string viewName = "Profile")
         {
             var username = User?.Identity?.Name;
-            var customer =await mediator.Send(new GetCustomerProfileQuery { UserName = username });
-            return View("Profile", customer.Result);
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                return View<CustomerProfileViewModel?>(viewName, null);
+            }
+
+            var customer = await mediator.Send(new GetCustomerProfileQuery { UserName = username });
+            if (!customer.IsSuccess || customer.Result is null)
+            {
+                return View<CustomerProfileViewModel?>(viewName, null);
+            }
+
+            return View<CustomerProfileViewModel>(viewName, customer.Result);
         }
     }
 }

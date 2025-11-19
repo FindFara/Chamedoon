@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Chamedoon.Application.Common.Interfaces.Admin;
+using Chamedoon.Application.Services.Admin.Common.Models;
 using Chamedoon.Domin.Entity.Blogs;
 using Chamedoon.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -103,4 +104,26 @@ public class AdminBlogRepository : IAdminBlogRepository
             .OrderByDescending(article => article.Created)
             .Take(count)
             .ToListAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<MonthlyRegistrationCount>> GetMonthlyArticleViewCountsAsync(int months, CancellationToken cancellationToken)
+    {
+        var now = DateTime.UtcNow;
+        var start = new DateTime(now.Year, now.Month, 1).AddMonths(-(months - 1));
+
+        var data = await _context.Article
+            .Where(article => article.Created >= start)
+            .GroupBy(article => new { article.Created.Year, article.Created.Month })
+            .Select(group => new MonthlyRegistrationCount(group.Key.Year, group.Key.Month, group.Sum(article => (int)article.VisitCount)))
+            .ToListAsync(cancellationToken);
+
+        var results = new List<MonthlyRegistrationCount>();
+        for (var i = 0; i < months; i++)
+        {
+            var date = start.AddMonths(i);
+            var match = data.FirstOrDefault(record => record.Year == date.Year && record.Month == date.Month);
+            results.Add(match ?? new MonthlyRegistrationCount(date.Year, date.Month, 0));
+        }
+
+        return results;
+    }
 }

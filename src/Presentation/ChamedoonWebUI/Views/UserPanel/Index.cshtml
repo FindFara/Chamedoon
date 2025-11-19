@@ -1,5 +1,6 @@
 @model Chamedoon.Application.Services.Account.Users.ViewModel.UserDetails_VM
 @using Chamedoon.Application.Common.Extensions
+@using Chamedoon.Application.Services.Subscription
 @{
     Layout = "~/Views/Shared/UserPanelLayout.cshtml";
     ViewData["Title"] = "پنل کاربری " + User.Identity?.Name;
@@ -28,21 +29,17 @@
                 <span class="detail-icon" aria-hidden="true">📅</span>
                 <div class="detail-body">
                     <p class="detail-title">تاریخ عضویت</p>
-                    <p class="detail-value">@Model.Created.ConvertMiladiToShamsi()</p>
-                </div>
-            </div>
-            <div class="detail-row">
-                <span class="detail-icon" aria-hidden="true">⚙️</span>
-                <div class="detail-body">
-                    <p class="detail-title">وضعیت حساب</p>
-                    <p class="detail-value">@(Model.IsBlocked == true ? "فعال" : "غیرفعال")</p>
-                </div>
-            </div>
-            <div class="detail-row">
-                <span class="detail-icon" aria-hidden="true">🎯</span>
-                <div class="detail-body">
-                    <p class="detail-title">مهارت‌های ثبت‌شده</p>
-                    <p class="detail-value">html، css، js، mysql</p>
+                    @{
+                        var joinDate = Model.Created.ConvertMiladiToShamsi();
+                    }
+                    @if (string.IsNullOrWhiteSpace(joinDate))
+                    {
+                        <p class="detail-value text-muted">اطلاعات تاریخ ثبت‌نام موجود نیست</p>
+                    }
+                    else
+                    {
+                        <p class="detail-value">@joinDate</p>
+                    }
                 </div>
             </div>
         </div>
