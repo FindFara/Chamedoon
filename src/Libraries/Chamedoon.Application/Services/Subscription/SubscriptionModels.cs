@@ -14,7 +14,7 @@ public static class SubscriptionPlanCatalog
         new()
         {
             Id = "starter",
-            Title = "اشتراک پایه",
+            Title = "پلن پایه (۳ استعلام)",
             DurationLabel = "یک ماهه",
             OriginalPrice = 120_000,
             Price = 37_000,
@@ -22,15 +22,15 @@ public static class SubscriptionPlanCatalog
             IncludesAI = false,
             Features = new[]
             {
-                "۳ استعلام مهاجرتی دقیق",
-                "دسترسی به داشبورد و ذخیره‌سازی نتایج",
-                "پشتیبانی ایمیلی"
+                "۳ استعلام دقیق ارزیابی مهاجرت",
+                "نمایش گزارش کامل در داشبورد",
+                "پشتیبانی ایمیلی در تمام مدت اشتراک"
             }
         },
         new()
         {
             Id = "unlimited",
-            Title = "اشتراک نامحدود",
+            Title = "پلن حرفه‌ای (نامحدود)",
             DurationLabel = "یک ماهه",
             OriginalPrice = 170_000,
             Price = 49_000,
@@ -38,15 +38,15 @@ public static class SubscriptionPlanCatalog
             IncludesAI = false,
             Features = new[]
             {
-                "استعلام نامحدود در طول ماه",
-                "آپدیت لحظه‌ای مسیرهای مهاجرتی",
-                "پشتیبانی ویژه"
+                "استعلام نامحدود در دوره اشتراک",
+                "به‌روزرسانی لحظه‌ای مسیرهای مهاجرتی",
+                "پشتیبانی سریع‌تر در ساعات اداری"
             }
         },
         new()
         {
             Id = "ai_pro",
-            Title = "هوش مصنوعی + نامحدود",
+            Title = "پلن ویژه (هوش مصنوعی)",
             DurationLabel = "یک ماهه",
             OriginalPrice = 220_000,
             Price = 62_000,
@@ -54,9 +54,9 @@ public static class SubscriptionPlanCatalog
             IncludesAI = true,
             Features = new[]
             {
-                "استعلام نامحدود",
-                "بهینه‌سازی پاسخ‌ها با هوش مصنوعی",
-                "تحلیل سریع‌تر برای پرونده‌های پیچیده"
+                "استعلام نامحدود با دقت بالا",
+                "تحلیل پیشرفته با کمک هوش مصنوعی",
+                "اولویت در پردازش و پاسخگویی"
             }
         }
     };
@@ -222,6 +222,8 @@ public record SubscriptionPlan
     public int DiscountPercent => OriginalPrice <= 0 || Price <= 0
         ? 0
         : Math.Max(0, 100 - (int)Math.Round((double)Price / OriginalPrice * 100));
+
+    public int SavingsAmount => Math.Max(0, OriginalPrice - Price);
 }
 
 public record SubscriptionStatus

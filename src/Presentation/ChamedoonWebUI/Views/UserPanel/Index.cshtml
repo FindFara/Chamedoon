@@ -1,8 +1,10 @@
 @model Chamedoon.Application.Services.Account.Users.ViewModel.UserDetails_VM
 @using Chamedoon.Application.Common.Extensions
+@using Chamedoon.Application.Services.Subscription
 @{
     Layout = "~/Views/Shared/UserPanelLayout.cshtml";
     ViewData["Title"] = "پنل کاربری " + User.Identity?.Name;
+    var subscriptionStatus = ViewBag.SubscriptionStatus as SubscriptionStatus;
 }
 
 @section UserPanelContent {
@@ -28,7 +30,17 @@
                 <span class="detail-icon" aria-hidden="true">📅</span>
                 <div class="detail-body">
                     <p class="detail-title">تاریخ عضویت</p>
-                    <p class="detail-value">@Model.Created.ConvertMiladiToShamsi()</p>
+                    @{
+                        var joinDate = Model.Created.ConvertMiladiToShamsi();
+                    }
+                    @if (string.IsNullOrWhiteSpace(joinDate))
+                    {
+                        <p class="detail-value text-muted">اطلاعات تاریخ ثبت‌نام موجود نیست</p>
+                    }
+                    else
+                    {
+                        <p class="detail-value">@joinDate</p>
+                    }
                 </div>
             </div>
             <div class="detail-row">
@@ -39,57 +51,29 @@
                 </div>
             </div>
             <div class="detail-row">
-                <span class="detail-icon" aria-hidden="true">🎯</span>
+                <span class="detail-icon" aria-hidden="true">💎</span>
                 <div class="detail-body">
-                    <p class="detail-title">مهارت‌های ثبت‌شده</p>
-                    <p class="detail-value">html، css، js، mysql</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="glass-card dashboard-card mt-4">
-        <h5>وضعیت اشتراک</h5>
-        <p class="glass-helper">مشخصات اشتراک فعلی و تعداد استعلام‌های باقی‌مانده.</p>
-        @if (ViewBag.SubscriptionStatus is Chamedoon.Application.Services.Subscription.SubscriptionStatus status)
-        {
-            <div class="profile-details">
-                <div class="detail-row">
-                    <span class="detail-icon" aria-hidden="true">📦</span>
-                    <div class="detail-body">
-                        <p class="detail-title">پلن فعال</p>
-                        <p class="detail-value mb-0">@status.PlanTitle</p>
-                        <small class="text-muted">@status.RemainingDays روز باقی مانده</small>
-                    </div>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-icon" aria-hidden="true">🧭</span>
-                    <div class="detail-body">
-                        <p class="detail-title">محدودیت استعلام</p>
-                        @if (status.EvaluationLimit is null)
+                    <p class="detail-title">وضعیت اشتراک</p>
+                    @if (subscriptionStatus is null)
+                    {
+                        <p class="detail-value mb-0">اشتراکی فعال نشده است.</p>
+                        <small class="text-muted">از <a asp-controller="Subscription" asp-action="Index">صفحه اشتراک‌ها</a> می‌توانی شروع کنی.</small>
+                    }
+                    else
+                    {
+                        <p class="detail-value mb-0">@subscriptionStatus.PlanTitle</p>
+                        <small class="text-muted d-block">@subscriptionStatus.RemainingDays روز باقی مانده</small>
+                        @if (subscriptionStatus.EvaluationLimit is null)
                         {
-                            <p class="detail-value">نامحدود</p>
+                            <small class="text-muted">استعلام نامحدود فعال است.</small>
                         }
                         else
                         {
-                            <p class="detail-value">@status.UsedEvaluations از @status.EvaluationLimit استفاده شده</p>
+                            <small class="text-muted">@subscriptionStatus.UsedEvaluations از @subscriptionStatus.EvaluationLimit استعلام استفاده شده</small>
                         }
-                    </div>
-                </div>
-                <div class="detail-row">
-                    <span class="detail-icon" aria-hidden="true">🤖</span>
-                    <div class="detail-body">
-                        <p class="detail-title">هوش مصنوعی</p>
-                        <p class="detail-value">@(status.IncludesAI ? "فعال" : "در دسترس نیست")</p>
-                    </div>
+                    }
                 </div>
             </div>
-        }
-        else
-        {
-            <div class="alert alert-warning" role="alert">
-                هنوز اشتراکی فعال نکرده‌ای. از طریق <a asp-controller="Subscription" asp-action="Index" class="alert-link">صفحه اشتراک‌ها</a> یکی را انتخاب کن.
-            </div>
-        }
+        </div>
     </div>
 }
