@@ -167,6 +167,16 @@ public class AdminUserRepository : IAdminUserRepository
     public Task<int> CountUsersCreatedSinceAsync(DateTime since, CancellationToken cancellationToken)
         => _userManager.Users.CountAsync(u => u.Created >= since, cancellationToken);
 
+    public Task<int> CountActiveSubscriptionsAsync(CancellationToken cancellationToken)
+    {
+        var now = DateTime.UtcNow;
+        return _context.Customers.CountAsync(customer =>
+            !string.IsNullOrWhiteSpace(customer.SubscriptionPlanId) &&
+            customer.SubscriptionEndDateUtc.HasValue &&
+            customer.SubscriptionEndDateUtc.Value > now,
+            cancellationToken);
+    }
+
     public async Task<Dictionary<long, int>> GetRoleUserCountsAsync(CancellationToken cancellationToken)
     {
         return await _context.UserRole
@@ -206,6 +216,42 @@ public class AdminUserRepository : IAdminUserRepository
         return results;
     }
 
+    public async Task<IReadOnlyList<MonthlyRegistrationCount>> GetMonthlyActiveSubscriptionCountsAsync(int months, CancellationToken cancellationToken)
+    {
+        var now = DateTime.UtcNow;
+        var start = new DateTime(now.Year, now.Month, 1).AddMonths(-(months - 1));
+        var end = start.AddMonths(months);
+
+        var candidates = await _context.Customers
+            .Where(customer =>
+                !string.IsNullOrWhiteSpace(customer.SubscriptionPlanId) &&
+                customer.SubscriptionEndDateUtc.HasValue &&
+                customer.SubscriptionEndDateUtc.Value >= start)
+            .Select(customer => new
+            {
+                Start = customer.SubscriptionStartDateUtc ?? DateTime.MinValue,
+                End = customer.SubscriptionEndDateUtc!.Value
+            })
+            .ToListAsync(cancellationToken);
+
+        var results = new List<MonthlyRegistrationCount>();
+
+        for (var i = 0; i < months; i++)
+        {
+            var monthStart = start.AddMonths(i);
+            var monthEnd = monthStart.AddMonths(1);
+            if (monthStart >= end)
+            {
+                break;
+            }
+
+            var count = candidates.Count(window => window.Start < monthEnd && window.End >= monthStart);
+            results.Add(new MonthlyRegistrationCount(monthStart.Year, monthStart.Month, count));
+        }
+
+        return results;
+    }
+
     private async Task UpdateCustomerAsync(User user, Customer? customer, CancellationToken cancellationToken)
     {
         var existing = await _context.Customers
@@ -233,6 +279,10 @@ public class AdminUserRepository : IAdminUserRepository
             existing.LastName = customer.LastName;
             existing.Description = customer.Description;
             existing.Job = customer.Job;
+            existing.SubscriptionPlanId = customer.SubscriptionPlanId;
+            existing.SubscriptionStartDateUtc = customer.SubscriptionStartDateUtc;
+            existing.SubscriptionEndDateUtc = customer.SubscriptionEndDateUtc;
+            existing.UsedEvaluations = customer.UsedEvaluations;
         }
     }
 

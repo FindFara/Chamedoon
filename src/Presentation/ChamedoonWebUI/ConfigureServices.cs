@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Chamedoon.Infrastructure.Persistence;
+using Chamedoon.Application.Services.Subscription;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
@@ -56,6 +57,8 @@ public static class ConfigureServices
             options.Cookie.HttpOnly = true;
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         });
+
+        services.AddScoped<SubscriptionService>();
 
         return services;
     }

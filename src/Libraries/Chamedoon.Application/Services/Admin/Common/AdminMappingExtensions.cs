@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Chamedoon.Application.Services.Admin.Common.Models;
+using Chamedoon.Application.Services.Subscription;
 using Chamedoon.Domin.Entity.Blogs;
 using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Permissions;
@@ -22,6 +23,8 @@ internal static class AdminMappingExtensions
 
         var isActive = !user.LockoutEnd.HasValue || user.LockoutEnd.Value <= DateTimeOffset.UtcNow;
 
+        var plan = SubscriptionPlanCatalog.Find(user.Customer?.SubscriptionPlanId);
+
         return new AdminUserDto(
             user.Id,
             user.Email ?? string.Empty,
@@ -30,7 +33,12 @@ internal static class AdminMappingExtensions
             role?.RoleId,
             role?.Role?.Name,
             isActive,
-            user.Created);
+            user.Created,
+            plan?.Id,
+            plan?.Title,
+            user.Customer?.SubscriptionStartDateUtc,
+            user.Customer?.SubscriptionEndDateUtc,
+            user.Customer?.UsedEvaluations ?? 0);
     }
 
     public static AdminBlogPostDto ToAdminBlogPostDto(this Article article)

@@ -47,4 +47,49 @@
             </div>
         </div>
     </div>
+
+    <div class="glass-card dashboard-card mt-4">
+        <h5>وضعیت اشتراک</h5>
+        <p class="glass-helper">مشخصات اشتراک فعلی و تعداد استعلام‌های باقی‌مانده.</p>
+        @if (ViewBag.SubscriptionStatus is Chamedoon.Application.Services.Subscription.SubscriptionStatus status)
+        {
+            <div class="profile-details">
+                <div class="detail-row">
+                    <span class="detail-icon" aria-hidden="true">📦</span>
+                    <div class="detail-body">
+                        <p class="detail-title">پلن فعال</p>
+                        <p class="detail-value mb-0">@status.PlanTitle</p>
+                        <small class="text-muted">@status.RemainingDays روز باقی مانده</small>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-icon" aria-hidden="true">🧭</span>
+                    <div class="detail-body">
+                        <p class="detail-title">محدودیت استعلام</p>
+                        @if (status.EvaluationLimit is null)
+                        {
+                            <p class="detail-value">نامحدود</p>
+                        }
+                        else
+                        {
+                            <p class="detail-value">@status.UsedEvaluations از @status.EvaluationLimit استفاده شده</p>
+                        }
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-icon" aria-hidden="true">🤖</span>
+                    <div class="detail-body">
+                        <p class="detail-title">هوش مصنوعی</p>
+                        <p class="detail-value">@(status.IncludesAI ? "فعال" : "در دسترس نیست")</p>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-warning" role="alert">
+                هنوز اشتراکی فعال نکرده‌ای. از طریق <a asp-controller="Subscription" asp-action="Index" class="alert-link">صفحه اشتراک‌ها</a> یکی را انتخاب کن.
+            </div>
+        }
+    </div>
 }
