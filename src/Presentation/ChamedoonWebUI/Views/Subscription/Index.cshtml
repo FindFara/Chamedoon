@@ -1,5 +1,6 @@
 @model ChamedoonWebUI.Models.SubscriptionPageViewModel
 @using System.Linq
+@using Chamedoon.Application.Services.Subscription
 @{
     ViewData["Title"] = "انتخاب اشتراک";
     string PlanAccent(int index) => index switch
@@ -8,13 +9,13 @@
         1 => "plan-card--pro",
         _ => "plan-card--elite"
     };
-    string PlanHighlight(int index, ChamedoonWebUI.Models.SubscriptionPlanViewModel plan) => index switch
+    string PlanHighlight(int index, SubscriptionPlan plan) => index switch
     {
         0 => "۳ استعلام",
         1 => "استعلام بی نهایت",
         _ => "استعلام بی نهایت"
     };
-    string[] PlanBullets(int index, ChamedoonWebUI.Models.SubscriptionPlanViewModel plan) => index switch
+    string[] PlanBullets(int index, SubscriptionPlan plan) => index switch
     {
         0 => new[] { "۳ استعلام" },
         1 => new[] { "استعلام بی نهایت" },
