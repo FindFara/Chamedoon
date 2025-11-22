@@ -187,6 +187,7 @@ public class AdminUserRepository : IAdminUserRepository
 
     public Task<List<User>> GetRecentUsersAsync(int count, CancellationToken cancellationToken)
         => _userManager.Users
+            .IgnoreQueryFilters()
             .Include(u => u.UserRoles)!.ThenInclude(ur => ur.Role)
             .Include(u => u.Customer)
             .OrderByDescending(u => u.Created)

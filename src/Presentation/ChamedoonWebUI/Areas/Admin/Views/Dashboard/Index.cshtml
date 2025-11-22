@@ -34,84 +34,104 @@
     </div>
 
     <div class="row g-4">
-        <div class="col-sm-6 col-xl-3">
+        <div class="col-12 col-xl-4">
             <div class="card admin-card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h6 class="text-muted mb-2">کل کاربران</h6>
-                    <div class="d-flex align-items-baseline justify-content-between">
-                        <h3 class="fw-bold mb-0">@Model.TotalUsers.ToString("N0")</h3>
-                        <span class="badge bg-success rounded-pill">+@Model.NewUsersThisMonth.ToString("N0") این ماه</span>
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">کاربران</h5>
+                        <small class="text-muted">مرور وضعیت و آخرین ثبت‌نام‌ها</small>
                     </div>
-                    <p class="text-muted small mb-0">کاربران تازه ثبت‌نام کرده در ۳۰ روز گذشته</p>
+                    <span class="badge bg-success rounded-pill">+@Model.NewUsersThisMonth.ToString("N0") این ماه</span>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-sm-6 col-xl-3">
-            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-body">
-                    <h6 class="text-muted mb-2">کاربران فعال</h6>
-                    <div class="d-flex align-items-baseline justify-content-between">
-                        <h3 class="fw-bold mb-0">@Model.ActiveUsers.ToString("N0")</h3>
-                        <span class="text-muted">از @Model.TotalUsers.ToString("N0")</span>
+                    <div class="d-flex flex-column gap-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small">کل کاربران</div>
+                                <h4 class="mb-0">@Model.TotalUsers.ToString("N0")</h4>
+                            </div>
+                            <span class="badge bg-secondary">@Model.ActiveUsers.ToString("N0") فعال</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small">اشتراک فعال</div>
+                                <h6 class="mb-0">@Model.UsersWithActiveSubscription.ToString("N0") کاربر</h6>
+                            </div>
+                            <small class="text-muted">از @Model.TotalUsers.ToString("N0")</small>
+                        </div>
                     </div>
-                    <p class="text-muted small mb-0">کاربران دارای دسترسی فعال در سامانه</p>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-sm-6 col-xl-3">
-            <div class="card admin-card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h6 class="text-muted mb-2">کاربران با اشتراک فعال</h6>
-                    <div class="d-flex align-items-baseline justify-content-between">
-                        <h3 class="fw-bold mb-0">@Model.UsersWithActiveSubscription.ToString("N0")</h3>
-                        <span class="text-muted">از @Model.TotalUsers.ToString("N0")</span>
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-2">روند ثبت‌نام و اشتراک</h6>
+                        @if (Model.MonthlyRegistrations.Any())
+                        {
+                            <div class="chart-container">
+                                <canvas id="monthlyUsersChart" aria-label="نمودار کاربران جدید" role="img"></canvas>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">داده‌ای برای نمایش نمودار ثبت‌نام موجود نیست.</p>
+                        }
                     </div>
-                    <p class="text-muted small mb-0">تعداد حساب‌هایی که اشتراک جاری دارند.</p>
-                </div>
-            </div>
-        </div>
 
-        <div class="col-sm-6 col-xl-3">
-            <div class="card admin-card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h6 class="text-muted mb-2">کل مقالات</h6>
-                    <div class="d-flex align-items-baseline justify-content-between">
-                        <h3 class="fw-bold mb-0">@Model.TotalBlogPosts.ToString("N0")</h3>
-                        <span class="text-muted">منتشر شده: @Model.PublishedBlogPosts.ToString("N0")</span>
+                    <div>
+                        <h6 class="text-muted mb-2">کاربران اخیر (بدون فیلتر وضعیت)</h6>
+                        @if (Model.RecentUsers.Any())
+                        {
+                            <div class="table-responsive">
+                                <table class="table align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>نام</th>
+                                            <th>ایمیل</th>
+                                            <th>نقش</th>
+                                            <th class="text-nowrap">وضعیت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var user in Model.RecentUsers)
+                                        {
+                                            <tr>
+                                                <td>@(string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName)</td>
+                                                <td>@user.Email</td>
+                                                <td>@(string.IsNullOrWhiteSpace(user.RoleName) ? "-" : user.RoleName)</td>
+                                                <td>
+                                                    <span class="badge @(user.IsActive ? "bg-success" : "bg-danger")">@(user.IsActive ? "فعال" : "غیرفعال")</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">کاربری ثبت نشده است.</p>
+                        }
                     </div>
-                    <p class="text-muted small mb-0">@Model.DraftBlogPosts.ToString("N0") مقاله در حالت پیش‌نویس است</p>
                 </div>
             </div>
         </div>
 
-        <div class="col-sm-6 col-xl-3">
+        <div class="col-12 col-xl-4">
             <div class="card admin-card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h6 class="text-muted mb-2">بازدید مقالات</h6>
-                    <h3 class="fw-bold mb-2">@Model.TotalViews.ToString("N0")</h3>
-                    <p class="text-muted small mb-0">مجموع بازدیدهای ثبت‌شده برای تمام مقالات</p>
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">پرداخت‌ها</h5>
+                        <small class="text-muted">گزارش ۳۰ روز اخیر</small>
+                    </div>
+                    <span class="badge bg-primary">@Model.PaymentSummary.SuccessfulCount.ToString("N0") موفق</span>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row g-4 mt-1">
-        <div class="col-lg-6 col-xl-4">
-            <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-body">
-                    <h6 class="text-muted mb-2">پرداخت‌های موفق (۳۰ روز اخیر)</h6>
-                    <h3 class="fw-bold mb-1">@Model.PaymentSummary.SuccessfulAmount.ToString("N0") <small class="text-muted">تومان</small></h3>
-                    <p class="text-muted small mb-0">@Model.PaymentSummary.SuccessfulCount.ToString("N0") تراکنش با موفقیت انجام شده</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6 col-xl-4">
-            <div class="card admin-card shadow-sm border-0 h-100">
-                <div class="card-body">
-                    <h6 class="text-muted mb-2">وضعیت تراکنش‌ها</h6>
-                    <div class="d-flex flex-column gap-2">
+                    <div class="d-flex flex-column gap-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small">مبلغ موفق</div>
+                                <h4 class="mb-0">@Model.PaymentSummary.SuccessfulAmount.ToString("N0") <small class="text-muted">تومان</small></h4>
+                            </div>
+                            <span class="badge bg-success">@Model.PaymentSummary.SuccessfulCount.ToString("N0") تراکنش</span>
+                        </div>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="text-muted">در انتظار تایید</span>
                             <span class="badge bg-warning text-dark rounded-pill">@Model.PaymentSummary.PendingCount.ToString("N0")</span>
@@ -121,210 +141,104 @@
                             <span class="badge bg-danger rounded-pill">@Model.PaymentSummary.FailedCount.ToString("N0")</span>
                         </div>
                     </div>
+
+                    <div>
+                        <h6 class="text-muted mb-2">پرداخت‌های اخیر</h6>
+                        @if (Model.RecentPayments.Any())
+                        {
+                            <div class="table-responsive">
+                                <table class="table align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>کاربر</th>
+                                            <th>پلن</th>
+                                            <th>مبلغ</th>
+                                            <th>وضعیت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var payment in Model.RecentPayments)
+                                        {
+                                            <tr>
+                                                <td>@payment.CustomerName</td>
+                                                <td>@payment.PlanTitle</td>
+                                                <td>@payment.Amount.ToString("N0") <small class="text-muted">تومان</small></td>
+                                                <td><span class="badge @PaymentStatusClass(payment.Status)">@payment.StatusLabel</span></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">تراکنشی برای نمایش موجود نیست.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-4">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">وبلاگ</h5>
+                        <small class="text-muted">آمار انتشار و بازدید</small>
+                    </div>
+                    <span class="badge bg-info text-dark">@Model.TotalViews.ToString("N0") بازدید</span>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-column gap-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small">کل مقالات</div>
+                                <h4 class="mb-0">@Model.TotalBlogPosts.ToString("N0")</h4>
+                            </div>
+                            <small class="text-muted">منتشر شده: @Model.PublishedBlogPosts.ToString("N0")</small>
+                        </div>
+                        <div class="text-muted small">@Model.DraftBlogPosts.ToString("N0") مقاله در حالت پیش‌نویس است.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-2">روند بازدید مقالات</h6>
+                        @if (Model.MonthlyBlogViews.Any())
+                        {
+                            <div class="chart-container">
+                                <canvas id="blogViewsChart" aria-label="نمودار بازدید مقالات" role="img"></canvas>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">برای نمایش نمودار بازدید اطلاعاتی موجود نیست.</p>
+                        }
+                    </div>
+
+                    <div>
+                        <h6 class="text-muted mb-2">محبوب‌ترین مقالات</h6>
+                        @if (Model.PopularPosts.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var post in Model.PopularPosts)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>@post.Title</span>
+                                        <span class="badge bg-primary rounded-pill">@post.VisitCount.ToString("N0") بازدید</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">داده‌ای موجود نیست.</p>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row g-4 mt-1">
-        <div class="col-lg-6">
-            <div class="card admin-card shadow-sm border-0 h-100">
-                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">روند ثبت‌نام کاربران</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.MonthlyRegistrations.Any())
-                    {
-                        <div class="chart-container">
-                            <canvas id="monthlyUsersChart" aria-label="نمودار کاربران جدید" role="img"></canvas>
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-muted mb-0">داده‌ای برای نمایش نمودار ثبت‌نام موجود نیست.</p>
-                    }
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6">
-            <div class="card admin-card shadow-sm border-0 h-100">
-                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">بازدید مقالات</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.MonthlyBlogViews.Any())
-                    {
-                        <div class="chart-container">
-                            <canvas id="blogViewsChart" aria-label="نمودار بازدید مقالات" role="img"></canvas>
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-muted mb-0">برای نمایش نمودار بازدید اطلاعاتی موجود نیست.</p>
-                    }
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="row g-4 mt-1">
-        <div class="col-lg-6">
-            <div class="card admin-card shadow-sm border-0 h-100">
-                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">کاربران اخیر</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.RecentUsers.Any())
-                    {
-                        <div class="table-responsive">
-                            <table class="table align-middle mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>نام</th>
-                                        <th>ایمیل</th>
-                                        <th>نقش</th>
-                                        <th class="text-nowrap">تاریخ ایجاد</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var user in Model.RecentUsers)
-                                    {
-                                        <tr>
-                                            <td>@(string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName)</td>
-                                            <td>@user.Email</td>
-                                            <td>@(string.IsNullOrWhiteSpace(user.RoleName) ? "-" : user.RoleName)</td>
-                                            <td>@user.CreatedAt.ToString("yyyy/MM/dd")</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-muted mb-0">کاربری ثبت نشده است.</p>
-                    }
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-6">
-            <div class="card admin-card shadow-sm border-0 h-100">
-                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">مقالات اخیر</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.RecentPosts.Any())
-                    {
-                        <div class="table-responsive">
-                            <table class="table align-middle mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>عنوان</th>
-                                        <th>نویسنده</th>
-                                        <th>بازدید</th>
-                                        <th class="text-nowrap">تاریخ</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var post in Model.RecentPosts)
-                                    {
-                                        <tr>
-                                            <td>@post.Title</td>
-                                            <td>@post.Writer</td>
-                                            <td>@post.VisitCount.ToString("N0")</td>
-                                            <td>@post.CreatedAt.ToString("yyyy/MM/dd")</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-muted mb-0">مقاله‌ای ثبت نشده است.</p>
-                }
-            </div>
-        </div>
-
-        <div class="col-lg-12">
-            <div class="card admin-card shadow-sm border-0 h-100">
-                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">پرداخت‌های اخیر</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.RecentPayments.Any())
-                    {
-                        <div class="table-responsive">
-                            <table class="table align-middle mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>کاربر</th>
-                                        <th>پلن</th>
-                                        <th>مبلغ</th>
-                                        <th>وضعیت</th>
-                                        <th class="text-nowrap">تاریخ ایجاد</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var payment in Model.RecentPayments)
-                                    {
-                                        <tr>
-                                            <td>@payment.CustomerName</td>
-                                            <td>@payment.PlanTitle</td>
-                                            <td>@payment.Amount.ToString("N0") <small class="text-muted">تومان</small></td>
-                                            <td>
-                                                <span class="badge @PaymentStatusClass(payment.Status)">@payment.StatusLabel</span>
-                                            </td>
-                                            <td class="text-nowrap">
-                                                <div>@payment.CreatedAtUtc.ToString("yyyy/MM/dd")</div>
-                                                <small class="text-muted">@payment.CreatedAtUtc.ToString("HH:mm")</small>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-muted mb-0">تراکنشی برای نمایش موجود نیست.</p>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
-
-    <div class="row g-4 mt-1">
-        <div class="col-lg-6">
-            <div class="card admin-card shadow-sm border-0 h-100">
-                <div class="card-header bg-transparent">
-                    <h5 class="mb-0">محبوب‌ترین مقالات</h5>
-                </div>
-                <div class="card-body">
-                    @if (Model.PopularPosts.Any())
-                    {
-                        <ul class="list-group list-group-flush">
-                            @foreach (var post in Model.PopularPosts)
-                            {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>@post.Title</span>
-                                    <span class="badge bg-primary rounded-pill">@post.VisitCount.ToString("N0") بازدید</span>
-                                </li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <p class="text-muted mb-0">داده‌ای موجود نیست.</p>
-                    }
-                </div>
-            </div>
-        </div>
-
         <div class="col-lg-6">
             <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-header bg-transparent">
@@ -350,56 +264,80 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row g-4 mt-1">
         <div class="col-lg-6">
             <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-header bg-transparent">
-                    <h5 class="mb-0">استفاده از مجوزها</h5>
+                    <h5 class="mb-0">فعالیت اشتراک‌ها</h5>
                 </div>
                 <div class="card-body">
-                    @if (Model.PermissionUsage.Any())
+                    @if (Model.MonthlyActiveSubscriptions.Any())
                     {
-                        <ul class="list-group list-group-flush">
-                            @foreach (var permission in Model.PermissionUsage)
-                            {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>@permission.PermissionName</span>
-                                    <span class="badge bg-info text-dark rounded-pill">@permission.RoleCount.ToString("N0") نقش</span>
-                                </li>
-                            }
-                        </ul>
+                        <div class="chart-container">
+                            <canvas id="monthlySubscriptionsChart" aria-label="نمودار اشتراک‌های فعال" role="img"></canvas>
+                        </div>
                     }
                     else
                     {
-                        <p class="text-muted mb-0">مجوزی ثبت نشده است.</p>
+                        <p class="text-muted mb-0">اطلاعاتی برای نمایش اشتراک‌های فعال موجود نیست.</p>
                     }
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="col-lg-6">
+    <div class="row g-4 mt-1">
+        <div class="col-lg-12">
             <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-header bg-transparent">
-                    <h5 class="mb-0">ثبت‌نام ماه‌های اخیر</h5>
+                    <h5 class="mb-0">فعالیت اخیر تراکنش‌ها</h5>
                 </div>
                 <div class="card-body">
-                    @if (Model.MonthlyRegistrations.Any())
+                    @if (Model.RecentPayments.Any())
                     {
-                        <ul class="list-group list-group-flush">
-                            @foreach (var record in Model.MonthlyRegistrations)
-                            {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span>@record.Month</span>
-                                    <span class="badge bg-light text-dark">@record.Count.ToString("N0") کاربر</span>
-                                </li>
-                            }
-                        </ul>
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>کاربر</th>
+                                        <th>پلن</th>
+                                        <th>مبلغ</th>
+                                        <th>کدرهگیری</th>
+                                        <th>وضعیت</th>
+                                        <th class="text-nowrap">تاریخ پرداخت</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var payment in Model.RecentPayments)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div>@payment.CustomerName</div>
+                                                @if (!string.IsNullOrWhiteSpace(payment.TrackId))
+                                                {
+                                                    <small class="text-muted">@payment.CustomerEmail</small>
+                                                }
+                                            </td>
+                                            <td>@payment.PlanTitle</td>
+                                            <td>@payment.Amount.ToString("N0") <small class="text-muted">تومان</small></td>
+                                            <td>@(string.IsNullOrWhiteSpace(payment.TrackId) ? "-" : payment.TrackId)</td>
+                                            <td><span class="badge @PaymentStatusClass(payment.Status)">@payment.StatusLabel</span></td>
+                                            <td class="text-nowrap">
+                                                <div>@payment.PaidAtUtc?.ToString("yyyy/MM/dd") ?? "-"</div>
+                                                @if (payment.PaidAtUtc.HasValue)
+                                                {
+                                                    <small class="text-muted">@payment.PaidAtUtc.Value.ToString("HH:mm")</small>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                     }
                     else
                     {
-                        <p class="text-muted mb-0">داده‌ای برای نمایش وجود ندارد.</p>
+                        <p class="text-muted mb-0">تراکنشی در بازه اخیر ثبت نشده است.</p>
                     }
                 </div>
             </div>
