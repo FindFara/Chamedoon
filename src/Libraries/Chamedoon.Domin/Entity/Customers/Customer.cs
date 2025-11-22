@@ -18,5 +18,6 @@ namespace Chamedoon.Domin.Entity.Customers
         public int UsedEvaluations { get; set; }
         public User User { get; set; }
         public ICollection<Payments.PaymentRequest> PaymentRequests { get; set; } = new List<Payments.PaymentRequest>();
+        public ICollection<ImmigrationEvaluation> ImmigrationEvaluations { get; set; } = new List<ImmigrationEvaluation>();
     }
 }

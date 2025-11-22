@@ -246,6 +246,40 @@ namespace Chamedoon.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ImmigrationEvaluations",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<long>(type: "bigint", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    MaritalStatus = table.Column<int>(type: "int", nullable: false),
+                    MBTIPersonality = table.Column<int>(type: "int", nullable: false),
+                    InvestmentAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    JobCategory = table.Column<int>(type: "int", nullable: false),
+                    JobTitle = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    WorkExperienceYears = table.Column<int>(type: "int", nullable: false),
+                    FieldCategory = table.Column<int>(type: "int", nullable: false),
+                    DegreeLevel = table.Column<int>(type: "int", nullable: false),
+                    LanguageCertificate = table.Column<int>(type: "int", nullable: false),
+                    WillingToStudy = table.Column<bool>(type: "bit", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImmigrationEvaluations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ImmigrationEvaluations_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserRole",
                 columns: table => new
                 {
@@ -388,6 +422,16 @@ namespace Chamedoon.Infrastructure.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ImmigrationEvaluations_CreatedAtUtc",
+                table: "ImmigrationEvaluations",
+                column: "CreatedAtUtc");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ImmigrationEvaluations_CustomerId",
+                table: "ImmigrationEvaluations",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "User",
                 column: "NormalizedEmail");
@@ -434,6 +478,9 @@ namespace Chamedoon.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Article");
+
+            migrationBuilder.DropTable(
+                name: "ImmigrationEvaluations");
 
             migrationBuilder.DropTable(
                 name: "PaymentRequests");

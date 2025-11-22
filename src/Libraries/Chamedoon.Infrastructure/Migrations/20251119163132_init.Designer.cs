@@ -160,6 +160,74 @@ namespace Chamedoon.Infrastructure.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("Chamedoon.Domin.Entity.Customers.ImmigrationEvaluation", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long>("CustomerId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("DegreeLevel")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FieldCategory")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("InvestmentAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("JobCategory")
+                        .HasColumnType("int");
+
+                    b.Property<string>("JobTitle")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<int>("LanguageCertificate")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MBTIPersonality")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MaritalStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<bool>("WillingToStudy")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("WorkExperienceYears")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAtUtc");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("ImmigrationEvaluations");
+                });
+
             modelBuilder.Entity("Chamedoon.Domin.Entity.Payments.PaymentRequest", b =>
                 {
                     b.Property<long>("Id")
@@ -549,6 +617,17 @@ namespace Chamedoon.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Chamedoon.Domin.Entity.Customers.ImmigrationEvaluation", b =>
+                {
+                    b.HasOne("Chamedoon.Domin.Entity.Customers.Customer", "Customer")
+                        .WithMany("ImmigrationEvaluations")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("Chamedoon.Domin.Entity.Payments.PaymentRequest", b =>
                 {
                     b.HasOne("Chamedoon.Domin.Entity.Customers.Customer", "Customer")
@@ -646,6 +725,8 @@ namespace Chamedoon.Infrastructure.Migrations
 
             modelBuilder.Entity("Chamedoon.Domin.Entity.Customers.Customer", b =>
                 {
+                    b.Navigation("ImmigrationEvaluations");
+
                     b.Navigation("PaymentRequests");
                 });
 

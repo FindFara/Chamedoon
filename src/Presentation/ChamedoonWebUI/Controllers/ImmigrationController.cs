@@ -10,10 +10,12 @@ namespace ChamedoonWebUI.Controllers;
 public class ImmigrationController : Controller
 {
     private readonly IMediator _mediator;
+    private readonly IImmigrationEvaluationService _evaluationService;
 
-    public ImmigrationController(IMediator mediator)
+    public ImmigrationController(IMediator mediator, IImmigrationEvaluationService evaluationService)
     {
         _mediator = mediator;
+        _evaluationService = evaluationService;
     }
 
     [HttpGet]
@@ -63,6 +65,7 @@ public class ImmigrationController : Controller
         TempData["ImmigrationInput"] = JsonSerializer.Serialize(input);
 
         await _mediator.Send(new RegisterSubscriptionUsageCommand(User));
+        await _evaluationService.RecordAsync(input, User, HttpContext.RequestAborted);
         var result = await _mediator.Send(new ImmigrationQuery { Input = input });
         return View("Result", result);
     }
