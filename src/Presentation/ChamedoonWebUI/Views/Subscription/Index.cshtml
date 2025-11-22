@@ -9,12 +9,6 @@
         1 => "plan-showcase--pro",
         _ => "plan-showcase--elite"
     };
-    string PlanHighlight(SubscriptionPlan plan) => plan.IncludesAI
-        ? "تحلیل دقیق با هوش مصنوعی"
-        : plan.EvaluationLimit is null
-            ? "استعلام بی‌نهایت در دوره"
-            : $"{plan.EvaluationLimit} استعلام در ماه";
-    string PlanPromise(SubscriptionPlan plan) => plan.IncludesAI ? "نتیجه بهتر با هوش مصنوعی" : "مسیر مهاجرت شفاف";
 }
 
 @section Styles {
@@ -26,8 +20,8 @@
         <div class="subscription-hero">
             <div class="subscription-hero__content">
                 <span class="subscription-pill">پلن‌های اشتراک</span>
-                <h1>همان کادر سفید و دارک را برای اشتراک‌ها داریم</h1>
-                <p class="mb-3">پلن‌ها یک‌ماهه هستند و قیمت و تخفیف هرکدام مستقیما از تنظیمات خوانده می‌شود.</p>
+                <h1>پلن‌های یک‌ماهه با ظاهر آشنا</h1>
+                <p class="mb-3">همان ترکیب کارت سفید و دارک بدون حاشیه اضافی؛ قیمت و تخفیف هر پلن از تنظیمات خوانده می‌شود.</p>
                 <div class="subscription-hero__tags">
                     <span class="subscription-tag">دارک & لایت</span>
                     <span class="subscription-tag subscription-tag--accent">تخفیف تا @Model.Plans.Max(p => p.DiscountPercent)%</span>
@@ -77,11 +71,10 @@
                             <div>
                                 <p class="plan-showcase__eyebrow">@plan.DurationLabel</p>
                                 <h3>@plan.Title</h3>
-                                <p class="plan-showcase__highlight">@PlanPromise(plan) · @PlanHighlight(plan)</p>
                             </div>
                             <div class="plan-showcase__pricing">
-                                <span class="plan-showcase__price">@plan.Price.ToString("N0") <small>تومان</small></span>
-                                <span class="plan-showcase__original">@plan.OriginalPrice.ToString("N0")</span>
+                                <span class="plan-showcase__price">@plan.Price.ToString("N0") تومان</span>
+                                <span class="plan-showcase__original">@plan.OriginalPrice.ToString("N0") تومان</span>
                                 <span class="plan-showcase__badge">@plan.DiscountPercent% تخفیف</span>
                             </div>
                         </header>
@@ -94,7 +87,6 @@
                         </ul>
 
                         <div class="plan-showcase__footer">
-                            <div class="plan-showcase__savings">@plan.SavingsAmount.ToString("N0") تومان کمتر نسبت به قیمت اصلی</div>
                             <form asp-action="Subscribe" method="post">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="planId" value="@plan.Id" />
