@@ -1503,7 +1503,7 @@ a:hover {
     }
 
     .blog-search-form:not(.blog-search-form--stacked) .blog-search-actions {
-        justify-content: flex-start;
+        justify-content: flex-end;
         grid-column: 1 / -1;
     }
 
