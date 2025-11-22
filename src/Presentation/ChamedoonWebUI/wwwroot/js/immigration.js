@@ -74,23 +74,47 @@
     };
 
     const initProgress = () => {
-        const fields = Array.from(document.querySelectorAll('.immigration-field .form-control, .immigration-field .form-select'));
+        const fields = Array.from(document.querySelectorAll('[data-progress-field]'));
         const progressEl = document.querySelector('[data-form-progress]');
         if (!progressEl || !fields.length) return;
 
+        const requiredFields = fields.filter((field) => !field.hasAttribute('data-progress-optional'));
+        const optionalFields = fields.filter((field) => field.hasAttribute('data-progress-optional'));
+
+        const isFilled = (field) => {
+            if (field.type === 'checkbox') {
+                return field.checked;
+            }
+
+            if (field.tagName === 'SELECT') {
+                const value = field.value;
+                return value !== '' && value !== '0';
+            }
+
+            if (field.type === 'number') {
+                return Number(field.value || '0') > 0;
+            }
+
+            return Boolean(field.value && field.value.trim().length > 0);
+        };
+
         const updateProgress = () => {
-            const filled = fields.filter((field) => {
-                if (field.type === 'checkbox') {
-                    return field.checked;
-                }
-                return Boolean(field.value);
-            }).length;
-            const percent = Math.min(100, Math.round((filled / fields.length) * 100));
+            const filledRequired = requiredFields.filter(isFilled).length;
+            const filledOptional = optionalFields.filter(isFilled).length;
+
+            const basePercent = requiredFields.length === 0 ? 0 : Math.round((filledRequired / requiredFields.length) * 100);
+            const optionalBoost = optionalFields.length ? Math.round((filledOptional / optionalFields.length) * 10) : 0;
+            const percent = Math.min(100, basePercent + optionalBoost);
+
             progressEl.style.setProperty('--progress', `${percent}%`);
             progressEl.setAttribute('data-progress-label', `${percent}% تکمیل شد`);
         };
 
-        fields.forEach((field) => field.addEventListener('input', updateProgress));
+        fields.forEach((field) => {
+            field.addEventListener('input', updateProgress);
+            field.addEventListener('change', updateProgress);
+        });
+
         updateProgress();
     };
 
