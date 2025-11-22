@@ -225,6 +225,37 @@ body.landing-page.dark-mode .btn-light {
     border-color: transparent;
 }
 
+body.landing-page.dark-mode .form-control,
+body.landing-page.dark-mode .form-select {
+    background: rgba(15, 23, 42, 0.78);
+    color: #e2e8f0;
+    border-color: rgba(148, 163, 184, 0.32);
+}
+
+body.landing-page.dark-mode .form-label,
+body.landing-page.dark-mode .blog-search-card h5,
+body.landing-page.dark-mode .glass-card h5 {
+    color: #e8edfb;
+    font-weight: 600;
+}
+
+body.landing-page.dark-mode .form-control::placeholder {
+    color: #94a3b8;
+}
+
+body.landing-page.dark-mode .form-control:focus,
+body.landing-page.dark-mode .form-select:focus {
+    background: rgba(15, 23, 42, 0.88);
+    border-color: rgba(129, 140, 248, 0.55);
+    box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.18);
+    color: #f8fafc;
+}
+
+body.landing-page.dark-mode .form-select option {
+    background-color: #0b1220;
+    color: #e2e8f0;
+}
+
 body.landing-page.dark-mode .glass-card {
     background: rgba(15, 23, 42, 0.78);
     border-color: rgba(148, 163, 184, 0.25);
