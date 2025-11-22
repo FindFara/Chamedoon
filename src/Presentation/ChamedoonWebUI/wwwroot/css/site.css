@@ -544,12 +544,22 @@ a:hover {
     margin-bottom: 0.75rem;
     line-height: 1.6;
     font-size: 1.05rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .popular-article-description {
     font-size: 0.97rem;
     line-height: 1.8;
     margin-bottom: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .popular-article-meta {
@@ -597,6 +607,11 @@ a:hover {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
+}
+
+.popular-article-more-icon {
+    font-size: 0.9rem;
+    transform: translateY(-1px);
 }
 
 .popular-article-more-link:hover,

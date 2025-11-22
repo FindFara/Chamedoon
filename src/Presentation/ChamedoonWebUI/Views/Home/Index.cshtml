@@ -1,6 +1,7 @@
 @model ChamedoonWebUI.Models.HomeIndexViewModel
 @using System.Globalization
 @using System.Linq
+@using System.Text.RegularExpressions
 @{
     ViewData["Title"] = "صفحه فرود";
 }
@@ -124,7 +125,10 @@
                 <span class="text-uppercase text-primary fw-semibold">پر بازدیدترین وبلاگ‌ها</span>
                 <h2 class="fw-bold mt-2 mb-0">پر بازدیدترین وبلاگ‌ها</h2>
             </div>
-            <a asp-controller="Blog" asp-action="Index" class="popular-article-more-link">بیشتر</a>
+            <a asp-controller="Blog" asp-action="Index" class="popular-article-more-link">
+                <span class="popular-article-more-icon" aria-hidden="true">←</span>
+                <span>بیشتر</span>
+            </a>
         </div>
         @{ var fallbackBlogImage = Url.Content("~/img/blog-placeholder.svg"); }
         <div class="row g-4 popular-articles-grid">
@@ -136,6 +140,7 @@
                     var visitCountText = article.VisitCount.ToString("N0", CultureInfo.CreateSpecificCulture("fa-IR"));
                     cardIndex++;
                     var stepDelay = (cardIndex * 0.12).ToString("0.##", CultureInfo.InvariantCulture);
+                    var shortDescriptionText = Regex.Replace(article.ShortDescription ?? string.Empty, "<.*?>", string.Empty);
                     var imageSrc = string.IsNullOrWhiteSpace(article.ArticleImageName)
                         ? fallbackBlogImage
                         : (article.ArticleImageName!.StartsWith("data:image", System.StringComparison.OrdinalIgnoreCase)
@@ -149,7 +154,7 @@
                             </div>
                             <div class="popular-article-body">
                                 <h5 class="fw-semibold">@article.ArticleTitle</h5>
-                                <p class="text-muted popular-article-description">@article.ShortDescription</p>
+                                <p class="text-muted popular-article-description">@shortDescriptionText</p>
                             </div>
                             <div class="popular-article-meta">
                                 <span class="popular-article-author" aria-label="@article.Writer">✍️ @article.Writer</span>
