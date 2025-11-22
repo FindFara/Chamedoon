@@ -12,6 +12,22 @@ namespace Chamedoon.Infrastructure.FluentConfigs.Customers
             builder.Property(c => c.SubscriptionPlanId)
                 .HasMaxLength(64);
 
+            builder.Property(c => c.PhoneNumber)
+                .HasMaxLength(32);
+
+            builder.Property(c => c.MbtiType)
+                .HasMaxLength(8);
+
+            builder.Property(c => c.LanguageCertificate)
+                .HasMaxLength(128);
+
+            builder.Property(c => c.FieldCategory)
+                .HasMaxLength(256);
+
+            builder.Property(c => c.InvestmentAmount)
+                .HasColumnType("decimal(18,2)")
+                .HasDefaultValue(0);
+
             builder.Property(c => c.UsedEvaluations)
                 .HasDefaultValue(0);
         }

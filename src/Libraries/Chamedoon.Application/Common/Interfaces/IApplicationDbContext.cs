@@ -30,6 +30,7 @@ namespace Chamedoon.Application.Common.Interfaces
 
         #region Customer
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<CustomerReport> CustomerReports { get; set; }
         #endregion
 
         #region Payments

@@ -46,6 +46,7 @@ public class ApplicationDbContext : IdentityDbContext<
 
     #region Customer
     public DbSet<Customer> Customers { get; set; }
+    public DbSet<CustomerReport> CustomerReports { get; set; }
     #endregion
 
     #region Payments
@@ -79,6 +80,7 @@ public class ApplicationDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new RoleConfigs());
         modelBuilder.ApplyConfiguration(new RolePermissionConfigs());
         modelBuilder.ApplyConfiguration(new CustomerConfigs());
+        modelBuilder.ApplyConfiguration(new CustomerReportConfigs());
         modelBuilder.ApplyConfiguration(new PaymentRequestConfigs());
         modelBuilder.ApplyConfiguration(new PaymentResponseConfigs());
 

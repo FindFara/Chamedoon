@@ -225,9 +225,20 @@ namespace Chamedoon.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Job = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    JobCategory = table.Column<int>(type: "int", nullable: false),
+                    WorkExperienceYears = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
                     ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    MaritalStatus = table.Column<int>(type: "int", nullable: false),
+                    MbtiType = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: true),
+                    InvestmentAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValue: 0m),
+                    FieldCategory = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EducationLevel = table.Column<int>(type: "int", nullable: false),
+                    LanguageCertificate = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
+                    WantsFurtherEducation = table.Column<bool>(type: "bit", nullable: false),
                     SubscriptionPlanId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
                     SubscriptionStartDateUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
                     SubscriptionEndDateUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -241,6 +252,40 @@ namespace Chamedoon.Infrastructure.Migrations
                         name: "FK_Customers_User_Id",
                         column: x => x.Id,
                         principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerReports",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<long>(type: "bigint", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    MaritalStatus = table.Column<int>(type: "int", nullable: false),
+                    MbtiType = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: true),
+                    InvestmentAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    JobCategory = table.Column<int>(type: "int", nullable: false),
+                    JobTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WorkExperienceYears = table.Column<int>(type: "int", nullable: false),
+                    FieldCategory = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EducationLevel = table.Column<int>(type: "int", nullable: false),
+                    LanguageCertificate = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
+                    WantsFurtherEducation = table.Column<bool>(type: "bit", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerReports", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerReports_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -268,6 +313,11 @@ namespace Chamedoon.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerReports_CustomerId",
+                table: "CustomerReports",
+                column: "CustomerId");
 
             migrationBuilder.CreateTable(
                 name: "PaymentRequests",
@@ -437,6 +487,9 @@ namespace Chamedoon.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "PaymentRequests");
+
+            migrationBuilder.DropTable(
+                name: "CustomerReports");
 
             migrationBuilder.DropTable(
                 name: "Role");

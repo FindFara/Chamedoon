@@ -1,0 +1,156 @@
+@using System.Text.Json
+@model Chamedoon.Application.Services.Admin.CustomerReports.ViewModels.CustomerReportDashboardVm
+@{
+    ViewData["Title"] = "گزارش‌های کاربران";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var jsonOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+}
+<div class="page-body">
+    <div class="page-header position-relative">
+        <div class="header-title">
+            <h1>
+                گزارش آماری کاربران
+            </h1>
+        </div>
+        <div class="header-buttons">
+            <a class="sidebar-toggler" href="#">
+                <i class="fa fa-arrows-h"></i>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-4 col-sm-6 col-xs-12">
+            <div class="databox databox-vertical databox-shadowed databox-azure2">
+                <div class="databox-top">
+                    <div class="databox-stat"><span class="databox-number">@Model.Reports.Count</span></div>
+                    <div class="databox-text">پرونده ارزیابی</div>
+                </div>
+                <div class="databox-bottom no-padding text-center">
+                    <canvas id="ageChart" height="220"></canvas>
+                    <div class="databox-text">توزیع سنی</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6 col-xs-12">
+            <div class="databox databox-vertical databox-shadowed databox-red">
+                <div class="databox-top">
+                    <div class="databox-stat"><span class="databox-number">@Model.JobDistribution.Count</span></div>
+                    <div class="databox-text">دسته‌های شغلی</div>
+                </div>
+                <div class="databox-bottom no-padding text-center">
+                    <canvas id="jobChart" height="220"></canvas>
+                    <div class="databox-text">نمودار شغلی</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-6 col-xs-12">
+            <div class="databox databox-vertical databox-shadowed databox-green">
+                <div class="databox-top">
+                    <div class="databox-stat"><span class="databox-number">@Model.EducationDistribution.Count</span></div>
+                    <div class="databox-text">سطوح تحصیلی</div>
+                </div>
+                <div class="databox-bottom no-padding text-center">
+                    <canvas id="educationChart" height="220"></canvas>
+                    <div class="databox-text">نمودار تحصیلات</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="widget">
+                <div class="widget-header">
+                    <span class="widget-caption">جزئیات گزارش‌ها</span>
+                </div>
+                <div class="widget-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>کاربر</th>
+                                    <th>سن (بازه)</th>
+                                    <th>تأهل</th>
+                                    <th>MBTI</th>
+                                    <th>سرمایه</th>
+                                    <th>شغل</th>
+                                    <th>سابقه</th>
+                                    <th>تحصیلات</th>
+                                    <th>زبان</th>
+                                    <th>تلفن</th>
+                                    <th>تاریخ ثبت</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var report in Model.Reports)
+                                {
+                                    <tr>
+                                        <td>@report.Id</td>
+                                        <td>@report.CustomerName</td>
+                                        <td>@report.Age (@report.AgeRange)</td>
+                                        <td>@report.MaritalStatus.GetDescription()</td>
+                                        <td>@report.MbtiType</td>
+                                        <td>@report.InvestmentAmount.ToString("N0")</td>
+                                        <td>@report.JobCategory.GetDescription() @(!string.IsNullOrWhiteSpace(report.JobTitle) ? $" - {report.JobTitle}" : string.Empty)</td>
+                                        <td>@report.WorkExperienceYears سال</td>
+                                        <td>@report.EducationLevel.GetDescription()</td>
+                                        <td>@report.LanguageCertificate</td>
+                                        <td>@report.PhoneNumber</td>
+                                        <td>@report.CreatedAtUtc.ToLocalTime().ToString("yyyy/MM/dd")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ageData = @Html.Raw(JsonSerializer.Serialize(Model.AgeDistribution, jsonOptions));
+        const jobData = @Html.Raw(JsonSerializer.Serialize(Model.JobDistribution, jsonOptions));
+        const educationData = @Html.Raw(JsonSerializer.Serialize(Model.EducationDistribution, jsonOptions));
+
+        const chartOptions = {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.raw;
+                            return `${context.label}: ${value.toFixed(1)}٪`;
+                        }
+                    }
+                }
+            }
+        };
+
+        function renderPieChart(canvasId, dataSet, label) {
+            const ctx = document.getElementById(canvasId);
+            if (!ctx || !dataSet || dataSet.length === 0) return;
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: dataSet.map(d => d.label),
+                    datasets: [{
+                        label: label,
+                        data: dataSet.map(d => d.percent),
+                        backgroundColor: ['#5db2ff', '#a0d468', '#ffce55', '#fb6e52', '#e75b8d', '#4b89dc'],
+                        borderWidth: 1
+                    }]
+                },
+                options: chartOptions
+            });
+        }
+
+        renderPieChart('ageChart', ageData, 'سن');
+        renderPieChart('jobChart', jobData, 'شغل');
+        renderPieChart('educationChart', educationData, 'تحصیلات');
+    </script>
+}

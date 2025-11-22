@@ -17,29 +17,110 @@
                     <input type="file" name="ProfileImageFile" id="ProfileImageFile" class="d-none" accept="image/*">
                 </div>
             </div>
-            <div class="dashboard-form-grid">
-                <div class="glass-field">
-                    <label class="form-label" for="first">نام</label>
-                    <input name="FirstName" id="first" type="text" class="form-control glass-input" value="@Model.FirstName" />
-                </div>
-                <div class="glass-field">
-                    <label class="form-label" for="last">نام خانوادگی</label>
-                    <input name="LastName" id="last" type="text" class="form-control glass-input" value="@Model.LastName" />
-                </div>
-                <div class="glass-field">
-                    <label class="form-label" for="gender">جنسیت</label>
-                    <select name="Gender" id="gender" class="form-select glass-input">
-                        @for (int i = 0; i < Model.GenderList.Length; i++)
-                        {
-                            <option value="@((Gender)i)" selected="@(Model.Gender == (Gender)i ? "selected" : null)">@Model.GenderList[i]</option>
-                        }
-                    </select>
-                </div>
-                <div class="glass-field">
-                    <label class="form-label" for="occupation">شغل</label>
-                    <input name="Job" id="occupation" type="text" class="form-control glass-input" value="@Model.Job" />
+
+            <div class="glass-section">
+                <h6>۱. مشخصات فردی</h6>
+                <div class="dashboard-form-grid">
+                    <div class="glass-field">
+                        <label class="form-label" for="first">نام</label>
+                        <input name="FirstName" id="first" type="text" class="form-control glass-input" value="@Model.FirstName" />
+                    </div>
+                    <div class="glass-field">
+                        <label class="form-label" for="last">نام خانوادگی</label>
+                        <input name="LastName" id="last" type="text" class="form-control glass-input" value="@Model.LastName" />
+                    </div>
+                    <div class="glass-field">
+                        <label class="form-label" for="gender">جنسیت</label>
+                        <select name="Gender" id="gender" class="form-select glass-input">
+                            @for (int i = 0; i < Model.GenderList.Length; i++)
+                            {
+                                <option value="@((Gender)i)" selected="@(Model.Gender == (Gender)i ? "selected" : null)">@Model.GenderList[i]</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="glass-field">
+                        <label class="form-label" for="age">سن</label>
+                        <input name="Age" id="age" type="number" min="0" class="form-control glass-input" value="@Model.Age" />
+                    </div>
+                    <div class="glass-field">
+                        <label class="form-label" for="maritalStatus">وضعیت تأهل</label>
+                        <select name="MaritalStatus" id="maritalStatus" class="form-select glass-input">
+                            @for (int i = 0; i < Model.MaritalStatusList.Length; i++)
+                            {
+                                <option value="@((MaritalStatus)i)" selected="@(Model.MaritalStatus == (MaritalStatus)i ? "selected" : null)">@Model.MaritalStatusList[i]</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="glass-field">
+                        <label class="form-label" for="mbti">شخصیت MBTI</label>
+                        <input name="MbtiType" id="mbti" type="text" maxlength="8" class="form-control glass-input" value="@Model.MbtiType" />
+                    </div>
+                    <div class="glass-field">
+                        <label class="form-label" for="capital">میزان سرمایه</label>
+                        <input name="InvestmentAmount" id="capital" type="number" class="form-control glass-input" value="@Model.InvestmentAmount" step="0.01" />
+                    </div>
+                    <div class="glass-field">
+                        <label class="form-label" for="phone">شماره تلفن</label>
+                        <input name="PhoneNumber" id="phone" type="tel" class="form-control glass-input" value="@Model.PhoneNumber" />
+                    </div>
                 </div>
             </div>
+
+            <div class="glass-section">
+                <h6>۲. شغل</h6>
+                <div class="dashboard-form-grid">
+                    <div class="glass-field">
+                        <label class="form-label" for="jobCategory">دسته شغلی</label>
+                        <select name="JobCategory" id="jobCategory" class="form-select glass-input">
+                            @for (int i = 0; i < Model.JobCategoryList.Length; i++)
+                            {
+                                <option value="@((JobCategory)i)" selected="@(Model.JobCategory == (JobCategory)i ? "selected" : null)">@Model.JobCategoryList[i]</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="glass-field">
+                        <label class="form-label" for="occupation">عنوان شغل (اختیاری)</label>
+                        <input name="Job" id="occupation" type="text" class="form-control glass-input" value="@Model.Job" />
+                    </div>
+                    <div class="glass-field">
+                        <label class="form-label" for="experience">سابقه کاری (سال)</label>
+                        <input name="WorkExperienceYears" id="experience" type="number" min="0" class="form-control glass-input" value="@Model.WorkExperienceYears" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-section">
+                <h6>۳. تحصیلات و زبان</h6>
+                <div class="dashboard-form-grid">
+                    <div class="glass-field">
+                        <label class="form-label" for="fieldCategory">دسته رشته</label>
+                        <input name="FieldCategory" id="fieldCategory" type="text" class="form-control glass-input" value="@Model.FieldCategory" />
+                    </div>
+                    <div class="glass-field">
+                        <label class="form-label" for="educationLevel">مقطع تحصیلی</label>
+                        <select name="EducationLevel" id="educationLevel" class="form-select glass-input">
+                            @for (int i = 0; i < Model.EducationLevelList.Length; i++)
+                            {
+                                <option value="@((EducationLevel)i)" selected="@(Model.EducationLevel == (EducationLevel)i ? "selected" : null)">@Model.EducationLevelList[i]</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="glass-field">
+                        <label class="form-label" for="languageCertificate">مدرک زبان</label>
+                        <input name="LanguageCertificate" id="languageCertificate" type="text" class="form-control glass-input" value="@Model.LanguageCertificate" />
+                    </div>
+                    <div class="glass-field align-self-end">
+                        <div class="form-check">
+                            <input type="hidden" name="WantsFurtherEducation" value="false" />
+                            <input class="form-check-input" type="checkbox" value="true" id="wantsEducation" name="WantsFurtherEducation" @(Model.WantsFurtherEducation ? "checked" : "") />
+                            <label class="form-check-label" for="wantsEducation">
+                                تمایل به ادامه تحصیل
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="glass-field mt-3">
                 <label class="form-label" for="comments">توضیحات</label>
                 <textarea name="Description" id="comments" rows="4" class="form-control glass-input">@Model.Description</textarea>

@@ -33,32 +33,70 @@ namespace Chamedoon.Application.Services.Customers.Command
 
             if (request.UpsertCustomerViewModel.ProfileImageFile?.Length > 0)
             {
-                var filePath = SaveProfileImage(request.UpsertCustomerViewModel.ProfileImageFile);
-                request.UpsertCustomerViewModel.ProfileImage = filePath;
+                request.UpsertCustomerViewModel.ProfileImage = SaveProfileImageAsBase64(request.UpsertCustomerViewModel.ProfileImageFile);
             }
-            if(!string.IsNullOrEmpty(customer.ProfileImage) && File.Exists(customer.ProfileImage))
+            else if (!string.IsNullOrEmpty(customer.ProfileImage))
             {
-                request.UpsertCustomerViewModel.ProfileImage = customer.ProfileImage;
+                request.UpsertCustomerViewModel.ProfileImage = TryNormalizeStoredImage(customer.ProfileImage);
             }
+
             _mapper.Map(request.UpsertCustomerViewModel, customer);
+            _context.CustomerReports.Add(new CustomerReport
+            {
+                CustomerId = customer.Id,
+                Age = customer.Age,
+                MaritalStatus = customer.MaritalStatus,
+                MbtiType = customer.MbtiType,
+                InvestmentAmount = customer.InvestmentAmount,
+                JobCategory = customer.JobCategory,
+                JobTitle = customer.Job,
+                WorkExperienceYears = customer.WorkExperienceYears,
+                FieldCategory = customer.FieldCategory,
+                EducationLevel = customer.EducationLevel,
+                LanguageCertificate = customer.LanguageCertificate,
+                WantsFurtherEducation = customer.WantsFurtherEducation,
+                Description = customer.Description,
+                PhoneNumber = customer.PhoneNumber,
+                CreatedAtUtc = DateTime.UtcNow
+            });
             await _context.SaveChangesAsync(cancellationToken);
             return OperationResult.Success();
         }
-        private string SaveProfileImage(IFormFile profileImage)
+        private static string SaveProfileImageAsBase64(IFormFile profileImage)
         {
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/users");
+            using var ms = new MemoryStream();
+            profileImage.CopyTo(ms);
+            var base64 = Convert.ToBase64String(ms.ToArray());
+            var contentType = string.IsNullOrWhiteSpace(profileImage.ContentType) ? "image/png" : profileImage.ContentType;
+            return $"data:{contentType};base64,{base64}";
+        }
 
-            if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
-
-            var uniqueFileName = Guid.NewGuid() + Path.GetExtension(profileImage.FileName);
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+        private static string TryNormalizeStoredImage(string storedValue)
+        {
+            if (storedValue.StartsWith("data:"))
             {
-                profileImage.CopyTo(stream);
+                return storedValue;
             }
 
-            return $"/images/users/{uniqueFileName}";
+            var relativePath = storedValue.TrimStart('/').Replace("\\", "/");
+            var physicalPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", relativePath);
+
+            if (File.Exists(physicalPath))
+            {
+                var bytes = File.ReadAllBytes(physicalPath);
+                var base64 = Convert.ToBase64String(bytes);
+                var extension = Path.GetExtension(physicalPath).ToLowerInvariant();
+                var contentType = extension switch
+                {
+                    ".jpg" or ".jpeg" => "image/jpeg",
+                    ".gif" => "image/gif",
+                    ".webp" => "image/webp",
+                    _ => "image/png"
+                };
+                return $"data:{contentType};base64,{base64}";
+            }
+
+            return storedValue;
         }
     }
 }
