@@ -28,7 +28,7 @@ namespace Chamedoon.Application.Services.Customers.Query
                 .Where(c => c.Id == user.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (customer == null || string.IsNullOrEmpty(customer.ProfileImage))
+            if (customer == null)
             {
                 return OperationResult<CustomerProfileViewModel>.Fail();
             }

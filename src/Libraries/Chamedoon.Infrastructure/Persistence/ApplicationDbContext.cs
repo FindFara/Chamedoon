@@ -79,8 +79,8 @@ public class ApplicationDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new RoleConfigs());
         modelBuilder.ApplyConfiguration(new RolePermissionConfigs());
         modelBuilder.ApplyConfiguration(new CustomerConfigs());
-        modelBuilder.ApplyConfiguration(new Payments.PaymentRequestConfigs());
-        modelBuilder.ApplyConfiguration(new Payments.PaymentResponseConfigs());
+        modelBuilder.ApplyConfiguration(new PaymentRequestConfigs());
+        modelBuilder.ApplyConfiguration(new PaymentResponseConfigs());
 
 
     }
