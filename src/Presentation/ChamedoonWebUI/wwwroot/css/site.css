@@ -1247,7 +1247,7 @@ a:hover {
     display: grid;
     gap: clamp(0.75rem, 2vw, 1.25rem);
     align-items: end;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    grid-template-columns: 1fr;
 }
 
 .blog-search-form .blog-search-field {
@@ -1263,6 +1263,7 @@ a:hover {
 .blog-search-actions {
     display: flex;
     align-items: flex-end;
+    grid-column: 1 / -1;
 }
 
 .blog-search-actions .btn-glass-primary {
@@ -1454,6 +1455,7 @@ a:hover {
 
 @media (max-width: 576px) {
     .blog-search-form {
+        grid-template-columns: 1fr;
         gap: 0.75rem;
     }
 
@@ -1475,8 +1477,22 @@ a:hover {
     }
 }
 
+@media (min-width: 576px) {
+    .blog-search-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .blog-search-actions {
+        grid-column: span 2;
+    }
+}
+
 @media (min-width: 768px) {
     .blog-search-form:not(.blog-search-form--stacked) .blog-search-field--query {
+        grid-column: span 2;
+    }
+
+    .blog-search-form:not(.blog-search-form--stacked) .blog-search-actions {
         grid-column: span 2;
     }
 }
@@ -1488,6 +1504,7 @@ a:hover {
 
     .blog-search-form:not(.blog-search-form--stacked) .blog-search-actions {
         justify-content: flex-end;
+        grid-column: 1 / -1;
     }
 
     .blog-search-form:not(.blog-search-form--stacked) .blog-search-actions .btn-glass-primary {
