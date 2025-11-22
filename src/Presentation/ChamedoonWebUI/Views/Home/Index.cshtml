@@ -122,8 +122,7 @@
         <div class="row g-4 align-items-center">
             <div class="col-lg-5">
                 <span class="text-uppercase text-primary fw-semibold">پر بازدیدترین وبلاگ‌ها</span>
-                <h2 class="fw-bold mt-3">سه مقصد محبوب که بیشترین بازدید را داشته‌اند</h2>
-                <p class="text-muted">این مقالات براساس آمار بازدید مرتب شده‌اند و می‌توانند نقطه شروع عالی برای شناخت مسیرهای پرطرفدار مهاجرت باشند.</p>
+                <h2 class="fw-bold mt-3">پر بازدیدترین وبلاگ‌ها</h2>
                 <a asp-controller="Blog" asp-action="Index" class="btn btn-outline-primary mt-3">نمایش تمام مقالات</a>
             </div>
             <div class="col-lg-7">
@@ -131,12 +130,12 @@
                     @if (Model.PopularArticles.Any())
                     {
                         var cardIndex = 0;
-                        foreach (var article in Model.PopularArticles)
+                        foreach (var article in Model.PopularArticles.Take(4))
                         {
                             var visitCountText = article.VisitCount.ToString("N0", CultureInfo.CreateSpecificCulture("fa-IR"));
                             cardIndex++;
                             var stepDelay = (cardIndex * 0.12).ToString("0.##", CultureInfo.InvariantCulture);
-                            <div class="col-md-6 col-lg-4">
+                            <div class="col-md-6 col-lg-3">
                                 <article class="popular-article-card h-100" style="--card-delay:@stepDelay">
                                     <span class="popular-article-rank" aria-hidden="true">@cardIndex</span>
                                     <div class="popular-article-body">
