@@ -232,6 +232,13 @@ body.landing-page.dark-mode .form-select {
     border-color: rgba(148, 163, 184, 0.32);
 }
 
+body.landing-page.dark-mode .form-label,
+body.landing-page.dark-mode .blog-search-card h5,
+body.landing-page.dark-mode .glass-card h5 {
+    color: #e8edfb;
+    font-weight: 600;
+}
+
 body.landing-page.dark-mode .form-control::placeholder {
     color: #94a3b8;
 }
