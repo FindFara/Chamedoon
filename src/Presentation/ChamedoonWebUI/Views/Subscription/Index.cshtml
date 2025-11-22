@@ -1,25 +1,13 @@
 @model ChamedoonWebUI.Models.SubscriptionPageViewModel
 @using System.Linq
 @using Chamedoon.Application.Services.Subscription
-@{
+@{ 
     ViewData["Title"] = "انتخاب اشتراک";
     string PlanAccent(int index) => index switch
     {
-        0 => "plan-card--basic",
-        1 => "plan-card--pro",
-        _ => "plan-card--elite"
-    };
-    string PlanHighlight(int index, SubscriptionPlan plan) => index switch
-    {
-        0 => "۳ استعلام",
-        1 => "استعلام بی نهایت",
-        _ => "استعلام بی نهایت"
-    };
-    string[] PlanBullets(int index, SubscriptionPlan plan) => index switch
-    {
-        0 => new[] { "۳ استعلام" },
-        1 => new[] { "استعلام بی نهایت" },
-        _ => new[] { "استعلام بی نهایت", "هوش مصنوعی برای نتیجه بهتر" }
+        0 => "plan-showcase--basic",
+        1 => "plan-showcase--pro",
+        _ => "plan-showcase--elite"
     };
 }
 
@@ -29,13 +17,17 @@
 
 <section class="subscription-screen py-5 py-lg-6">
     <div class="container">
-        <div class="subscription-phone">
-            <div class="subscription-phone__header">
-                <span class="subscription-phone__hello">سلام! آماده‌ای ارزیابی رو شروع کنی؟</span>
-                <h1>پلن دلخواهت رو انتخاب کن</h1>
-                <p>پلن‌ها همه یک‌ماهه هستند و با تخفیف فعال می‌شوند.</p>
+        <div class="subscription-hero">
+            <div class="subscription-hero__content">
+                <span class="subscription-pill">پلن‌های اشتراک</span>
+                <h1>پلن‌های یک‌ماهه با ظاهر آشنا</h1>
+                <p class="mb-3">همان ترکیب کارت سفید و دارک بدون حاشیه اضافی؛ قیمت و تخفیف هر پلن از تنظیمات خوانده می‌شود.</p>
+                <div class="subscription-hero__tags">
+                    <span class="subscription-tag">دارک & لایت</span>
+                    <span class="subscription-tag subscription-tag--accent">تخفیف تا @Model.Plans.Max(p => p.DiscountPercent)%</span>
+                </div>
             </div>
-            <div class="subscription-phone__status">
+            <div class="subscription-hero__status">
                 <p class="status-title">اشتراک فعلی</p>
                 @if (Model.CurrentSubscription is null)
                 {
@@ -65,40 +57,44 @@
             </div>
         }
 
-        <div class="plan-carousel" role="list">
+        <div class="plan-showcase-grid" role="list">
             @for (var index = 0; index < Model.Plans.Count; index++)
             {
                 var plan = Model.Plans[index];
                 var isCurrent = Model.CurrentSubscription?.PlanId == plan.Id;
                 var accent = PlanAccent(index);
-                var highlight = PlanHighlight(index, plan);
-                var bullets = PlanBullets(index, plan);
-                <article class="plan-card @accent @(isCurrent ? "plan-card--active" : string.Empty)" role="listitem">
-                    <header class="plan-card__header">
-                        <div>
-                            <p class="plan-card__eyebrow">@plan.Title</p>
-                            <h3>@highlight</h3>
+                <article class="plan-showcase @accent @(isCurrent ? "plan-showcase--active" : string.Empty)" role="listitem">
+                    <div class="plan-showcase__layer plan-showcase__layer--dark"></div>
+                    <div class="plan-showcase__layer plan-showcase__layer--light"></div>
+                    <div class="plan-showcase__content">
+                        <header class="plan-showcase__header">
+                            <div>
+                                <p class="plan-showcase__eyebrow">@plan.DurationLabel</p>
+                                <h3>@plan.Title</h3>
+                            </div>
+                            <div class="plan-showcase__pricing">
+                                <span class="plan-showcase__price">@plan.Price.ToString("N0") تومان</span>
+                                <span class="plan-showcase__original">@plan.OriginalPrice.ToString("N0") تومان</span>
+                                <span class="plan-showcase__badge">@plan.DiscountPercent% تخفیف</span>
+                            </div>
+                        </header>
+
+                        <ul class="plan-showcase__features">
+                            @foreach (var feature in plan.Features)
+                            {
+                                <li>@feature</li>
+                            }
+                        </ul>
+
+                        <div class="plan-showcase__footer">
+                            <form asp-action="Subscribe" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="planId" value="@plan.Id" />
+                                <button type="submit" class="btn btn-primary btn-rounded" @(isCurrent ? "disabled" : string.Empty)>
+                                    @(isCurrent ? "فعال شده" : "انتخاب پلن")
+                                </button>
+                            </form>
                         </div>
-                        <div class="plan-card__price">
-                            <span class="plan-card__current">@plan.Price.ToString("N0") <small>تومان</small></span>
-                            <span class="plan-card__old">@plan.OriginalPrice.ToString("N0")</span>
-                        </div>
-                    </header>
-                    <ul class="plan-card__bullets">
-                        @foreach (var bullet in bullets)
-                        {
-                            <li>@bullet</li>
-                        }
-                    </ul>
-                    <div class="plan-card__cta">
-                        <span class="plan-card__discount">@plan.SavingsAmount.ToString("N0") تومان کمتر</span>
-                        <form asp-action="Subscribe" method="post">
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="planId" value="@plan.Id" />
-                            <button type="submit" class="btn btn-light" @(isCurrent ? "disabled" : string.Empty)>
-                                @(isCurrent ? "فعال شده" : "انتخاب پلن")
-                            </button>
-                        </form>
                     </div>
                 </article>
             }

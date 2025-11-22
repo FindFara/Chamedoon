@@ -43,7 +43,7 @@ public class PaymentService
 
     public async Task<PaymentRedirectResult> StartSubscriptionPaymentAsync(ClaimsPrincipal user, string planId, string callbackUrl, CancellationToken cancellationToken)
     {
-        var plan = Subscription.SubscriptionPlanCatalog.Find(planId);
+        var plan = _subscriptionService.FindPlan(planId);
         if (plan is null)
         {
             return PaymentRedirectResult.Failure("پلن انتخاب شده معتبر نیست.");
