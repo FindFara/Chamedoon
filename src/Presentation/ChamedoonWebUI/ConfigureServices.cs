@@ -61,6 +61,8 @@ public static class ConfigureServices
 
         services.AddScoped<SubscriptionService>();
         services.AddScoped<PaymentService>();
+        services.Configure<SubscriptionPlanOptions>(configuration.GetSection(SubscriptionPlanOptions.SectionName));
+        SubscriptionPlanCatalog.Configure(configuration.GetSection(SubscriptionPlanOptions.SectionName).Get<SubscriptionPlanOptions>());
         services.Configure<PaymentGatewayOptions>(configuration.GetSection(PaymentGatewayOptions.SectionName));
         services.AddHttpClient(PaymentGatewayOptions.HttpClientName, client =>
         {

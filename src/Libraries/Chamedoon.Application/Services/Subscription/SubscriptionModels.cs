@@ -1,15 +1,60 @@
 using System;
+using System.Linq;
 using System.Security.Claims;
 using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Chamedoon.Application.Services.Subscription;
 
 public static class SubscriptionPlanCatalog
 {
-    public static readonly IReadOnlyList<SubscriptionPlan> Plans = new List<SubscriptionPlan>
+    private static readonly object SyncRoot = new();
+
+    private static IReadOnlyList<SubscriptionPlan> _plans = BuildDefaultPlans();
+
+    public static IReadOnlyList<SubscriptionPlan> Plans => _plans;
+
+    public static void Configure(SubscriptionPlanOptions? options)
+    {
+        lock (SyncRoot)
+        {
+            _plans = BuildPlans(options);
+        }
+    }
+
+    public static SubscriptionPlan? Find(string? planId)
+        => Plans.FirstOrDefault(plan => plan.Id.Equals(planId ?? string.Empty, StringComparison.OrdinalIgnoreCase));
+
+    private static IReadOnlyList<SubscriptionPlan> BuildPlans(SubscriptionPlanOptions? options)
+    {
+        var defaults = BuildDefaultPlans();
+
+        if (options?.Plans is null || options.Plans.Count == 0)
+        {
+            return defaults;
+        }
+
+        return defaults
+            .Select(plan =>
+            {
+                var overridePlan = options.Plans.FirstOrDefault(p =>
+                    p.Id.Equals(plan.Id, StringComparison.OrdinalIgnoreCase));
+
+                return overridePlan is null
+                    ? plan
+                    : plan with
+                    {
+                        Price = overridePlan.Price ?? plan.Price,
+                        OriginalPrice = overridePlan.OriginalPrice ?? plan.OriginalPrice
+                    };
+            })
+            .ToList();
+    }
+
+    private static IReadOnlyList<SubscriptionPlan> BuildDefaultPlans() => new List<SubscriptionPlan>
     {
         new()
         {
@@ -60,21 +105,22 @@ public static class SubscriptionPlanCatalog
             }
         }
     };
-
-    public static SubscriptionPlan? Find(string? planId)
-        => Plans.FirstOrDefault(plan => plan.Id.Equals(planId ?? string.Empty, StringComparison.OrdinalIgnoreCase));
 }
 
 public class SubscriptionService
 {
     private readonly IApplicationDbContext _context;
 
-    public SubscriptionService(IApplicationDbContext context)
+    public SubscriptionService(IApplicationDbContext context, IOptions<SubscriptionPlanOptions>? planOptions = null)
     {
         _context = context;
+
+        SubscriptionPlanCatalog.Configure(planOptions?.Value);
     }
 
     public Task<IReadOnlyList<SubscriptionPlan>> GetPlansAsync() => Task.FromResult(SubscriptionPlanCatalog.Plans);
+
+    public SubscriptionPlan? FindPlan(string? planId) => SubscriptionPlanCatalog.Find(planId);
 
     public async Task<SubscriptionStatus?> GetCurrentSubscriptionAsync(ClaimsPrincipal user, CancellationToken cancellationToken)
     {
@@ -98,7 +144,7 @@ public class SubscriptionService
             return null;
         }
 
-        var plan = SubscriptionPlanCatalog.Find(customer.SubscriptionPlanId);
+        var plan = FindPlan(customer.SubscriptionPlanId);
         if (plan is null)
         {
             return null;
@@ -152,7 +198,7 @@ public class SubscriptionService
 
     public async Task ActivatePlanForUserAsync(long userId, string planId, CancellationToken cancellationToken)
     {
-        var plan = SubscriptionPlanCatalog.Find(planId);
+        var plan = FindPlan(planId);
         if (plan is null)
         {
             return;
@@ -194,7 +240,7 @@ public class SubscriptionService
         }
 
         var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == userId.Value, cancellationToken);
-        var plan = SubscriptionPlanCatalog.Find(customer?.SubscriptionPlanId);
+        var plan = FindPlan(customer?.SubscriptionPlanId);
 
         if (customer is null || plan is null || plan.EvaluationLimit is null)
         {
