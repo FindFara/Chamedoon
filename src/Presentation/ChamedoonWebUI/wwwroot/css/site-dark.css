@@ -94,6 +94,12 @@ body.landing-page.dark-mode .icon-button:focus-visible {
     box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.25);
 }
 
+body.landing-page.dark-mode .user-avatar-thumb {
+    border-color: rgba(148, 163, 184, 0.35);
+    background: rgba(15, 23, 42, 0.85);
+    box-shadow: 0 16px 34px -26px rgba(2, 6, 23, 0.85);
+}
+
 body.landing-page.dark-mode .theme-toggle .icon-sun,
 body.landing-page.dark-mode .theme-toggle .icon-moon {
     color: #e2e8f0;
@@ -133,6 +139,39 @@ body.landing-page.dark-mode .hero-badge {
 
 body.landing-page.dark-mode .hero-badge .dot {
     background: linear-gradient(135deg, #a5b4fc, #38bdf8);
+}
+
+body.landing-page.dark-mode .popular-article-card {
+    background: rgba(15, 23, 42, 0.75);
+    border-color: rgba(148, 163, 184, 0.28);
+    box-shadow: 0 24px 44px -26px rgba(2, 6, 23, 0.75);
+}
+
+body.landing-page.dark-mode .popular-article-card::before {
+    background: radial-gradient(circle at top right, rgba(129, 140, 248, 0.18), transparent 55%);
+}
+
+body.landing-page.dark-mode .popular-article-meta {
+    color: #cbd5f5;
+}
+
+body.landing-page.dark-mode .popular-article-visit {
+    color: #93c5fd;
+}
+
+body.landing-page.dark-mode .popular-article-empty {
+    background: rgba(15, 23, 42, 0.7);
+    border-color: rgba(148, 163, 184, 0.35);
+    color: #cbd5f5;
+}
+
+body.landing-page.dark-mode .popular-article-more-link {
+    color: #c7d2fe;
+}
+
+body.landing-page.dark-mode .popular-article-more-link:hover,
+body.landing-page.dark-mode .popular-article-more-link:focus-visible {
+    color: #e0e7ff;
 }
 
 body.landing-page.dark-mode .feature-card,
@@ -184,6 +223,37 @@ body.landing-page.dark-mode .btn-light {
     background-color: #f8fafc;
     color: #0f172a;
     border-color: transparent;
+}
+
+body.landing-page.dark-mode .form-control,
+body.landing-page.dark-mode .form-select {
+    background: rgba(15, 23, 42, 0.78);
+    color: #e2e8f0;
+    border-color: rgba(148, 163, 184, 0.32);
+}
+
+body.landing-page.dark-mode .form-label,
+body.landing-page.dark-mode .blog-search-card h5,
+body.landing-page.dark-mode .glass-card h5 {
+    color: #e8edfb;
+    font-weight: 600;
+}
+
+body.landing-page.dark-mode .form-control::placeholder {
+    color: #94a3b8;
+}
+
+body.landing-page.dark-mode .form-control:focus,
+body.landing-page.dark-mode .form-select:focus {
+    background: rgba(15, 23, 42, 0.88);
+    border-color: rgba(129, 140, 248, 0.55);
+    box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.18);
+    color: #f8fafc;
+}
+
+body.landing-page.dark-mode .form-select option {
+    background-color: #0b1220;
+    color: #e2e8f0;
 }
 
 body.landing-page.dark-mode .glass-card {
@@ -274,6 +344,29 @@ body.landing-page.dark-mode .score-card {
     background: rgba(15, 23, 42, 0.78);
     border-color: rgba(148, 163, 184, 0.28);
     color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .panel-subscription-card {
+    background: rgba(15, 23, 42, 0.78);
+}
+
+body.landing-page.dark-mode .panel-subscription-illustration {
+    background: linear-gradient(135deg, rgba(129, 140, 248, 0.2), rgba(56, 189, 248, 0.25));
+    color: #c7d2fe;
+}
+
+body.landing-page.dark-mode .panel-subscription-label,
+body.landing-page.dark-mode .panel-subscription-meta {
+    color: #94a3b8;
+}
+
+body.landing-page.dark-mode .panel-subscription-chip {
+    background: rgba(129, 140, 248, 0.2);
+    color: #c7d2fe;
+}
+
+body.landing-page.dark-mode .panel-subscription-link {
+    color: #93c5fd;
 }
 
 body.landing-page.dark-mode .profile-details .detail-row {

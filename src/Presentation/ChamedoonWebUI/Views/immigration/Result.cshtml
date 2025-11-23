@@ -1,47 +1,130 @@
 @model Chamedoon.Application.Services.Immigration.ImmigrationResult
+@using Chamedoon.Application.Services.Immigration
+@using System.Text.Json
+@using System.Linq
 @{
     ViewData["Title"] = "نتیجه ارزیابی مهاجرت";
 }
 
-<section class="glass-section">
+@section Styles {
+    <link rel="stylesheet" href="~/css/immigration.css" asp-append-version="true" />
+}
+
+<section class="immigration-page">
     <div class="container">
-        <div class="glass-card immigration-card mb-4">
-            <h2 class="fw-bold mb-2">مناسب‌ترین گزینه‌ها برای مهاجرت</h2>
-            <p class="glass-helper mb-0">
-                بر اساس اطلاعاتی که وارد کردی، مسیرهای زیر بالاترین شانس موفقیت را برایت دارند. رتبه‌بندی بر اساس تطابق شرایط، امتیاز تحصیلی و وضعیت مالی انجام شده است.
-            </p>
+        <div class="immigration-result-hero glass-card mb-4">
+            <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-3">
+                <div>
+                    <h2 class="fw-bold mb-2">مناسب‌ترین گزینه‌ها برای مهاجرت تو</h2>
+                    <p class="immigration-helper mb-0">با توجه به اطلاعات وارد شده، این کشورها بیشترین تطابق را با شرایط و تیپ شخصیتی تو دارند. هر کارت شامل مسیر پیشنهادی، امتیاز و نکات کلیدی است.</p>
+                </div>
+                <div class="immigration-meta">
+                    <span class="meta-pill">🎯 مسیرهای برتر</span>
+                    <span class="meta-pill">🕒 زمان بررسی کمتر از ۳۰ ثانیه</span>
+                </div>
+            </div>
         </div>
 
         @if (Model.TopCountries?.Any() == true)
         {
-            <div class="score-grid">
+            var averageScore = Math.Round(Model.TopCountries.Average(c => c.Score), 0);
+            <div class="result-insights glass-card mb-4">
+                <div class="insights-header">
+                    <div>
+                        <h4 class="fw-bold mb-1">خلاصه بصری نتیجه</h4>
+                        <p class="immigration-helper mb-0">امتیاز هر کشور و میانگین کلی را در یک نگاه ببین و خروجی را به شکل PDF ذخیره کن.</p>
+                    </div>
+                    <div class="insight-pill">میانگین کل: @averageScore%</div>
+                </div>
+                <div class="score-rings" data-score-rings>
+                    @for (int i = 0; i < Model.TopCountries.Count; i++)
+                    {
+                        var item = Model.TopCountries[i];
+                        var score = Math.Round(item.Score, 0);
+                        var gradientId = $"ring-grad-{i}";
+                        <div class="ring-card" data-score="@score">
+                            <div class="ring-visual" role="img" aria-label="@item.Country.GetDescription() با امتیاز @score درصد">
+                                <svg class="ring" viewBox="0 0 140 140" aria-hidden="true">
+                                    <defs>
+                                        <linearGradient id="@gradientId" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.95" />
+                                            <stop offset="100%" stop-color="var(--primary-soft)" stop-opacity="0.8" />
+                                        </linearGradient>
+                                    </defs>
+                                    <circle class="ring-track" cx="70" cy="70" r="58" />
+                                    <circle class="ring-progress" cx="70" cy="70" r="58" stroke="url(#@gradientId)" data-ring-progress />
+                                </svg>
+                                <div class="ring-center">
+                                    <span class="ring-value">@score%</span>
+                                </div>
+                                <div class="ring-label">@item.Country.GetDescription()</div>
+                            </div>
+                            <div class="ring-meta">
+                                <span class="visa-pill">@item.RecommendedVisaType</span>
+                                <span class="ring-hint">@(!string.IsNullOrWhiteSpace(item.PersonalityReport) ? item.PersonalityReport : "تناسب فرهنگی متعادل")</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="immigration-actions mt-3">
+                    <a asp-controller="Immigration" asp-action="Index" class="btn btn-outline-secondary">ویرایش اطلاعات</a>
+                </div>
+            </div>
+
+            <div class="immigration-result-grid">
                 @for (int i = 0; i < Model.TopCountries.Count; i++)
                 {
                     var item = Model.TopCountries[i];
-                    <div class="glass-card score-card">
-                        <span class="badge bg-primary-subtle text-primary mb-3">رتبه @(i + 1)</span>
-                        <h3 class="fw-semibold">@item.Country.GetDescription()</h3>
-                        <div class="score-value">
-                            <span>@item.Score</span>
-                            <small class="text-muted">%</small>
+                    var personality = string.IsNullOrWhiteSpace(item.PersonalityReport)
+                        ? "این کشور از نظر فرهنگی نیز با تیپ‌های مختلف سازگار است."
+                        : item.PersonalityReport;
+                    var jobInfo = string.IsNullOrWhiteSpace(item.JobInfo)
+                        ? "اطلاعات بازار کار در دسترس نیست."
+                        : item.JobInfo;
+                    var educationInfo = string.IsNullOrWhiteSpace(item.EducationInfo)
+                        ? "اطلاعات تحصیلی در دسترس نیست."
+                        : item.EducationInfo;
+                    var economyInfo = string.IsNullOrWhiteSpace(item.EconomyInfo)
+                        ? "اطلاعات اقتصادی در دسترس نیست."
+                        : item.EconomyInfo;
+                    var score = Math.Round(item.Score, 0);
+                    <article class="immigration-result-card glass-card">
+                        <span class="rank">رتبه @(i + 1)</span>
+                        <h4 class="fw-semibold mb-1">@item.Country.GetDescription()</h4>
+                        <div class="mini-meta mb-2">
+                            <span aria-label="@score درصد امتیاز">🔥 @score%</span>
+                            <span aria-label="ویزای پیشنهادی">🎟️ @item.RecommendedVisaType</span>
                         </div>
-                        <p class="glass-helper">مسیر پیشنهادی: @item.RecommendedVisaType</p>
-                        <a href="javascript:void(0)" class="btn-outline-glass mt-3">درخواست مشاوره برای این مسیر</a>
-                    </div>
+                        <div class="score-bar" aria-hidden="true">
+                            <div class="fill" style="width:@score%"></div>
+                        </div>
+                        <p class="immigration-helper mb-1">@personality</p>
+                        <p class="mb-0"><strong>بازار کار:</strong> @jobInfo</p>
+                        <p class="mb-0"><strong>تحصیل:</strong> @educationInfo</p>
+                        <p class="mb-0"><strong>اقتصاد و زندگی:</strong> @economyInfo</p>
+                        <div class="immigration-actions mt-2">
+                            <a asp-controller="Immigration" asp-action="Index" class="btn btn-outline-secondary btn-sm">ویرایش اطلاعات</a>
+                            <a asp-controller="Blog" asp-action="Index" class="btn btn-primary btn-sm">مطالعه تجربه‌های مرتبط</a>
+                        </div>
+                    </article>
                 }
             </div>
         }
         else
         {
-            <div class="glass-card blog-empty-state">
-                <h4 class="fw-semibold mb-2">اطلاعات کافی برای پیشنهاد وجود ندارد</h4>
-                <p class="glass-helper mb-0">لطفاً فرم ارزیابی را با دقت بیشتری تکمیل کن یا اطلاعات بیشتری اضافه کن تا بتوانیم پیشنهاد دقیق‌تری ارائه دهیم.</p>
+            <div class="immigration-empty">
+                <h5 class="fw-semibold mb-2">اطلاعات کافی برای پیشنهاد وجود ندارد</h5>
+                <p class="immigration-helper mb-0">لطفاً فرم ارزیابی را با دقت بیشتری تکمیل کن یا فیلدهای اختیاری را هم پر کن تا پیشنهاد دقیق‌تری ارائه دهیم.</p>
             </div>
         }
 
-        <div class="d-flex flex-wrap gap-3 mt-4">
-            <a asp-controller="Immigration" asp-action="Index" class="btn-outline-glass">ویرایش اطلاعات و ارزیابی مجدد</a>
-            <a asp-controller="Blog" asp-action="Index" class="btn-glass-primary">مطالعه نکات کاربردی مهاجرت</a>
+        <div class="immigration-actions mt-4">
+            <a asp-controller="Immigration" asp-action="Index" class="btn btn-outline-secondary">ویرایش اطلاعات و ارزیابی مجدد</a>
+            <a asp-controller="Blog" asp-action="Index" class="btn btn-primary">مطالعه نکات کاربردی مهاجرت</a>
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script src="~/js/immigration.js" asp-append-version="true"></script>
+}

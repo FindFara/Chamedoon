@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace Chamedoon.Application.Services.Immigration
@@ -12,6 +13,8 @@ namespace Chamedoon.Application.Services.Immigration
     /// </summary>
     public class ImmigrationInput
     {
+        private const int DefaultTextLength = 1000;
+
         /// <summary>
         /// سن متقاضی (به سال). مقدار باید عددی مثبت باشد.
         /// </summary>
@@ -89,6 +92,20 @@ namespace Chamedoon.Application.Services.Immigration
         /// برای ایجاد تطبیق فرهنگی و توصیه‌های شخصیتی استفاده می‌شود. پیش‌فرض Unknown است.
         /// </summary>
         public PersonalityType MBTIPersonality { get; set; } = PersonalityType.Unknown;
+
+        /// <summary>
+        /// شماره تماس برای پیگیری مشاوره یا ارسال نتیجه کامل. اختیاری است اما باید
+        /// در صورت ارسال، ساختار شماره تلفن را رعایت کند.
+        /// </summary>
+        [Phone]
+        [StringLength(32)]
+        public string? PhoneNumber { get; set; }
+
+        /// <summary>
+        /// توضیحات یا نکات تکمیلی که متقاضی می‌خواهد در گزارش در نظر گرفته شود.
+        /// </summary>
+        [StringLength(DefaultTextLength)]
+        public string? Notes { get; set; }
     }
 
     /// <summary>

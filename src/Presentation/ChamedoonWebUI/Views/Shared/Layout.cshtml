@@ -39,8 +39,9 @@
                     <div class="landing-center">
                         <div class="collapse navbar-collapse" id="landingNav">
                             <ul class="navbar-nav landing-nav mb-3 mb-lg-0 align-items-lg-center gap-3 gap-lg-4">
-                                <li class="nav-item"><a class="nav-link" href="#features">ویژگی‌ها</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Immigration" asp-action="Index">شروع ارزیابی مهاجرت</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#process">چطور کار می‌کند</a></li>
+                                <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">درباره ما</a></li>
                                 <li class="nav-item"><a class="nav-link" asp-controller="Blog" asp-action="Index">وبلاگ</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#testimonials">تجربه‌ها</a></li>
                             </ul>
@@ -49,12 +50,15 @@
                     <div class="landing-controls">
                         <div class="landing-actions">
                             <div class="dropdown user-menu-dropdown">
-                                <button class="icon-button dropdown-toggle" type="button" id="userMenuToggle" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="حساب کاربری" title="حساب کاربری">
+                                <button class="icon-button dropdown-toggle user-menu-toggle" type="button" id="userMenuToggle" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="حساب کاربری" title="حساب کاربری">
                                     <span class="visually-hidden">حساب کاربری</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
-                                        <path d="M12 12c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.2-5 5 2.2 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                        <path d="M5.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
+                                    @await Component.InvokeAsync("UserProfileImage", new { viewName = "Badge" })
+                                    <span class="user-menu-icon" aria-hidden="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
+                                            <path d="M12 12c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.2-5 5 2.2 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M5.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                    </span>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userMenuToggle">
                                     @if (User.Identity.IsAuthenticated)
@@ -122,6 +126,7 @@
                         <h6 class="fw-semibold mb-3">بخش‌ها</h6>
                         <ul class="list-unstyled text-muted">
                             <li><a class="text-reset text-decoration-none" asp-controller="Home" asp-action="Index">خانه کلاسیک</a></li>
+                            <li><a class="text-reset text-decoration-none" asp-controller="Home" asp-action="About">درباره چمدون</a></li>
                             <li><a class="text-reset text-decoration-none" asp-controller="Immigration" asp-action="Index">ارزیابی مهاجرت</a></li>
                             <li><a class="text-reset text-decoration-none" asp-controller="Blog" asp-action="Index">مطالب وبلاگ</a></li>
                         </ul>

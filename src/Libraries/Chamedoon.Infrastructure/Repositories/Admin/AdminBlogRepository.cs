@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Chamedoon.Application.Common.Interfaces.Admin;
+using Chamedoon.Application.Services.Admin.Common.Models;
 using Chamedoon.Domin.Entity.Blogs;
 using Chamedoon.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -103,4 +104,47 @@ public class AdminBlogRepository : IAdminBlogRepository
             .OrderByDescending(article => article.Created)
             .Take(count)
             .ToListAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<MonthlyRegistrationCount>> GetMonthlyArticleViewCountsAsync(int months, CancellationToken cancellationToken)
+    {
+        var articleViewSnapshots = await _context.Article
+            .Select(article => new
+            {
+                Date = article.LastModified ?? article.Created,
+                article.VisitCount
+            })
+            .ToListAsync(cancellationToken);
+
+        if (!articleViewSnapshots.Any())
+        {
+            var now = DateTime.UtcNow;
+            var start = new DateTime(now.Year, now.Month, 1).AddMonths(-(months - 1));
+            return Enumerable.Range(0, months)
+                .Select(offset =>
+                {
+                    var current = start.AddMonths(offset);
+                    return new MonthlyRegistrationCount(current.Year, current.Month, 0);
+                })
+                .ToList();
+        }
+
+        var latest = articleViewSnapshots.Max(snapshot => new DateTime(snapshot.Date.Year, snapshot.Date.Month, 1));
+        var windowStart = latest.AddMonths(-(months - 1));
+
+        var grouped = articleViewSnapshots
+            .GroupBy(snapshot => new { snapshot.Date.Year, snapshot.Date.Month })
+            .Select(group => new MonthlyRegistrationCount(group.Key.Year, group.Key.Month, group.Sum(article => (int)article.VisitCount)))
+            .ToDictionary(record => (record.Year, record.Month), record => record.Count);
+
+        var results = new List<MonthlyRegistrationCount>();
+        for (var i = 0; i < months; i++)
+        {
+            var date = windowStart.AddMonths(i);
+            var key = (date.Year, date.Month);
+            var count = grouped.TryGetValue(key, out var value) ? value : 0;
+            results.Add(new MonthlyRegistrationCount(date.Year, date.Month, count));
+        }
+
+        return results;
+    }
 }

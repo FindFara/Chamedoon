@@ -228,6 +228,10 @@ namespace Chamedoon.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gender = table.Column<int>(type: "int", nullable: false),
+                    SubscriptionPlanId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    SubscriptionStartDateUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    SubscriptionEndDateUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UsedEvaluations = table.Column<int>(type: "int", nullable: false, defaultValue: 0),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -237,6 +241,40 @@ namespace Chamedoon.Infrastructure.Migrations
                         name: "FK_Customers_User_Id",
                         column: x => x.Id,
                         principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ImmigrationEvaluations",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<long>(type: "bigint", nullable: false),
+                    Age = table.Column<int>(type: "int", nullable: false),
+                    MaritalStatus = table.Column<int>(type: "int", nullable: false),
+                    MBTIPersonality = table.Column<int>(type: "int", nullable: false),
+                    InvestmentAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    JobCategory = table.Column<int>(type: "int", nullable: false),
+                    JobTitle = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    WorkExperienceYears = table.Column<int>(type: "int", nullable: false),
+                    FieldCategory = table.Column<int>(type: "int", nullable: false),
+                    DegreeLevel = table.Column<int>(type: "int", nullable: false),
+                    LanguageCertificate = table.Column<int>(type: "int", nullable: false),
+                    WillingToStudy = table.Column<bool>(type: "bit", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
+                    Notes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ImmigrationEvaluations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ImmigrationEvaluations_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -261,6 +299,67 @@ namespace Chamedoon.Infrastructure.Migrations
                         name: "FK_UserRole_User_UserId",
                         column: x => x.UserId,
                         principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentRequests",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<long>(type: "bigint", nullable: false),
+                    PlanId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    Amount = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
+                    CallbackUrl = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
+                    GatewayTrackId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    ReferenceCode = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    PaymentUrl = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaidAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LastError = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PaymentRequests_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PaymentResponses",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PaymentRequestId = table.Column<long>(type: "bigint", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
+                    ResultCode = table.Column<int>(type: "int", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    RawPayload = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GatewayTrackId = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    ReferenceId = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
+                    CardNumber = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: true),
+                    Amount = table.Column<int>(type: "int", nullable: true),
+                    CreatedAtUtc = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaidAtUtc = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentResponses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PaymentResponses_PaymentRequests_PaymentRequestId",
+                        column: x => x.PaymentRequestId,
+                        principalTable: "PaymentRequests",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -291,6 +390,21 @@ namespace Chamedoon.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_CustomerId_Status",
+                table: "PaymentRequests",
+                columns: new[] { "CustomerId", "Status" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentRequests_GatewayTrackId",
+                table: "PaymentRequests",
+                column: "GatewayTrackId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentResponses_PaymentRequestId",
+                table: "PaymentResponses",
+                column: "PaymentRequestId");
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "Role",
                 column: "NormalizedName",
@@ -306,6 +420,16 @@ namespace Chamedoon.Infrastructure.Migrations
                 name: "IX_RolePermission_RoleId",
                 table: "RolePermission",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ImmigrationEvaluations_CreatedAtUtc",
+                table: "ImmigrationEvaluations",
+                column: "CreatedAtUtc");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ImmigrationEvaluations_CustomerId",
+                table: "ImmigrationEvaluations",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -344,7 +468,7 @@ namespace Chamedoon.Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "PaymentResponses");
 
             migrationBuilder.DropTable(
                 name: "RolePermission");
@@ -356,7 +480,16 @@ namespace Chamedoon.Infrastructure.Migrations
                 name: "Article");
 
             migrationBuilder.DropTable(
+                name: "ImmigrationEvaluations");
+
+            migrationBuilder.DropTable(
+                name: "PaymentRequests");
+
+            migrationBuilder.DropTable(
                 name: "Role");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "User");

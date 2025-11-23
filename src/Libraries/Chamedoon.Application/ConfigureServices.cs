@@ -8,6 +8,8 @@ using Chamedoon.Application.Services.Admin.Blogs;
 using Chamedoon.Application.Services.Admin.Dashboard;
 using Chamedoon.Application.Services.Admin.Roles;
 using Chamedoon.Application.Services.Admin.Users;
+using Chamedoon.Application.Services.Immigration;
+using Chamedoon.Application.Services.Payments;
 
 
 namespace Chamedoon.Application;
@@ -27,6 +29,8 @@ public static class ConfigureServices
         services.AddScoped<IAdminBlogService, AdminBlogService>();
         services.AddScoped<IAdminRoleService, AdminRoleService>();
         services.AddScoped<IAdminDashboardService, AdminDashboardService>();
+        services.AddScoped<IImmigrationEvaluationService, ImmigrationEvaluationService>();
+        services.AddScoped<PaymentService>();
 
         return services;
     }

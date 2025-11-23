@@ -38,6 +38,7 @@ public static class ConfigureServices
         services.AddScoped<IAdminUserRepository, AdminUserRepository>();
         services.AddScoped<IAdminBlogRepository, AdminBlogRepository>();
         services.AddScoped<IAdminRoleRepository, AdminRoleRepository>();
+        services.AddScoped<IAdminPaymentRepository, AdminPaymentRepository>();
 
         services.AddIdentity<User, Role>()
             .AddEntityFrameworkStores<ApplicationDbContext>()

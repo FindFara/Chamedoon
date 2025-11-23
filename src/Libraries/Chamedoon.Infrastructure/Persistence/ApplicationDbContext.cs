@@ -1,9 +1,11 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Domin.Entity.Blogs;
 using Chamedoon.Domin.Entity.Customers;
+using Chamedoon.Domin.Entity.Payments;
 using Chamedoon.Domin.Entity.Permissions;
 using Chamedoon.Domin.Entity.Users;
 using Chamedoon.Infrastructure.FluentConfigs.Customers;
+using Chamedoon.Infrastructure.FluentConfigs.Payments;
 using Chamedoon.Infrastructure.FluentConfigs.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -44,6 +46,12 @@ public class ApplicationDbContext : IdentityDbContext<
 
     #region Customer
     public DbSet<Customer> Customers { get; set; }
+    public DbSet<ImmigrationEvaluation> ImmigrationEvaluations { get; set; }
+    #endregion
+
+    #region Payments
+    public DbSet<PaymentRequest> PaymentRequests { get; set; }
+    public DbSet<PaymentResponse> PaymentResponses { get; set; }
     #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -72,6 +80,9 @@ public class ApplicationDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new RoleConfigs());
         modelBuilder.ApplyConfiguration(new RolePermissionConfigs());
         modelBuilder.ApplyConfiguration(new CustomerConfigs());
+        modelBuilder.ApplyConfiguration(new ImmigrationEvaluationConfigs());
+        modelBuilder.ApplyConfiguration(new PaymentRequestConfigs());
+        modelBuilder.ApplyConfiguration(new PaymentResponseConfigs());
 
 
     }

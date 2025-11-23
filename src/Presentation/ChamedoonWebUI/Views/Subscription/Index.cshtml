@@ -1,0 +1,103 @@
+@model ChamedoonWebUI.Models.SubscriptionPageViewModel
+@using System.Linq
+@using Chamedoon.Application.Services.Subscription
+@{ 
+    ViewData["Title"] = "انتخاب اشتراک";
+    string PlanAccent(int index) => index switch
+    {
+        0 => "plan-showcase--basic",
+        1 => "plan-showcase--pro",
+        _ => "plan-showcase--elite"
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/subscription.css" asp-append-version="true" />
+}
+
+<section class="subscription-screen py-5 py-lg-6">
+    <div class="container">
+        <div class="subscription-hero">
+            <div class="subscription-hero__content">
+                <span class="subscription-pill">پلن‌های اشتراک</span>
+                <h1>پلن‌های یک‌ماهه با ظاهر آشنا</h1>
+                <p class="mb-3">همان ترکیب کارت سفید و دارک بدون حاشیه اضافی؛ قیمت و تخفیف هر پلن از تنظیمات خوانده می‌شود.</p>
+                <div class="subscription-hero__tags">
+                    <span class="subscription-tag">دارک & لایت</span>
+                    <span class="subscription-tag subscription-tag--accent">تخفیف تا @Model.Plans.Max(p => p.DiscountPercent)%</span>
+                </div>
+            </div>
+            <div class="subscription-hero__status">
+                <p class="status-title">اشتراک فعلی</p>
+                @if (Model.CurrentSubscription is null)
+                {
+                    <p class="status-plan text-muted mb-1">اشتراکی فعال نیست.</p>
+                    <p class="status-meta mb-0">یکی از پلن‌ها را انتخاب کن.</p>
+                }
+                else
+                {
+                    <p class="status-plan">@Model.CurrentSubscription.PlanTitle</p>
+                    <p class="status-meta mb-1">@Model.CurrentSubscription.RemainingDays روز باقی‌مانده</p>
+                    @if (Model.CurrentSubscription.EvaluationLimit is null)
+                    {
+                        <p class="status-meta mb-0">استعلام بی‌نهایت</p>
+                    }
+                    else
+                    {
+                        <p class="status-meta mb-0">@Model.CurrentSubscription.UsedEvaluations از @Model.CurrentSubscription.EvaluationLimit</p>
+                    }
+                }
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.AlertMessage))
+        {
+            <div class="alert alert-info subscription-alert" role="alert">
+                @Model.AlertMessage
+            </div>
+        }
+
+        <div class="plan-showcase-grid" role="list">
+            @for (var index = 0; index < Model.Plans.Count; index++)
+            {
+                var plan = Model.Plans[index];
+                var isCurrent = Model.CurrentSubscription?.PlanId == plan.Id;
+                var accent = PlanAccent(index);
+                <article class="plan-showcase @accent @(isCurrent ? "plan-showcase--active" : string.Empty)" role="listitem">
+                    <div class="plan-showcase__layer plan-showcase__layer--dark"></div>
+                    <div class="plan-showcase__layer plan-showcase__layer--light"></div>
+                    <div class="plan-showcase__content">
+                        <header class="plan-showcase__header">
+                            <div>
+                                <p class="plan-showcase__eyebrow">@plan.DurationLabel</p>
+                                <h3>@plan.Title</h3>
+                            </div>
+                            <div class="plan-showcase__pricing">
+                                <span class="plan-showcase__price">@plan.Price.ToString("N0") تومان</span>
+                                <span class="plan-showcase__original">@plan.OriginalPrice.ToString("N0") تومان</span>
+                                <span class="plan-showcase__badge">@plan.DiscountPercent% تخفیف</span>
+                            </div>
+                        </header>
+
+                        <ul class="plan-showcase__features">
+                            @foreach (var feature in plan.Features)
+                            {
+                                <li>@feature</li>
+                            }
+                        </ul>
+
+                        <div class="plan-showcase__footer">
+                            <form asp-action="Subscribe" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="planId" value="@plan.Id" />
+                                <button type="submit" class="btn btn-primary btn-rounded" @(isCurrent ? "disabled" : string.Empty)>
+                                    @(isCurrent ? "فعال شده" : "انتخاب پلن")
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    </div>
+</section>
