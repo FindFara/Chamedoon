@@ -15,6 +15,7 @@ namespace Chamedoon.Application.Services.Immigration
     {
         Task RecordAsync(ImmigrationInput input, ClaimsPrincipal user, CancellationToken cancellationToken);
         Task<ImmigrationAnalyticsResult> GetAnalyticsAsync(CancellationToken cancellationToken);
+        Task<IReadOnlyList<ImmigrationEvaluationListItem>> SearchAsync(string? query, CancellationToken cancellationToken);
     }
 
     public record DistributionItem(string Label, double Percentage, int Count);
@@ -26,6 +27,19 @@ namespace Chamedoon.Application.Services.Immigration
         public List<DistributionItem> DegreeDistribution { get; init; } = new();
         public int TotalEvaluations { get; init; }
     }
+
+    public record ImmigrationEvaluationListItem(
+        long Id,
+        string CustomerName,
+        string? PhoneNumber,
+        int Age,
+        string MaritalStatus,
+        string JobCategory,
+        string? JobTitle,
+        string DegreeLevel,
+        string LanguageCertificate,
+        bool WillingToStudy,
+        DateTime CreatedAtUtc);
 
     public class ImmigrationEvaluationService : IImmigrationEvaluationService
     {
@@ -96,6 +110,44 @@ namespace Chamedoon.Application.Services.Immigration
             };
         }
 
+        public async Task<IReadOnlyList<ImmigrationEvaluationListItem>> SearchAsync(string? query, CancellationToken cancellationToken)
+        {
+            var normalizedQuery = query?.Trim();
+
+            var evaluations = await _context.ImmigrationEvaluations
+                .AsNoTracking()
+                .Include(item => item.Customer)
+                .OrderByDescending(item => item.CreatedAtUtc)
+                .ToListAsync(cancellationToken);
+
+            if (!string.IsNullOrWhiteSpace(normalizedQuery))
+            {
+                var lower = normalizedQuery.ToLowerInvariant();
+                evaluations = evaluations
+                    .Where(item =>
+                        (!string.IsNullOrWhiteSpace(item.Customer.FirstName) && item.Customer.FirstName.ToLowerInvariant().Contains(lower)) ||
+                        (!string.IsNullOrWhiteSpace(item.Customer.LastName) && item.Customer.LastName.ToLowerInvariant().Contains(lower)) ||
+                        (!string.IsNullOrWhiteSpace(item.PhoneNumber) && item.PhoneNumber.ToLowerInvariant().Contains(lower)) ||
+                        (!string.IsNullOrWhiteSpace(item.JobTitle) && item.JobTitle.ToLowerInvariant().Contains(lower)))
+                    .ToList();
+            }
+
+            return evaluations
+                .Select(item => new ImmigrationEvaluationListItem(
+                    item.Id,
+                    BuildCustomerName(item.Customer),
+                    item.PhoneNumber,
+                    item.Age,
+                    ((MaritalStatusType)item.MaritalStatus).ToDisplay(),
+                    ((JobCategoryType)item.JobCategory).ToDisplay(),
+                    item.JobTitle,
+                    ((DegreeLevelType)item.DegreeLevel).ToDisplay(),
+                    ((LanguageCertificateType)item.LanguageCertificate).ToDisplay(),
+                    item.WillingToStudy,
+                    item.CreatedAtUtc))
+                .ToList();
+        }
+
         private static List<DistributionItem> CalculateAgeDistribution(IEnumerable<ImmigrationEvaluation> evaluations, int total)
         {
             var buckets = new Dictionary<string, int>
@@ -155,6 +207,15 @@ namespace Chamedoon.Application.Services.Immigration
         {
             var idValue = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.Identity?.Name;
             return long.TryParse(idValue, out var id) ? id : null;
+        }
+
+        private static string BuildCustomerName(Customer customer)
+        {
+            var parts = new[] { customer.FirstName, customer.LastName }
+                .Where(part => !string.IsNullOrWhiteSpace(part))
+                .ToArray();
+
+            return parts.Length > 0 ? string.Join(" ", parts) : "نامشخص";
         }
     }
 }

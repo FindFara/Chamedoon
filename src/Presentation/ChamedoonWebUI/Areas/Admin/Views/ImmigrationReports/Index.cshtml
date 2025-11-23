@@ -88,6 +88,72 @@
             </div>
         </div>
     </div>
+
+    <div class="card admin-card shadow-sm border-0 mt-4">
+        <div class="card-header bg-transparent d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h5 class="mb-1">لیست ارزیابی‌ها</h5>
+                <small class="text-muted">مشاهده و جستجوی همه ارزیابی‌های ثبت‌شده</small>
+            </div>
+            <form method="get" class="d-flex gap-2" role="search">
+                <input type="search" name="query" value="@Model.Query" class="form-control" placeholder="جستجو بر اساس نام، تلفن یا عنوان شغلی" aria-label="جستجو" />
+                <button type="submit" class="btn btn-primary">جستجو</button>
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">مشتری</th>
+                        <th scope="col">تلفن</th>
+                        <th scope="col">سن</th>
+                        <th scope="col">وضعیت تاهل</th>
+                        <th scope="col">دسته شغلی</th>
+                        <th scope="col">عنوان شغلی</th>
+                        <th scope="col">تحصیلات</th>
+                        <th scope="col">مدرک زبان</th>
+                        <th scope="col">تمایل به تحصیل</th>
+                        <th scope="col">تاریخ ثبت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Evaluations.Any())
+                    {
+                        foreach (var item in Model.Evaluations)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@item.CustomerName</td>
+                                <td>@item.PhoneNumber ?? "-"</td>
+                                <td>@(item.Age > 0 ? item.Age.ToString() : "نامشخص")</td>
+                                <td>@item.MaritalStatus</td>
+                                <td>@item.JobCategory</td>
+                                <td>@(!string.IsNullOrWhiteSpace(item.JobTitle) ? item.JobTitle : "-")</td>
+                                <td>@item.DegreeLevel</td>
+                                <td>@item.LanguageCertificate</td>
+                                <td>
+                                    @if (item.WillingToStudy)
+                                    {
+                                        <span class="badge bg-success-subtle text-success">بله</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary-subtle text-secondary">خیر</span>
+                                    }
+                                </td>
+                                <td>@item.CreatedAtUtc.ToLocalTime().ToString("yyyy/MM/dd HH:mm")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-4">اطلاعاتی برای نمایش وجود ندارد.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
