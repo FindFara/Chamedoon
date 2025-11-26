@@ -122,7 +122,7 @@
         const rings = document.querySelector('[data-score-rings]');
         if (!rings) return;
 
-        rings.querySelectorAll('.ring-card').forEach((card) => {
+        rings.querySelectorAll('.ring-item').forEach((card) => {
             const score = Number(card.dataset.score || 0);
             const clamped = Math.max(0, Math.min(100, Math.round(score)));
             const progress = card.querySelector('[data-ring-progress]');

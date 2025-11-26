@@ -282,6 +282,88 @@
     background: rgba(255, 255, 255, 0.9);
 }
 
+.score-rings {
+    display: flex;
+    gap: 1.1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+}
+
+.ring-item {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.35rem 0.5rem;
+    min-width: 240px;
+}
+
+.ring-visual {
+    position: relative;
+    width: 140px;
+    display: grid;
+    grid-template-rows: auto auto;
+    justify-items: center;
+    gap: 0.5rem;
+}
+
+.ring {
+    width: 140px;
+    height: 140px;
+    grid-row: 1;
+    grid-column: 1;
+}
+
+.ring-track {
+    fill: none;
+    stroke: rgba(148, 163, 184, 0.2);
+    stroke-width: 10;
+}
+
+.ring-progress {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    stroke-dasharray: 364;
+    stroke-dashoffset: 364;
+    transition: stroke-dashoffset 0.7s ease;
+}
+
+.ring-center {
+    grid-row: 1;
+    grid-column: 1;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 0.35rem;
+}
+
+.ring-value {
+    font-weight: 800;
+    font-size: 1.3rem;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+}
+
+.ring-label {
+    grid-row: 2;
+    grid-column: 1;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    font-weight: 700;
+    max-width: 18ch;
+    text-align: center;
+}
+
+.ring-meta {
+    display: grid;
+    gap: 0.35rem;
+    align-content: center;
+}
+
 .insights-header {
     display: flex;
     align-items: center;
@@ -314,6 +396,7 @@
 .immigration-result-grid {
     display: grid;
     gap: 1.2rem;
+    grid-template-columns: 1fr;
 }
 
 .immigration-result-card {
