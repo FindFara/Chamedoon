@@ -27,48 +27,16 @@
 
         @if (Model.TopCountries?.Any() == true)
         {
-            var averageScore = Math.Round(Model.TopCountries.Average(c => c.Score), 0);
-            <div class="result-insights glass-card mb-4">
-                <div class="insights-header">
-                    <div>
-                        <h4 class="fw-bold mb-1">خلاصه بصری نتیجه</h4>
-                        <p class="immigration-helper mb-0">امتیاز هر کشور و میانگین کلی را در یک نگاه ببین و خروجی را به شکل PDF ذخیره کن.</p>
-                    </div>
-                    <div class="insight-pill">میانگین کل: @averageScore%</div>
-                </div>
-                <div class="score-rings" data-score-rings>
-                    @for (int i = 0; i < Model.TopCountries.Count; i++)
-                    {
-                        var item = Model.TopCountries[i];
-                        var score = Math.Round(item.Score, 0);
-                        var gradientId = $"ring-grad-{i}";
-                        <div class="ring-card" data-score="@score">
-                            <div class="ring-visual" role="img" aria-label="@item.Country.GetDescription() با امتیاز @score درصد">
-                                <svg class="ring" viewBox="0 0 140 140" aria-hidden="true">
-                                    <defs>
-                                        <linearGradient id="@gradientId" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.95" />
-                                            <stop offset="100%" stop-color="var(--primary-soft)" stop-opacity="0.8" />
-                                        </linearGradient>
-                                    </defs>
-                                    <circle class="ring-track" cx="70" cy="70" r="58" />
-                                    <circle class="ring-progress" cx="70" cy="70" r="58" stroke="url(#@gradientId)" data-ring-progress />
-                                </svg>
-                                <div class="ring-center">
-                                    <span class="ring-value">@score%</span>
-                                </div>
-                                <div class="ring-label">@item.Country.GetDescription()</div>
-                            </div>
-                            <div class="ring-meta">
-                                <span class="visa-pill">@item.RecommendedVisaType</span>
-                            </div>
-                        </div>
-                    }
-                </div>
-                <div class="immigration-actions mt-3">
-                    <a asp-controller="Immigration" asp-action="Index" class="btn btn-outline-secondary">ویرایش اطلاعات</a>
-                </div>
-            </div>
+            string StripNumbers(string text)
+            {
+                if (string.IsNullOrWhiteSpace(text))
+                {
+                    return text;
+                }
+
+                var cleaned = System.Text.RegularExpressions.Regex.Replace(text, @"[\d\[\]-]+", "");
+                return cleaned.Trim();
+            }
 
             <div class="immigration-result-grid">
                 @for (int i = 0; i < Model.TopCountries.Count; i++)
@@ -76,13 +44,13 @@
                     var item = Model.TopCountries[i];
                     var jobInfo = string.IsNullOrWhiteSpace(item.JobInfo)
                         ? "اطلاعات بازار کار در دسترس نیست."
-                        : item.JobInfo;
+                        : StripNumbers(item.JobInfo);
                     var educationInfo = string.IsNullOrWhiteSpace(item.EducationInfo)
                         ? "اطلاعات تحصیلی در دسترس نیست."
-                        : item.EducationInfo;
+                        : StripNumbers(item.EducationInfo);
                     var economyInfo = string.IsNullOrWhiteSpace(item.EconomyInfo)
                         ? "اطلاعات اقتصادی در دسترس نیست."
-                        : item.EconomyInfo;
+                        : StripNumbers(item.EconomyInfo);
                     var score = Math.Round(item.Score, 0);
                     <article class="immigration-result-card glass-card">
                         <h4 class="fw-semibold mb-1">@item.Country.GetDescription()</h4>
