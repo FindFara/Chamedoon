@@ -61,7 +61,6 @@
                             </div>
                             <div class="ring-meta">
                                 <span class="visa-pill">@item.RecommendedVisaType</span>
-                                <span class="ring-hint">@(!string.IsNullOrWhiteSpace(item.PersonalityReport) ? item.PersonalityReport : "تناسب فرهنگی متعادل")</span>
                             </div>
                         </div>
                     }
@@ -75,9 +74,6 @@
                 @for (int i = 0; i < Model.TopCountries.Count; i++)
                 {
                     var item = Model.TopCountries[i];
-                    var personality = string.IsNullOrWhiteSpace(item.PersonalityReport)
-                        ? "این کشور از نظر فرهنگی نیز با تیپ‌های مختلف سازگار است."
-                        : item.PersonalityReport;
                     var jobInfo = string.IsNullOrWhiteSpace(item.JobInfo)
                         ? "اطلاعات بازار کار در دسترس نیست."
                         : item.JobInfo;
@@ -89,7 +85,6 @@
                         : item.EconomyInfo;
                     var score = Math.Round(item.Score, 0);
                     <article class="immigration-result-card glass-card">
-                        <span class="rank">رتبه @(i + 1)</span>
                         <h4 class="fw-semibold mb-1">@item.Country.GetDescription()</h4>
                         <div class="mini-meta mb-2">
                             <span aria-label="@score درصد امتیاز">🔥 @score%</span>
@@ -98,7 +93,6 @@
                         <div class="score-bar" aria-hidden="true">
                             <div class="fill" style="width:@score%"></div>
                         </div>
-                        <p class="immigration-helper mb-1">@personality</p>
                         <p class="mb-0"><strong>بازار کار:</strong> @jobInfo</p>
                         <p class="mb-0"><strong>تحصیل:</strong> @educationInfo</p>
                         <p class="mb-0"><strong>اقتصاد و زندگی:</strong> @economyInfo</p>
