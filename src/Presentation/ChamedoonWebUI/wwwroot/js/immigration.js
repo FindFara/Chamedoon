@@ -122,11 +122,12 @@
         const rings = document.querySelector('[data-score-rings]');
         if (!rings) return;
 
-        rings.querySelectorAll('.ring-card').forEach((card) => {
+        rings.querySelectorAll('.ring-item').forEach((card) => {
             const score = Number(card.dataset.score || 0);
             const clamped = Math.max(0, Math.min(100, Math.round(score)));
             const progress = card.querySelector('[data-ring-progress]');
-            const label = card.querySelector('.ring-value');
+            const tip = card.querySelector('[data-ring-tip]');
+            const tipValue = card.querySelector('[data-ring-value]');
             const radius = 58;
             const circumference = 2 * Math.PI * radius;
 
@@ -140,8 +141,34 @@
                 });
             }
 
-            if (label) {
-                label.textContent = `${clamped}%`;
+            if (tip && tipValue) {
+                const angle = (clamped / 100) * 360 - 90;
+                const radians = (angle * Math.PI) / 180;
+                const center = 70;
+                const tipRadius = radius + 6;
+                const labelRadius = radius + 18;
+                const dot = tip.querySelector('.tip-dot');
+                const label = tip.querySelector('.tip-label');
+
+                tipValue.textContent = `${clamped}%`;
+
+                const dotX = center + tipRadius * Math.cos(radians);
+                const dotY = center + tipRadius * Math.sin(radians);
+                const labelX = center + labelRadius * Math.cos(radians);
+                const labelY = center + labelRadius * Math.sin(radians);
+
+                if (dot) {
+                    dot.style.left = `${dotX}px`;
+                    dot.style.top = `${dotY}px`;
+                }
+
+                if (label) {
+                    label.style.left = `${labelX}px`;
+                    label.style.top = `${labelY}px`;
+                    label.setAttribute('aria-label', `${clamped}%`);
+                }
+
+                tip.classList.add('is-visible');
             }
         });
     };
