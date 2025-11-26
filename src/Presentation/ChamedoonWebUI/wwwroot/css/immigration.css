@@ -358,6 +358,8 @@
     display: grid;
     gap: 0.35rem;
     align-content: center;
+    align-items: center;
+    justify-items: center;
 }
 
 .ring-tip {
