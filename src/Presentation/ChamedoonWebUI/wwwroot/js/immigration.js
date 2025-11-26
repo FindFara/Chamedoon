@@ -122,7 +122,9 @@
         const rings = document.querySelector('[data-score-rings]');
         if (!rings) return;
 
-        rings.querySelectorAll('.ring-item').forEach((card) => {
+        const updateRing = (card) => {
+            if (!card) return;
+
             const score = Number(card.dataset.score || 0);
             const clamped = Math.max(0, Math.min(100, Math.round(score)));
             const progress = card.querySelector('[data-ring-progress]');
@@ -132,7 +134,7 @@
             const visual = card.querySelector('.ring-visual');
 
             const viewBoxSize = ring?.viewBox?.baseVal?.width || 140;
-            const ringSize = visual?.clientWidth || viewBoxSize;
+            const ringSize = visual?.getBoundingClientRect()?.width || viewBoxSize;
             const scale = ringSize / viewBoxSize;
             const baseRadius = Number(progress?.getAttribute('r') || 58);
             const radius = baseRadius * scale;
@@ -140,12 +142,8 @@
 
             if (progress) {
                 progress.style.strokeDasharray = `${circumference}`;
-                progress.style.strokeDashoffset = `${circumference}`;
-
-                requestAnimationFrame(() => {
-                    const offset = circumference - (clamped / 100) * circumference;
-                    progress.style.strokeDashoffset = `${offset}`;
-                });
+                const offset = circumference - (clamped / 100) * circumference;
+                progress.style.strokeDashoffset = `${offset}`;
             }
 
             if (tip && tipValue) {
@@ -177,6 +175,31 @@
 
                 tip.classList.add('is-visible');
             }
+        };
+
+        const scheduleUpdate = (card) => {
+            requestAnimationFrame(() => updateRing(card));
+        };
+
+        rings.querySelectorAll('.ring-item').forEach((card) => {
+            updateRing(card);
+            scheduleUpdate(card);
+
+            if (window.ResizeObserver) {
+                const visual = card.querySelector('.ring-visual');
+                if (visual) {
+                    const observer = new ResizeObserver(() => scheduleUpdate(card));
+                    observer.observe(visual);
+                }
+            }
+        });
+
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                rings.querySelectorAll('.ring-item').forEach((card) => updateRing(card));
+            }, 150);
         });
     };
 
