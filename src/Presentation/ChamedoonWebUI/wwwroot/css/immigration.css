@@ -286,17 +286,23 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 0.85rem;
-    align-items: stretch;
+    align-items: end;
     padding: 0.35rem 0.1rem 0.5rem;
 }
 
 .ring-item {
-    display: grid;
-    align-content: space-between;
-    justify-items: center;
-    gap: 0.45rem;
-    padding: 0.5rem 0.65rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.65rem 0.75rem;
     min-width: 0;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 1.1rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .ring-visual {
@@ -306,9 +312,12 @@
     display: grid;
     place-items: center;
     padding: 0.45rem;
-    background: radial-gradient(circle at 30% 30%, rgba(79, 70, 229, 0.12), rgba(255, 255, 255, 0.9));
+    background: radial-gradient(circle at 30% 30%, rgba(79, 70, 229, 0.08), rgba(255, 255, 255, 0.78));
     border-radius: 1rem;
-    box-shadow: 0 16px 38px -28px rgba(15, 23, 42, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(79, 70, 229, 0.12);
+    box-shadow: none;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
 .ring {
@@ -316,7 +325,7 @@
     height: 126px;
     grid-row: 1;
     grid-column: 1;
-    filter: drop-shadow(0 3px 12px rgba(79, 70, 229, 0.15));
+    filter: none;
 }
 
 .ring-track {
@@ -354,9 +363,11 @@
 }
 
 .ring-meta {
-    display: grid;
-    gap: 0.35rem;
-    align-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 2.25rem;
 }
 
 .ring-tip {
@@ -381,7 +392,6 @@
     border-radius: 50%;
     background: #fff;
     border: 2px solid var(--primary);
-    box-shadow: 0 8px 16px rgba(79, 70, 229, 0.25);
     transform: translate(-50%, -50%);
 }
 
@@ -389,13 +399,12 @@
     position: absolute;
     padding: 0.22rem 0.55rem;
     border-radius: 0.65rem;
-    background: rgba(79, 70, 229, 0.18);
+    background: rgba(79, 70, 229, 0.12);
     color: var(--primary);
     font-weight: 800;
     font-size: 0.88rem;
     transform: translate(-50%, -50%);
     backdrop-filter: blur(8px);
-    box-shadow: 0 12px 30px -15px rgba(79, 70, 229, 0.55);
     border: 1px solid rgba(79, 70, 229, 0.2);
     white-space: nowrap;
 }
