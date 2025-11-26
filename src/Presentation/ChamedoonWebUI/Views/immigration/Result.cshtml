@@ -66,9 +66,12 @@
                                     <circle class="ring-progress" cx="70" cy="70" r="58" stroke="url(#@gradientId)" data-ring-progress />
                                 </svg>
                                 <div class="ring-center">
-                                    <span class="ring-value">@score%</span>
+                                    <span class="ring-country">@item.Country.GetDescription()</span>
                                 </div>
-                                <div class="ring-label">@item.Country.GetDescription()</div>
+                                <div class="ring-tip" data-ring-tip>
+                                    <span class="tip-dot"></span>
+                                    <span class="tip-label" data-ring-value>@score%</span>
+                                </div>
                             </div>
                             <div class="ring-meta">
                                 <span class="visa-pill">@item.RecommendedVisaType</span>
