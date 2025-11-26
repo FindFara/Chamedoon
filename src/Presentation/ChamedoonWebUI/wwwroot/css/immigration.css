@@ -288,6 +288,7 @@
     flex-wrap: wrap;
     align-items: stretch;
     padding: 0.35rem 0.1rem 0.5rem;
+    justify-content: center;
 }
 
 .ring-item {
@@ -357,6 +358,8 @@
     display: grid;
     gap: 0.35rem;
     align-content: center;
+    justify-items: center;
+    text-align: center;
 }
 
 .ring-tip {

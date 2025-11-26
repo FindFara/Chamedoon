@@ -128,8 +128,15 @@
             const progress = card.querySelector('[data-ring-progress]');
             const tip = card.querySelector('[data-ring-tip]');
             const tipValue = card.querySelector('[data-ring-value]');
-            const radius = 58;
-            const circumference = 2 * Math.PI * radius;
+            const ring = card.querySelector('.ring');
+            const visual = card.querySelector('.ring-visual');
+
+            const viewBoxSize = ring?.viewBox?.baseVal?.width || 140;
+            const ringSize = visual?.clientWidth || viewBoxSize;
+            const scale = ringSize / viewBoxSize;
+            const baseRadius = Number(progress?.getAttribute('r') || 58);
+            const radius = baseRadius * scale;
+            const circumference = 2 * Math.PI * baseRadius;
 
             if (progress) {
                 progress.style.strokeDasharray = `${circumference}`;
@@ -144,9 +151,9 @@
             if (tip && tipValue) {
                 const angle = (clamped / 100) * 360 - 90;
                 const radians = (angle * Math.PI) / 180;
-                const center = 70;
-                const tipRadius = radius + 6;
-                const labelRadius = radius + 18;
+                const center = ringSize / 2;
+                const tipRadius = radius + 6 * scale;
+                const labelRadius = radius + 18 * scale;
                 const dot = tip.querySelector('.tip-dot');
                 const label = tip.querySelector('.tip-label');
 
