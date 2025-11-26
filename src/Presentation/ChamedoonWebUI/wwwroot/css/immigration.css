@@ -366,6 +366,13 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.ring-tip.is-visible {
+    opacity: 1;
 }
 
 .ring-tip .tip-dot {
@@ -381,15 +388,17 @@
 
 .ring-tip .tip-label {
     position: absolute;
-    padding: 0.2rem 0.5rem;
-    border-radius: 0.65rem;
-    background: rgba(79, 70, 229, 0.1);
+    padding: 0.25rem 0.65rem;
+    border-radius: 0.7rem;
+    background: rgba(79, 70, 229, 0.18);
     color: var(--primary);
     font-weight: 800;
-    font-size: 0.9rem;
-    transform: translate(-50%, -150%);
-    backdrop-filter: blur(6px);
-    box-shadow: 0 10px 25px -15px rgba(79, 70, 229, 0.45);
+    font-size: 0.95rem;
+    transform: translate(-50%, -50%);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 12px 30px -15px rgba(79, 70, 229, 0.55);
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    white-space: nowrap;
 }
 
 .insights-header {

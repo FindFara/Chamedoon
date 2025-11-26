@@ -165,7 +165,10 @@
                 if (label) {
                     label.style.left = `${labelX}px`;
                     label.style.top = `${labelY}px`;
+                    label.setAttribute('aria-label', `${clamped}%`);
                 }
+
+                tip.classList.add('is-visible');
             }
         });
     };
