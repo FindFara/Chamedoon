@@ -151,6 +151,12 @@ namespace Chamedoon.Application.Services.Immigration
         ISTP,
         ISTJ
     }
+
+    public enum ScoringAlgorithmType
+    {
+        [Display(Name = "استاندارد")] Standard,
+        [Display(Name = "تحلیل با هوش مصنوعی")] AiEnhanced
+    }
     public enum CountryType
     {
         [Description("کانادا")]

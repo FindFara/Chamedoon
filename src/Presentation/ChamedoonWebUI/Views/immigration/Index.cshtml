@@ -79,6 +79,15 @@
                                     <span asp-validation-for="MBTIPersonality" class="text-danger small"></span>
                                 </div>
                                 <div class="immigration-field">
+                                    <label for="ScoringAlgorithm" class="field-label">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="کاربران دارای پلن هوش مصنوعی می‌توانند از تحلیل عمیق‌تر استفاده کنند.">؟</span>
+                                        نوع الگوریتم امتیازدهی
+                                    </label>
+                                    <select asp-for="ScoringAlgorithm" class="form-select" asp-items="Html.GetEnumSelectList<ScoringAlgorithmType>()" data-progress-field></select>
+                                    <div class="form-text">انتخاب «تحلیل با هوش مصنوعی» برای کاربران پلن AI فعال است.</div>
+                                    <span asp-validation-for="ScoringAlgorithm" class="text-danger small"></span>
+                                </div>
+                                <div class="immigration-field">
                                     <label for="InvestmentAmount" class="field-label">
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="میزان سرمایه در مسیرهای سرمایه‌گذاری اثرگذار است.">؟</span>
                                         میزان سرمایه (دلار/یورو)
