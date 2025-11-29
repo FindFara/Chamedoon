@@ -151,54 +151,34 @@
 
                             <div class="detail-block">
                                 <div class="detail-title">هزینه‌های زندگی</div>
-                                @if (!string.IsNullOrWhiteSpace(livingCosts.FamilyMonthly) ||
-                                     !string.IsNullOrWhiteSpace(livingCosts.SingleMonthly) ||
-                                     !string.IsNullOrWhiteSpace(livingCosts.Transport) ||
-                                     !string.IsNullOrWhiteSpace(livingCosts.Utilities) ||
-                                     !string.IsNullOrWhiteSpace(livingCosts.Recreation) ||
-                                     !string.IsNullOrWhiteSpace(livingCosts.FoodBasket) ||
-                                     !string.IsNullOrWhiteSpace(livingCosts.RentOneBedroom) ||
-                                     !string.IsNullOrWhiteSpace(livingCosts.RentThreeBedroom) ||
-                                     !string.IsNullOrWhiteSpace(livingCosts.Internet))
+                                @{
+                                    var livingItems = new List<(string Label, string? Value)>
+                                    {
+                                        ("متوسط هزینه‌های ماهانه برای یک خانواده چهار نفره (بدون اجاره)", livingCosts.FamilyMonthly),
+                                        ("میانگین هزینه زندگی برای یک نفر (بدون اجاره)", livingCosts.SingleMonthly),
+                                        ("حمل و نقل", livingCosts.Transport),
+                                        ("خدمات رفاهی", livingCosts.Utilities),
+                                        ("فعالیت‌های تفریحی", livingCosts.Recreation),
+                                        ("مواد غذایی", livingCosts.FoodBasket),
+                                        ("آپارتمان یک خوابه", livingCosts.RentOneBedroom),
+                                        ("آپارتمان سه خوابه", livingCosts.RentThreeBedroom),
+                                        ("اینترنت نامحدود ماهانه", livingCosts.Internet)
+                                    }
+                                    .Where(item => !string.IsNullOrWhiteSpace(item.Value))
+                                    .ToList();
+                                }
+
+                                @if (livingItems.Any())
                                 {
-                                    <ul class="living-list mb-0">
-                                        @if (!string.IsNullOrWhiteSpace(livingCosts.FamilyMonthly))
+                                    <div class="living-grid">
+                                        @foreach (var entry in livingItems)
                                         {
-                                            <li>متوسط هزینه ماهانه خانواده چهار نفره (بدون اجاره): @CleanText(livingCosts.FamilyMonthly)</li>
+                                            <div class="living-item">
+                                                <div class="living-label">@entry.Label</div>
+                                                <div class="living-value">@CleanText(entry.Value)</div>
+                                            </div>
                                         }
-                                        @if (!string.IsNullOrWhiteSpace(livingCosts.SingleMonthly))
-                                        {
-                                            <li>میانگین هزینه برای یک نفر (بدون اجاره): @CleanText(livingCosts.SingleMonthly)</li>
-                                        }
-                                        @if (!string.IsNullOrWhiteSpace(livingCosts.Transport))
-                                        {
-                                            <li>حمل و نقل: @CleanText(livingCosts.Transport)</li>
-                                        }
-                                        @if (!string.IsNullOrWhiteSpace(livingCosts.Utilities))
-                                        {
-                                            <li>خدمات رفاهی (برق، آب، گاز، زباله): @CleanText(livingCosts.Utilities)</li>
-                                        }
-                                        @if (!string.IsNullOrWhiteSpace(livingCosts.Recreation))
-                                        {
-                                            <li>فعالیت‌های تفریحی: @CleanText(livingCosts.Recreation)</li>
-                                        }
-                                        @if (!string.IsNullOrWhiteSpace(livingCosts.FoodBasket))
-                                        {
-                                            <li>مواد غذایی: @CleanText(livingCosts.FoodBasket)</li>
-                                        }
-                                        @if (!string.IsNullOrWhiteSpace(livingCosts.RentOneBedroom))
-                                        {
-                                            <li>آپارتمان یک خوابه: @CleanText(livingCosts.RentOneBedroom)</li>
-                                        }
-                                        @if (!string.IsNullOrWhiteSpace(livingCosts.RentThreeBedroom))
-                                        {
-                                            <li>آپارتمان سه خوابه: @CleanText(livingCosts.RentThreeBedroom)</li>
-                                        }
-                                        @if (!string.IsNullOrWhiteSpace(livingCosts.Internet))
-                                        {
-                                            <li>اینترنت نامحدود ماهانه: @CleanText(livingCosts.Internet)</li>
-                                        }
-                                    </ul>
+                                    </div>
                                 }
                                 else
                                 {
