@@ -492,6 +492,77 @@
     color: inherit;
 }
 
+.card-header-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.score-chip {
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.9rem;
+    background: rgba(79, 70, 229, 0.08);
+    color: var(--primary);
+    font-weight: 800;
+    box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.18);
+    height: fit-content;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0.9rem;
+}
+
+.detail-block {
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 0.95rem;
+    padding: 0.85rem;
+    background: rgba(248, 250, 252, 0.9);
+    display: grid;
+    gap: 0.35rem;
+}
+
+.detail-title {
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.detail-text {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.detail-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--primary);
+    border-radius: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    font-weight: 700;
+    width: fit-content;
+}
+
+.living-list,
+.restriction-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.3rem;
+    color: var(--text-muted);
+}
+
+.restriction-list li,
+.living-list li {
+    padding: 0.35rem 0.55rem;
+    border-radius: 0.7rem;
+    background: rgba(15, 23, 42, 0.03);
+}
+
 .immigration-empty {
     padding: 1.5rem;
     border-radius: 1rem;

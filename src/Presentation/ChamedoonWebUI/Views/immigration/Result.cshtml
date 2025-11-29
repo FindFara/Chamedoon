@@ -1,6 +1,6 @@
 @model Chamedoon.Application.Services.Immigration.ImmigrationResult
 @using Chamedoon.Application.Services.Immigration
-@using System.Text.Json
+@using CountryPoints
 @using System.Linq
 @{
     ViewData["Title"] = "نتیجه ارزیابی مهاجرت";
@@ -28,16 +28,6 @@
         @if (Model.TopCountries?.Any() == true)
         {
             var averageScore = Math.Round(Model.TopCountries.Average(c => c.Score), 0);
-            string StripNumbers(string text)
-            {
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    return text;
-                }
-
-                var cleaned = System.Text.RegularExpressions.Regex.Replace(text, @"[\d\[\]-]+", "");
-                return cleaned.Trim();
-            }
 
             <div class="result-insights glass-card mb-4">
                 <div class="insights-header">
@@ -85,28 +75,111 @@
                 @for (int i = 0; i < Model.TopCountries.Count; i++)
                 {
                     var item = Model.TopCountries[i];
-                    var jobInfo = string.IsNullOrWhiteSpace(item.JobInfo)
-                        ? "اطلاعات بازار کار در دسترس نیست."
-                        : StripNumbers(item.JobInfo);
-                    var educationInfo = string.IsNullOrWhiteSpace(item.EducationInfo)
-                        ? "اطلاعات تحصیلی در دسترس نیست."
-                        : StripNumbers(item.EducationInfo);
-                    var economyInfo = string.IsNullOrWhiteSpace(item.EconomyInfo)
-                        ? "اطلاعات اقتصادی در دسترس نیست."
-                        : StripNumbers(item.EconomyInfo);
                     var score = Math.Round(item.Score, 0);
+                    var livingCosts = item.Data.LivingCosts ?? new MinimumLivingCosts { Housing = new List<HousingCost>() };
+                    var housingSample = livingCosts.Housing?.OrderBy(h => h.Cost).FirstOrDefault();
+                    var languageRequirement = item.Data.LanguageRequirement ?? item.Data.Education?.LanguageRequirement;
                     <article class="immigration-result-card glass-card">
-                        <h4 class="fw-semibold mb-1">@item.Country.GetDescription()</h4>
-                        <div class="mini-meta mb-2">
-                            <span aria-label="@score درصد امتیاز">🔥 @score%</span>
-                            <span aria-label="ویزای پیشنهادی">🎟️ @item.RecommendedVisaType</span>
+                        <div class="rank">#@(@i + 1)</div>
+                        <div class="card-header-line">
+                            <div>
+                                <h4 class="fw-semibold mb-1">@item.Country.GetDescription()</h4>
+                                <div class="mini-meta mb-2">
+                                    <span aria-label="@score درصد امتیاز">🔥 @score%</span>
+                                    <span aria-label="ویزای پیشنهادی">🎟️ @item.RecommendedVisaType</span>
+                                </div>
+                            </div>
+                            <div class="score-chip">امتیاز از صد: @score</div>
                         </div>
-                        <div class="score-bar" aria-hidden="true">
-                            <div class="fill" style="width:@score%"></div>
+
+                        <div class="detail-grid">
+                            <div class="detail-block">
+                                <div class="detail-title">شغل وارد شده</div>
+                                @if (item.Data.Job is { } job)
+                                {
+                                    <p class="mb-1"><strong>@(string.IsNullOrWhiteSpace(job.EnteredTitle) ? job.Job.GetDescription() : job.EnteredTitle)</strong> – @job.Job.GetDescription()</p>
+                                    <p class="detail-text mb-1">@job.Description</p>
+                                    <p class="detail-tag mb-0">@job.ExperienceImpact</p>
+                                }
+                                else
+                                {
+                                    <p class="detail-text mb-0">برای این کشور تطابق مستقیمی با عنوان شغلی پیدا نشد.</p>
+                                }
+                            </div>
+
+                            <div class="detail-block">
+                                <div class="detail-title">رشته و تحصیل</div>
+                                @if (item.Data.Education is { } education)
+                                {
+                                    <p class="mb-1"><strong>@education.Field.GetDescription()</strong> (@education.DegreeLevel.GetDescription())</p>
+                                    <p class="detail-text mb-1">@education.Description</p>
+                                    <p class="detail-tag mb-0">نیازمندی زبان: @education.LanguageRequirement</p>
+                                }
+                                else
+                                {
+                                    <p class="detail-text mb-0">اطلاعات دقیق رشته متناسب در دیتاست این کشور ثبت نشده است.</p>
+                                }
+                            </div>
+
+                            <div class="detail-block">
+                                <div class="detail-title">اطلاعات تکمیلی و زبان</div>
+                                <p class="detail-text mb-1">@item.Data.AdditionalInfo</p>
+                                @if (!string.IsNullOrWhiteSpace(languageRequirement))
+                                {
+                                    <p class="detail-tag mb-0">@languageRequirement</p>
+                                }
+                            </div>
+
+                            <div class="detail-block">
+                                <div class="detail-title">هزینه و سرمایه‌گذاری</div>
+                                <p class="detail-text mb-1">@item.Data.InvestmentNotes</p>
+                                <div class="detail-tag mb-1">حداقل سرمایه: @item.Data.InvestmentAmount.ToString("N0")</div>
+                                @if (housingSample != null)
+                                {
+                                    <p class="detail-text mb-0">نمونه هزینه مسکن: @housingSample.Region با متراژ @housingSample.Area متر و @housingSample.Rooms اتاق حدود @housingSample.Cost.ToString("N0")</p>
+                                }
+                            </div>
+
+                            <div class="detail-block">
+                                <div class="detail-title">هزینه‌های زندگی</div>
+                                @if (housingSample != null || livingCosts.Food > 0 || livingCosts.Clothing > 0)
+                                {
+                                    <ul class="living-list mb-0">
+                                        @if (housingSample != null)
+                                        {
+                                            <li>مسکن: @housingSample.Cost.ToString("N0") (@housingSample.Region)</li>
+                                        }
+                                        @if (livingCosts.Food > 0)
+                                        {
+                                            <li>خوراک: @livingCosts.Food.ToString("N0")</li>
+                                        }
+                                        @if (livingCosts.Clothing > 0)
+                                        {
+                                            <li>پوشاک: @livingCosts.Clothing.ToString("N0")</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p class="detail-text mb-0">اطلاعات هزینه‌های زندگی برای این کشور ثبت نشده است.</p>
+                                }
+                            </div>
+
+                            <div class="detail-block">
+                                <div class="detail-title">وضعیت تاهل و محدودیت‌ها</div>
+                                <p class="detail-text mb-1">@item.Data.MaritalStatusImpact</p>
+                                @if (item.Data.IranianMigrationRestrictions?.Any() == true)
+                                {
+                                    <ul class="restriction-list mb-0">
+                                        @foreach (var note in item.Data.IranianMigrationRestrictions)
+                                        {
+                                            <li>@note</li>
+                                        }
+                                    </ul>
+                                }
+                            </div>
                         </div>
-                        <p class="mb-0"><strong>بازار کار:</strong> @jobInfo</p>
-                        <p class="mb-0"><strong>تحصیل:</strong> @educationInfo</p>
-                        <p class="mb-0"><strong>اقتصاد و زندگی:</strong> @economyInfo</p>
+
                         <div class="immigration-actions mt-2">
                             <a asp-controller="Immigration" asp-action="Index" class="btn btn-outline-secondary btn-sm">ویرایش اطلاعات</a>
                             <a asp-controller="Blog" asp-action="Index" class="btn btn-primary btn-sm">مطالعه تجربه‌های مرتبط</a>
