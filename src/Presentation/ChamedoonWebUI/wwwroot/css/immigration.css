@@ -498,11 +498,12 @@
     justify-content: space-between;
     align-items: flex-start;
     gap: 1rem;
+    flex-direction: row-reverse;
 }
 
 .country-heading {
     text-align: right;
-    margin-inline-start: auto;
+    margin-inline-start: 0;
 }
 
 .score-chip {
