@@ -62,15 +62,16 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "آمستردام (۱ خوابه)", Cost = 1500 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "آمستردام (۲ خوابه)", Cost = 2200 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "روتردام (۱ خوابه)", Cost = 1200 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "روتردام (۲ خوابه)", Cost = 1700 }
-            },
-            Food = 350,
-            Clothing = 120
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۳٬۶۲۱٫۸ یورو ≈ ۴٬۲۰۱ $ (numbeo.com)",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۱٬۰۱۳٫۹ یورو ≈ ۱٬۱۷۶ $ (numbeo.com)",
+            Transport = "حمل‌ونقل: کارت ماهانه ۹۰ € (≈۱۰۴٫۴ $) (numbeo.com)",
+            Utilities = "برق، آب و گاز: حدود ۲۲۶٫۷ € (≈۲۶۲٫۹ $) (numbeo.com)",
+            Recreation = "تفریح: عضویت باشگاه ۳۷٫۰۵ € (≈۴۳٫۰ $) و بلیط سینما ۱۴ € (≈۱۶٫۲ $) (numbeo.com)",
+            FoodBasket = "مواد غذایی در برآورد ماهانه لحاظ شده است؛ عدد جداگانه ارائه نشده (numbeo.com)",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در آمستردام، روتردام و لاهه: ≈ ۱٬۷۰۲ € (≈۱٬۹۷۴ $) (numbeo.com)",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر: ≈ ۲٬۹۱۵ € (≈۳٬۳۸۲ $) (numbeo.com)",
+            Internet = "اینترنت نامحدود: ۴۳٫۰۷ € (≈۵۰٫۰ $) در ماه (numbeo.com)",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>

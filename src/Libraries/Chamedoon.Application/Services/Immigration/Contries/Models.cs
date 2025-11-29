@@ -99,13 +99,48 @@ namespace CountryPoints
         public List<HousingCost> Housing { get; set; }
 
         /// <summary>
-        /// هزینهٔ ماهانهٔ غذا (به ازای هر نفر) به واحد پول کشور.
+        /// متوسط هزینه ماهانه برای یک خانواده چهار نفره (بدون اجاره).
         /// </summary>
-        public double Food { get; set; }
+        public string FamilyMonthly { get; set; }
 
         /// <summary>
-        /// هزینهٔ ماهانهٔ پوشاک (به ازای هر نفر) به واحد پول کشور.
+        /// میانگین هزینه زندگی برای یک نفر (بدون اجاره).
         /// </summary>
-        public double Clothing { get; set; }
+        public string SingleMonthly { get; set; }
+
+        /// <summary>
+        /// هزینه حمل و نقل (مانند کارت ماهانه حمل‌ونقل عمومی).
+        /// </summary>
+        public string Transport { get; set; }
+
+        /// <summary>
+        /// خدمات رفاهی (برق، آب، گاز و زباله) برای آپارتمان معمولی.
+        /// </summary>
+        public string Utilities { get; set; }
+
+        /// <summary>
+        /// هزینه فعالیت‌های تفریحی مانند عضویت باشگاه یا بلیط سینما.
+        /// </summary>
+        public string Recreation { get; set; }
+
+        /// <summary>
+        /// برآورد هزینه مواد غذایی؛ در صورت نبود عدد مستقل، توضیح تکمیلی درج می‌شود.
+        /// </summary>
+        public string FoodBasket { get; set; }
+
+        /// <summary>
+        /// میانگین اجاره آپارتمان یک‌خوابه در سه شهر بزرگ یا نمونه مرجع.
+        /// </summary>
+        public string RentOneBedroom { get; set; }
+
+        /// <summary>
+        /// میانگین اجاره آپارتمان سه‌خوابه در سه شهر بزرگ یا نمونه مرجع.
+        /// </summary>
+        public string RentThreeBedroom { get; set; }
+
+        /// <summary>
+        /// هزینه اینترنت نامحدود ماهانه.
+        /// </summary>
+        public string Internet { get; set; }
     }
 }

@@ -68,15 +68,16 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "دهلی (۱ خوابه)", Cost = 25000 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "دهلی (۲ خوابه)", Cost = 40000 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "بنگلور (۱ خوابه)", Cost = 30000 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "بنگلور (۲ خوابه)", Cost = 50000 }
-            },
-            Food = 6000,
-            Clothing = 3000
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۹۸٬۷۷۹٫۵ روپیه ≈ ۱٬۱۰۵ دلار آمریکا (numbeo.com)",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۲۷٬۵۱۸٫۲ روپیه ≈ ۳۰۸ دلار آمریکا (numbeo.com)",
+            Transport = "حمل‌ونقل: کارت ماهانه حمل‌ونقل عمومی حدود ۷۶۴ ₹ (≈۸٫۵ $) (numbeo.com)",
+            Utilities = "برق، آب و گاز برای آپارتمان ۸۵ مترمربع: حدود ۳٬۵۱۶٫۳۵ ₹ (≈۳۹٫۳ $) (numbeo.com)",
+            Recreation = "تفریح: عضویت باشگاه ۱٬۳۶۷٫۱۳ ₹ (≈۱۵٫۳ $) و بلیط سینما ۳۰۰ ₹ (≈۳٫۴ $) (numbeo.com)",
+            FoodBasket = "مواد غذایی در برآورد ماهانه لحاظ شده است؛ عدد جداگانه ارائه نشده (numbeo.com)",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در بمبئی، دهلی و بنگلور: ≈ ۳۷٬۴۳۷ ₹ (≈۴۱۸٫۹ $) (numbeo.com)",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر: ≈ ۱۰۰٬۱۲۵ ₹ (≈۱٬۱۲۰٫۴ $) (numbeo.com)",
+            Internet = "اینترنت نامحدود: حدود ۶۸۴٫۶ ₹ (≈۷٫۷ $) در ماه (numbeo.com)",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>

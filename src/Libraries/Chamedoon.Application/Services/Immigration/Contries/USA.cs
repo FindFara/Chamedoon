@@ -63,15 +63,16 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "نیویورک (۱ خوابه)", Cost = 2000 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "نیویورک (۲ خوابه)", Cost = 3000 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "لس آنجلس (۱ خوابه)", Cost = 1800 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "لس آنجلس (۲ خوابه)", Cost = 2500 }
-            },
-            Food = 450,
-            Clothing = 200
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۴٬۲۳۱٫۳ دلار آمریکا (numbeo.com)",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۱٬۱۷۳٫۴ دلار آمریکا (numbeo.com)",
+            Transport = "حمل‌ونقل: کارت ماهانه حمل‌ونقل عمومی حدود ۶۵ $ (numbeo.com)",
+            Utilities = "برق، آب و گاز برای آپارتمان ۸۵ مترمربع: حدود ۲۱۰٫۳۷ $ (numbeo.com)",
+            Recreation = "تفریح: عضویت باشگاه ۴۵٫۵۱ $ و بلیط سینما ۱۵ $ (numbeo.com)",
+            FoodBasket = "مواد غذایی در برآورد ماهانه لحاظ شده است؛ عدد جداگانه ارائه نشده (numbeo.com)",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در نیویورک، لس‌آنجلس و شیکاگو: ≈ ۳٬۰۷۲ $ (numbeo.com)",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر: ≈ ۵٬۸۸۶ $ (numbeo.com)",
+            Internet = "اینترنت نامحدود: ۷۲٫۴۳ $ در ماه (numbeo.com)",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>

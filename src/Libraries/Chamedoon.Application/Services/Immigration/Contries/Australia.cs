@@ -64,15 +64,16 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "سیدنی (۱ خوابه)", Cost = 2600 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "سیدنی (۲ خوابه)", Cost = 3500 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "ملبورن (۱ خوابه)", Cost = 2200 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "ملبورن (۲ خوابه)", Cost = 3000 }
-            },
-            Food = 450,
-            Clothing = 200
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۵٬۶۹۴٫۵ دلار استرالیا ≈ ۳٬۷۳۲ دلار آمریکا (numbeo.com)",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۱٬۵۸۰٫۵ دلار استرالیا ≈ ۱٬۰۳۶ دلار آمریکا (numbeo.com)",
+            Transport = "حمل‌ونقل: کارت ماهانه حدود ۱۴۰ A$ (≈۹۱٫۸ $) (numbeo.com)",
+            Utilities = "برق، آب، گاز و زباله برای آپارتمان ۸۵ مترمربع: حدود ۲۷۴٫۴۲ A$ (≈۱۷۹٫۹ $) (numbeo.com)",
+            Recreation = "تفریح: عضویت باشگاه ≈ ۷۳ A$ (≈۴۷٫۸ $) و بلیط سینما ۲۰ A$ (≈۱۳٫۱ $) (numbeo.com)",
+            FoodBasket = "مواد غذایی در برآورد ماهانه محاسبه شده است؛ عدد جداگانه ارائه نشده (numbeo.com)",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در سه شهر بزرگ: ≈ ۲٬۷۴۳ A$ (≈۱٬۷۹۸ $) (numbeo.com)",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر بزرگ: ≈ ۵٬۲۶۸ A$ (≈۳٬۴۵۳ $) (numbeo.com)",
+            Internet = "اینترنت نامحدود: حدود ۸۲٫۱۷ A$ (≈۵۳٫۹ $) در ماه (numbeo.com)",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>

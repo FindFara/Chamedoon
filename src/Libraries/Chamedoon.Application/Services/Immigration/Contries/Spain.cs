@@ -61,15 +61,16 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "مادرید (۱ خوابه)", Cost = 1200 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "مادرید (۲ خوابه)", Cost = 1500 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "بارسلونا (۱ خوابه)", Cost = 1100 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "بارسلونا (۲ خوابه)", Cost = 1400 }
-            },
-            Food = 250,
-            Clothing = 80
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۲٬۵۵۳٫۷ یورو ≈ ۲٬۹۶۲ $ (numbeo.com)",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۷۰۶٫۷ یورو ≈ ۸۱۹٫۸ $ (numbeo.com)",
+            Transport = "حمل‌ونقل: کارت ماهانه ۳۰ € (≈۳۴٫۸ $) (numbeo.com)",
+            Utilities = "برق، آب و گاز: حدود ۱۳۱٫۶۶ € (≈۱۵۲٫۷ $) (numbeo.com)",
+            Recreation = "تفریح: عضویت باشگاه ۴۰٫۶۶ € (≈۴۷٫۲ $) و بلیط سینما ۸ € (≈۹٫۳ $) (numbeo.com)",
+            FoodBasket = "مواد غذایی در برآورد ماهانه لحاظ شده است؛ عدد جداگانه ارائه نشده (numbeo.com)",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در مادرید، بارسلونا و والنسیا: ≈ ۱٬۲۴۸ € (≈۱٬۴۴۷ $) (numbeo.com)",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر: ≈ ۲٬۰۸۱ € (≈۲٬۴۱۴ $) (numbeo.com)",
+            Internet = "اینترنت نامحدود: حدود ۲۹٫۰۱ € (≈۳۳٫۷ $) در ماه (numbeo.com)",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>

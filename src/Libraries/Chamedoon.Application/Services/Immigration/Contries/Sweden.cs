@@ -61,15 +61,16 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "استکهلم (۱ خوابه)", Cost = 10500 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "استکهلم (۲ خوابه)", Cost = 15000 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "گوتنبرگ (۱ خوابه)", Cost = 9000 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "گوتنبرگ (۲ خوابه)", Cost = 13000 }
-            },
-            Food = 3000,
-            Clothing = 700
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۳۷٬۹۱۸٫۹ کرون سوئد ≈ ۴٬۰۱۲ دلار آمریکا (numbeo.com)",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۱۰٬۲۱۶٫۳ کرون ≈ ۱٬۰۸۱ دلار آمریکا (numbeo.com)",
+            Transport = "حمل‌ونقل: کارت ماهانه ۸۶۰ kr (≈۹۱٫۰ $) (numbeo.com)",
+            Utilities = "برق، آب و گاز: حدود ۱٬۲۴۱٫۵۸ kr (≈۱۳۱٫۴ $) (numbeo.com)",
+            Recreation = "تفریح: عضویت باشگاه ۳۹۵٫۱۲ kr (≈۴۱٫۸ $) و بلیط سینما ۱۵۹ kr (≈۱۶٫۸ $) (numbeo.com)",
+            FoodBasket = "مواد غذایی در برآورد ماهانه لحاظ شده است؛ عدد جداگانه ارائه نشده (numbeo.com)",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در استکهلم، مالمو و گوتنبرگ: ≈ ۱۰٬۹۵۴ kr (≈۱٬۱۵۹ $) (numbeo.com)",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر: ≈ ۱۹٬۹۶۱ kr (≈۲٬۱۱۲ $) (numbeo.com)",
+            Internet = "اینترنت نامحدود: ۳۷۷٫۶۳ kr (≈۴۰٫۰ $) در ماه (numbeo.com)",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>

@@ -61,15 +61,16 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "رم (۱ خوابه)", Cost = 1300 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "رم (۲ خوابه)", Cost = 1800 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "میلان (۱ خوابه)", Cost = 1500 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "میلان (۲ خوابه)", Cost = 2000 }
-            },
-            Food = 300,
-            Clothing = 100
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۳٬۱۰۸٫۱ یورو ≈ ۳٬۶۰۵ $ (numbeo.com)",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۸۶۹٫۷ یورو ≈ ۱٬۰۰۹ $ (numbeo.com)",
+            Transport = "حمل‌ونقل: کارت ماهانه حدود ۳۸ € (≈۴۴٫۱ $) (numbeo.com)",
+            Utilities = "برق، آب، گاز و زباله برای آپارتمان ۸۵ مترمربع: حدود ۱۹۵٫۸۶ € (≈۲۲۷٫۲ $) (numbeo.com)",
+            Recreation = "تفریح: عضویت باشگاه ۴۹٫۳۴ € (≈۵۷٫۲ $) و بلیط سینما ۹ € (≈۱۰٫۴ $) (numbeo.com)",
+            FoodBasket = "مواد غذایی در برآورد ماهانه لحاظ شده است؛ عدد جداگانه ارائه نشده (numbeo.com)",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در رم، میلان و ناپل: ≈ ۱٬۲۲۲ € (≈۱٬۴۱۷ $) (numbeo.com)",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر: ≈ ۲٬۳۶۹ € (≈۲٬۷۴۸ $) (numbeo.com)",
+            Internet = "اینترنت نامحدود: ۲۷٫۱۸ € (≈۳۱٫۵ $) در ماه (numbeo.com)",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>
