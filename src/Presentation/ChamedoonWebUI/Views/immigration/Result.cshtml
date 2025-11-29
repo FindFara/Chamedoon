@@ -92,8 +92,11 @@
                     var housingSample = livingCosts.Housing?.OrderBy(h => h.Cost).FirstOrDefault();
                     var languageRequirement = item.Data.LanguageRequirement ?? item.Data.Education?.LanguageRequirement;
                     <article class="immigration-result-card glass-card">
-                        <div class="rank">#@(@i + 1)</div>
                         <div class="card-header-line">
+                            <div class="rank-score">
+                                <div class="rank">#@(@i + 1)</div>
+                                <div class="score-chip">امتیاز از صد: @score</div>
+                            </div>
                             <div>
                                 <h4 class="fw-semibold mb-1">@item.Country.GetDescription()</h4>
                                 <div class="mini-meta mb-2">
@@ -101,7 +104,6 @@
                                     <span aria-label="ویزای پیشنهادی">🎟️ @item.RecommendedVisaType</span>
                                 </div>
                             </div>
-                            <div class="score-chip">امتیاز از صد: @score</div>
                         </div>
 
                         <div class="detail-grid">
@@ -192,10 +194,6 @@
                             </div>
                         </div>
 
-                        <div class="immigration-actions mt-2">
-                            <a asp-controller="Immigration" asp-action="Index" class="btn btn-outline-secondary btn-sm">ویرایش اطلاعات</a>
-                            <a asp-controller="Blog" asp-action="Index" class="btn btn-primary btn-sm">مطالعه تجربه‌های مرتبط</a>
-                        </div>
                     </article>
                 }
             </div>

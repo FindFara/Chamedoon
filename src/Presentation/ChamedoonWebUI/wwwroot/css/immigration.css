@@ -445,14 +445,15 @@
     background: rgba(255, 255, 255, 0.9);
     display: grid;
     gap: 0.65rem;
-    position: relative;
-    overflow: hidden;
 }
 
-.immigration-result-card .rank {
-    position: absolute;
-    top: 0.85rem;
-    left: 0.85rem;
+.rank-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.rank {
     padding: 0.35rem 0.75rem;
     border-radius: 999px;
     background: rgba(79, 70, 229, 0.12);
@@ -561,6 +562,15 @@
     padding: 0.35rem 0.55rem;
     border-radius: 0.7rem;
     background: rgba(15, 23, 42, 0.03);
+}
+
+.restriction-list {
+    color: #b91c1c;
+}
+
+.restriction-list li {
+    background: rgba(185, 28, 28, 0.08);
+    border: 1px solid rgba(185, 28, 28, 0.15);
 }
 
 .immigration-empty {
