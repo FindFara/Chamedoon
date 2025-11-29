@@ -1,7 +1,19 @@
 @model Chamedoon.Application.Services.Immigration.ImmigrationResult
 @using Chamedoon.Application.Services.Immigration
 @using CountryPoints
+@using System.Text.RegularExpressions
 @using System.Linq
+@functions {
+    private static string CleanText(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return string.Empty;
+        }
+
+        return Regex.Replace(text, @"\s*【[^】]*】", string.Empty).Trim();
+    }
+}
 @{
     ViewData["Title"] = "نتیجه ارزیابی مهاجرت";
 }
@@ -98,8 +110,8 @@
                                 @if (item.Data.Job is { } job)
                                 {
                                     <p class="mb-1"><strong>@(string.IsNullOrWhiteSpace(job.EnteredTitle) ? job.Job.GetDescription() : job.EnteredTitle)</strong> – @job.Job.GetDescription()</p>
-                                    <p class="detail-text mb-1">@job.Description</p>
-                                    <p class="detail-tag mb-0">@job.ExperienceImpact</p>
+                                    <p class="detail-text mb-1">@CleanText(job.Description)</p>
+                                    <p class="detail-tag mb-0">@CleanText(job.ExperienceImpact)</p>
                                 }
                                 else
                                 {
@@ -112,8 +124,8 @@
                                 @if (item.Data.Education is { } education)
                                 {
                                     <p class="mb-1"><strong>@education.Field.GetDescription()</strong> (@education.DegreeLevel.GetDescription())</p>
-                                    <p class="detail-text mb-1">@education.Description</p>
-                                    <p class="detail-tag mb-0">نیازمندی زبان: @education.LanguageRequirement</p>
+                                    <p class="detail-text mb-1">@CleanText(education.Description)</p>
+                                    <p class="detail-tag mb-0">نیازمندی زبان: @CleanText(education.LanguageRequirement)</p>
                                 }
                                 else
                                 {
@@ -123,16 +135,16 @@
 
                             <div class="detail-block">
                                 <div class="detail-title">اطلاعات تکمیلی و زبان</div>
-                                <p class="detail-text mb-1">@item.Data.AdditionalInfo</p>
+                                <p class="detail-text mb-1">@CleanText(item.Data.AdditionalInfo)</p>
                                 @if (!string.IsNullOrWhiteSpace(languageRequirement))
                                 {
-                                    <p class="detail-tag mb-0">@languageRequirement</p>
+                                    <p class="detail-tag mb-0">@CleanText(languageRequirement)</p>
                                 }
                             </div>
 
                             <div class="detail-block">
                                 <div class="detail-title">هزینه و سرمایه‌گذاری</div>
-                                <p class="detail-text mb-1">@item.Data.InvestmentNotes</p>
+                                <p class="detail-text mb-1">@CleanText(item.Data.InvestmentNotes)</p>
                                 <div class="detail-tag mb-1">حداقل سرمایه: @item.Data.InvestmentAmount.ToString("N0")</div>
                                 @if (housingSample != null)
                                 {
@@ -167,13 +179,13 @@
 
                             <div class="detail-block">
                                 <div class="detail-title">وضعیت تاهل و محدودیت‌ها</div>
-                                <p class="detail-text mb-1">@item.Data.MaritalStatusImpact</p>
+                                <p class="detail-text mb-1">@CleanText(item.Data.MaritalStatusImpact)</p>
                                 @if (item.Data.IranianMigrationRestrictions?.Any() == true)
                                 {
                                     <ul class="restriction-list mb-0">
                                         @foreach (var note in item.Data.IranianMigrationRestrictions)
                                         {
-                                            <li>@note</li>
+                                            <li>@CleanText(note)</li>
                                         }
                                     </ul>
                                 }
