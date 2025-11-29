@@ -201,32 +201,352 @@ namespace Chamedoon.Application.Services.Immigration
 
         private static string ChooseVisa(CountryProfile country, ImmigrationInput input, double investmentScore)
         {
+            var requested = ResolveRequestedVisa(country, input, investmentScore);
+            return MapVisaTitle(country.Country, requested);
+        }
+
+        private static VisaType ResolveRequestedVisa(CountryProfile country, ImmigrationInput input, double investmentScore)
+        {
             if (input.WillingToStudy || input.VisaType == VisaType.Study)
             {
-                return "ویزای تحصیلی";
+                return VisaType.Study;
             }
 
             if (country.InvestmentAmount > 0 && investmentScore >= 1)
             {
-                return "ویزای سرمایه‌گذاری یا استارتاپ";
+                return VisaType.Investment;
+            }
+
+            if (input.VisaType == VisaType.Investment && investmentScore >= 0.7)
+            {
+                return VisaType.Investment;
             }
 
             if (input.VisaType == VisaType.Family && input.MaritalStatus == MaritalStatusType.Married)
             {
-                return "ویزای خانواده";
+                return VisaType.Family;
             }
 
             if (input.VisaType == VisaType.Residence)
             {
-                return "اقامت یا اقامت دائم";
+                return VisaType.Residence;
             }
 
-            if (input.WorkExperienceYears > 0)
+            if (input.VisaType is VisaType.DigitalNomad or VisaType.Freelancer)
             {
-                return "ویزای کاری";
+                return input.VisaType;
             }
 
-            return "ویزای توریستی یا کوتاه‌مدت";
+            if (input.VisaType is VisaType.Startup or VisaType.Research or VisaType.Retirement
+                or VisaType.Cultural or VisaType.Humanitarian or VisaType.Asylum)
+            {
+                return input.VisaType;
+            }
+
+            if (input.VisaType == VisaType.Tourist)
+            {
+                return VisaType.Tourist;
+            }
+
+            if (input.WorkExperienceYears > 0 || input.JobCategory != JobCategoryType.None)
+            {
+                return VisaType.Work;
+            }
+
+            return VisaType.Tourist;
+        }
+
+        private static string MapVisaTitle(CountryType country, VisaType requested)
+        {
+            // برای سادگی، نام فارسی و انگلیسی در پرانتز آمده‌اند.
+            if (country == CountryType.Canada)
+            {
+                return requested switch
+                {
+                    VisaType.Study => "تحصیلی (Study Permit)",
+                    VisaType.Investment => "برنامه سرمایه‌گذاری یا کارآفرینی",
+                    VisaType.Work => "اکسپرس اینتری (Express Entry)",
+                    VisaType.Family => "ویزای اسپانسرشیپ خانواده",
+                    VisaType.Tourist => "ویزای توریستی (Visitor Visa)",
+                    VisaType.Startup => "ویزای استارتاپ (Start-Up Visa)",
+                    VisaType.Residence => "اقامت دائم (Permanent Residency)",
+                    VisaType.DigitalNomad => "ویزای کار از راه دور کانادا",
+                    VisaType.Freelancer => "ویزای فریلنسری یا خوداشتغالی",
+                    VisaType.Research => "ویزای تحقیقاتی",
+                    VisaType.Retirement => "ویزای بازنشستگی",
+                    VisaType.Asylum => "پناهندگی",
+                    VisaType.Cultural => "ویزای فرهنگی",
+                    VisaType.Humanitarian => "ویزای انسان‌دوستانه",
+                    _ => "اکسپرس اینتری (Express Entry)"
+                };
+            }
+            if (country == CountryType.Australia)
+            {
+                return requested switch
+                {
+                    VisaType.Study => "دانشجویی (Student Visa)",
+                    VisaType.Investment => "ویزای سرمایه‌گذاری (Business Innovation)",
+                    VisaType.Work => "ویزای نیروی ماهر 189 (Skilled Independent)",
+                    VisaType.Family => "ویزای خانواده یا Partner",
+                    VisaType.Tourist => "ویزای توریستی (Visitor Visa)",
+                    VisaType.Startup => "ویزای نوآوری کسب‌وکار (Business Innovation)",
+                    VisaType.Residence => "اقامت دائم (Permanent Residency)",
+                    VisaType.DigitalNomad => "ویزای کار از راه دور",
+                    VisaType.Freelancer => "ویزای فریلنسری",
+                    VisaType.Research => "ویزای تحقیقاتی یا پژوهشی",
+                    VisaType.Retirement => "ویزای بازنشستگی",
+                    VisaType.Asylum => "پناهندگی",
+                    VisaType.Cultural => "ویزای فرهنگی",
+                    VisaType.Humanitarian => "ویزای انسان‌دوستانه",
+                    _ => "ویزای نیروی ماهر 189 (Skilled Independent)"
+                };
+            }
+            if (country == CountryType.Germany)
+            {
+                return requested switch
+                {
+                    VisaType.Study => "ویزای دانشجویی",
+                    VisaType.Investment => "ویزای سرمایه‌گذاری یا کارآفرینی",
+                    VisaType.Work => "فرصت کارت (Opportunity Card)",
+                    VisaType.Family => "ویزای پیوست خانواده",
+                    VisaType.Tourist => "ویزای شینگن (Tourist)",
+                    VisaType.Startup => "ویزای استارتاپ آلمان",
+                    VisaType.Residence => "اقامت دائم (Permanent Residence)",
+                    VisaType.DigitalNomad => "ویزای کار از راه دور",
+                    VisaType.Freelancer => "ویزای فریلنسری یا فریلنس آزاد",
+                    VisaType.Research => "ویزای تحقیقاتی یا پژوهشی",
+                    VisaType.Retirement => "ویزای بازنشستگی",
+                    VisaType.Asylum => "پناهندگی آلمان",
+                    VisaType.Cultural => "ویزای فرهنگی",
+                    VisaType.Humanitarian => "ویزای بشر‌دوستانه",
+                    _ => "فرصت کارت (Opportunity Card)"
+                };
+            }
+            // USA
+            if (country == CountryType.USA)
+            {
+                return requested switch
+                {
+                    VisaType.Study => "ویزای تحصیلی (F‑1)",
+                    VisaType.Investment => "برنامه سرمایه‌گذاری EB‑5",
+                    VisaType.Work => "ویزای کار تخصصی (H‑1B/EB)",
+                    VisaType.Family => "ویزای خانوادگی (Family Green Card)",
+                    VisaType.Tourist => "ویزای توریستی (B1/B2)",
+                    VisaType.Startup => "ویزای کارآفرینی (E‑2/EB‑2)",
+                    VisaType.Residence => "گرین کارت (Permanent Resident)",
+                    VisaType.DigitalNomad => "ویزای کار از راه دور",
+                    VisaType.Freelancer => "ویزای فریلنسری",
+                    VisaType.Research => "ویزای تحقیقاتی J‑1/H‑1B",
+                    VisaType.Retirement => "ویزای بازنشستگی (Retiree Visa)",
+                    VisaType.Asylum => "پناهندگی",
+                    VisaType.Cultural => "ویزای فرهنگی (O‑1/P)",
+                    VisaType.Humanitarian => "ویزای بشر‌دوستانه (Humanitarian Parole)",
+                    _ => "ویزای کار تخصصی (H‑1B/EB)"
+                };
+            }
+            // UK
+            if (country == CountryType.UK)
+            {
+                return requested switch
+                {
+                    VisaType.Study => "ویزای دانشجویی (Student Visa)",
+                    VisaType.Investment => "ویزای سرمایه‌گذاری یا Innovator",
+                    VisaType.Work => "ویزای کار ماهر (Skilled Worker)",
+                    VisaType.Family => "ویزای خانوادگی (Family Visa)",
+                    VisaType.Tourist => "ویزای توریستی (Visitor Visa)",
+                    VisaType.Startup => "ویزای استارتاپ یا Innovator",
+                    VisaType.Residence => "اقامت دائم (Indefinite Leave)",
+                    VisaType.DigitalNomad => "ویزای کار از راه دور",
+                    VisaType.Freelancer => "ویزای فریلنسری/Global Talent",
+                    VisaType.Research => "ویزای تحقیقاتی (Global Talent)",
+                    VisaType.Retirement => "ویزای بازنشستگی",
+                    VisaType.Asylum => "پناهندگی",
+                    VisaType.Cultural => "ویزای فرهنگی (Temporary Work—Creative)",
+                    VisaType.Humanitarian => "ویزای انسان‌دوستانه",
+                    _ => "ویزای کار ماهر (Skilled Worker)"
+                };
+            }
+            // New Zealand
+            if (country == CountryType.NewZealand)
+            {
+                return requested switch
+                {
+                    VisaType.Study => "ویزای تحصیلی",
+                    VisaType.Investment => "ویزای سرمایه‌گذاری (Investor Visa)",
+                    VisaType.Work => "دسته مهاجرت ماهر (Skilled Migrant)",
+                    VisaType.Family => "ویزای خانواده یا همراه",
+                    VisaType.Tourist => "ویزای توریستی",
+                    VisaType.Startup => "ویزای کارآفرینی (Entrepreneur Work Visa)",
+                    VisaType.Residence => "ویزای اقامت (Resident Visa)",
+                    VisaType.DigitalNomad => "ویزای کار از راه دور",
+                    VisaType.Freelancer => "ویزای فریلنسری",
+                    VisaType.Research => "ویزای تحقیقاتی",
+                    VisaType.Retirement => "ویزای بازنشستگی",
+                    VisaType.Asylum => "پناهندگی",
+                    VisaType.Cultural => "ویزای فرهنگی",
+                    VisaType.Humanitarian => "ویزای انسان‌دوستانه",
+                    _ => "دسته مهاجرت ماهر (Skilled Migrant)"
+                };
+            }
+            // Netherlands
+            if (country == CountryType.Netherlands)
+            {
+                return requested switch
+                {
+                    VisaType.Study => "ویزای دانشجویی",
+                    VisaType.Investment => "ویزای استارتاپ یا خوداشتغالی",
+                    VisaType.Work => "ویزای نیروی متخصص (Highly Skilled Migrant)",
+                    VisaType.Family => "ویزای پیوست خانواده",
+                    VisaType.Tourist => "ویزای توریستی (Schengen)",
+                    VisaType.Startup => "ویزای استارتاپ (Start‑Up Visa)",
+                    VisaType.Residence => "اقامت دائم (Permanent Residence Permit)",
+                    VisaType.DigitalNomad => "ویزای کار از راه دور",
+                    VisaType.Freelancer => "ویزای فریلنسری یا خوداشتغالی",
+                    VisaType.Research => "ویزای تحقیقاتی",
+                    VisaType.Retirement => "ویزای بازنشستگی",
+                    VisaType.Asylum => "پناهندگی",
+                    VisaType.Cultural => "ویزای فرهنگی",
+                    VisaType.Humanitarian => "ویزای انسان‌دوستانه",
+                    _ => "ویزای نیروی متخصص (Highly Skilled Migrant)"
+                };
+            }
+            // Spain
+            if (country == CountryType.Spain)
+            {
+                return requested switch
+                {
+                    VisaType.Study => "ویزای تحصیلی",
+                    VisaType.Investment => "ویزای طلایی (Golden Visa)",
+                    VisaType.Work => "ویزای کار",
+                    VisaType.Family => "ویزای پیوست خانواده",
+                    VisaType.Tourist => "ویزای توریستی",
+                    VisaType.Startup => "ویزای استارتاپ اسپانیا",
+                    VisaType.Residence => "اقامت دائم",
+                    VisaType.DigitalNomad => "ویزای دیجیتال نوماد اسپانیا",
+                    VisaType.Freelancer => "ویزای خوداشتغالی",
+                    VisaType.Research => "ویزای تحقیقاتی",
+                    VisaType.Retirement => "ویزای بازنشستگی",
+                    VisaType.Asylum => "پناهندگی",
+                    VisaType.Cultural => "ویزای فرهنگی",
+                    VisaType.Humanitarian => "ویزای انسان‌دوستانه",
+                    _ => "ویزای کار"
+                };
+            }
+            // Sweden
+            if (country == CountryType.Sweden)
+            {
+                return requested switch
+                {
+                    VisaType.Study => "ویزای تحصیلی",
+                    VisaType.Investment => "ویزای استارتاپ یا خوداشتغالی",
+                    VisaType.Work => "اجازه کار",
+                    VisaType.Family => "ویزای پیوست خانواده",
+                    VisaType.Tourist => "ویزای توریستی",
+                    VisaType.Startup => "ویزای استارتاپ سوئد",
+                    VisaType.Residence => "اقامت دائم",
+                    VisaType.DigitalNomad => "ویزای دیجیتال نوماد",
+                    VisaType.Freelancer => "ویزای فریلنسری/خوداشتغالی",
+                    VisaType.Research => "ویزای تحقیقاتی",
+                    VisaType.Retirement => "ویزای بازنشستگی",
+                    VisaType.Asylum => "پناهندگی",
+                    VisaType.Cultural => "ویزای فرهنگی",
+                    VisaType.Humanitarian => "ویزای انسان‌دوستانه",
+                    _ => "اجازه کار"
+                };
+            }
+            // Denmark
+            if (country == CountryType.Denmark)
+            {
+                return requested switch
+                {
+                    VisaType.Study => "ویزای تحصیلی",
+                    VisaType.Investment => "برنامه استارتاپ دانمارک",
+                    VisaType.Work => "طرح مثبت لیست یا Pay Limit",
+                    VisaType.Family => "ویزای پیوست خانواده",
+                    VisaType.Tourist => "ویزای توریستی",
+                    VisaType.Startup => "ویزای استارتاپ دانمارک",
+                    VisaType.Residence => "اقامت دائم",
+                    VisaType.DigitalNomad => "ویزای دیجیتال نوماد",
+                    VisaType.Freelancer => "ویزای فریلنسری",
+                    VisaType.Research => "ویزای تحقیقاتی",
+                    VisaType.Retirement => "ویزای بازنشستگی",
+                    VisaType.Asylum => "پناهندگی دانمارک",
+                    VisaType.Cultural => "ویزای فرهنگی",
+                    VisaType.Humanitarian => "ویزای انسان‌دوستانه",
+                    _ => "طرح مثبت لیست یا Pay Limit"
+                };
+            }
+
+            // Italy
+            if (country == CountryType.Italy)
+            {
+                return requested switch
+                {
+                    VisaType.Study => "ویزای تحصیلی ایتالیا",
+                    VisaType.Investment => "ویزای سرمایه‌گذاری (Investor Visa)",
+                    VisaType.Work => "ویزای کار ایتالیا",
+                    VisaType.Family => "ویزای پیوست خانواده",
+                    VisaType.Tourist => "ویزای توریستی",
+                    VisaType.Startup => "ویزای استارتاپ ایتالیا",
+                    VisaType.Residence => "اقامت ایتالیا",
+                    VisaType.DigitalNomad => "ویزای کار از راه دور",
+                    VisaType.Freelancer => "ویزای فریلنسری/خوداشتغالی",
+                    VisaType.Research => "ویزای تحقیقاتی",
+                    VisaType.Retirement => "ویزای بازنشستگی ایتالیا",
+                    VisaType.Asylum => "پناهندگی",
+                    VisaType.Cultural => "ویزای فرهنگی",
+                    VisaType.Humanitarian => "ویزای بشر‌دوستانه",
+                    _ => "ویزای کار ایتالیا"
+                };
+            }
+
+            // Switzerland
+            if (country == CountryType.Switzerland)
+            {
+                return requested switch
+                {
+                    VisaType.Study => "ویزای تحصیلی",
+                    VisaType.Investment => "ویزای سرمایه‌گذاری یا اقامت مالیاتی",
+                    VisaType.Work => "اجازه کار (Permit L/B)",
+                    VisaType.Family => "ویزای پیوست خانواده",
+                    VisaType.Tourist => "ویزای توریستی (شینگن)",
+                    VisaType.Startup => "ویزای کارآفرینی",
+                    VisaType.Residence => "اجازه اقامت C",
+                    VisaType.DigitalNomad => "ویزای دیجیتال نوماد سوئیس",
+                    VisaType.Freelancer => "ویزای فریلنسری یا خوداشتغالی",
+                    VisaType.Research => "ویزای تحقیقاتی",
+                    VisaType.Retirement => "ویزای بازنشستگی",
+                    VisaType.Asylum => "پناهندگی سوئیس",
+                    VisaType.Cultural => "ویزای فرهنگی",
+                    VisaType.Humanitarian => "ویزای بشر‌دوستانه",
+                    _ => "اجازه کار (Permit L/B)"
+                };
+            }
+
+            // Oman
+            if (country == CountryType.Oman)
+            {
+                return requested switch
+                {
+                    VisaType.Study => "ویزای دانشجویی",
+                    VisaType.Investment => "ویزای سرمایه‌گذاری",
+                    VisaType.Work => "ویزای کار",
+                    VisaType.Family => "ویزای خانواده",
+                    VisaType.Tourist => "ویزای توریستی",
+                    VisaType.Startup => "ویزای کارآفرینی",
+                    VisaType.Residence => "اقامت طولانی مدت",
+                    VisaType.DigitalNomad => "ویزای کار از راه دور",
+                    VisaType.Freelancer => "ویزای فریلنسری",
+                    VisaType.Research => "ویزای تحقیقاتی",
+                    VisaType.Retirement => "ویزای بازنشستگی",
+                    VisaType.Asylum => "پناهندگی",
+                    VisaType.Cultural => "ویزای فرهنگی",
+                    VisaType.Humanitarian => "ویزای انسان‌دوستانه",
+                    _ => "ویزای کار"
+                };
+            }
+
+            return "ویزای متناسب با شرایط";
         }
 
         private static MatchedJobCard? BuildJobCard(JobInfo? match, ImmigrationInput input)
