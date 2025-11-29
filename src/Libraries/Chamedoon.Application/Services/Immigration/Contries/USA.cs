@@ -63,15 +63,15 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "نیویورک (۱ خوابه)", Cost = 2000 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "نیویورک (۲ خوابه)", Cost = 3000 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "لس آنجلس (۱ خوابه)", Cost = 1800 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "لس آنجلس (۲ خوابه)", Cost = 2500 }
-            },
-            Food = 450,
-            Clothing = 200
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۴٬۲۳۱٫۳ دلار آمریکا",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۱٬۱۷۳٫۴ دلار آمریکا",
+            Transport = "حمل‌ونقل: کارت ماهانه حمل‌ونقل عمومی حدود ۶۵ $",
+            Utilities = "برق، آب و گاز برای آپارتمان ۸۵ مترمربع: حدود ۲۱۰٫۳۷ $",
+            Recreation = "تفریح: عضویت باشگاه ۴۵٫۵۱ $ و بلیط سینما ۱۵ $",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در نیویورک، لس‌آنجلس و شیکاگو: ≈ ۳٬۰۷۲ $",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر: ≈ ۵٬۸۸۶ $",
+            Internet = "اینترنت نامحدود: ۷۲٫۴۳ $ در ماه",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>

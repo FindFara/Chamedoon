@@ -62,15 +62,15 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "آمستردام (۱ خوابه)", Cost = 1500 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "آمستردام (۲ خوابه)", Cost = 2200 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "روتردام (۱ خوابه)", Cost = 1200 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "روتردام (۲ خوابه)", Cost = 1700 }
-            },
-            Food = 350,
-            Clothing = 120
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۳٬۶۲۱٫۸ یورو ≈ ۴٬۲۰۱ $",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۱٬۰۱۳٫۹ یورو ≈ ۱٬۱۷۶ $",
+            Transport = "حمل‌ونقل: کارت ماهانه ۹۰ € (≈۱۰۴٫۴ $)",
+            Utilities = "برق، آب و گاز: حدود ۲۲۶٫۷ € (≈۲۶۲٫۹ $)",
+            Recreation = "تفریح: عضویت باشگاه ۳۷٫۰۵ € (≈۴۳٫۰ $) و بلیط سینما ۱۴ € (≈۱۶٫۲ $)",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در آمستردام، روتردام و لاهه: ≈ ۱٬۷۰۲ € (≈۱٬۹۷۴ $)",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر: ≈ ۲٬۹۱۵ € (≈۳٬۳۸۲ $)",
+            Internet = "اینترنت نامحدود: ۴۳٫۰۷ € (≈۵۰٫۰ $) در ماه",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>

@@ -61,15 +61,15 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "استکهلم (۱ خوابه)", Cost = 10500 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "استکهلم (۲ خوابه)", Cost = 15000 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "گوتنبرگ (۱ خوابه)", Cost = 9000 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "گوتنبرگ (۲ خوابه)", Cost = 13000 }
-            },
-            Food = 3000,
-            Clothing = 700
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۳۷٬۹۱۸٫۹ کرون سوئد ≈ ۴٬۰۱۲ دلار آمریکا",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۱۰٬۲۱۶٫۳ کرون ≈ ۱٬۰۸۱ دلار آمریکا",
+            Transport = "حمل‌ونقل: کارت ماهانه ۸۶۰ kr (≈۹۱٫۰ $)",
+            Utilities = "برق، آب و گاز: حدود ۱٬۲۴۱٫۵۸ kr (≈۱۳۱٫۴ $)",
+            Recreation = "تفریح: عضویت باشگاه ۳۹۵٫۱۲ kr (≈۴۱٫۸ $) و بلیط سینما ۱۵۹ kr (≈۱۶٫۸ $)",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در استکهلم، مالمو و گوتنبرگ: ≈ ۱۰٬۹۵۴ kr (≈۱٬۱۵۹ $)",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر: ≈ ۱۹٬۹۶۱ kr (≈۲٬۱۱۲ $)",
+            Internet = "اینترنت نامحدود: ۳۷۷٫۶۳ kr (≈۴۰٫۰ $) در ماه",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>

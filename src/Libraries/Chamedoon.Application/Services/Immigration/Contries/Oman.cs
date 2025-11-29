@@ -62,15 +62,15 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "مسقط (۱ خوابه)", Cost = 250 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "مسقط (۲ خوابه)", Cost = 350 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "صلاله (۱ خوابه)", Cost = 200 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "صلاله (۲ خوابه)", Cost = 300 }
-            },
-            Food = 70,
-            Clothing = 30
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۱٬۰۲۲٫۵ ﷼ عمان ≈ ۲٬۶۵۵ دلار آمریکا",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۲۸۷٫۱ ﷼ عمان ≈ ۷۴۶ دلار آمریکا",
+            Transport = "حمل‌ونقل: کارت ماهانه ۲۵ ﷼ (≈۶۴٫۹ $)",
+            Utilities = "برق، آب و گاز: حدود ۳۸٫۸۸ ﷼ (≈۱۰۱٫۰ $)",
+            Recreation = "تفریح: عضویت باشگاه ۲۰٫۰۳ ﷼ (≈۵۲٫۰ $) و بلیط سینما ۴ ﷼ (≈۱۰٫۴ $)",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در مسقط، صلاله و صحار: ≈ ۱۶۱٫۳ ﷼ (≈۴۱۹ $)",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر: ≈ ۳۱۴٫۷ ﷼ (≈۸۱۷ $)",
+            Internet = "اینترنت نامحدود: ۲۷٫۷۴ ﷼ (≈۷۲٫۰ $) در ماه",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>

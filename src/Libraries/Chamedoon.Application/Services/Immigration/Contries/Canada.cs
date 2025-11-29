@@ -77,15 +77,15 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "ونکوور (۱ خوابه)", Cost = 2530 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "ونکوور (۲ خوابه)", Cost = 3440 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "تورنتو (۱ خوابه)", Cost = 2450 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "تورنتو (۲ خوابه)", Cost = 3250 }
-            },
-            Food = 400,
-            Clothing = 150
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۵٬۲۲۴٫۱ دلار کانادا ≈ ۳٬۷۳۸ دلار آمریکا",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۱٬۴۳۲٫۷ دلار کانادا ≈ ۱٬۰۲۵ دلار آمریکا",
+            Transport = "حمل‌ونقل: کارت ماهانه حدود ۱۰۴٫۵ C$ (≈۷۴٫۸ $)",
+            Utilities = "برق، آب و گاز برای آپارتمان ۸۵ مترمربع: حدود ۲۰۸٫۷۸ C$ (≈۱۴۹٫۴ $)",
+            Recreation = "تفریح: عضویت باشگاه ۵۹٫۰۱ C$ (≈۴۲٫۲ $) و بلیط سینما ۱۵٫۸۲ C$ (≈۱۱٫۳ $)",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در سه شهر بزرگ: ≈ ۲٬۲۵۱ C$ (≈۱٬۶۱۱ $)",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر بزرگ: ≈ ۳٬۸۴۱ C$ (≈۲٬۷۴۹ $)",
+            Internet = "اینترنت نامحدود: حدود ۸۵٫۶۱ C$ (≈۶۱٫۳ $) در ماه",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>

@@ -63,15 +63,15 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "برلین (۱ خوابه)", Cost = 1300 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "برلین (۲ خوابه)", Cost = 1600 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "مونیخ (۱ خوابه)", Cost = 1800 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "مونیخ (۲ خوابه)", Cost = 2300 }
-            },
-            Food = 300,
-            Clothing = 120
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۳٬۴۰۷٫۶ یورو ≈ ۳٬۹۵۲ $",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۹۸۵٫۶ یورو ≈ ۱٬۱۴۳ $",
+            Transport = "حمل‌ونقل: کارت ماهانه حدود ۵۸ € (≈۶۷٫۳ $)",
+            Utilities = "برق، آب و گاز برای آپارتمان ۸۵ مترمربع: حدود ۳۰۳٫۰۸ € (≈۳۵۱٫۶ $)",
+            Recreation = "تفریح: عضویت باشگاه ۳۵٫۴۲ € (≈۴۱٫۱ $) و بلیط سینما ۱۲ € (≈۱۳٫۹ $)",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در سه شهر بزرگ: ≈ ۱٬۲۹۹ € (≈۱٬۵۰۶ $)",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر بزرگ: ≈ ۲٬۴۴۵ € (≈۲٬۸۳۶ $)",
+            Internet = "اینترنت نامحدود: حدود ۴۳٫۲۲ € (≈۵۰٫۱ $) در ماه",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>

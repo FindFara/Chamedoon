@@ -64,15 +64,15 @@ namespace CountryPoints
         /// </summary>
         public MinimumLivingCosts LivingCosts { get; set; } = new MinimumLivingCosts
         {
-            Housing = new List<HousingCost>
-            {
-                new HousingCost { Area = 50, Rooms = 1, Region = "سیدنی (۱ خوابه)", Cost = 2600 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "سیدنی (۲ خوابه)", Cost = 3500 },
-                new HousingCost { Area = 50, Rooms = 1, Region = "ملبورن (۱ خوابه)", Cost = 2200 },
-                new HousingCost { Area = 70, Rooms = 2, Region = "ملبورن (۲ خوابه)", Cost = 3000 }
-            },
-            Food = 450,
-            Clothing = 200
+            FamilyMonthly = "هزینه ماهانه خانواده چهار نفره (بدون اجاره): ۵٬۶۹۴٫۵ دلار استرالیا ≈ ۳٬۷۳۲ دلار آمریکا",
+            SingleMonthly = "هزینه ماهانه یک نفر (بدون اجاره): ۱٬۵۸۰٫۵ دلار استرالیا ≈ ۱٬۰۳۶ دلار آمریکا",
+            Transport = "حمل‌ونقل: کارت ماهانه حدود ۱۴۰ A$ (≈۹۱٫۸ $)",
+            Utilities = "برق، آب، گاز و زباله برای آپارتمان ۸۵ مترمربع: حدود ۲۷۴٫۴۲ A$ (≈۱۷۹٫۹ $)",
+            Recreation = "تفریح: عضویت باشگاه ≈ ۷۳ A$ (≈۴۷٫۸ $) و بلیط سینما ۲۰ A$ (≈۱۳٫۱ $)",
+            RentOneBedroom = "میانگین اجاره آپارتمان ۱ خوابه در سه شهر بزرگ: ≈ ۲٬۷۴۳ A$ (≈۱٬۷۹۸ $)",
+            RentThreeBedroom = "میانگین اجاره آپارتمان ۳ خوابه در سه شهر بزرگ: ≈ ۵٬۲۶۸ A$ (≈۳٬۴۵۳ $)",
+            Internet = "اینترنت نامحدود: حدود ۸۲٫۱۷ A$ (≈۵۳٫۹ $) در ماه",
+            Housing = new List<HousingCost>()
         };
 
         /// <summary>
