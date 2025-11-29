@@ -158,11 +158,8 @@
                                         ("میانگین هزینه زندگی برای یک نفر (بدون اجاره)", livingCosts.SingleMonthly),
                                         ("حمل و نقل", livingCosts.Transport),
                                         ("خدمات رفاهی", livingCosts.Utilities),
-                                        ("فعالیت‌های تفریحی", livingCosts.Recreation),
-                                        ("مواد غذایی", livingCosts.FoodBasket),
                                         ("آپارتمان یک خوابه", livingCosts.RentOneBedroom),
                                         ("آپارتمان سه خوابه", livingCosts.RentThreeBedroom),
-                                        ("اینترنت نامحدود ماهانه", livingCosts.Internet)
                                     }
                                     .Where(item => !string.IsNullOrWhiteSpace(item.Value))
                                     .ToList();

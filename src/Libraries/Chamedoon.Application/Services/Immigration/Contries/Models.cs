@@ -122,12 +122,7 @@ namespace CountryPoints
         /// هزینه فعالیت‌های تفریحی مانند عضویت باشگاه یا بلیط سینما.
         /// </summary>
         public string Recreation { get; set; }
-
-        /// <summary>
-        /// برآورد هزینه مواد غذایی؛ در صورت نبود عدد مستقل، توضیح تکمیلی درج می‌شود.
-        /// </summary>
-        public string FoodBasket { get; set; }
-
+        
         /// <summary>
         /// میانگین اجاره آپارتمان یک‌خوابه در سه شهر بزرگ یا نمونه مرجع.
         /// </summary>
