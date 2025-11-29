@@ -25,9 +25,10 @@
             </div>
         </div>
 
-        @if (Model.TopCountries?.Any() == true)
+        @if (Model.RankedCountries?.Any() == true)
         {
-            var averageScore = Math.Round(Model.TopCountries.Average(c => c.Score), 0);
+            var topThree = Model.TopCountries;
+            var averageScore = Math.Round(topThree.Average(c => c.Score), 0);
             string StripNumbers(string text)
             {
                 if (string.IsNullOrWhiteSpace(text))
@@ -48,9 +49,9 @@
                     <div class="insight-pill">میانگین کل: @averageScore%</div>
                 </div>
                 <div class="score-rings" data-score-rings>
-                    @for (int i = 0; i < Model.TopCountries.Count; i++)
+                    @for (int i = 0; i < topThree.Count; i++)
                     {
-                        var item = Model.TopCountries[i];
+                        var item = topThree[i];
                         var score = Math.Round(item.Score, 0);
                         var gradientId = $"ring-grad-{i}";
                         <div class="ring-item" data-score="@score">
@@ -82,9 +83,9 @@
             </div>
 
             <div class="immigration-result-grid">
-                @for (int i = 0; i < Model.TopCountries.Count; i++)
+                @for (int i = 0; i < topThree.Count; i++)
                 {
-                    var item = Model.TopCountries[i];
+                    var item = topThree[i];
                     var jobInfo = string.IsNullOrWhiteSpace(item.JobInfo)
                         ? "اطلاعات بازار کار در دسترس نیست."
                         : StripNumbers(item.JobInfo);
@@ -114,6 +115,60 @@
                     </article>
                 }
             </div>
+
+            <div class="glass-card mb-4">
+                <div class="insights-header">
+                    <div>
+                        <h4 class="fw-bold mb-1">ده کشور ارزیابی شده</h4>
+                        <p class="immigration-helper mb-0">امتیاز کامل هر کشور و مسیر پیشنهادی را یکجا ببین.</p>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">رتبه</th>
+                                <th scope="col">کشور</th>
+                                <th scope="col">امتیاز</th>
+                                <th scope="col">مسیر پیشنهادی</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.RankedCountries.Count; i++)
+                            {
+                                var item = Model.RankedCountries[i];
+                                var rank = i + 1;
+                                <tr>
+                                    <td>@rank</td>
+                                    <td>@item.Country.GetDescription()</td>
+                                    <td>@Math.Round(item.Score, 0)%</td>
+                                    <td>@item.RecommendedVisaType</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.AiSummary))
+            {
+                <div class="glass-card mb-4">
+                    <div class="insights-header">
+                        <div>
+                            <h4 class="fw-bold mb-1">گزارش هوش مصنوعی</h4>
+                            <p class="immigration-helper mb-0">پرامپت ارسال شده و خلاصه خروجی الگوریتم AI.</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <h6 class="fw-semibold">خلاصه خروجی</h6>
+                        <pre class="immigration-helper mb-0">@Model.AiSummary</pre>
+                    </div>
+                    <details>
+                        <summary class="fw-semibold text-primary">مشاهده پرامپت</summary>
+                        <pre class="immigration-helper">@Model.AiPrompt</pre>
+                    </details>
+                </div>
+            }
         }
         else
         {
