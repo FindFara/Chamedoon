@@ -500,6 +500,11 @@
     gap: 1rem;
 }
 
+.country-heading {
+    text-align: right;
+    margin-inline-start: auto;
+}
+
 .score-chip {
     padding: 0.4rem 0.8rem;
     border-radius: 0.9rem;
@@ -563,14 +568,14 @@
 }
 
 .living-label {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
 }
 
 .living-value {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--primary);
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #4338ca;
 }
 
 .restriction-list {
