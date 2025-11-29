@@ -41,6 +41,11 @@ namespace CountryPoints
         public decimal InvestmentAmount { get; set; } = 100000000m;
 
         /// <summary>
+        /// واحد پول نمایش داده شده برای مبالغ سرمایه‌گذاری برنامهٔ اقامت دائم هند.
+        /// </summary>
+        public string InvestmentCurrency { get; set; } = "روپیه هند";
+
+        /// <summary>
         /// توضیحات فارسی دربارهٔ شرایط دریافت اقامت دائم برای سرمایه‌گذاران خارجی (PRS)، شامل سرمایه‌گذاری ۱۰ کرور در ۱۸ ماه یا ۲۵ کرور در ۳۶ ماه و ایجاد حداقل ۲۰ شغل【147254951936675†screenshot】.
         /// </summary>
         public string InvestmentNotes { get; set; } = "برای دریافت وضعیت اقامت دائم (Permanent Residency Status) باید حداقل ۱۰ کرور روپیه ظرف ۱۸ ماه یا ۲۵ کرور روپیه ظرف ۳۶ ماه سرمایه‌گذاری کنید و حداقل برای ۲۰ نفر کار ایجاد کنید.";

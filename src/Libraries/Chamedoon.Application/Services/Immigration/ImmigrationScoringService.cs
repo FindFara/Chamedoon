@@ -50,6 +50,7 @@ namespace Chamedoon.Application.Services.Immigration
         public IReadOnlyList<string> IranianMigrationRestrictions { get; set; } = new List<string>();
         public string InvestmentNotes { get; set; } = string.Empty;
         public decimal InvestmentAmount { get; set; }
+        public string InvestmentCurrency { get; set; } = string.Empty;
         public string AdditionalInfo { get; set; } = string.Empty;
         public MinimumLivingCosts LivingCosts { get; set; } = new() { Housing = new List<HousingCost>() };
         public MatchedJobCard? Job { get; set; }
@@ -87,6 +88,7 @@ namespace Chamedoon.Application.Services.Immigration
         List<JobInfo> Jobs,
         List<EducationInfo> Educations,
         decimal InvestmentAmount,
+        string InvestmentCurrency,
         string InvestmentNotes,
         string AdditionalInfo,
         string MaritalStatusImpact,
@@ -136,6 +138,7 @@ namespace Chamedoon.Application.Services.Immigration
                 GetPropertyValue(source, nameof(Canada.Jobs), new List<JobInfo>()),
                 GetPropertyValue(source, nameof(Canada.Educations), new List<EducationInfo>()),
                 GetPropertyValue(source, nameof(Canada.InvestmentAmount), 0m),
+                GetPropertyValue(source, nameof(Canada.InvestmentCurrency), string.Empty),
                 GetPropertyValue(source, nameof(Canada.InvestmentNotes), string.Empty),
                 GetPropertyValue(source, nameof(Canada.AdditionalInfo), string.Empty),
                 GetPropertyValue(source, nameof(Canada.MaritalStatusImpact), string.Empty),
@@ -183,6 +186,7 @@ namespace Chamedoon.Application.Services.Immigration
                     IranianMigrationRestrictions = country.IranianMigrationRestrictions,
                     InvestmentNotes = country.InvestmentNotes,
                     InvestmentAmount = country.InvestmentAmount,
+                    InvestmentCurrency = country.InvestmentCurrency,
                     AdditionalInfo = country.AdditionalInfo,
                     LivingCosts = country.LivingCosts,
                     Job = BuildJobCard(jobMatch, input),

@@ -146,7 +146,14 @@
                             <div class="detail-block">
                                 <div class="detail-title">هزینه و سرمایه‌گذاری</div>
                                 <p class="detail-text mb-1">@CleanText(item.Data.InvestmentNotes)</p>
-                                <div class="detail-tag mb-0">حداقل سرمایه: @item.Data.InvestmentAmount.ToString("N0")</div>
+                                @{
+                                    var investmentLabel = item.Data.InvestmentAmount > 0
+                                        ? $"{item.Data.InvestmentAmount:N0} {item.Data.InvestmentCurrency}".Trim()
+                                        : (!string.IsNullOrWhiteSpace(item.Data.InvestmentCurrency)
+                                            ? $"نامشخص ({item.Data.InvestmentCurrency})"
+                                            : "نامشخص");
+                                }
+                                <div class="detail-tag mb-0">حداقل سرمایه: @investmentLabel</div>
                             </div>
 
                             <div class="detail-block">

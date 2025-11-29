@@ -38,6 +38,11 @@ namespace CountryPoints
         public decimal InvestmentAmount { get; set; } = 2500000m;
 
         /// <summary>
+        /// واحد پول مورد استفاده برای نمایش مبالغ سرمایه‌گذاری در استرالیا.
+        /// </summary>
+        public string InvestmentCurrency { get; set; } = "دلار استرالیا";
+
+        /// <summary>
         /// توضیحات فارسی دربارهٔ شرایط ویزای سرمایه‌گذاری استرالیا، تاریخ بسته شدن آن و نیاز به نامزدی توسط ایالت【57343303639780†L122-L172】.
         /// </summary>
         public string InvestmentNotes { get; set; } = "برنامهٔ Investor stream (ساب کلاس ۱۸۸) در ۳۱ ژوئیهٔ ۲۰۲۴ بسته شد؛ پیش از آن متقاضیان باید حداقل ۲٫۵ میلیون دلار استرالیا سرمایه‌گذاری کرده و توسط یک ایالت یا قلمرو نامزد می‌شدند.";
