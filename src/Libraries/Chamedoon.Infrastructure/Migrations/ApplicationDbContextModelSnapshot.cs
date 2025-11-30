@@ -395,6 +395,50 @@ namespace Chamedoon.Infrastructure.Migrations
                     b.ToTable("Countries");
                 });
 
+            modelBuilder.Entity("Chamedoon.Domin.Entity.Countries.CountryEducation", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CountryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.Property<string>("FieldName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LanguageRequirement")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.ToTable("CountryEducations");
+                });
+
             modelBuilder.Entity("Chamedoon.Domin.Entity.Countries.CountryLivingCost", b =>
                 {
                     b.Property<long>("Id")
@@ -422,6 +466,45 @@ namespace Chamedoon.Infrastructure.Migrations
                     b.HasIndex("CountryId");
 
                     b.ToTable("CountryLivingCosts");
+                });
+
+            modelBuilder.Entity("Chamedoon.Domin.Entity.Countries.CountryJob", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CountryId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.Property<string>("ExperienceImpact")
+                        .IsRequired()
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.ToTable("CountryJobs");
                 });
 
             modelBuilder.Entity("Chamedoon.Domin.Entity.Countries.CountryRestriction", b =>
@@ -700,6 +783,28 @@ namespace Chamedoon.Infrastructure.Migrations
                     b.Navigation("Country");
                 });
 
+            modelBuilder.Entity("Chamedoon.Domin.Entity.Countries.CountryEducation", b =>
+                {
+                    b.HasOne("Chamedoon.Domin.Entity.Countries.Country", "Country")
+                        .WithMany("Educations")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Country");
+                });
+
+            modelBuilder.Entity("Chamedoon.Domin.Entity.Countries.CountryJob", b =>
+                {
+                    b.HasOne("Chamedoon.Domin.Entity.Countries.Country", "Country")
+                        .WithMany("Jobs")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Country");
+                });
+
             modelBuilder.Entity("Chamedoon.Domin.Entity.Countries.CountryRestriction", b =>
                 {
                     b.HasOne("Chamedoon.Domin.Entity.Countries.Country", "Country")
@@ -777,6 +882,10 @@ namespace Chamedoon.Infrastructure.Migrations
             modelBuilder.Entity("Chamedoon.Domin.Entity.Countries.Country", b =>
                 {
                     b.Navigation("LivingCosts");
+
+                    b.Navigation("Educations");
+
+                    b.Navigation("Jobs");
 
                     b.Navigation("Restrictions");
                 });
@@ -897,6 +1006,8 @@ namespace Chamedoon.Infrastructure.Migrations
             modelBuilder.Entity("Chamedoon.Domin.Entity.Countries.Country").HasData(countrySeed.Countries);
             modelBuilder.Entity("Chamedoon.Domin.Entity.Countries.CountryLivingCost").HasData(countrySeed.LivingCosts);
             modelBuilder.Entity("Chamedoon.Domin.Entity.Countries.CountryRestriction").HasData(countrySeed.Restrictions);
+            modelBuilder.Entity("Chamedoon.Domin.Entity.Countries.CountryJob").HasData(countrySeed.Jobs);
+            modelBuilder.Entity("Chamedoon.Domin.Entity.Countries.CountryEducation").HasData(countrySeed.Educations);
 #pragma warning restore 612, 618
         }
     }

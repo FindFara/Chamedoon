@@ -56,6 +56,8 @@ public class ApplicationDbContext : IdentityDbContext<
     public DbSet<Country> Countries { get; set; }
     public DbSet<CountryLivingCost> CountryLivingCosts { get; set; }
     public DbSet<CountryRestriction> CountryRestrictions { get; set; }
+    public DbSet<CountryJob> CountryJobs { get; set; }
+    public DbSet<CountryEducation> CountryEducations { get; set; }
     #endregion
 
     #region Payments
@@ -95,6 +97,8 @@ public class ApplicationDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new CountryConfigs());
         modelBuilder.ApplyConfiguration(new CountryLivingCostConfigs());
         modelBuilder.ApplyConfiguration(new CountryRestrictionConfigs());
+        modelBuilder.ApplyConfiguration(new CountryJobConfigs());
+        modelBuilder.ApplyConfiguration(new CountryEducationConfigs());
 
         CountrySeedData.Seed(modelBuilder);
 

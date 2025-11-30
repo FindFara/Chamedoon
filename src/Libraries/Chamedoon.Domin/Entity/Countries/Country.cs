@@ -15,5 +15,7 @@ namespace Chamedoon.Domin.Entity.Countries
 
         public ICollection<CountryLivingCost> LivingCosts { get; set; } = new List<CountryLivingCost>();
         public ICollection<CountryRestriction> Restrictions { get; set; } = new List<CountryRestriction>();
+        public ICollection<CountryJob> Jobs { get; set; } = new List<CountryJob>();
+        public ICollection<CountryEducation> Educations { get; set; } = new List<CountryEducation>();
     }
 }

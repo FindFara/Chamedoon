@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
@@ -248,6 +249,8 @@ namespace Chamedoon.Application.Services.Immigration
                     ? card.AdditionalInfo
                     : cached.AdditionalInfo;
                 card.LivingCosts = cached.LivingCosts?.Housing is not null ? cached.LivingCosts : card.LivingCosts;
+                card.Job = MergeJobCard(card.Job, cached);
+                card.Education = MergeEducationCard(card.Education, cached);
             }
 
             card.LanguageRequirement ??= educationCard?.LanguageRequirement;
@@ -636,6 +639,67 @@ namespace Chamedoon.Application.Services.Immigration
                 Score = match.Score,
                 DegreeLevel = input.DegreeLevel
             };
+        }
+
+        private static MatchedJobCard? MergeJobCard(MatchedJobCard? jobCard, CountryDataSnapshot cached)
+        {
+            if (jobCard == null || cached.Jobs.Count == 0)
+            {
+                return jobCard;
+            }
+
+            var title = GetEnumDescription(jobCard.Job);
+            var match = cached.Jobs.FirstOrDefault(j => string.Equals(j.Title, title, StringComparison.OrdinalIgnoreCase));
+            if (match == null)
+            {
+                return jobCard;
+            }
+
+            jobCard.Description = string.IsNullOrWhiteSpace(match.Description) ? jobCard.Description : match.Description;
+            jobCard.ExperienceImpact = string.IsNullOrWhiteSpace(match.ExperienceImpact)
+                ? jobCard.ExperienceImpact
+                : match.ExperienceImpact;
+            jobCard.Score = match.Score > 0 ? match.Score : jobCard.Score;
+            return jobCard;
+        }
+
+        private static MatchedEducationCard? MergeEducationCard(MatchedEducationCard? educationCard, CountryDataSnapshot cached)
+        {
+            if (educationCard == null || cached.Educations.Count == 0)
+            {
+                return educationCard;
+            }
+
+            var fieldName = GetEnumDescription(educationCard.Field);
+            var match = cached.Educations.FirstOrDefault(e => string.Equals(e.FieldName, fieldName, StringComparison.OrdinalIgnoreCase));
+            if (match == null)
+            {
+                return educationCard;
+            }
+
+            educationCard.Description = string.IsNullOrWhiteSpace(match.Description)
+                ? educationCard.Description
+                : match.Description;
+            educationCard.LanguageRequirement = string.IsNullOrWhiteSpace(match.LanguageRequirement)
+                ? educationCard.LanguageRequirement
+                : match.LanguageRequirement;
+            educationCard.Score = match.Score > 0 ? match.Score : educationCard.Score;
+            return educationCard;
+        }
+
+        private static string GetEnumDescription(Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            if (field == null)
+            {
+                return value.ToString();
+            }
+
+            var attribute = field.GetCustomAttributes(typeof(DescriptionAttribute), false)
+                .Cast<DescriptionAttribute>()
+                .FirstOrDefault();
+
+            return attribute?.Description ?? value.ToString();
         }
 
         private static double CalculateAgeComponent(int age, Dictionary<int, string> ageScores)
