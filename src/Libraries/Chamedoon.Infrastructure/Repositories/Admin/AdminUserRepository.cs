@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Chamedoon.Application.Common.Interfaces.Admin;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Admin.Common.Models;
 using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Users;
@@ -27,7 +28,7 @@ public class AdminUserRepository : IAdminUserRepository
         _roleManager = roleManager;
     }
 
-    public async Task<List<User>> GetUsersAsync(string? search, long? roleId, CancellationToken cancellationToken)
+    public async Task<PaginatedList<User>> GetUsersAsync(string? search, long? roleId, int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         IQueryable<User> query = _userManager.Users
             .Include(u => u.UserRoles)!.ThenInclude(ur => ur.Role)
@@ -49,10 +50,11 @@ public class AdminUserRepository : IAdminUserRepository
             query = query.Where(u => u.UserRoles!.Any(ur => ur.RoleId == roleId.Value));
         }
 
-        return await query
+        var ordered = query
             .AsNoTracking()
-            .OrderByDescending(u => u.Created)
-            .ToListAsync(cancellationToken);
+            .OrderByDescending(u => u.Created);
+
+        return await PaginatedList<User>.CreateAsync(ordered, pageNumber, pageSize);
     }
 
     public Task<User?> GetUserAsync(long id, CancellationToken cancellationToken)
