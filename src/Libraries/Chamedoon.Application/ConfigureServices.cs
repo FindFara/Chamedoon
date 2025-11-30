@@ -30,7 +30,10 @@ public static class ConfigureServices
         services.AddScoped<IAdminRoleService, AdminRoleService>();
         services.AddScoped<IAdminDashboardService, AdminDashboardService>();
         services.AddScoped<IImmigrationEvaluationService, ImmigrationEvaluationService>();
+        services.AddScoped<ICountryDataCache, CountryDataCache>();
+        services.AddScoped<ImmigrationScoringService>();
         services.AddScoped<PaymentService>();
+        services.AddMemoryCache();
 
         return services;
     }
