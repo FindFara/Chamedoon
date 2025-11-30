@@ -1,12 +1,15 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Domin.Entity.Blogs;
+using Chamedoon.Domin.Entity.Countries;
 using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Payments;
 using Chamedoon.Domin.Entity.Permissions;
 using Chamedoon.Domin.Entity.Users;
 using Chamedoon.Infrastructure.FluentConfigs.Customers;
+using Chamedoon.Infrastructure.FluentConfigs.Countries;
 using Chamedoon.Infrastructure.FluentConfigs.Payments;
 using Chamedoon.Infrastructure.FluentConfigs.Users;
+using Chamedoon.Infrastructure.Persistence.Seeds;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +52,12 @@ public class ApplicationDbContext : IdentityDbContext<
     public DbSet<ImmigrationEvaluation> ImmigrationEvaluations { get; set; }
     #endregion
 
+    #region Countries
+    public DbSet<Country> Countries { get; set; }
+    public DbSet<CountryLivingCost> CountryLivingCosts { get; set; }
+    public DbSet<CountryRestriction> CountryRestrictions { get; set; }
+    #endregion
+
     #region Payments
     public DbSet<PaymentRequest> PaymentRequests { get; set; }
     public DbSet<PaymentResponse> PaymentResponses { get; set; }
@@ -83,6 +92,11 @@ public class ApplicationDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new ImmigrationEvaluationConfigs());
         modelBuilder.ApplyConfiguration(new PaymentRequestConfigs());
         modelBuilder.ApplyConfiguration(new PaymentResponseConfigs());
+        modelBuilder.ApplyConfiguration(new CountryConfigs());
+        modelBuilder.ApplyConfiguration(new CountryLivingCostConfigs());
+        modelBuilder.ApplyConfiguration(new CountryRestrictionConfigs());
+
+        CountrySeedData.Seed(modelBuilder);
 
 
     }
