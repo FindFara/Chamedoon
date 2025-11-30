@@ -90,7 +90,7 @@
                             <form asp-action="Subscribe" method="post">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="planId" value="@plan.Id" />
-                                <button type="submit" class="btn btn-primary btn-rounded" @(isCurrent ? "disabled" : string.Empty)>
+                                <button type="submit" class="btn-glass-primary btn-rounded" @(isCurrent ? "disabled" : string.Empty)>
                                     @(isCurrent ? "فعال شده" : "انتخاب پلن")
                                 </button>
                             </form>
