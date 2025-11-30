@@ -40,6 +40,8 @@ namespace Chamedoon.Application.Services.Immigration
                 .AsNoTracking()
                 .Include(c => c.LivingCosts)
                 .Include(c => c.Restrictions)
+                .Include(c => c.Jobs)
+                .Include(c => c.Educations)
                 .ToListAsync(cancellationToken);
 
             var result = countries.ToDictionary(
@@ -54,7 +56,26 @@ namespace Chamedoon.Application.Services.Immigration
                     InvestmentNotes = c.InvestmentNotes,
                     AdditionalInfo = c.AdditionalInfo,
                     LivingCosts = BuildLivingCosts(c.LivingCosts),
-                    Restrictions = c.Restrictions.Select(r => r.Description).ToList()
+                    Restrictions = c.Restrictions.Select(r => r.Description).ToList(),
+                    Jobs = c.Jobs
+                        .Select(j => new CountryJobSnapshot
+                        {
+                            Title = j.Title,
+                            Description = j.Description,
+                            Score = j.Score,
+                            ExperienceImpact = j.ExperienceImpact
+                        })
+                        .ToList(),
+                    Educations = c.Educations
+                        .Select(e => new CountryEducationSnapshot
+                        {
+                            FieldName = e.FieldName,
+                            Description = e.Description,
+                            Score = e.Score,
+                            Level = e.Level,
+                            LanguageRequirement = e.LanguageRequirement
+                        })
+                        .ToList()
                 },
                 StringComparer.OrdinalIgnoreCase);
 
@@ -96,5 +117,24 @@ namespace Chamedoon.Application.Services.Immigration
         public string AdditionalInfo { get; set; } = string.Empty;
         public MinimumLivingCosts LivingCosts { get; set; } = new() { Housing = new List<HousingCost>() };
         public IReadOnlyList<string> Restrictions { get; set; } = new List<string>();
+        public IReadOnlyList<CountryJobSnapshot> Jobs { get; set; } = new List<CountryJobSnapshot>();
+        public IReadOnlyList<CountryEducationSnapshot> Educations { get; set; } = new List<CountryEducationSnapshot>();
+    }
+
+    public class CountryJobSnapshot
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public int Score { get; set; }
+        public string ExperienceImpact { get; set; } = string.Empty;
+    }
+
+    public class CountryEducationSnapshot
+    {
+        public string FieldName { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public int Score { get; set; }
+        public string Level { get; set; } = string.Empty;
+        public string LanguageRequirement { get; set; } = string.Empty;
     }
 }

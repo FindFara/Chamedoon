@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Chamedoon.Domin.Entity.Countries;
 using Chamedoon.Domin.Enums;
@@ -16,6 +17,8 @@ namespace Chamedoon.Infrastructure.Persistence.Seeds
             modelBuilder.Entity<Country>().HasData(seed.Countries);
             modelBuilder.Entity<CountryLivingCost>().HasData(seed.LivingCosts);
             modelBuilder.Entity<CountryRestriction>().HasData(seed.Restrictions);
+            modelBuilder.Entity<CountryJob>().HasData(seed.Jobs);
+            modelBuilder.Entity<CountryEducation>().HasData(seed.Educations);
         }
 
         public static CountrySeedResult Build()
@@ -37,7 +40,9 @@ namespace Chamedoon.Infrastructure.Persistence.Seeds
             return new CountrySeedResult(
                 countries.Select(c => c.Country).ToList(),
                 countries.SelectMany(c => c.LivingCosts).ToList(),
-                countries.SelectMany(c => c.Restrictions).ToList());
+                countries.SelectMany(c => c.Restrictions).ToList(),
+                countries.SelectMany(c => c.Jobs).ToList(),
+                countries.SelectMany(c => c.Educations).ToList());
         }
 
         private static CountrySeedRow BuildSeed(long id, string key, string name, dynamic source)
@@ -70,7 +75,10 @@ namespace Chamedoon.Infrastructure.Persistence.Seeds
 
             var livingCosts = MapLivingCosts(id, GetValue(source, nameof(Canada.LivingCosts), new MinimumLivingCosts()));
 
-            return new CountrySeedRow(country, livingCosts, restrictions);
+            var jobs = MapJobs(id, GetValue(source, nameof(Canada.Jobs), new List<JobInfo>()));
+            var educations = MapEducations(id, GetValue(source, nameof(Canada.Educations), new List<EducationInfo>()));
+
+            return new CountrySeedRow(country, livingCosts, restrictions, jobs, educations);
         }
 
         private static List<CountryLivingCost> MapLivingCosts(long countryId, MinimumLivingCosts costs)
@@ -104,6 +112,49 @@ namespace Chamedoon.Infrastructure.Persistence.Seeds
             return result;
         }
 
+        private static List<CountryJob> MapJobs(long countryId, IEnumerable<JobInfo> jobs)
+        {
+            var result = new List<CountryJob>();
+            var nextId = countryId * 10000;
+
+            foreach (var job in jobs ?? Enumerable.Empty<JobInfo>())
+            {
+                result.Add(new CountryJob
+                {
+                    Id = ++nextId,
+                    CountryId = countryId,
+                    Title = GetEnumDescription(job.Job),
+                    Description = job.Description ?? string.Empty,
+                    Score = job.Score,
+                    ExperienceImpact = job.ExperienceImpact ?? string.Empty
+                });
+            }
+
+            return result;
+        }
+
+        private static List<CountryEducation> MapEducations(long countryId, IEnumerable<EducationInfo> educations)
+        {
+            var result = new List<CountryEducation>();
+            var nextId = countryId * 20000;
+
+            foreach (var education in educations ?? Enumerable.Empty<EducationInfo>())
+            {
+                result.Add(new CountryEducation
+                {
+                    Id = ++nextId,
+                    CountryId = countryId,
+                    FieldName = GetEnumDescription(education.Field),
+                    Description = education.Description ?? string.Empty,
+                    Score = education.Score,
+                    Level = GetEnumDescription(education.Level),
+                    LanguageRequirement = education.LanguageRequirement ?? string.Empty
+                });
+            }
+
+            return result;
+        }
+
         private static T GetValue<T>(dynamic source, string propertyName, T defaultValue)
         {
             try
@@ -117,8 +168,33 @@ namespace Chamedoon.Infrastructure.Persistence.Seeds
             }
         }
 
-        private record CountrySeedRow(Country Country, List<CountryLivingCost> LivingCosts, List<CountryRestriction> Restrictions);
+        private static string GetEnumDescription(Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            if (field == null)
+            {
+                return value.ToString();
+            }
 
-        public record CountrySeedResult(List<Country> Countries, List<CountryLivingCost> LivingCosts, List<CountryRestriction> Restrictions);
+            var attribute = field.GetCustomAttributes(typeof(DescriptionAttribute), false)
+                .Cast<DescriptionAttribute>()
+                .FirstOrDefault();
+
+            return attribute?.Description ?? value.ToString();
+        }
+
+        private record CountrySeedRow(
+            Country Country,
+            List<CountryLivingCost> LivingCosts,
+            List<CountryRestriction> Restrictions,
+            List<CountryJob> Jobs,
+            List<CountryEducation> Educations);
+
+        public record CountrySeedResult(
+            List<Country> Countries,
+            List<CountryLivingCost> LivingCosts,
+            List<CountryRestriction> Restrictions,
+            List<CountryJob> Jobs,
+            List<CountryEducation> Educations);
     }
 }

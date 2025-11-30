@@ -23,6 +23,16 @@ namespace Chamedoon.Infrastructure.FluentConfigs.Countries
                 .WithOne(r => r.Country)
                 .HasForeignKey(r => r.CountryId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(c => c.Jobs)
+                .WithOne(j => j.Country)
+                .HasForeignKey(j => j.CountryId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(c => c.Educations)
+                .WithOne(e => e.Country)
+                .HasForeignKey(e => e.CountryId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
