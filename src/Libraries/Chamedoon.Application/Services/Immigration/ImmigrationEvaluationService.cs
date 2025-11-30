@@ -127,7 +127,8 @@ namespace Chamedoon.Application.Services.Immigration
                     (!string.IsNullOrWhiteSpace(item.Customer.FirstName) && item.Customer.FirstName.ToLower().Contains(lowered)) ||
                     (!string.IsNullOrWhiteSpace(item.Customer.LastName) && item.Customer.LastName.ToLower().Contains(lowered)) ||
                     (!string.IsNullOrWhiteSpace(item.PhoneNumber) && item.PhoneNumber.ToLower().Contains(lowered)) ||
-                    (!string.IsNullOrWhiteSpace(item.JobTitle) && item.JobTitle.ToLower().Contains(lowered)));
+                    (!string.IsNullOrWhiteSpace(item.JobTitle) && item.JobTitle.ToLower().Contains(lowered)))
+                    .OrderByDescending(item => item.CreatedAtUtc); ;
             }
 
             var paginated = await PaginatedList<ImmigrationEvaluation>.CreateAsync(evaluations, pageNumber, pageSize);
