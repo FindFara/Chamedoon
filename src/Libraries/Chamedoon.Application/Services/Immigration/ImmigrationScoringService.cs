@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using CountryPoints;
 
 namespace Chamedoon.Application.Services.Immigration
@@ -101,28 +104,24 @@ namespace Chamedoon.Application.Services.Immigration
     /// </summary>
     public class ImmigrationScoringService
     {
+        private readonly ICountryDataCache _countryDataCache;
         private readonly IReadOnlyList<CountryProfile> _countries;
 
-        public ImmigrationScoringService()
+        public ImmigrationScoringService(ICountryDataCache countryDataCache)
         {
-            _countries = new List<CountryProfile>
-            {
-                BuildCountryProfile(CountryType.Canada, new Canada()),
-                BuildCountryProfile(CountryType.Australia, new Australia()),
-                BuildCountryProfile(CountryType.Germany, new Germany()),
-                BuildCountryProfile(CountryType.USA, new USA()),
-                BuildCountryProfile(CountryType.Netherlands, new Netherlands()),
-                BuildCountryProfile(CountryType.Spain, new Spain()),
-                BuildCountryProfile(CountryType.Sweden, new Sweden()),
-                BuildCountryProfile(CountryType.Italy, new Italy()),
-                BuildCountryProfile(CountryType.Oman, new Oman())
-            };
+            _countryDataCache = countryDataCache;
+            _countries = BuildDefaultProfiles();
         }
 
-        public ImmigrationResult CalculateImmigration(ImmigrationInput input)
+        public async Task<ImmigrationResult> CalculateImmigrationAsync(ImmigrationInput input, CancellationToken cancellationToken)
         {
-            var recommendations = _countries
-                .Select(country => BuildRecommendation(country, input))
+            var cachedCountries = await _countryDataCache.GetAllAsync(cancellationToken);
+            var enrichedCountries = _countries
+                .Select(country => ApplyCachedData(country, cachedCountries))
+                .ToList();
+
+            var recommendations = enrichedCountries
+                .Select(country => BuildRecommendation(country, input, cachedCountries))
                 .OrderByDescending(item => item.Score)
                 .Take(3)
                 .ToList();
@@ -130,24 +129,51 @@ namespace Chamedoon.Application.Services.Immigration
             return new ImmigrationResult { TopCountries = recommendations };
         }
 
-        private static CountryProfile BuildCountryProfile(CountryType country, object source)
+        private static IReadOnlyList<CountryProfile> BuildDefaultProfiles()
         {
-            return new CountryProfile(
-                country,
-                GetPropertyValue(source, nameof(Canada.AgeScores), new Dictionary<int, string>()),
-                GetPropertyValue(source, nameof(Canada.Jobs), new List<JobInfo>()),
-                GetPropertyValue(source, nameof(Canada.Educations), new List<EducationInfo>()),
-                GetPropertyValue(source, nameof(Canada.InvestmentAmount), 0m),
-                GetPropertyValue(source, nameof(Canada.InvestmentCurrency), string.Empty),
-                GetPropertyValue(source, nameof(Canada.InvestmentNotes), string.Empty),
-                GetPropertyValue(source, nameof(Canada.AdditionalInfo), string.Empty),
-                GetPropertyValue(source, nameof(Canada.MaritalStatusImpact), string.Empty),
-                GetPropertyValue(source, nameof(Canada.IranianMigrationRestrictions), new List<string>()),
-                GetPropertyValue(source, nameof(Canada.LivingCosts), new MinimumLivingCosts { Housing = new List<HousingCost>() }),
-                GetPropertyValue(source, nameof(Canada.SuitablePersonalities), new List<PersonalityType>()));
+            var defaultAgeScores = new Dictionary<int, string>
+            {
+                { 100, "۲۵-۳۲" },
+                { 83, "۱۸-۲۴، ۳۳-۳۹" },
+                { 50, "۴۰-۴۴" },
+                { 0, "۴۵+" }
+            };
+
+            List<CountryProfile> CreateProfiles(params CountryType[] countries)
+            {
+                return countries
+                    .Select(country => new CountryProfile(
+                        country,
+                        defaultAgeScores,
+                        new List<JobInfo>(),
+                        new List<EducationInfo>(),
+                        0m,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
+                        new List<string>(),
+                        new MinimumLivingCosts { Housing = new List<HousingCost>() },
+                        new List<PersonalityType>()))
+                    .ToList();
+            }
+
+            return CreateProfiles(
+                CountryType.Canada,
+                CountryType.Australia,
+                CountryType.Germany,
+                CountryType.USA,
+                CountryType.Netherlands,
+                CountryType.Spain,
+                CountryType.Sweden,
+                CountryType.Italy,
+                CountryType.Oman);
         }
 
-        private CountryRecommendation BuildRecommendation(CountryProfile country, ImmigrationInput input)
+        private CountryRecommendation BuildRecommendation(
+            CountryProfile country,
+            ImmigrationInput input,
+            IReadOnlyDictionary<string, CountryDataSnapshot> cachedCountries)
         {
             var ageScore = CalculateAgeComponent(input.Age, country.AgeScores);
             var (jobMatch, keywordMatched) = FindBestJob(country, input);
@@ -175,32 +201,104 @@ namespace Chamedoon.Application.Services.Immigration
             var recommendedVisa = ChooseVisa(country, input, investmentScore);
             var educationCard = BuildEducationCard(educationMatch, input);
 
-            return new CountryRecommendation
+            var recommendation = new CountryRecommendation
             {
                 Country = country.Country,
                 Score = Math.Clamp(Math.Round(total, 2), 0, 100),
                 RecommendedVisaType = recommendedVisa,
-                Data = new CountryDataCard
-                {
-                    MaritalStatusImpact = country.MaritalStatusImpact,
-                    IranianMigrationRestrictions = country.IranianMigrationRestrictions,
-                    InvestmentNotes = country.InvestmentNotes,
-                    InvestmentAmount = country.InvestmentAmount,
-                    InvestmentCurrency = country.InvestmentCurrency,
-                    AdditionalInfo = country.AdditionalInfo,
-                    LivingCosts = country.LivingCosts,
-                    Job = BuildJobCard(jobMatch, input),
-                    Education = educationCard,
-                    PersonalityReport = BuildPersonalityReport(input.MBTIPersonality, country),
-                    LanguageRequirement = educationCard?.LanguageRequirement
-                }
+                Data = BuildDataCard(country, input, jobMatch, educationCard, cachedCountries)
             };
+
+            return recommendation;
         }
 
-        private static T GetPropertyValue<T>(object source, string propertyName, T @default)
+        private static CountryProfile ApplyCachedData(
+            CountryProfile profile,
+            IReadOnlyDictionary<string, CountryDataSnapshot> cachedCountries)
         {
-            var value = source.GetType().GetProperty(propertyName)?.GetValue(source);
-            return value is T typed ? typed : @default;
+            if (!cachedCountries.TryGetValue(profile.Country.ToString(), out var cached))
+            {
+                return profile;
+            }
+
+            var jobs = cached.Jobs
+                .Select(TryCreateJobInfo)
+                .Where(job => job is not null)
+                .Cast<JobInfo>()
+                .ToList();
+
+            var educations = cached.Educations
+                .Select(TryCreateEducationInfo)
+                .Where(education => education is not null)
+                .Cast<EducationInfo>()
+                .ToList();
+
+            return new CountryProfile(
+                profile.Country,
+                profile.AgeScores,
+                jobs.Count > 0 ? jobs : profile.Jobs,
+                educations.Count > 0 ? educations : profile.Educations,
+                cached.InvestmentAmount > 0 ? cached.InvestmentAmount : profile.InvestmentAmount,
+                string.IsNullOrWhiteSpace(cached.InvestmentCurrency)
+                    ? profile.InvestmentCurrency
+                    : cached.InvestmentCurrency,
+                string.IsNullOrWhiteSpace(cached.InvestmentNotes) ? profile.InvestmentNotes : cached.InvestmentNotes,
+                string.IsNullOrWhiteSpace(cached.AdditionalInfo) ? profile.AdditionalInfo : cached.AdditionalInfo,
+                string.IsNullOrWhiteSpace(cached.MaritalStatusImpact)
+                    ? profile.MaritalStatusImpact
+                    : cached.MaritalStatusImpact,
+                cached.Restrictions.Count > 0 ? cached.Restrictions.ToList() : profile.IranianMigrationRestrictions,
+                cached.LivingCosts?.Housing is not null ? cached.LivingCosts : profile.LivingCosts,
+                profile.SuitablePersonalities);
+        }
+
+        private CountryDataCard BuildDataCard(
+            CountryProfile country,
+            ImmigrationInput input,
+            JobInfo? jobMatch,
+            MatchedEducationCard? educationCard,
+            IReadOnlyDictionary<string, CountryDataSnapshot> cachedCountries)
+        {
+            var card = new CountryDataCard
+            {
+                MaritalStatusImpact = country.MaritalStatusImpact,
+                IranianMigrationRestrictions = country.IranianMigrationRestrictions,
+                InvestmentNotes = country.InvestmentNotes,
+                InvestmentAmount = country.InvestmentAmount,
+                InvestmentCurrency = country.InvestmentCurrency,
+                AdditionalInfo = country.AdditionalInfo,
+                LivingCosts = country.LivingCosts,
+                Job = BuildJobCard(jobMatch, input),
+                Education = educationCard,
+                PersonalityReport = BuildPersonalityReport(input.MBTIPersonality, country),
+                LanguageRequirement = educationCard?.LanguageRequirement
+            };
+
+            if (cachedCountries.TryGetValue(country.Country.ToString(), out var cached))
+            {
+                card.MaritalStatusImpact = string.IsNullOrWhiteSpace(cached.MaritalStatusImpact)
+                    ? card.MaritalStatusImpact
+                    : cached.MaritalStatusImpact;
+                card.IranianMigrationRestrictions = cached.Restrictions.Any()
+                    ? cached.Restrictions
+                    : card.IranianMigrationRestrictions;
+                card.InvestmentNotes = string.IsNullOrWhiteSpace(cached.InvestmentNotes)
+                    ? card.InvestmentNotes
+                    : cached.InvestmentNotes;
+                card.InvestmentAmount = cached.InvestmentAmount > 0 ? cached.InvestmentAmount : card.InvestmentAmount;
+                card.InvestmentCurrency = string.IsNullOrWhiteSpace(cached.InvestmentCurrency)
+                    ? card.InvestmentCurrency
+                    : cached.InvestmentCurrency;
+                card.AdditionalInfo = string.IsNullOrWhiteSpace(cached.AdditionalInfo)
+                    ? card.AdditionalInfo
+                    : cached.AdditionalInfo;
+                card.LivingCosts = cached.LivingCosts?.Housing is not null ? cached.LivingCosts : card.LivingCosts;
+                card.Job = MergeJobCard(card.Job, cached);
+                card.Education = MergeEducationCard(card.Education, cached);
+            }
+
+            card.LanguageRequirement ??= educationCard?.LanguageRequirement;
+            return card;
         }
 
         private static string ChooseVisa(CountryProfile country, ImmigrationInput input, double investmentScore)
@@ -553,6 +651,43 @@ namespace Chamedoon.Application.Services.Immigration
             return "ویزای متناسب با شرایط";
         }
 
+        private static JobInfo? TryCreateJobInfo(CountryJobSnapshot snapshot)
+        {
+            if (!TryParseEnumByDescription(snapshot.Title, out JobTitle title))
+            {
+                return null;
+            }
+
+            return new JobInfo
+            {
+                Job = title,
+                Description = snapshot.Description ?? string.Empty,
+                Score = snapshot.Score,
+                ExperienceImpact = snapshot.ExperienceImpact ?? string.Empty
+            };
+        }
+
+        private static EducationInfo? TryCreateEducationInfo(CountryEducationSnapshot snapshot)
+        {
+            if (!TryParseEnumByDescription(snapshot.FieldName, out FieldName field))
+            {
+                return null;
+            }
+
+            var level = TryParseEnumByDescription(snapshot.Level, out EducationLevel parsedLevel)
+                ? parsedLevel
+                : EducationLevel.Bachelor;
+
+            return new EducationInfo
+            {
+                Field = field,
+                Description = snapshot.Description ?? string.Empty,
+                Score = snapshot.Score,
+                Level = level,
+                LanguageRequirement = snapshot.LanguageRequirement ?? string.Empty
+            };
+        }
+
         private static MatchedJobCard? BuildJobCard(JobInfo? match, ImmigrationInput input)
         {
             if (match == null)
@@ -585,6 +720,92 @@ namespace Chamedoon.Application.Services.Immigration
                 Score = match.Score,
                 DegreeLevel = input.DegreeLevel
             };
+        }
+
+        private static MatchedJobCard? MergeJobCard(MatchedJobCard? jobCard, CountryDataSnapshot cached)
+        {
+            if (jobCard == null || cached.Jobs.Count == 0)
+            {
+                return jobCard;
+            }
+
+            var title = GetEnumDescription(jobCard.Job);
+            var match = cached.Jobs.FirstOrDefault(j => string.Equals(j.Title, title, StringComparison.OrdinalIgnoreCase));
+            if (match == null)
+            {
+                return jobCard;
+            }
+
+            jobCard.Description = string.IsNullOrWhiteSpace(match.Description) ? jobCard.Description : match.Description;
+            jobCard.ExperienceImpact = string.IsNullOrWhiteSpace(match.ExperienceImpact)
+                ? jobCard.ExperienceImpact
+                : match.ExperienceImpact;
+            jobCard.Score = match.Score > 0 ? match.Score : jobCard.Score;
+            return jobCard;
+        }
+
+        private static MatchedEducationCard? MergeEducationCard(MatchedEducationCard? educationCard, CountryDataSnapshot cached)
+        {
+            if (educationCard == null || cached.Educations.Count == 0)
+            {
+                return educationCard;
+            }
+
+            var fieldName = GetEnumDescription(educationCard.Field);
+            var match = cached.Educations.FirstOrDefault(e => string.Equals(e.FieldName, fieldName, StringComparison.OrdinalIgnoreCase));
+            if (match == null)
+            {
+                return educationCard;
+            }
+
+            educationCard.Description = string.IsNullOrWhiteSpace(match.Description)
+                ? educationCard.Description
+                : match.Description;
+            educationCard.LanguageRequirement = string.IsNullOrWhiteSpace(match.LanguageRequirement)
+                ? educationCard.LanguageRequirement
+                : match.LanguageRequirement;
+            educationCard.Score = match.Score > 0 ? match.Score : educationCard.Score;
+            return educationCard;
+        }
+
+        private static bool TryParseEnumByDescription<TEnum>(string? value, out TEnum result)
+            where TEnum : struct, Enum
+        {
+            result = default;
+
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            foreach (var candidate in Enum.GetValues(typeof(TEnum)).Cast<TEnum>())
+            {
+                var description = GetEnumDescription((Enum)(object)candidate);
+
+                if (string.Equals(description, value, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(candidate.ToString(), value, StringComparison.OrdinalIgnoreCase))
+                {
+                    result = candidate;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static string GetEnumDescription(Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            if (field == null)
+            {
+                return value.ToString();
+            }
+
+            var attribute = field.GetCustomAttributes(typeof(DescriptionAttribute), false)
+                .Cast<DescriptionAttribute>()
+                .FirstOrDefault();
+
+            return attribute?.Description ?? value.ToString();
         }
 
         private static double CalculateAgeComponent(int age, Dictionary<int, string> ageScores)
