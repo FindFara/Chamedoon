@@ -23,7 +23,7 @@ public static class ConfigureServices
 
          Update-Database -Args '--environment Production'
 
-         dotnet ef migrations add migrationsname --verbose --project "src/Libraries/Chamedoon.Infrastructure/Chamedoon.Infrastructure.csproj" --startup-project "src/Presentation/Chamedoon.WebAPI/Chamedoon.WebAPI.csproj" --context ApplicationDbContext -- --environment Chamedoon
+         dotnet ef migrations add fara --verbose --project "src/Libraries/Chamedoon.Infrastructure/Chamedoon.Infrastructure.csproj" --startup-project "src\Presentation\ChamedoonWebUI\ChamedoonWebUI.csproj" --context ApplicationDbContext -- --environment Chamedoon
 
         dotnet ef database update -- --environment Production
 

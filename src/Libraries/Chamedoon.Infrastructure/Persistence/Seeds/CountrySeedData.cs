@@ -53,8 +53,13 @@ namespace Chamedoon.Infrastructure.Persistence.Seeds
                 AdditionalInfo = GetValue(source, nameof(Canada.AdditionalInfo), string.Empty),
                 MaritalStatusImpact = GetValue(source, nameof(Canada.MaritalStatusImpact), string.Empty)
             };
-
-            var restrictions = GetValue(source, nameof(Canada.IranianMigrationRestrictions), new List<string>())
+            var restrictionTexts = GetValue(
+                source,
+                nameof(Canada.IranianMigrationRestrictions),
+                new List<string>()
+            ) as IEnumerable<string> ?? Enumerable.Empty<string>();
+            
+            var restrictions = restrictionTexts
                 .Select((text, index) => new CountryRestriction
                 {
                     Id = id * 100 + index + 1,
