@@ -109,18 +109,7 @@ namespace Chamedoon.Application.Services.Immigration
         public ImmigrationScoringService(ICountryDataCache countryDataCache)
         {
             _countryDataCache = countryDataCache;
-            _countries = new List<CountryProfile>
-            {
-                BuildCountryProfile(CountryType.Canada, new Canada()),
-                BuildCountryProfile(CountryType.Australia, new Australia()),
-                BuildCountryProfile(CountryType.Germany, new Germany()),
-                BuildCountryProfile(CountryType.USA, new USA()),
-                BuildCountryProfile(CountryType.Netherlands, new Netherlands()),
-                BuildCountryProfile(CountryType.Spain, new Spain()),
-                BuildCountryProfile(CountryType.Sweden, new Sweden()),
-                BuildCountryProfile(CountryType.Italy, new Italy()),
-                BuildCountryProfile(CountryType.Oman, new Oman())
-            };
+            _countries = BuildDefaultProfiles();
         }
 
         public async Task<ImmigrationResult> CalculateImmigrationAsync(ImmigrationInput input, CancellationToken cancellationToken)
@@ -135,21 +124,45 @@ namespace Chamedoon.Application.Services.Immigration
             return new ImmigrationResult { TopCountries = recommendations };
         }
 
-        private static CountryProfile BuildCountryProfile(CountryType country, object source)
+        private static IReadOnlyList<CountryProfile> BuildDefaultProfiles()
         {
-            return new CountryProfile(
-                country,
-                GetPropertyValue(source, nameof(Canada.AgeScores), new Dictionary<int, string>()),
-                GetPropertyValue(source, nameof(Canada.Jobs), new List<JobInfo>()),
-                GetPropertyValue(source, nameof(Canada.Educations), new List<EducationInfo>()),
-                GetPropertyValue(source, nameof(Canada.InvestmentAmount), 0m),
-                GetPropertyValue(source, nameof(Canada.InvestmentCurrency), string.Empty),
-                GetPropertyValue(source, nameof(Canada.InvestmentNotes), string.Empty),
-                GetPropertyValue(source, nameof(Canada.AdditionalInfo), string.Empty),
-                GetPropertyValue(source, nameof(Canada.MaritalStatusImpact), string.Empty),
-                GetPropertyValue(source, nameof(Canada.IranianMigrationRestrictions), new List<string>()),
-                GetPropertyValue(source, nameof(Canada.LivingCosts), new MinimumLivingCosts { Housing = new List<HousingCost>() }),
-                GetPropertyValue(source, nameof(Canada.SuitablePersonalities), new List<PersonalityType>()));
+            var defaultAgeScores = new Dictionary<int, string>
+            {
+                { 100, "۲۵-۳۲" },
+                { 83, "۱۸-۲۴، ۳۳-۳۹" },
+                { 50, "۴۰-۴۴" },
+                { 0, "۴۵+" }
+            };
+
+            List<CountryProfile> CreateProfiles(params CountryType[] countries)
+            {
+                return countries
+                    .Select(country => new CountryProfile(
+                        country,
+                        defaultAgeScores,
+                        new List<JobInfo>(),
+                        new List<EducationInfo>(),
+                        0m,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
+                        string.Empty,
+                        new List<string>(),
+                        new MinimumLivingCosts { Housing = new List<HousingCost>() },
+                        new List<PersonalityType>()))
+                    .ToList();
+            }
+
+            return CreateProfiles(
+                CountryType.Canada,
+                CountryType.Australia,
+                CountryType.Germany,
+                CountryType.USA,
+                CountryType.Netherlands,
+                CountryType.Spain,
+                CountryType.Sweden,
+                CountryType.Italy,
+                CountryType.Oman);
         }
 
         private CountryRecommendation BuildRecommendation(
@@ -239,12 +252,6 @@ namespace Chamedoon.Application.Services.Immigration
 
             card.LanguageRequirement ??= educationCard?.LanguageRequirement;
             return card;
-        }
-
-        private static T GetPropertyValue<T>(object source, string propertyName, T @default)
-        {
-            var value = source.GetType().GetProperty(propertyName)?.GetValue(source);
-            return value is T typed ? typed : @default;
         }
 
         private static string ChooseVisa(CountryProfile country, ImmigrationInput input, double investmentScore)
