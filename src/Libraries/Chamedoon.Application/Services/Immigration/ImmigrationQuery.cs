@@ -26,15 +26,15 @@ namespace Chamedoon.Application.Services.Immigration
         /// <summary>
         /// سازنده با تزریق سرویس امتیازدهی.
         /// </summary>
-        public ImmigrationQueryHandler()
+        public ImmigrationQueryHandler(ImmigrationScoringService scoringService)
         {
-            _scoringService = new ImmigrationScoringService();
+            _scoringService = scoringService;
         }
 
-        public Task<ImmigrationResult> Handle(ImmigrationQuery request, CancellationToken cancellationToken)
+        public async Task<ImmigrationResult> Handle(ImmigrationQuery request, CancellationToken cancellationToken)
         {
-            var result = _scoringService.CalculateImmigration(request.Input);
-            return Task.FromResult(result);
+            var result = await _scoringService.CalculateImmigrationAsync(request.Input, cancellationToken);
+            return result;
         }
     }
 }

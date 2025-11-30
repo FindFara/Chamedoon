@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using CountryPoints;
 
 namespace Chamedoon.Application.Services.Immigration
@@ -101,10 +103,12 @@ namespace Chamedoon.Application.Services.Immigration
     /// </summary>
     public class ImmigrationScoringService
     {
+        private readonly ICountryDataCache _countryDataCache;
         private readonly IReadOnlyList<CountryProfile> _countries;
 
-        public ImmigrationScoringService()
+        public ImmigrationScoringService(ICountryDataCache countryDataCache)
         {
+            _countryDataCache = countryDataCache;
             _countries = new List<CountryProfile>
             {
                 BuildCountryProfile(CountryType.Canada, new Canada()),
@@ -119,10 +123,11 @@ namespace Chamedoon.Application.Services.Immigration
             };
         }
 
-        public ImmigrationResult CalculateImmigration(ImmigrationInput input)
+        public async Task<ImmigrationResult> CalculateImmigrationAsync(ImmigrationInput input, CancellationToken cancellationToken)
         {
+            var cachedCountries = await _countryDataCache.GetAllAsync(cancellationToken);
             var recommendations = _countries
-                .Select(country => BuildRecommendation(country, input))
+                .Select(country => BuildRecommendation(country, input, cachedCountries))
                 .OrderByDescending(item => item.Score)
                 .Take(3)
                 .ToList();
@@ -147,7 +152,10 @@ namespace Chamedoon.Application.Services.Immigration
                 GetPropertyValue(source, nameof(Canada.SuitablePersonalities), new List<PersonalityType>()));
         }
 
-        private CountryRecommendation BuildRecommendation(CountryProfile country, ImmigrationInput input)
+        private CountryRecommendation BuildRecommendation(
+            CountryProfile country,
+            ImmigrationInput input,
+            IReadOnlyDictionary<string, CountryDataSnapshot> cachedCountries)
         {
             var ageScore = CalculateAgeComponent(input.Age, country.AgeScores);
             var (jobMatch, keywordMatched) = FindBestJob(country, input);
@@ -175,26 +183,62 @@ namespace Chamedoon.Application.Services.Immigration
             var recommendedVisa = ChooseVisa(country, input, investmentScore);
             var educationCard = BuildEducationCard(educationMatch, input);
 
-            return new CountryRecommendation
+            var recommendation = new CountryRecommendation
             {
                 Country = country.Country,
                 Score = Math.Clamp(Math.Round(total, 2), 0, 100),
                 RecommendedVisaType = recommendedVisa,
-                Data = new CountryDataCard
-                {
-                    MaritalStatusImpact = country.MaritalStatusImpact,
-                    IranianMigrationRestrictions = country.IranianMigrationRestrictions,
-                    InvestmentNotes = country.InvestmentNotes,
-                    InvestmentAmount = country.InvestmentAmount,
-                    InvestmentCurrency = country.InvestmentCurrency,
-                    AdditionalInfo = country.AdditionalInfo,
-                    LivingCosts = country.LivingCosts,
-                    Job = BuildJobCard(jobMatch, input),
-                    Education = educationCard,
-                    PersonalityReport = BuildPersonalityReport(input.MBTIPersonality, country),
-                    LanguageRequirement = educationCard?.LanguageRequirement
-                }
+                Data = BuildDataCard(country, input, jobMatch, educationCard, cachedCountries)
             };
+
+            return recommendation;
+        }
+
+        private CountryDataCard BuildDataCard(
+            CountryProfile country,
+            ImmigrationInput input,
+            JobInfo? jobMatch,
+            MatchedEducationCard? educationCard,
+            IReadOnlyDictionary<string, CountryDataSnapshot> cachedCountries)
+        {
+            var card = new CountryDataCard
+            {
+                MaritalStatusImpact = country.MaritalStatusImpact,
+                IranianMigrationRestrictions = country.IranianMigrationRestrictions,
+                InvestmentNotes = country.InvestmentNotes,
+                InvestmentAmount = country.InvestmentAmount,
+                InvestmentCurrency = country.InvestmentCurrency,
+                AdditionalInfo = country.AdditionalInfo,
+                LivingCosts = country.LivingCosts,
+                Job = BuildJobCard(jobMatch, input),
+                Education = educationCard,
+                PersonalityReport = BuildPersonalityReport(input.MBTIPersonality, country),
+                LanguageRequirement = educationCard?.LanguageRequirement
+            };
+
+            if (cachedCountries.TryGetValue(country.Country.ToString(), out var cached))
+            {
+                card.MaritalStatusImpact = string.IsNullOrWhiteSpace(cached.MaritalStatusImpact)
+                    ? card.MaritalStatusImpact
+                    : cached.MaritalStatusImpact;
+                card.IranianMigrationRestrictions = cached.Restrictions.Any()
+                    ? cached.Restrictions
+                    : card.IranianMigrationRestrictions;
+                card.InvestmentNotes = string.IsNullOrWhiteSpace(cached.InvestmentNotes)
+                    ? card.InvestmentNotes
+                    : cached.InvestmentNotes;
+                card.InvestmentAmount = cached.InvestmentAmount > 0 ? cached.InvestmentAmount : card.InvestmentAmount;
+                card.InvestmentCurrency = string.IsNullOrWhiteSpace(cached.InvestmentCurrency)
+                    ? card.InvestmentCurrency
+                    : cached.InvestmentCurrency;
+                card.AdditionalInfo = string.IsNullOrWhiteSpace(cached.AdditionalInfo)
+                    ? card.AdditionalInfo
+                    : cached.AdditionalInfo;
+                card.LivingCosts = cached.LivingCosts?.Housing is not null ? cached.LivingCosts : card.LivingCosts;
+            }
+
+            card.LanguageRequirement ??= educationCard?.LanguageRequirement;
+            return card;
         }
 
         private static T GetPropertyValue<T>(object source, string propertyName, T @default)

@@ -1,4 +1,5 @@
-﻿using Chamedoon.Domin.Entity.Blogs;
+using Chamedoon.Domin.Entity.Blogs;
+using Chamedoon.Domin.Entity.Countries;
 using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Permissions;
 using Chamedoon.Domin.Entity.Payments;
@@ -31,6 +32,12 @@ namespace Chamedoon.Application.Common.Interfaces
         #region Customer
         public DbSet<Customer> Customers { get; set; }
         public DbSet<ImmigrationEvaluation> ImmigrationEvaluations { get; set; }
+        #endregion
+
+        #region Countries
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<CountryLivingCost> CountryLivingCosts { get; set; }
+        public DbSet<CountryRestriction> CountryRestrictions { get; set; }
         #endregion
 
         #region Payments
