@@ -17,10 +17,13 @@ public class ImmigrationReportsController : Controller
         _evaluationService = evaluationService;
     }
 
-    public async Task<IActionResult> Index(string? query, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? query, int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
     {
+        page = page < 1 ? 1 : page;
+        pageSize = pageSize < 1 ? 10 : pageSize;
+
         var analytics = await _evaluationService.GetAnalyticsAsync(cancellationToken);
-        var evaluations = await _evaluationService.SearchAsync(query, cancellationToken);
+        var evaluations = await _evaluationService.SearchAsync(query, page, pageSize, cancellationToken);
 
         var viewModel = new ImmigrationAnalyticsViewModel
         {
@@ -33,7 +36,7 @@ public class ImmigrationReportsController : Controller
             DegreeDistribution = analytics.DegreeDistribution
                 .Select(item => new DistributionItemViewModel(item.Label, item.Percentage, item.Count))
                 .ToList(),
-            Evaluations = evaluations
+            Evaluations = evaluations.Items
                 .Select(item => new ImmigrationEvaluationItemViewModel(
                     item.Id,
                     item.CustomerName,
@@ -48,7 +51,11 @@ public class ImmigrationReportsController : Controller
                     item.CreatedAtUtc))
                 .ToList(),
             Query = query,
-            TotalEvaluations = analytics.TotalEvaluations
+            TotalEvaluations = analytics.TotalEvaluations,
+            CurrentPage = evaluations.PageNumber,
+            TotalPages = evaluations.TotalPages,
+            PageSize = pageSize,
+            TotalCount = evaluations.TotalCount
         };
 
         return View(viewModel);

@@ -22,11 +22,13 @@ public class AdminUserService : IAdminUserService
         _roleRepository = roleRepository;
     }
 
-    public async Task<OperationResult<IReadOnlyList<AdminUserDto>>> GetUsersAsync(string? search, long? roleId, CancellationToken cancellationToken)
+    public async Task<OperationResult<PaginatedList<AdminUserDto>>> GetUsersAsync(string? search, long? roleId, int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
-        var users = await _userRepository.GetUsersAsync(search, roleId, cancellationToken);
-        var mapped = users.Select(user => user.ToAdminUserDto()).ToList();
-        return OperationResult<IReadOnlyList<AdminUserDto>>.Success(mapped);
+        var users = await _userRepository.GetUsersAsync(search, roleId, pageNumber, pageSize, cancellationToken);
+        var mappedItems = users.Items.Select(user => user.ToAdminUserDto()).ToList();
+        var paginated = new PaginatedList<AdminUserDto>(mappedItems, users.TotalCount, users.PageNumber, pageSize);
+
+        return OperationResult<PaginatedList<AdminUserDto>>.Success(paginated);
     }
 
     public async Task<OperationResult<AdminUserDto>> GetUserAsync(long id, CancellationToken cancellationToken)
