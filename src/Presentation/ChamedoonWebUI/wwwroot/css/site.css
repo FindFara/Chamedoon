@@ -922,6 +922,18 @@ a:hover {
     font-size: 0.95rem;
 }
 
+.newsletter-form .newsletter-submit {
+    --btn-glass-padding-y: 0.6rem;
+    --btn-glass-radius: 0.95rem;
+    min-height: 100%;
+}
+
+@media (min-width: 576px) {
+    .newsletter-form .newsletter-submit {
+        min-height: 100%;
+    }
+}
+
 .btn-icon {
     width: 3rem;
     height: 3rem;
