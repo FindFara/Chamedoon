@@ -72,6 +72,18 @@
         }
     }
 
+    const landingHeader = document.querySelector('.landing-header');
+    const landingNav = document.getElementById('landingNav');
+    if (landingHeader && landingNav) {
+        const syncMenuState = () => {
+            landingHeader.classList.toggle('menu-open', landingNav.classList.contains('show'));
+        };
+
+        landingNav.addEventListener('shown.bs.collapse', syncMenuState);
+        landingNav.addEventListener('hidden.bs.collapse', syncMenuState);
+        syncMenuState();
+    }
+
     const backToTop = document.getElementById('backToTop');
     if (!backToTop) {
         return;

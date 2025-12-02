@@ -27,6 +27,11 @@ body {
     border-bottom: 1px solid rgba(15, 23, 42, 0.08);
 }
 
+.landing-header.menu-open {
+    box-shadow: none;
+    border-bottom: none;
+}
+
 .landing-header .navbar {
     position: relative;
 }
@@ -683,6 +688,11 @@ a:hover {
         border-radius: 1.5rem;
         box-shadow: 0 28px 48px -32px rgba(15, 23, 42, 0.55);
         margin-top: 1rem;
+    }
+
+    .landing-header.menu-open .navbar-collapse {
+        box-shadow: 0 22px 40px -30px rgba(15, 23, 42, 0.5);
+        border: 1px solid rgba(15, 23, 42, 0.04);
     }
 
     .landing-header .landing-controls {
