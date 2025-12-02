@@ -1902,6 +1902,42 @@ a:hover {
 }
 
 @media (max-width: 767.98px) {
+    .panel-subscription-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.9rem;
+        padding: 1.25rem;
+    }
+
+    .panel-subscription-illustration {
+        width: 56px;
+        height: 56px;
+        border-radius: 1.25rem;
+        align-self: flex-start;
+    }
+
+    .panel-subscription-label {
+        font-size: 0.8rem;
+    }
+
+    .panel-subscription-title {
+        font-size: 0.95rem;
+        line-height: 1.35;
+    }
+
+    .panel-subscription-meta {
+        font-size: 0.8rem;
+    }
+
+    .panel-subscription-chip {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.55rem;
+    }
+
+    .panel-subscription-link {
+        font-size: 0.8rem;
+    }
+
     .auth-secondary-actions {
         flex-direction: column;
         align-items: stretch;
