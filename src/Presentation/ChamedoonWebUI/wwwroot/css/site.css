@@ -616,10 +616,12 @@ a:hover {
 .process-step {
     position: relative;
     padding: 2rem 1.5rem;
-    background: #ffffff;
+    background: linear-gradient(160deg, rgba(224, 231, 255, 0.7), rgba(224, 242, 254, 0.6));
     border: 1px solid rgba(79, 70, 229, 0.18);
     border-radius: 1.5rem;
     height: 100%;
+    box-shadow: 0 24px 40px -32px rgba(79, 70, 229, 0.55);
+    overflow: hidden;
 }
 
 .process-step::after {
@@ -634,11 +636,56 @@ a:hover {
     place-items: center;
     font-weight: 700;
     color: var(--primary);
-    background: rgba(79, 70, 229, 0.12);
+    background: rgba(79, 70, 229, 0.16);
+    box-shadow: 0 10px 20px -12px rgba(14, 165, 233, 0.35);
 }
 
 .process-step h5 {
-    margin-top: 4rem;
+    margin-top: 1.25rem;
+}
+
+.process-step .process-icon {
+    width: 3rem;
+    height: 3rem;
+    display: grid;
+    place-items: center;
+    border-radius: 1rem;
+    background: linear-gradient(140deg, rgba(14, 165, 233, 0.2), rgba(79, 70, 229, 0.18));
+    font-size: 1.35rem;
+}
+
+.process-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    background: rgba(79, 70, 229, 0.08);
+    border-radius: 999px;
+    color: #1f2937;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid rgba(79, 70, 229, 0.18);
+}
+
+.process-people .person-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, #eef2ff, #e0f2fe);
+    border: 1px solid rgba(79, 70, 229, 0.16);
+    box-shadow: 0 18px 32px -26px rgba(79, 70, 229, 0.5);
+}
+
+.process-people .person-avatar {
+    width: 2.6rem;
+    height: 2.6rem;
+    display: grid;
+    place-items: center;
+    border-radius: 0.9rem;
+    background: linear-gradient(145deg, rgba(14, 165, 233, 0.16), rgba(99, 102, 241, 0.16));
+    font-size: 1.1rem;
 }
 
 .popular-articles-grid {
