@@ -1,21 +1,29 @@
+@using System.Linq
 @using Chamedoon.Application.Services.Customers
-@{
+@{ 
     var safeModel = Model ?? new Chamedoon.Application.Services.Customers.ViewModel.CustomerProfileViewModel
     {
         ProfileImage = ProfileImageHelper.GetDefaultBase64(),
-        FirstName = "مهمان"
     };
     safeModel.ProfileImage = string.IsNullOrWhiteSpace(safeModel.ProfileImage)
         ? ProfileImageHelper.GetDefaultBase64()
         : safeModel.ProfileImage;
+
+    var displayNameParts = new[] { safeModel.FirstName, safeModel.LastName }
+        .Where(part => !string.IsNullOrWhiteSpace(part))
+        .Select(part => part!.Trim());
+
+    var displayName = displayNameParts.Any()
+        ? string.Join(" ", displayNameParts)
+        : "بدون نام";
 }
 
 <div class="glass-card dashboard-pane text-center">
     <div class="avatar-wrapper justify-content-center">
-        <img src="@safeModel.ProfileImage" alt="@safeModel.FirstName" class="shadow" />
+        <img src="@safeModel.ProfileImage" alt="@displayName" class="shadow" />
         <div class="d-flex flex-column gap-1 align-items-center">
-            <h6 class="fw-semibold mb-0">@safeModel.FirstName</h6>
-            <span class="glass-helper mb-0">خوش آمدی @safeModel.FirstName</span>
+            <h6 class="fw-semibold mb-0">@displayName</h6>
+            <span class="glass-helper mb-0">@displayName</span>
         </div>
     </div>
 </div>
