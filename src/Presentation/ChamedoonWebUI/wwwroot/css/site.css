@@ -235,6 +235,46 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.mobile-menu-user .mobile-user-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.9rem;
+    border-radius: 12px;
+    border: 1px solid rgba(79, 70, 229, 0.22);
+    background: rgba(255, 255, 255, 0.62);
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 26px -18px rgba(79, 70, 229, 0.4);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.mobile-menu-user .mobile-user-action:hover,
+.mobile-menu-user .mobile-user-action:focus-visible {
+    background: rgba(79, 70, 229, 0.12);
+    border-color: rgba(79, 70, 229, 0.35);
+    box-shadow: 0 16px 32px -22px rgba(79, 70, 229, 0.55);
+    transform: translateY(-1px);
+}
+
+.mobile-menu-user .mobile-user-action--danger {
+    border-color: rgba(239, 68, 68, 0.28);
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.12);
+    box-shadow: 0 12px 26px -18px rgba(239, 68, 68, 0.4);
+}
+
+.mobile-menu-user .mobile-user-action--danger:hover,
+.mobile-menu-user .mobile-user-action--danger:focus-visible {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    box-shadow: 0 16px 32px -22px rgba(239, 68, 68, 0.55);
 }
 
 .mobile-menu-nav {
