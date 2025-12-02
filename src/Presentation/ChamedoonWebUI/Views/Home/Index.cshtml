@@ -4,6 +4,37 @@
 @using System.Text.RegularExpressions
 @{
     ViewData["Title"] = "مهاجرت آسان";
+    var primaryRowCountries = new (string Name, string Flag)[]
+    {
+        ("کانادا", "canada.svg"),
+        ("آلمان", "germany.svg"),
+        ("هند", "india.svg"),
+        ("چین", "china.svg"),
+        ("اتریش", "austria.svg"),
+        ("ایتالیا", "italy.svg"),
+        ("امارات متحده عربی", "united arab emirates.svg"),
+        ("ژاپن", "japan.svg"),
+        ("فنلاند", "finland.svg"),
+        ("عراق", "iraq.svg"),
+        ("عمان", "oman.svg"),
+        ("روسیه", "russia.svg")
+    };
+
+    var secondaryRowCountries = new (string Name, string Flag)[]
+    {
+        ("اسپانیا", "spain.svg"),
+        ("ایالات متحده", "united states.svg"),
+        ("بریتانیا", "united kingdom.svg"),
+        ("برزیل", "brazil.svg"),
+        ("عربستان سعودی", "saudi arabia.svg"),
+        ("کره جنوبی", "south korea.svg"),
+        ("سوئد", "sweden.svg"),
+        ("پورتوریکو", "puerto rico.svg"),
+        ("بوتان", "bhutan.svg"),
+        ("اتریش", "austria.svg"),
+        ("ایتالیا", "italy.svg"),
+        ("سنگال", "senegal.svg")
+    };
 }
 
 <section class="container py-5">
@@ -28,6 +59,66 @@
             </div>
             <div class="col-lg-6 text-center">
                 <img src="~/img/hero-illustration.svg" class="hero-illustration" alt="سفر مهاجرت" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        <div class="country-marquee-section">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+                <div class="text-end">
+                    <span class="text-uppercase text-primary fw-semibold">مقاصد محبوب</span>
+                    <h3 class="fw-bold mt-2 mb-0">پرچم و نام کشورها را در یک اسلاید آرام مشاهده کن.</h3>
+                </div>
+                <p class="text-muted mb-0 small">دو ردیف پرچم در جهت مخالف حرکت می‌کنند تا مرورشان آسان باشد.</p>
+            </div>
+            <div class="country-marquee">
+                <div class="marquee-row">
+                    <div class="marquee-track">
+                        @foreach (var country in primaryRowCountries)
+                        {
+                            <div class="country-pill">
+                                <div class="country-flag">
+                                    <img src="@Url.Content($"~/images/contries/{country.Flag}")" alt="@country.Name" loading="lazy" />
+                                </div>
+                                <span class="country-name">@country.Name</span>
+                            </div>
+                        }
+                        @foreach (var country in primaryRowCountries)
+                        {
+                            <div class="country-pill" aria-hidden="true">
+                                <div class="country-flag">
+                                    <img src="@Url.Content($"~/images/contries/{country.Flag}")" alt="" loading="lazy" />
+                                </div>
+                                <span class="country-name">@country.Name</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="marquee-row reverse">
+                    <div class="marquee-track">
+                        @foreach (var country in secondaryRowCountries)
+                        {
+                            <div class="country-pill">
+                                <div class="country-flag">
+                                    <img src="@Url.Content($"~/images/contries/{country.Flag}")" alt="@country.Name" loading="lazy" />
+                                </div>
+                                <span class="country-name">@country.Name</span>
+                            </div>
+                        }
+                        @foreach (var country in secondaryRowCountries)
+                        {
+                            <div class="country-pill" aria-hidden="true">
+                                <div class="country-flag">
+                                    <img src="@Url.Content($"~/images/contries/{country.Flag}")" alt="" loading="lazy" />
+                                </div>
+                                <span class="country-name">@country.Name</span>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     </div>
