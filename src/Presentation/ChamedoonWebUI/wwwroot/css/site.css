@@ -66,10 +66,17 @@ body {
     align-items: center;
     gap: clamp(0.65rem, 1.5vw, 1.25rem);
     margin-inline-start: auto;
+    justify-content: flex-end;
 }
 
 .landing-header .landing-controls > * {
     flex-shrink: 0;
+}
+
+.landing-header .landing-control-group {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.55rem, 1.25vw, 1rem);
 }
 
 .landing-header .landing-actions {
@@ -801,6 +808,7 @@ a:hover {
     .landing-header .landing-controls {
         order: 2;
         margin-inline-start: auto;
+        justify-content: flex-end;
     }
 
     .landing-header .landing-center {

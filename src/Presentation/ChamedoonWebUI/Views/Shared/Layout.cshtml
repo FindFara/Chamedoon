@@ -46,63 +46,65 @@
                         </div>
                     </div>
                     <div class="landing-controls">
-                        <div class="landing-actions">
-                            <div class="dropdown user-menu-dropdown">
-                                <button class="icon-button dropdown-toggle user-menu-toggle" type="button" id="userMenuToggle" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="حساب کاربری" title="حساب کاربری">
-                                    <span class="visually-hidden">حساب کاربری</span>
-                                    @await Component.InvokeAsync("UserProfileImage", new { viewName = "Badge" })
-                                    <span class="user-menu-icon" aria-hidden="true">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
-                                            <path d="M12 12c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.2-5 5 2.2 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                            <path d="M5.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                        <div class="landing-control-group">
+                            <div class="landing-actions">
+                                <div class="dropdown user-menu-dropdown">
+                                    <button class="icon-button dropdown-toggle user-menu-toggle" type="button" id="userMenuToggle" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="حساب کاربری" title="حساب کاربری">
+                                        <span class="visually-hidden">حساب کاربری</span>
+                                        @await Component.InvokeAsync("UserProfileImage", new { viewName = "Badge" })
+                                        <span class="user-menu-icon" aria-hidden="true">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
+                                                <path d="M12 12c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.2-5 5 2.2 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                                <path d="M5.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userMenuToggle">
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            if (User.IsInRole("Admin"))
+                                            {
+                                                <li>
+                                                    <a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">پنل مدیریت</a>
+                                                </li>
+                                                <li><hr class="dropdown-divider" /></li>
+                                            }
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="UserPanel" asp-action="Index">پنل کاربری</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">خروج</a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="Account" asp-action="Login">ورود</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" asp-controller="Account" asp-action="Register">ثبت‌نام</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                                <button class="icon-button theme-toggle" type="button" id="darkModeToggle" data-mode="light" aria-pressed="false" aria-label="حالت شب" data-label="حالت شب" data-label-light="حالت شب" data-label-dark="حالت روز" title="حالت شب">
+                                    <span class="visually-hidden" data-role="label">حالت شب</span>
+                                    <span class="theme-toggle-icon" aria-hidden="true">
+                                        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
+                                            <path d="M21 12.79A9 9 0 1 1 11.21 3 6.5 6.5 0 0 0 21 12.79Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M17.5 4.5 16 6m0-2 1.5 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
+                                            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
                                     </span>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userMenuToggle">
-                                    @if (User.Identity.IsAuthenticated)
-                                    {
-                                        if (User.IsInRole("Admin"))
-                                        {
-                                            <li>
-                                                <a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">پنل مدیریت</a>
-                                            </li>
-                                            <li><hr class="dropdown-divider" /></li>
-                                        }
-                                        <li>
-                                            <a class="dropdown-item" asp-controller="UserPanel" asp-action="Index">پنل کاربری</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">خروج</a>
-                                        </li>
-                                    }
-                                    else
-                                    {
-                                        <li>
-                                            <a class="dropdown-item" asp-controller="Account" asp-action="Login">ورود</a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" asp-controller="Account" asp-action="Register">ثبت‌نام</a>
-                                        </li>
-                                    }
-                                </ul>
                             </div>
-                        <button class="icon-button theme-toggle" type="button" id="darkModeToggle" data-mode="light" aria-pressed="false" aria-label="حالت شب" data-label="حالت شب" data-label-light="حالت شب" data-label-dark="حالت روز" title="حالت شب">
-                            <span class="visually-hidden" data-role="label">حالت شب</span>
-                            <span class="theme-toggle-icon" aria-hidden="true">
-                                <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
-                                        <path d="M21 12.79A9 9 0 1 1 11.21 3 6.5 6.5 0 0 0 21 12.79Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                        <path d="M17.5 4.5 16 6m0-2 1.5 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
-                                        <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                        <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                    </svg>
-                                </span>
+                            <button class="navbar-toggler d-lg-none mobile-menu-trigger" type="button" id="mobileMenuToggle" aria-controls="mobileMenu" aria-expanded="false" aria-label="باز کردن منو">
+                                <span class="navbar-toggler-icon"></span>
                             </button>
                         </div>
-                        <button class="navbar-toggler d-lg-none mobile-menu-trigger" type="button" id="mobileMenuToggle" aria-controls="mobileMenu" aria-expanded="false" aria-label="باز کردن منو">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
                     </div>
                 </div>
 
