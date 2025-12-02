@@ -21,8 +21,8 @@
 <body class="landing-page">
     <div class="d-flex flex-column min-vh-100">
         <header class="landing-header">
-            <nav class="navbar navbar-expand-lg landing-navbar">
-                <div class="container align-items-lg-center">
+            <nav class="navbar landing-navbar d-none d-lg-block">
+                <div class="container landing-desktop">
                     <a class="navbar-brand landing-logo" asp-controller="Home" asp-action="Index">
                         <span class="logo-mark" aria-hidden="true">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="26" height="26" fill="none">
@@ -36,15 +36,15 @@
                             <span class="logo-text-fa">چمدون</span>
                         </span>
                     </a>
+
                     <div class="landing-center">
-                        <div class="collapse navbar-collapse" id="landingNav">
-                            <ul class="navbar-nav landing-nav mb-3 mb-lg-0 align-items-lg-center gap-3 gap-lg-4">
-                                <li class="nav-item"><a class="nav-link" asp-controller="Immigration" asp-action="Index">شروع ارزیابی مهاجرت</a></li>
-                                <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">درباره ما</a></li>
-                                <li class="nav-item"><a class="nav-link" asp-controller="Blog" asp-action="Index">وبلاگ</a></li>
-                            </ul>
-                        </div>
+                        <ul class="navbar-nav landing-nav mb-0 align-items-lg-center gap-3 gap-lg-4">
+                            <li class="nav-item"><a class="nav-link" asp-controller="Immigration" asp-action="Index">شروع ارزیابی مهاجرت</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">درباره ما</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Blog" asp-action="Index">وبلاگ</a></li>
+                        </ul>
                     </div>
+
                     <div class="landing-controls">
                         <div class="landing-actions">
                             <div class="dropdown user-menu-dropdown">
@@ -100,13 +100,118 @@
                                 </span>
                             </button>
                         </div>
-                        <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#landingNav" aria-controls="landingNav" aria-expanded="false" aria-label="باز کردن منو">
-                            <span class="navbar-toggler-icon"></span>
+                    </div>
+                </div>
+            </nav>
+
+            <nav class="navbar landing-navbar d-lg-none">
+                <div class="container landing-mobile-container">
+                    <div class="landing-mobile-actions">
+                        <div class="dropdown user-menu-dropdown">
+                            <button class="icon-button dropdown-toggle user-menu-toggle" type="button" id="userMenuToggleMobile" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="حساب کاربری" title="حساب کاربری">
+                                <span class="visually-hidden">حساب کاربری</span>
+                                @await Component.InvokeAsync("UserProfileImage", new { viewName = "Badge" })
+                                <span class="user-menu-icon" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
+                                        <path d="M12 12c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.2-5 5 2.2 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                        <path d="M5.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userMenuToggleMobile">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    if (User.IsInRole("Admin"))
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">پنل مدیریت</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider" /></li>
+                                    }
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="UserPanel" asp-action="Index">پنل کاربری</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">خروج</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Login">ورود</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Register">ثبت‌نام</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <button class="icon-button theme-toggle" type="button" id="darkModeToggleMobile" data-mode="light" aria-pressed="false" aria-label="حالت شب" data-label="حالت شب" data-label-light="حالت شب" data-label-dark="حالت روز" title="حالت شب">
+                            <span class="visually-hidden" data-role="label">حالت شب</span>
+                            <span class="theme-toggle-icon" aria-hidden="true">
+                                <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 6.5 6.5 0 0 0 21 12.79Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M17.5 4.5 16 6m0-2 1.5 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
+                                    <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+
+                    <a class="navbar-brand landing-logo" asp-controller="Home" asp-action="Index">
+                        <span class="logo-mark" aria-hidden="true">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="24" height="24" fill="none">
+                                <rect x="7" y="9" width="18" height="16" rx="4" stroke="currentColor" stroke-width="1.8" />
+                                <path d="M12 9V7a3 3 0 0 1 3-3h2a3 3 0 0 1 3 3v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                                <path d="M11 15h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                            </svg>
+                        </span>
+                        <span class="logo-text">
+                            <span class="logo-text-en">CHAMEDOON</span>
+                            <span class="logo-text-fa">چمدون</span>
+                        </span>
+                    </a>
+
+                    <button class="navbar-toggler landing-hamburger" type="button" aria-controls="landingMobileNav" aria-expanded="false" aria-label="باز کردن منو" title="باز کردن منو">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+            </nav>
+
+            <div class="offcanvas offcanvas-end landing-offcanvas" tabindex="-1" id="landingMobileNav" aria-labelledby="landingMobileNavLabel">
+                <div class="offcanvas-header">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="offcanvas-title" id="landingMobileNavLabel">منو</span>
+                    </div>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="بستن"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav landing-nav mobile-nav gap-3">
+                        <li class="nav-item"><a class="nav-link" asp-controller="Immigration" asp-action="Index">شروع ارزیابی مهاجرت</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">درباره ما</a></li>
+                        <li class="nav-item"><a class="nav-link" asp-controller="Blog" asp-action="Index">وبلاگ</a></li>
+                    </ul>
+                    <div class="mobile-nav-footer">
+                        <button class="icon-button theme-toggle mobile-theme-toggle" type="button" id="darkModeToggleMobilePanel" data-mode="light" aria-pressed="false" aria-label="حالت شب" data-label="حالت شب" data-label-light="حالت شب" data-label-dark="حالت روز" title="حالت شب">
+                            <span class="visually-hidden" data-role="label">حالت شب</span>
+                            <span class="theme-toggle-icon" aria-hidden="true">
+                                <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 6.5 6.5 0 0 0 21 12.79Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M17.5 4.5 16 6m0-2 1.5 1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                                <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
+                                    <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
                         </button>
                     </div>
                 </div>
+            </div>
 
-            </nav>
         </header>
 
         <main class="flex-grow-1">
