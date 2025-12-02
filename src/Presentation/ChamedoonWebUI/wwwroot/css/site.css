@@ -801,6 +801,7 @@ a:hover {
     .landing-header .landing-controls {
         order: 2;
         margin-inline-start: auto;
+        margin-inline-end: 0;
     }
 
     .landing-header .landing-center {
