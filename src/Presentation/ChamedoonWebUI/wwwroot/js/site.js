@@ -90,13 +90,17 @@
             backdrop: true,
         });
 
-        landingHamburger.addEventListener('click', (event) => {
-            event.preventDefault();
+        if (!landingHamburger.dataset.offcanvasBound) {
+            landingHamburger.dataset.offcanvasBound = 'true';
 
-            if (!landingOffcanvasElement.classList.contains('show')) {
-                landingOffcanvas.show();
-            }
-        });
+            landingHamburger.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                if (!landingOffcanvasElement.classList.contains('show')) {
+                    landingOffcanvas.show();
+                }
+            });
+        }
     }
 
     const backToTop = document.getElementById('backToTop');
