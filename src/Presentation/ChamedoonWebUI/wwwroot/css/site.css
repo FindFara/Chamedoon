@@ -235,7 +235,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    justify-content: flex-start;
+    justify-content: flex-end;
 }
 
 .mobile-menu-user .mobile-user-action {
