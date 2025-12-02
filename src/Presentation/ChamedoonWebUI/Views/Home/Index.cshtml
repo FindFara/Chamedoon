@@ -33,6 +33,71 @@
     </div>
 </section>
 
+@{
+    var marqueeRowOne = new (string Flag, string Name)[]
+    {
+        ("🇨🇦", "کانادا"),
+        ("🇦🇺", "استرالیا"),
+        ("🇩🇪", "آلمان"),
+        ("🇳🇱", "هلند"),
+        ("🇸🇪", "سوئد"),
+        ("🇬🇧", "انگلستان"),
+        ("🇦🇹", "اتریش"),
+        ("🇧🇪", "بلژیک"),
+        ("🇵🇱", "لهستان"),
+        ("🇳🇿", "نیوزیلند")
+    };
+
+    var marqueeRowTwo = new (string Flag, string Name)[]
+    {
+        ("🇪🇸", "اسپانیا"),
+        ("🇫🇷", "فرانسه"),
+        ("🇮🇹", "ایتالیا"),
+        ("🇨🇭", "سوئیس"),
+        ("🇩🇰", "دانمارک"),
+        ("🇳🇴", "نروژ"),
+        ("🇫🇮", "فنلاند"),
+        ("🇵🇹", "پرتغال"),
+        ("🇺🇸", "آمریکا"),
+        ("🇦🇪", "امارات")
+    };
+}
+
+<section class="py-4">
+    <div class="container">
+        <div class="country-marquee-card">
+            <div class="country-marquee-row">
+                <div class="country-marquee track-right" aria-label="کشورها از چپ به راست">
+                    @for (var i = 0; i < 2; i++)
+                    {
+                        foreach (var country in marqueeRowOne)
+                        {
+                            <div class="country-chip">
+                                <span class="country-flag">@country.Flag</span>
+                                <span>@country.Name</span>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="country-marquee-row">
+                <div class="country-marquee track-left" aria-label="کشورها از راست به چپ">
+                    @for (var i = 0; i < 2; i++)
+                    {
+                        foreach (var country in marqueeRowTwo)
+                        {
+                            <div class="country-chip">
+                                <span class="country-flag">@country.Flag</span>
+                                <span>@country.Name</span>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section id="features" class="py-5">
     <div class="container">
         <div class="row justify-content-center text-center mb-5">
