@@ -1755,7 +1755,80 @@ a:hover {
         align-items: center;
     }
 
-    .auth-benefits li {
-        justify-content: center;
-    }
+.auth-benefits li {
+    justify-content: center;
+}
+}
+
+/* === Mobile navigation ==================================================== */
+
+.mobile-nav {
+    position: sticky;
+    bottom: 0;
+    z-index: 1030;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.35rem;
+    padding: 0.65rem clamp(0.85rem, 3vw, 1.25rem);
+    margin-top: auto;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 -10px 30px -26px rgba(15, 23, 42, 0.55);
+}
+
+.mobile-nav::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    pointer-events: none;
+}
+
+.mobile-nav-link {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.6rem 0.35rem;
+    border-radius: 14px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link:focus-visible {
+    color: var(--primary);
+    background: rgba(79, 70, 229, 0.08);
+    box-shadow: 0 12px 26px -22px rgba(79, 70, 229, 0.6);
+    outline: none;
+}
+
+.mobile-nav-link.active {
+    color: var(--primary);
+    background: rgba(79, 70, 229, 0.14);
+    box-shadow: 0 16px 32px -22px rgba(79, 70, 229, 0.45);
+}
+
+.mobile-nav-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(79, 70, 229, 0.08);
+    color: var(--primary);
+}
+
+.mobile-nav-icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.mobile-nav-label {
+    font-size: 0.85rem;
 }

@@ -18,6 +18,10 @@
     <link rel="stylesheet" href="~/css/site-dark.css" asp-append-version="true" />
     @RenderSection("Styles", required: false)
 </head>
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
 <body class="landing-page">
     <div class="d-flex flex-column min-vh-100">
         <header class="landing-header">
@@ -112,6 +116,68 @@
         <main class="flex-grow-1">
             @RenderBody()
         </main>
+
+        <nav class="mobile-nav d-lg-none" aria-label="منوی موبایل">
+            <a class="mobile-nav-link @(currentController == "Home" && currentAction == "Index" ? "active" : string.Empty)" asp-controller="Home" asp-action="Index">
+                <span class="mobile-nav-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                        <path d="m4 10 8-6 8 6v9a1 1 0 0 1-1 1h-4.5a1 1 0 0 1-1-1v-4h-3v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </span>
+                <span class="mobile-nav-label">خانه</span>
+            </a>
+            <a class="mobile-nav-link @(currentController == "Immigration" ? "active" : string.Empty)" asp-controller="Immigration" asp-action="Index">
+                <span class="mobile-nav-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                        <path d="M3 12h14M3 12l4-4m-4 4 4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M17 6h1.5A2.5 2.5 0 0 1 21 8.5v7A2.5 2.5 0 0 1 18.5 18H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </span>
+                <span class="mobile-nav-label">ارزیابی</span>
+            </a>
+            <a class="mobile-nav-link @(currentController == "Home" && currentAction == "About" ? "active" : string.Empty)" asp-controller="Home" asp-action="About">
+                <span class="mobile-nav-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.6" />
+                        <path d="M5 20a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </span>
+                <span class="mobile-nav-label">درباره</span>
+            </a>
+            <a class="mobile-nav-link @(currentController == "Blog" ? "active" : string.Empty)" asp-controller="Blog" asp-action="Index">
+                <span class="mobile-nav-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                        <path d="M7 7h10M7 12h6M7 17h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                        <path d="M7 3h10a2 2 0 0 1 2 2v14l-4-3-4 3-4-3-4 3V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                </span>
+                <span class="mobile-nav-label">وبلاگ</span>
+            </a>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a class="mobile-nav-link @(currentController == "UserPanel" ? "active" : string.Empty)" asp-controller="UserPanel" asp-action="Index">
+                    <span class="mobile-nav-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.6" />
+                            <path d="M5 19a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                    <span class="mobile-nav-label">حساب</span>
+                </a>
+            }
+            else
+            {
+                <a class="mobile-nav-link @(currentController == "Account" && currentAction == "Login" ? "active" : string.Empty)" asp-controller="Account" asp-action="Login">
+                    <span class="mobile-nav-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 3h5a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M15 12H4m0 0 3-3m-3 3 3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                    <span class="mobile-nav-label">ورود</span>
+                </a>
+            }
+        </nav>
 
         <footer class="landing-footer py-5">
             <div class="container">
