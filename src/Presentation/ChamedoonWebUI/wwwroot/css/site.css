@@ -43,6 +43,10 @@ body {
     gap: clamp(0.75rem, 2.4vw, 2.25rem);
 }
 
+.landing-header .landing-container {
+    justify-content: space-between;
+}
+
 .landing-header .landing-center {
     flex: 1 1 auto;
     display: flex;
@@ -65,7 +69,6 @@ body {
     display: flex;
     align-items: center;
     gap: clamp(0.65rem, 1.5vw, 1.25rem);
-    margin-inline-start: auto;
 }
 
 .landing-header .landing-controls > * {
@@ -271,6 +274,63 @@ body {
 .landing-header .nav-link:hover,
 .landing-header .nav-link:focus {
     color: var(--primary);
+}
+
+.landing-mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.landing-offcanvas {
+    width: min(65vw, 420px);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(14px);
+    border-inline-start: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: -18px 0 32px -18px rgba(15, 23, 42, 0.35);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.landing-offcanvas .offcanvas-header {
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.landing-offcanvas .offcanvas-title {
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.landing-offcanvas .mobile-nav {
+    margin-bottom: 1.5rem;
+}
+
+.landing-offcanvas .mobile-nav .nav-link {
+    font-weight: 600;
+    padding-inline: 0.35rem;
+}
+
+.mobile-nav-footer {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    border-top: 1px dashed rgba(15, 23, 42, 0.12);
+}
+
+.landing-offcanvas.show {
+    box-shadow: -22px 0 48px -22px rgba(79, 70, 229, 0.45);
+    animation: landingSlideIn 0.4s ease;
+}
+
+@keyframes landingSlideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0.65;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 .landing-logo {
@@ -677,23 +737,28 @@ a:hover {
 }
 
 @media (max-width: 991.98px) {
-    .landing-header .navbar-collapse {
-        background: rgba(255, 255, 255, 0.95);
-        padding: 1.25rem 1rem 1.5rem;
-        border-radius: 1.5rem;
-        box-shadow: 0 28px 48px -32px rgba(15, 23, 42, 0.55);
-        margin-top: 1rem;
+    .landing-header .navbar > .container {
+        gap: 0.75rem;
     }
 
-    .landing-header .landing-controls {
-        order: 2;
-        margin-inline-start: auto;
-    }
-
-    .landing-header .landing-center {
-        order: 3;
+    .landing-header .landing-container {
         width: 100%;
-        margin-top: 0.75rem;
+    }
+
+    .landing-header .landing-logo {
+        flex: 1 1 auto;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .landing-mobile-actions {
+        order: 3;
+        margin-inline-end: auto;
+    }
+
+    .landing-header .landing-center,
+    .landing-header .landing-controls {
+        display: none;
     }
 
     .hero-section {
