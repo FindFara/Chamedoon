@@ -54,6 +54,24 @@ body.landing-page.dark-mode .landing-header .nav-link:focus {
     color: #93c5fd;
 }
 
+body.landing-page.dark-mode .landing-offcanvas {
+    background: rgba(15, 23, 42, 0.92);
+    border-inline-start-color: rgba(148, 163, 184, 0.18);
+    box-shadow: -20px 0 46px -22px rgba(2, 6, 23, 0.8);
+}
+
+body.landing-page.dark-mode .landing-offcanvas .offcanvas-header {
+    border-bottom-color: rgba(148, 163, 184, 0.22);
+}
+
+body.landing-page.dark-mode .landing-offcanvas .offcanvas-title {
+    color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .mobile-nav-footer {
+    border-top-color: rgba(148, 163, 184, 0.22);
+}
+
 body.landing-page.dark-mode .user-menu-dropdown .dropdown-menu {
     background: rgba(15, 23, 42, 0.92);
     box-shadow: 0 22px 48px -26px rgba(2, 6, 23, 0.85);
