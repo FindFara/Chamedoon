@@ -29,6 +29,44 @@
     justify-self: end;
 }
 
+.landing-hamburger {
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.75);
+    transition: all 0.2s ease;
+    box-shadow: 0 10px 24px -18px rgba(15, 23, 42, 0.45);
+}
+
+.landing-hamburger:hover,
+.landing-hamburger:focus-visible {
+    border-color: rgba(79, 70, 229, 0.35);
+    box-shadow: 0 18px 34px -18px rgba(79, 70, 229, 0.32);
+}
+
+.landing-hamburger:focus-visible {
+    outline: none;
+}
+
+.landing-hamburger .hamburger-icon {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 22px;
+}
+
+.landing-hamburger .hamburger-icon span {
+    display: block;
+    height: 2px;
+    background: currentColor;
+    border-radius: 999px;
+    transition: transform 0.2s ease;
+}
+
 .landing-offcanvas {
     width: min(65vw, 420px);
     height: 100vh;
