@@ -1257,6 +1257,32 @@ a:hover {
     padding: 1.75rem;
 }
 
+.profile-name-marquee {
+    width: 100%;
+    max-width: 16ch;
+    overflow: hidden;
+    position: relative;
+}
+
+.profile-name-marquee__text {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.profile-name-marquee__text.is-marquee {
+    padding-inline-end: 1.5rem;
+    animation: profile-name-marquee var(--profile-marquee-duration, 12s) linear infinite;
+}
+
+@keyframes profile-name-marquee {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(calc(-1 * var(--profile-marquee-distance, 0px)));
+    }
+}
+
 .dashboard-pane .progress {
     height: 0.6rem;
     border-radius: 999px;
