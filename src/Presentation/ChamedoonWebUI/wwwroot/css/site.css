@@ -287,7 +287,7 @@ body {
 
 .landing-mobile-container {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto auto 1fr;
     align-items: center;
     gap: 0.75rem;
     width: 100%;
@@ -298,14 +298,14 @@ body {
     justify-self: start;
 }
 
-.landing-mobile-container .landing-logo {
+.landing-mobile-container .landing-hamburger {
     grid-column: 2;
     justify-self: center;
 }
 
-.landing-mobile-container .landing-hamburger {
+.landing-mobile-container .landing-logo {
     grid-column: 3;
-    justify-self: end;
+    justify-self: start;
 }
 
 .landing-offcanvas {
@@ -316,7 +316,7 @@ body {
     backdrop-filter: blur(14px);
     border-inline-start: 1px solid rgba(15, 23, 42, 0.08);
     box-shadow: -18px 0 32px -18px rgba(15, 23, 42, 0.35);
-    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
 }
 
 .landing-offcanvas .offcanvas-header {

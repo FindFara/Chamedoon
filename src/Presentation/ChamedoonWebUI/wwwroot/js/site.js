@@ -81,19 +81,32 @@
         }
     }
 
-    const backToTop = document.getElementById('backToTop');
-    if (!backToTop) {
-        return;
+    const landingHamburger = document.querySelector('.landing-hamburger');
+    const landingOffcanvasElement = document.getElementById('landingMobileNav');
+
+    if (landingHamburger && landingOffcanvasElement && window.bootstrap?.Offcanvas) {
+        const landingOffcanvas = bootstrap.Offcanvas.getOrCreateInstance(landingOffcanvasElement, {
+            scroll: true,
+            backdrop: true,
+        });
+
+        landingHamburger.addEventListener('click', (event) => {
+            event.preventDefault();
+            landingOffcanvas.toggle();
+        });
     }
 
-    const toggleButtonVisibility = () => {
-        if (window.scrollY > 320) {
-            backToTop.classList.add('show');
-        } else {
-            backToTop.classList.remove('show');
-        }
-    };
+    const backToTop = document.getElementById('backToTop');
+    if (backToTop) {
+        const toggleButtonVisibility = () => {
+            if (window.scrollY > 320) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        };
 
-    toggleButtonVisibility();
-    window.addEventListener('scroll', toggleButtonVisibility);
+        toggleButtonVisibility();
+        window.addEventListener('scroll', toggleButtonVisibility);
+    }
 })();
