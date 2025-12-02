@@ -284,6 +284,8 @@ body {
 
 .landing-offcanvas {
     width: min(65vw, 420px);
+    height: 100vh;
+    max-height: 100vh;
     background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(14px);
     border-inline-start: 1px solid rgba(15, 23, 42, 0.08);
@@ -315,6 +317,13 @@ body {
     margin-top: auto;
     padding-top: 0.5rem;
     border-top: 1px dashed rgba(15, 23, 42, 0.12);
+}
+
+.landing-offcanvas .offcanvas-body {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
 }
 
 .landing-offcanvas.show {
@@ -410,6 +419,16 @@ body {
 @media (min-width: 992px) {
     .landing-header .navbar > .container {
         gap: 2.5rem;
+    }
+
+    .landing-header .landing-container {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+    }
+
+    .landing-header .landing-center {
+        justify-content: center;
     }
 
     .landing-header .navbar-collapse {
