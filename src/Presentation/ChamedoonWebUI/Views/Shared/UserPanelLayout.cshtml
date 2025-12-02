@@ -3,8 +3,14 @@
 }
 <section class="glass-section dashboard-section">
     <div class="container">
+        <div class="dashboard-mobile-bar d-lg-none">
+            <button class="btn-glass-primary dashboard-menu-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#dashboardMenuOffcanvas" aria-controls="dashboardMenuOffcanvas">
+                <span aria-hidden="true">☰</span>
+                <span>منوی کاربری</span>
+            </button>
+        </div>
         <div class="dashboard-shell">
-            <aside class="dashboard-sidebar">
+            <aside class="dashboard-sidebar d-none d-lg-flex">
                 @await Component.InvokeAsync("UserProfileImage")
                 <partial name="UserPanelSidebar" />
             </aside>
@@ -14,3 +20,14 @@
         </div>
     </div>
 </section>
+
+<div class="offcanvas offcanvas-end dashboard-offcanvas" tabindex="-1" id="dashboardMenuOffcanvas" aria-labelledby="dashboardMenuOffcanvasLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="dashboardMenuOffcanvasLabel">منوی کاربری</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="بستن"></button>
+    </div>
+    <div class="offcanvas-body">
+        @await Component.InvokeAsync("UserProfileImage")
+        <partial name="UserPanelSidebar" />
+    </div>
+</div>
