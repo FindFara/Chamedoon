@@ -39,8 +39,15 @@ body {
 .landing-header .navbar > .container {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: clamp(0.75rem, 2.4vw, 2.25rem);
+}
+
+.landing-header .landing-desktop {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    width: 100%;
 }
 
 .landing-header .landing-center {
@@ -65,7 +72,6 @@ body {
     display: flex;
     align-items: center;
     gap: clamp(0.65rem, 1.5vw, 1.25rem);
-    margin-inline-start: auto;
 }
 
 .landing-header .landing-controls > * {
@@ -350,6 +356,16 @@ body {
 @media (min-width: 992px) {
     .landing-header .navbar > .container {
         gap: 2.5rem;
+    }
+
+    .landing-header .landing-desktop {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+    }
+
+    .landing-header .landing-center {
+        justify-content: center;
     }
 
     .landing-header .navbar-collapse {
@@ -677,25 +693,6 @@ a:hover {
 }
 
 @media (max-width: 991.98px) {
-    .landing-header .navbar-collapse {
-        background: rgba(255, 255, 255, 0.95);
-        padding: 1.25rem 1rem 1.5rem;
-        border-radius: 1.5rem;
-        box-shadow: 0 28px 48px -32px rgba(15, 23, 42, 0.55);
-        margin-top: 1rem;
-    }
-
-    .landing-header .landing-controls {
-        order: 2;
-        margin-inline-start: auto;
-    }
-
-    .landing-header .landing-center {
-        order: 3;
-        width: 100%;
-        margin-top: 0.75rem;
-    }
-
     .hero-section {
         text-align: center;
         padding: 3rem 2rem;
@@ -842,14 +839,30 @@ a:hover {
     color: var(--text-muted);
 }
 
+.btn-glass-primary,
+.btn-outline-glass,
+.btn-glass-light {
+    --btn-glass-radius: 1rem;
+    --btn-glass-padding-y: 0.75rem;
+    --btn-glass-padding-x: 1.5rem;
+
+    border-radius: var(--btn-glass-radius);
+    padding: var(--btn-glass-padding-y) var(--btn-glass-padding-x);
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: transform 0.2s ease, box-shadow 0.3s ease, border-color 0.2s ease, background 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
 .btn-glass-primary {
     background: linear-gradient(135deg, rgba(79, 70, 229, 0.92), rgba(14, 165, 233, 0.92));
     border: 0;
     color: #fff;
-    border-radius: 1rem;
-    padding: 0.75rem 1.5rem;
-    font-weight: 600;
-    transition: transform 0.2s ease, box-shadow 0.3s ease;
     box-shadow: 0 22px 44px -24px rgba(37, 99, 235, 0.75);
 }
 
@@ -861,20 +874,76 @@ a:hover {
 }
 
 .btn-outline-glass {
-    border-radius: 1rem;
-    border: 1px solid rgba(148, 163, 184, 0.35);
-    padding: 0.75rem 1.5rem;
-    font-weight: 600;
+    background: rgba(255, 255, 255, 0.82);
     color: var(--text-dark);
-    background: rgba(255, 255, 255, 0.8);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    border-color: rgba(148, 163, 184, 0.35);
+    box-shadow: 0 18px 40px -26px rgba(15, 23, 42, 0.35);
 }
 
 .btn-outline-glass:hover,
 .btn-outline-glass:focus {
     border-color: rgba(79, 70, 229, 0.45);
-    box-shadow: 0 16px 40px -24px rgba(79, 70, 229, 0.4);
+    box-shadow: 0 18px 44px -26px rgba(79, 70, 229, 0.42);
     color: var(--text-dark);
+}
+
+.btn-glass-light {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(241, 245, 249, 0.94));
+    color: var(--text-dark);
+    border-color: rgba(148, 163, 184, 0.35);
+    box-shadow: 0 16px 38px -24px rgba(15, 23, 42, 0.28);
+}
+
+.btn-glass-light:hover,
+.btn-glass-light:focus {
+    border-color: rgba(79, 70, 229, 0.35);
+    box-shadow: 0 18px 44px -24px rgba(37, 99, 235, 0.25);
+    color: var(--text-dark);
+}
+
+.btn-glass-primary.btn-lg,
+.btn-outline-glass.btn-lg,
+.btn-glass-light.btn-lg {
+    --btn-glass-radius: 1.15rem;
+    --btn-glass-padding-y: 0.95rem;
+    --btn-glass-padding-x: 1.85rem;
+    font-size: 1.05rem;
+}
+
+.btn-glass-primary.btn-sm,
+.btn-outline-glass.btn-sm,
+.btn-glass-light.btn-sm {
+    --btn-glass-radius: 0.75rem;
+    --btn-glass-padding-y: 0.55rem;
+    --btn-glass-padding-x: 1.1rem;
+    font-size: 0.95rem;
+}
+
+.newsletter-form .newsletter-submit {
+    --btn-glass-padding-y: 0.6rem;
+    --btn-glass-radius: 0.95rem;
+    min-height: 100%;
+}
+
+@media (min-width: 576px) {
+    .newsletter-form .newsletter-submit {
+        min-height: 100%;
+    }
+}
+
+.btn-icon {
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-icon.btn-lg {
+    width: 3.5rem;
+    height: 3.5rem;
 }
 
 .btn-google {

@@ -20,9 +20,12 @@ public class UsersController : Controller
         _mediator = mediator;
     }
 
-    public async Task<IActionResult> Index(string? search, long? roleId, CancellationToken cancellationToken)
+    public async Task<IActionResult> Index(string? search, long? roleId, int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
     {
-        var usersResult = await _userService.GetUsersAsync(search, roleId, cancellationToken);
+        page = page < 1 ? 1 : page;
+        pageSize = pageSize < 1 ? 10 : pageSize;
+
+        var usersResult = await _userService.GetUsersAsync(search, roleId, page, pageSize, cancellationToken);
         var rolesResult = await _userService.GetRolesAsync(cancellationToken);
         if (!usersResult.IsSuccess || usersResult.Result is null)
         {
@@ -36,10 +39,14 @@ public class UsersController : Controller
 
         var model = new UsersIndexViewModel
         {
-            Users = usersResult.Result.Select(UserListItemViewModel.FromDto).ToList(),
+            Users = usersResult.Result.Items.Select(UserListItemViewModel.FromDto).ToList(),
             Roles = rolesResult.Result.Select(role => new RoleOptionViewModel { Id = role.Id, Name = role.Name }).ToList(),
             SearchTerm = search,
-            SelectedRoleId = roleId
+            SelectedRoleId = roleId,
+            CurrentPage = usersResult.Result.PageNumber,
+            TotalPages = usersResult.Result.TotalPages,
+            PageSize = pageSize,
+            TotalCount = usersResult.Result.TotalCount
         };
 
         return View(model);

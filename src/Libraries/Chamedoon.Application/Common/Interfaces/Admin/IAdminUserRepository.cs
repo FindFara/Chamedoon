@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Admin.Common.Models;
 using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Permissions;
@@ -10,7 +11,7 @@ namespace Chamedoon.Application.Common.Interfaces.Admin;
 
 public interface IAdminUserRepository
 {
-    Task<List<User>> GetUsersAsync(string? search, long? roleId, CancellationToken cancellationToken);
+    Task<PaginatedList<User>> GetUsersAsync(string? search, long? roleId, int pageNumber, int pageSize, CancellationToken cancellationToken);
     Task<User?> GetUserAsync(long id, CancellationToken cancellationToken);
     Task<(IdentityResult Result, User? Entity)> CreateUserAsync(User user, string password, long? roleId, Customer? customer, CancellationToken cancellationToken);
     Task<IdentityResult> UpdateUserAsync(User user, long? roleId, string? password, Customer? customer, CancellationToken cancellationToken);

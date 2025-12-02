@@ -11,6 +11,10 @@ public class UsersIndexViewModel
     public IReadOnlyList<RoleOptionViewModel> Roles { get; init; } = Array.Empty<RoleOptionViewModel>();
     public string? SearchTerm { get; init; }
     public long? SelectedRoleId { get; init; }
+    public int CurrentPage { get; init; }
+    public int TotalPages { get; init; }
+    public int PageSize { get; init; }
+    public int TotalCount { get; init; }
 }
 
 public class UserListItemViewModel

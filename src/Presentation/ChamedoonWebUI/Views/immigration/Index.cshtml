@@ -10,31 +10,23 @@
 
 <section class="immigration-page">
     <div class="container">
-        <div class="immigration-hero">
-            <div class="hero-copy">
-                <span class="immigration-badge">
-                    <span aria-hidden="true">🧳</span>
-                    ارزیابی هوشمند مهاجرت
-                </span>
-                <h1>بهترین کشور و مسیر مهاجرتی متناسب با تو را در چند دقیقه پیدا کن.</h1>
-                <p class="text-muted mb-2">با پاسخ به چند سوال کوتاه در مورد سن، تحصیلات و علایقت، شانس موفقیتت در مسیرهای مختلف محاسبه می‌شود و یک گزارش خلاصه دریافت می‌کنی.</p>
-                <div class="immigration-meta">
-                    <span class="meta-pill" aria-label="پوشش مسیرهای تحصیلی و کاری">🎯 مسیرهای کاری و تحصیلی</span>
-                    <span class="meta-pill" aria-label="پیشنهاد ویزای متناسب">🧭 پیشنهاد ویزا</span>
-                    <span class="meta-pill" aria-label="گزارش ذخیره‌شده در داشبورد">💾 ذخیره در داشبورد</span>
-                </div>
-                <div class="immigration-actions">
-                    <a href="#immigrationForm" class="btn btn-primary px-4" data-scroll-target="immigrationForm">شروع ارزیابی</a>
-                    <a asp-controller="Blog" asp-action="Index" class="btn btn-outline-secondary px-4">مطالعه تجربه‌های موفق</a>
-                </div>
-            </div>
-            <div class="immigration-visual">
-                <img src="~/img/immigration-journey.svg" alt="مسیر مهاجرت و ارزیابی آنلاین" />
-            </div>
-        </div>
+        <div class="row g-4 justify-content-center">
 
-        <div class="row g-4 justify-content-center mt-4">
             <div class="col-lg-10 col-xl-9">
+                <div class="immigration-result-hero glass-card">
+                    <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-3">
+                        <div>
+                            <h2 class="fw-bold mb-2"><span aria-hidden="true">🧳</span>
+                                ارزیابی هوشمند مهاجرت</h2>
+                            <p class="immigration-helper mb-0">با پاسخ به چند سوال کوتاه در مورد سن، تحصیلات و علایقت، شانس موفقیتت در مسیرهای مختلف محاسبه می‌شود و یک گزارش خلاصه دریافت می‌کنی.</p>
+                        </div>
+                        <div class="immigration-meta">
+                            <span class="meta-pill">🧭 پیشنهاد ویزا</span>
+                            <span class="meta-pill">🎯 مسیرهای کاری و تحصیلی</span>
+                        </div>
+                    </div>
+                </div>
+                <br/>
                 <div class="glass-card immigration-form-card" id="immigrationForm">
                     <div class="form-heading">
                         <div>
@@ -192,8 +184,7 @@
                         </div>
 
                         <div class="immigration-actions">
-                            <button type="submit" class="btn btn-primary px-4">محاسبه شانس مهاجرت</button>
-                            <a asp-controller="Blog" asp-action="Index" class="btn btn-outline-secondary px-4">نمونه گزارش‌ها</a>
+                            <button type="submit" class="btn-glass-primary px-4">محاسبه شانس مهاجرت</button>
                         </div>
                     </form>
                 </div>

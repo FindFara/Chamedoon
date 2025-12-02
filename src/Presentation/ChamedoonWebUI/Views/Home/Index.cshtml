@@ -3,7 +3,7 @@
 @using System.Linq
 @using System.Text.RegularExpressions
 @{
-    ViewData["Title"] = "صفحه فرود";
+    ViewData["Title"] = "مهاجرت آسان";
 }
 
 <section class="container py-5">
@@ -14,8 +14,8 @@
                 <h1 class="display-5 fw-bold mt-4">پیشنهاد بهترین راه مهاجرت و بهترین کشور بر اساس شخصیت و شرایط تو.</h1>
                 <p class="text-muted mt-3">با چمدون هر بخش از سفر مهاجرتت به صورت گام‌به‌گام پیش می‌رود؛ از شناخت مسیر تا آماده‌سازی مدارک و تجربه زندگی در مقصد جدید.</p>
                 <div class="d-flex flex-wrap justify-content-center justify-content-lg-end gap-3 mt-4">
-                    <a asp-controller="Immigration" asp-action="Index" class="btn btn-primary btn-lg px-4">شروع تست</a>
-                    <a asp-controller="Blog" asp-action="Index" class="btn btn-outline-secondary btn-lg px-4">مشاهده نمونه خروجی</a>
+                    <a asp-controller="Immigration" asp-action="Index" class="btn-glass-primary btn-lg px-4">شروع ارزیابی مهاجرت</a>
+                    <a asp-controller="Blog" asp-action="Index" class="btn-outline-glass btn-lg px-4">وبلاگ</a>
                 </div>
                 <div class="d-flex flex-column flex-sm-row align-items-center gap-3 mt-4 text-muted small justify-content-center justify-content-lg-end">
                     <div class="d-flex align-items-center gap-2">
@@ -70,7 +70,10 @@
             <div class="col-md-6 col-lg-3">
                 <div class="feature-card">
                     <div class="feature-icon">👥</div>
-                    <h5 class="fw-semibold">تجربه کاربران</h5>
+                    <div class="d-flex align-items-center gap-2">
+                        <h5 class="fw-semibold mb-0">تجربه کاربران</h5>
+                        <span class="badge bg-light text-primary border">به زودی</span>
+                    </div>
                     <p class="text-muted">از تجربه دیگر اعضای چمدون در انجمن استفاده کن و سوال بپرس.</p>
                     <a href="javascript:void(0)" class="stretched-link text-primary">ورود به انجمن</a>
                 </div>
@@ -225,7 +228,7 @@
                     <p class="mb-0">هزاران نفر با چمدون مسیر مهاجرت‌شون رو مدیریت می‌کنن. اولین بخش شخصی‌سازی شده همین حالا منتظر توست.</p>
                 </div>
                 <div class="col-lg-4 text-lg-end">
-                    <a asp-controller="Account" asp-action="Register" class="btn btn-light btn-lg px-4">ساخت حساب کاربری</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn-glass-light btn-lg px-4">ساخت حساب کاربری</a>
                 </div>
             </div>
         </div>

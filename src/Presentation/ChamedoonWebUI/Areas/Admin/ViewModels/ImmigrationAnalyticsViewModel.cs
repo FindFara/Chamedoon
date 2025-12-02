@@ -10,6 +10,10 @@ namespace ChamedoonWebUI.Areas.Admin.ViewModels
         public IReadOnlyList<ImmigrationEvaluationItemViewModel> Evaluations { get; init; } = new List<ImmigrationEvaluationItemViewModel>();
         public string? Query { get; init; }
         public int TotalEvaluations { get; init; }
+        public int CurrentPage { get; init; }
+        public int TotalPages { get; init; }
+        public int PageSize { get; init; }
+        public int TotalCount { get; init; }
     }
 
     public record DistributionItemViewModel(string Label, double Percentage, int Count);

@@ -122,27 +122,84 @@
         const rings = document.querySelector('[data-score-rings]');
         if (!rings) return;
 
-        rings.querySelectorAll('.ring-card').forEach((card) => {
+        const updateRing = (card) => {
+            if (!card) return;
+
             const score = Number(card.dataset.score || 0);
             const clamped = Math.max(0, Math.min(100, Math.round(score)));
             const progress = card.querySelector('[data-ring-progress]');
-            const label = card.querySelector('.ring-value');
-            const radius = 58;
-            const circumference = 2 * Math.PI * radius;
+            const tip = card.querySelector('[data-ring-tip]');
+            const tipValue = card.querySelector('[data-ring-value]');
+            const ring = card.querySelector('.ring');
+            const visual = card.querySelector('.ring-visual');
+
+            const viewBoxSize = ring?.viewBox?.baseVal?.width || 140;
+            const ringSize = visual?.getBoundingClientRect()?.width || viewBoxSize;
+            const scale = ringSize / viewBoxSize;
+            const baseRadius = Number(progress?.getAttribute('r') || 58);
+            const radius = baseRadius * scale;
+            const circumference = 2 * Math.PI * baseRadius;
 
             if (progress) {
                 progress.style.strokeDasharray = `${circumference}`;
-                progress.style.strokeDashoffset = `${circumference}`;
-
-                requestAnimationFrame(() => {
-                    const offset = circumference - (clamped / 100) * circumference;
-                    progress.style.strokeDashoffset = `${offset}`;
-                });
+                const offset = circumference - (clamped / 100) * circumference;
+                progress.style.strokeDashoffset = `${offset}`;
             }
 
-            if (label) {
-                label.textContent = `${clamped}%`;
+            if (tip && tipValue) {
+                const angle = (clamped / 100) * 360 - 90;
+                const radians = (angle * Math.PI) / 180;
+                const center = ringSize / 2;
+                const tipRadius = radius + 6 * scale;
+                const labelRadius = radius + 18 * scale;
+                const dot = tip.querySelector('.tip-dot');
+                const label = tip.querySelector('.tip-label');
+
+                tipValue.textContent = `${clamped}%`;
+
+                const dotX = center + tipRadius * Math.cos(radians);
+                const dotY = center + tipRadius * Math.sin(radians);
+                const labelX = center + labelRadius * Math.cos(radians);
+                const labelY = center + labelRadius * Math.sin(radians);
+
+                if (dot) {
+                    dot.style.left = `${dotX}px`;
+                    dot.style.top = `${dotY}px`;
+                }
+
+                if (label) {
+                    label.style.left = `${labelX}px`;
+                    label.style.top = `${labelY}px`;
+                    label.setAttribute('aria-label', `${clamped}%`);
+                }
+
+                tip.classList.add('is-visible');
             }
+        };
+
+        const scheduleUpdate = (card) => {
+            requestAnimationFrame(() => updateRing(card));
+        };
+
+        rings.querySelectorAll('.ring-item').forEach((card) => {
+            updateRing(card);
+            scheduleUpdate(card);
+
+            if (window.ResizeObserver) {
+                const visual = card.querySelector('.ring-visual');
+                if (visual) {
+                    const observer = new ResizeObserver(() => scheduleUpdate(card));
+                    observer.observe(visual);
+                }
+            }
+        });
+
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                rings.querySelectorAll('.ring-item').forEach((card) => updateRing(card));
+            }, 150);
         });
     };
 
