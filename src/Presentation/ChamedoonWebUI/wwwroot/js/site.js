@@ -1,24 +1,31 @@
 (function () {
     const pageBody = document.body;
 
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    if (darkModeToggle && pageBody.classList.contains('landing-page')) {
-        const labelElement = darkModeToggle.querySelector('[data-role="label"]');
-        const labelLight = darkModeToggle.getAttribute('data-label-light') || 'حالت شب';
-        const labelDark = darkModeToggle.getAttribute('data-label-dark') || 'حالت روز';
+    const themeToggles = ['#darkModeToggle', '#darkModeToggleMobile', '#darkModeToggleMobilePanel']
+        .map((selector) => document.querySelector(selector))
+        .filter(Boolean);
 
+    if (themeToggles.length && pageBody.classList.contains('landing-page')) {
         const applyMode = (mode) => {
             const isDark = mode === 'dark';
             pageBody.classList.toggle('dark-mode', isDark);
-            darkModeToggle.dataset.mode = mode;
-            darkModeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-            if (labelElement) {
-                labelElement.textContent = isDark ? labelDark : labelLight;
-            }
-            const nextTitle = isDark ? labelDark : labelLight;
-            darkModeToggle.dataset.label = nextTitle;
-            darkModeToggle.setAttribute('aria-label', nextTitle);
-            darkModeToggle.setAttribute('title', nextTitle);
+
+            themeToggles.forEach((toggle) => {
+                const labelElement = toggle.querySelector('[data-role="label"]');
+                const labelLight = toggle.getAttribute('data-label-light') || 'حالت شب';
+                const labelDark = toggle.getAttribute('data-label-dark') || 'حالت روز';
+                const nextTitle = isDark ? labelDark : labelLight;
+
+                toggle.dataset.mode = mode;
+                toggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+                toggle.dataset.label = nextTitle;
+                toggle.setAttribute('aria-label', nextTitle);
+                toggle.setAttribute('title', nextTitle);
+
+                if (labelElement) {
+                    labelElement.textContent = nextTitle;
+                }
+            });
         };
 
         let storedPreference = null;
@@ -35,14 +42,16 @@
 
         applyMode(activeMode);
 
-        darkModeToggle.addEventListener('click', () => {
-            activeMode = activeMode === 'dark' ? 'light' : 'dark';
-            applyMode(activeMode);
-            try {
-                localStorage.setItem('landing-theme', activeMode);
-            } catch (error) {
-                // Ignore storage write issues (e.g. Safari private mode)
-            }
+        themeToggles.forEach((toggle) => {
+            toggle.addEventListener('click', () => {
+                activeMode = activeMode === 'dark' ? 'light' : 'dark';
+                applyMode(activeMode);
+                try {
+                    localStorage.setItem('landing-theme', activeMode);
+                } catch (error) {
+                    // Ignore storage write issues (e.g. Safari private mode)
+                }
+            });
         });
 
         if (window.matchMedia) {
