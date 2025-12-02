@@ -22,8 +22,34 @@
     <div class="avatar-wrapper justify-content-center">
         <img src="@safeModel.ProfileImage" alt="@displayName" class="shadow" />
         <div class="d-flex flex-column gap-1 align-items-center">
-            <h6 class="fw-semibold mb-0">@displayName</h6>
-            <span class="glass-helper mb-0">@displayName</span>
+            <div class="profile-name-marquee" data-profile-name>
+                <h6 class="fw-semibold mb-0 profile-name-marquee__text">@displayName</h6>
+            </div>
+            <div class="profile-name-marquee" data-profile-name>
+                <span class="glass-helper mb-0 profile-name-marquee__text">@displayName</span>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    (() => {
+        const marqueeContainers = document.querySelectorAll('[data-profile-name]');
+
+        marqueeContainers.forEach((container) => {
+            const textEl = container.querySelector('.profile-name-marquee__text');
+            if (!textEl) return;
+
+            const needsScroll = textEl.scrollWidth > textEl.clientWidth;
+
+            if (needsScroll) {
+                const distance = textEl.scrollWidth - textEl.clientWidth;
+                const durationSeconds = Math.min(18, Math.max(8, distance / 12));
+
+                textEl.style.setProperty('--profile-marquee-distance', `${distance}px`);
+                textEl.style.setProperty('--profile-marquee-duration', `${durationSeconds}s`);
+                textEl.classList.add('is-marquee');
+            }
+        });
+    })();
+</script>

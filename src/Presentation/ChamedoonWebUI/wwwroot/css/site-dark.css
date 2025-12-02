@@ -447,6 +447,32 @@ body.landing-page.dark-mode .panel-subscription-link {
     color: #93c5fd;
 }
 
+.profile-name-marquee {
+    width: 100%;
+    max-width: 16ch;
+    overflow: hidden;
+    position: relative;
+}
+
+.profile-name-marquee__text {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.profile-name-marquee__text.is-marquee {
+    padding-inline-end: 1.5rem;
+    animation: profile-name-marquee var(--profile-marquee-duration, 12s) linear infinite;
+}
+
+@keyframes profile-name-marquee {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(calc(-1 * var(--profile-marquee-distance, 0px)));
+    }
+}
+
 body.landing-page.dark-mode .profile-details .detail-row {
     background: rgba(15, 23, 42, 0.6);
     color: #cbd5f5;
