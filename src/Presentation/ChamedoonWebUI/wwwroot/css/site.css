@@ -1089,6 +1089,23 @@ a:hover {
     padding-block: clamp(3.5rem, 6vw, 5.5rem);
 }
 
+.dashboard-mobile-bar {
+    margin-bottom: 1rem;
+}
+
+.dashboard-menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.25rem;
+    border-radius: 999px;
+    font-weight: 600;
+}
+
+.dashboard-menu-toggle span[aria-hidden="true"] {
+    font-size: 1.15rem;
+}
+
 .dashboard-shell {
     display: grid;
     grid-template-columns: minmax(260px, 320px) 1fr;
@@ -1145,6 +1162,18 @@ a:hover {
     font-size: 0.85rem;
     color: var(--text-muted);
     margin-bottom: 0.1rem;
+}
+
+.dashboard-offcanvas {
+    --bs-offcanvas-width: min(90vw, 360px);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(6px);
+}
+
+.dashboard-offcanvas .offcanvas-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
 }
 
 .panel-subscription-title {
