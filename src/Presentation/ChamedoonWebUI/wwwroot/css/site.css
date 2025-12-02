@@ -178,11 +178,12 @@ body {
 .mobile-menu {
     position: fixed;
     inset-block: 0;
-    inset-inline-end: 0;
+    right: 0;
+    left: auto;
     width: min(320px, 82vw);
     background: #fff;
     box-shadow: -14px 0 34px -24px rgba(15, 23, 42, 0.45);
-    border-inline-start: 1px solid rgba(15, 23, 42, 0.08);
+    border-left: 1px solid rgba(15, 23, 42, 0.08);
     transform: translateX(100%);
     transition: transform 0.3s ease;
     z-index: 1040;
