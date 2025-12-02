@@ -74,6 +74,67 @@ body.landing-page.dark-mode .icon-button:focus-visible {
     box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.25);
 }
 
+body.landing-page.dark-mode .mobile-menu-backdrop {
+    background: rgba(2, 6, 23, 0.65);
+}
+
+body.landing-page.dark-mode .mobile-menu {
+    background: rgba(10, 17, 29, 0.96);
+    border-left: 1px solid rgba(148, 163, 184, 0.22);
+    box-shadow: -18px 0 40px -30px rgba(2, 6, 23, 0.9);
+}
+
+body.landing-page.dark-mode .mobile-menu-user {
+    background: rgba(30, 41, 59, 0.55);
+    border-color: rgba(148, 163, 184, 0.25);
+}
+
+body.landing-page.dark-mode .mobile-menu-user .user-name {
+    color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .mobile-menu-user .mobile-user-action {
+    background: rgba(129, 140, 248, 0.16);
+    border-color: rgba(129, 140, 248, 0.35);
+    color: #c7d2fe;
+    box-shadow: 0 12px 26px -18px rgba(30, 41, 59, 0.65);
+}
+
+body.landing-page.dark-mode .mobile-menu-user .mobile-user-action:hover,
+body.landing-page.dark-mode .mobile-menu-user .mobile-user-action:focus-visible {
+    background: rgba(129, 140, 248, 0.26);
+    border-color: rgba(129, 140, 248, 0.5);
+    box-shadow: 0 16px 32px -22px rgba(30, 41, 59, 0.8);
+}
+
+body.landing-page.dark-mode .mobile-menu-user .mobile-user-action--danger {
+    background: rgba(239, 68, 68, 0.18);
+    border-color: rgba(239, 68, 68, 0.35);
+    color: #fecdd3;
+    box-shadow: 0 12px 26px -18px rgba(127, 29, 29, 0.55);
+}
+
+body.landing-page.dark-mode .mobile-menu-user .mobile-user-action--danger:hover,
+body.landing-page.dark-mode .mobile-menu-user .mobile-user-action--danger:focus-visible {
+    background: rgba(239, 68, 68, 0.28);
+    border-color: rgba(239, 68, 68, 0.45);
+}
+
+body.landing-page.dark-mode .mobile-menu-link {
+    background: rgba(15, 23, 42, 0.75);
+    border-color: rgba(148, 163, 184, 0.25);
+    color: #e2e8f0;
+    box-shadow: 0 16px 32px -26px rgba(2, 6, 23, 0.8);
+}
+
+body.landing-page.dark-mode .mobile-menu-link:hover,
+body.landing-page.dark-mode .mobile-menu-link:focus-visible {
+    background: rgba(129, 140, 248, 0.22);
+    border-color: rgba(129, 140, 248, 0.45);
+    color: #c7d2fe;
+    box-shadow: 0 18px 36px -24px rgba(30, 41, 59, 0.85);
+}
+
 body.landing-page.dark-mode .user-avatar-thumb {
     border-color: rgba(148, 163, 184, 0.35);
     background: rgba(15, 23, 42, 0.85);
@@ -364,6 +425,32 @@ body.landing-page.dark-mode .panel-subscription-chip {
 
 body.landing-page.dark-mode .panel-subscription-link {
     color: #93c5fd;
+}
+
+.profile-name-marquee {
+    width: 100%;
+    max-width: 16ch;
+    overflow: hidden;
+    position: relative;
+}
+
+.profile-name-marquee__text {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.profile-name-marquee__text.is-marquee {
+    padding-inline-end: 1.5rem;
+    animation: profile-name-marquee var(--profile-marquee-duration, 12s) linear infinite;
+}
+
+@keyframes profile-name-marquee {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(calc(-1 * var(--profile-marquee-distance, 0px)));
+    }
 }
 
 body.landing-page.dark-mode .profile-details .detail-row {

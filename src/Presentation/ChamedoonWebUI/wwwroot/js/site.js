@@ -1,31 +1,24 @@
 (function () {
     const pageBody = document.body;
 
-    const themeToggles = ['#darkModeToggle', '#darkModeToggleMobile', '#darkModeToggleMobilePanel']
-        .map((selector) => document.querySelector(selector))
-        .filter(Boolean);
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle && pageBody.classList.contains('landing-page')) {
+        const labelElement = darkModeToggle.querySelector('[data-role="label"]');
+        const labelLight = darkModeToggle.getAttribute('data-label-light') || 'حالت شب';
+        const labelDark = darkModeToggle.getAttribute('data-label-dark') || 'حالت روز';
 
-    if (themeToggles.length && pageBody.classList.contains('landing-page')) {
         const applyMode = (mode) => {
             const isDark = mode === 'dark';
             pageBody.classList.toggle('dark-mode', isDark);
-
-            themeToggles.forEach((toggle) => {
-                const labelElement = toggle.querySelector('[data-role="label"]');
-                const labelLight = toggle.getAttribute('data-label-light') || 'حالت شب';
-                const labelDark = toggle.getAttribute('data-label-dark') || 'حالت روز';
-                const nextTitle = isDark ? labelDark : labelLight;
-
-                toggle.dataset.mode = mode;
-                toggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-                toggle.dataset.label = nextTitle;
-                toggle.setAttribute('aria-label', nextTitle);
-                toggle.setAttribute('title', nextTitle);
-
-                if (labelElement) {
-                    labelElement.textContent = nextTitle;
-                }
-            });
+            darkModeToggle.dataset.mode = mode;
+            darkModeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+            if (labelElement) {
+                labelElement.textContent = isDark ? labelDark : labelLight;
+            }
+            const nextTitle = isDark ? labelDark : labelLight;
+            darkModeToggle.dataset.label = nextTitle;
+            darkModeToggle.setAttribute('aria-label', nextTitle);
+            darkModeToggle.setAttribute('title', nextTitle);
         };
 
         let storedPreference = null;
@@ -42,16 +35,14 @@
 
         applyMode(activeMode);
 
-        themeToggles.forEach((toggle) => {
-            toggle.addEventListener('click', () => {
-                activeMode = activeMode === 'dark' ? 'light' : 'dark';
-                applyMode(activeMode);
-                try {
-                    localStorage.setItem('landing-theme', activeMode);
-                } catch (error) {
-                    // Ignore storage write issues (e.g. Safari private mode)
-                }
-            });
+        darkModeToggle.addEventListener('click', () => {
+            activeMode = activeMode === 'dark' ? 'light' : 'dark';
+            applyMode(activeMode);
+            try {
+                localStorage.setItem('landing-theme', activeMode);
+            } catch (error) {
+                // Ignore storage write issues (e.g. Safari private mode)
+            }
         });
 
         if (window.matchMedia) {
@@ -81,6 +72,11 @@
         }
     }
 
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const mobileMenuClose = document.getElementById('mobileMenuClose');
+    const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
+
     const backToTop = document.getElementById('backToTop');
     if (backToTop) {
         const toggleButtonVisibility = () => {
@@ -93,5 +89,49 @@
 
         toggleButtonVisibility();
         window.addEventListener('scroll', toggleButtonVisibility);
+    }
+
+    const openMobileMenu = () => {
+        if (!mobileMenu || !mobileMenuBackdrop || !mobileMenuToggle) return;
+        mobileMenu.classList.add('open');
+        mobileMenuBackdrop.classList.add('show');
+        document.body.classList.add('offcanvas-open');
+        mobileMenuToggle.setAttribute('aria-expanded', 'true');
+        mobileMenu.setAttribute('aria-hidden', 'false');
+    };
+
+    const closeMobileMenu = () => {
+        if (!mobileMenu || !mobileMenuBackdrop || !mobileMenuToggle) return;
+        mobileMenu.classList.remove('open');
+        mobileMenuBackdrop.classList.remove('show');
+        document.body.classList.remove('offcanvas-open');
+        mobileMenuToggle.setAttribute('aria-expanded', 'false');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+    };
+
+    if (mobileMenu && mobileMenuToggle && mobileMenuBackdrop) {
+        mobileMenuToggle.addEventListener('click', () => {
+            if (mobileMenu.classList.contains('open')) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
+            }
+        });
+
+        if (mobileMenuClose) {
+            mobileMenuClose.addEventListener('click', closeMobileMenu);
+        }
+
+        mobileMenuBackdrop.addEventListener('click', closeMobileMenu);
+
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
+        });
+
+        window.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && mobileMenu.classList.contains('open')) {
+                closeMobileMenu();
+            }
+        });
     }
 })();
