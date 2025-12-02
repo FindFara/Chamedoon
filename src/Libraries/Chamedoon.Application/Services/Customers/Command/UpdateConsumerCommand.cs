@@ -2,9 +2,9 @@
 using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Customers.ViewModel;
+using Chamedoon.Application.Services.Customers;
 using Chamedoon.Domin.Entity.Customers;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Chamedoon.Application.Services.Customers.Command
@@ -33,32 +33,15 @@ namespace Chamedoon.Application.Services.Customers.Command
 
             if (request.UpsertCustomerViewModel.ProfileImageFile?.Length > 0)
             {
-                var filePath = SaveProfileImage(request.UpsertCustomerViewModel.ProfileImageFile);
-                request.UpsertCustomerViewModel.ProfileImage = filePath;
+                request.UpsertCustomerViewModel.ProfileImage = ProfileImageHelper.ConvertToBase64(request.UpsertCustomerViewModel.ProfileImageFile);
             }
-            if(!string.IsNullOrEmpty(customer.ProfileImage) && File.Exists(customer.ProfileImage))
+            else
             {
-                request.UpsertCustomerViewModel.ProfileImage = customer.ProfileImage;
+                request.UpsertCustomerViewModel.ProfileImage = ProfileImageHelper.NormalizeProfileImage(customer.ProfileImage);
             }
             _mapper.Map(request.UpsertCustomerViewModel, customer);
             await _context.SaveChangesAsync(cancellationToken);
             return OperationResult.Success();
-        }
-        private string SaveProfileImage(IFormFile profileImage)
-        {
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/users");
-
-            if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
-
-            var uniqueFileName = Guid.NewGuid() + Path.GetExtension(profileImage.FileName);
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                profileImage.CopyTo(stream);
-            }
-
-            return $"/images/users/{uniqueFileName}";
         }
     }
 }

@@ -1,9 +1,13 @@
+@using Chamedoon.Application.Services.Customers
 @{
     var safeModel = Model ?? new Chamedoon.Application.Services.Customers.ViewModel.CustomerProfileViewModel
     {
-        ProfileImage = "/img/avatar.jpg",
+        ProfileImage = ProfileImageHelper.GetDefaultBase64(),
         FirstName = "مهمان"
     };
+    safeModel.ProfileImage = string.IsNullOrWhiteSpace(safeModel.ProfileImage)
+        ? ProfileImageHelper.GetDefaultBase64()
+        : safeModel.ProfileImage;
 }
 
 <div class="glass-card dashboard-pane text-center">
