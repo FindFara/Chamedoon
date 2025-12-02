@@ -45,7 +45,17 @@
         ("🇦🇹", "اتریش"),
         ("🇧🇪", "بلژیک"),
         ("🇵🇱", "لهستان"),
-        ("🇳🇿", "نیوزیلند")
+        ("🇳🇿", "نیوزیلند"),
+        ("🇯🇵", "ژاپن"),
+        ("🇸🇬", "سنگاپور"),
+        ("🇮🇪", "ایرلند"),
+        ("🇧🇷", "برزیل"),
+        ("🇲🇽", "مکزیک"),
+        ("🇨🇳", "چین"),
+        ("🇭🇰", "هنگ‌کنگ"),
+        ("🇨🇿", "جمهوری چک"),
+        ("🇷🇴", "رومانی"),
+        ("🇭🇺", "مجارستان")
     };
 
     var marqueeRowTwo = new (string Flag, string Name)[]
@@ -59,7 +69,17 @@
         ("🇫🇮", "فنلاند"),
         ("🇵🇹", "پرتغال"),
         ("🇺🇸", "آمریکا"),
-        ("🇦🇪", "امارات")
+        ("🇦🇪", "امارات"),
+        ("🇸🇰", "اسلواکی"),
+        ("🇸🇮", "اسلوونی"),
+        ("🇺🇦", "اوکراین"),
+        ("🇦🇷", "آرژانتین"),
+        ("🇨🇱", "شیلی"),
+        ("🇮🇳", "هند"),
+        ("🇰🇷", "کره جنوبی"),
+        ("🇹🇷", "ترکیه"),
+        ("🇷🇺", "روسیه"),
+        ("🇪🇬", "مصر")
     };
 }
 
@@ -73,8 +93,8 @@
                         foreach (var country in marqueeRowOne)
                         {
                             <div class="country-chip">
-                                <span class="country-flag">@country.Flag</span>
-                                <span>@country.Name</span>
+                                <span class="country-flag" role="img" aria-label="@country.Name">@country.Flag</span>
+                                <span class="visually-hidden">@country.Name</span>
                             </div>
                         }
                     }
@@ -87,8 +107,8 @@
                         foreach (var country in marqueeRowTwo)
                         {
                             <div class="country-chip">
-                                <span class="country-flag">@country.Flag</span>
-                                <span>@country.Name</span>
+                                <span class="country-flag" role="img" aria-label="@country.Name">@country.Flag</span>
+                                <span class="visually-hidden">@country.Name</span>
                             </div>
                         }
                     }
