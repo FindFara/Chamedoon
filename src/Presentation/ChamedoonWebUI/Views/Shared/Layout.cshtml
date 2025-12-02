@@ -152,8 +152,8 @@
                 <div class="user-actions">
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <a class="btn-glass-primary btn-sm" asp-controller="UserPanel" asp-action="Index">پنل کاربری</a>
-                        <a class="btn-glass-primary btn-sm" asp-controller="Account" asp-action="Logout">خروج</a>
+                        <a class="mobile-user-action" asp-controller="UserPanel" asp-action="Index">پنل کاربری</a>
+                        <a class="mobile-user-action mobile-user-action--danger" asp-controller="Account" asp-action="Logout">خروج</a>
                     }
                     else
                     {
