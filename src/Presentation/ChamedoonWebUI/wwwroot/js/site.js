@@ -92,7 +92,10 @@
 
         landingHamburger.addEventListener('click', (event) => {
             event.preventDefault();
-            landingOffcanvas.toggle();
+
+            if (!landingOffcanvasElement.classList.contains('show')) {
+                landingOffcanvas.show();
+            }
         });
     }
 
