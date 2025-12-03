@@ -29,9 +29,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="glass-helper mb-3 blog-detail-excerpt">@Html.Raw(Model.ShortDescription)</div>
+                    <div class="glass-helper mb-3 blog-detail-excerpt">@Html.Encode(Model.ShortDescription)</div>
                     <div class="blog-detail-content">
-                        @Html.Raw(Model.ArticleDescription)
+                        @Html.Encode(Model.ArticleDescription)
                     </div>
                 </article>
             </div>

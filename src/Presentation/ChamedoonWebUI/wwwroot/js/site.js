@@ -134,4 +134,31 @@
             }
         });
     }
+
+    const preventMultiSubmitForms = document.querySelectorAll('form[data-prevent-multi-submit]');
+    preventMultiSubmitForms.forEach(form => {
+        form.addEventListener('submit', (event) => {
+            if (form.dataset.submitting === 'true') {
+                event.preventDefault();
+                return;
+            }
+
+            if (!form.checkValidity()) {
+                return;
+            }
+
+            form.dataset.submitting = 'true';
+            const submitButtons = form.querySelectorAll('button[type="submit"], input[type="submit"]');
+            submitButtons.forEach(button => {
+                const processingText = button.getAttribute('data-processing-text');
+                if (processingText && button.tagName === 'BUTTON') {
+                    button.dataset.originalText = button.textContent;
+                    button.textContent = processingText;
+                }
+
+                button.setAttribute('aria-busy', 'true');
+                button.disabled = true;
+            });
+        });
+    });
 })();

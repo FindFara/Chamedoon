@@ -22,7 +22,9 @@
                 <div class="auth-card-header">
                     <h2>ایجاد حساب جدید</h2>
                 </div>
-                <form asp-action="Register" method="post" novalidate>
+                <form asp-action="Register" method="post" novalidate data-prevent-multi-submit="true">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="requestNonce" value="@(ViewData["RegisterNonce"] as string)" />
                     <div class="glass-field">
                         <label asp-for="Email" class="form-label">ایمیل</label>
                         <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
@@ -38,7 +40,7 @@
                         <div class="text-danger small">@ViewData["ErrorMessage"]</div>
                     }
                     <div class="text-danger small" asp-validation-summary="All"></div>
-                    <button type="submit" class="btn-glass-primary w-100 mt-3">ثبت‌نام و ادامه</button>
+                    <button type="submit" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ثبت‌نام و ادامه</button>
                 </form>
                 <div class="auth-divider">یا ثبت‌نام با</div>
                 <a asp-controller="Account" asp-action="login-google" class="btn-google w-100">
