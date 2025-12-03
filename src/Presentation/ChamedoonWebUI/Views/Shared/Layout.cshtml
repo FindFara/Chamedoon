@@ -18,7 +18,13 @@
     <link rel="stylesheet" href="~/css/site-dark.css" asp-append-version="true" />
     @RenderSection("Styles", required: false)
 </head>
-<body class="landing-page">
+<body class="landing-page page-loading">
+    <div id="pageLoader" class="page-loader" role="status" aria-live="polite" aria-label="در حال بارگذاری">
+        <div class="page-loader__content">
+            <div class="page-loader__spinner" aria-hidden="true"></div>
+            <p class="page-loader__text mb-0">در حال آماده‌سازی چمدون...</p>
+        </div>
+    </div>
     <div class="d-flex flex-column min-vh-100">
         <header class="landing-header">
             <nav class="navbar navbar-expand-lg landing-navbar">
