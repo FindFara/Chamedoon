@@ -2,8 +2,38 @@
 @using System.Globalization
 @using System.Linq
 @using System.Text.RegularExpressions
+@using System.IO
 @{
     ViewData["Title"] = "مهاجرت آسان";
+    var flagFiles = new[]
+    {
+        "austria.svg",
+        "bhutan.svg",
+        "brazil.svg",
+        "canada.svg",
+        "china.svg",
+        "finland.svg",
+        "germany.svg",
+        "india.svg",
+        "iran.svg",
+        "iraq.svg",
+        "italy.svg",
+        "japan.svg",
+        "kwait.svg",
+        "oman.svg",
+        "puerto rico.svg",
+        "russia.svg",
+        "saudi arabia.svg",
+        "senegal.svg",
+        "south korea.svg",
+        "spain.svg",
+        "sweden.svg",
+        "tanzania.svg",
+        "united arab emirates.svg",
+        "united kingdom.svg",
+        "united states.svg",
+        "yemen.svg"
+    };
 }
 
 <section class="container py-5">
@@ -28,6 +58,29 @@
             </div>
             <div class="col-lg-6 text-center">
                 <img src="~/img/hero-illustration.svg" class="hero-illustration" alt="سفر مهاجرت" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-start g-4">
+            <div class="col-lg-4 text-center text-lg-end">
+                <span class="text-uppercase text-primary fw-semibold">پرچم کشورها</span>
+                <h2 class="fw-bold mt-3">مسیرهای مهاجرت از سراسر دنیا</h2>
+                <p class="text-muted mb-0">پرچم‌ها در یک قاب مشترک به شکل دایره‌ای و در مسیرهای متفاوت حرکت می‌کنند تا تنوع مقصدها را نشان دهند.</p>
+            </div>
+            <div class="col-lg-8">
+                <div class="flag-bubbles-wrapper">
+                    <div class="flag-bubbles-field" id="flagBubblesField">
+                        @foreach (var flag in flagFiles)
+                        {
+                            var imagePath = Url.Content($"~/images/contries/{flag}");
+                            <img class="flag-bubble" src="@imagePath" alt="پرچم @Path.GetFileNameWithoutExtension(flag)" loading="lazy" />
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -81,6 +134,111 @@
         </div>
     </div>
 </section>
+
+@section Styles {
+    <style>
+        .flag-bubbles-wrapper {
+            padding: 18px;
+            border-radius: 18px;
+            background: radial-gradient(circle at 20% 20%, rgba(86, 123, 227, 0.12), transparent 35%),
+                radial-gradient(circle at 80% 30%, rgba(0, 209, 178, 0.12), transparent 32%),
+                radial-gradient(circle at 50% 80%, rgba(255, 184, 0, 0.12), transparent 28%),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.45));
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04);
+        }
+
+        .flag-bubbles-field {
+            position: relative;
+            overflow: hidden;
+            height: 360px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(245, 249, 255, 0.9));
+        }
+
+        .flag-bubble {
+            position: absolute;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            transition: transform 0.2s ease-out;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .flag-bubbles-field {
+                height: 280px;
+            }
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('flagBubblesField');
+            if (!container) return;
+
+            const bubbleData = Array.from(container.querySelectorAll('.flag-bubble')).map((bubble) => {
+                const size = 54 + Math.random() * 18;
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                const x = Math.random() * Math.max(width - size, 0);
+                const y = Math.random() * Math.max(height - size, 0);
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 0.65 + Math.random() * 0.9;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                bubble.style.transform = `translate(${x}px, ${y}px)`;
+                return {
+                    el: bubble,
+                    x,
+                    y,
+                    size,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed
+                };
+            });
+
+            const step = () => {
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+
+                bubbleData.forEach((bubble) => {
+                    bubble.x += bubble.vx;
+                    bubble.y += bubble.vy;
+
+                    if (bubble.x <= 0 || bubble.x + bubble.size >= width) {
+                        bubble.vx *= -1;
+                        bubble.x = Math.min(Math.max(bubble.x, 0), Math.max(width - bubble.size, 0));
+                    }
+
+                    if (bubble.y <= 0 || bubble.y + bubble.size >= height) {
+                        bubble.vy *= -1;
+                        bubble.y = Math.min(Math.max(bubble.y, 0), Math.max(height - bubble.size, 0));
+                    }
+
+                    bubble.el.style.transform = `translate(${bubble.x}px, ${bubble.y}px)`;
+                });
+
+                requestAnimationFrame(step);
+            };
+
+            window.addEventListener('resize', () => {
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                bubbleData.forEach((bubble) => {
+                    bubble.x = Math.min(bubble.x, Math.max(width - bubble.size, 0));
+                    bubble.y = Math.min(bubble.y, Math.max(height - bubble.size, 0));
+                });
+            });
+
+            requestAnimationFrame(step);
+        });
+    </script>
+}
 
 <section id="process" class="py-5 bg-white">
     <div class="container">
