@@ -4,6 +4,35 @@
 @using System.Text.RegularExpressions
 @{
     ViewData["Title"] = "مهاجرت آسان";
+    var orbitCountries = new (string Name, string Flag)[]
+    {
+        ("اتریش", "austria.svg"),
+        ("بوتان", "bhutan.svg"),
+        ("برزیل", "brazil.svg"),
+        ("کانادا", "canada.svg"),
+        ("چین", "china.svg"),
+        ("فنلاند", "finland.svg"),
+        ("آلمان", "germany.svg"),
+        ("هند", "india.svg"),
+        ("ایران", "iran.svg"),
+        ("عراق", "iraq.svg"),
+        ("ایتالیا", "italy.svg"),
+        ("ژاپن", "japan.svg"),
+        ("کویت", "kwait.svg"),
+        ("عمان", "oman.svg"),
+        ("پورتوریکو", "puerto rico.svg"),
+        ("روسیه", "russia.svg"),
+        ("عربستان سعودی", "saudi arabia.svg"),
+        ("سنگال", "senegal.svg"),
+        ("کره جنوبی", "south korea.svg"),
+        ("اسپانیا", "spain.svg"),
+        ("سوئد", "sweden.svg"),
+        ("تانزانیا", "tanzania.svg"),
+        ("امارات متحده عربی", "united arab emirates.svg"),
+        ("بریتانیا", "united kingdom.svg"),
+        ("ایالات متحده", "united states.svg"),
+        ("یمن", "yemen.svg")
+    };
 }
 
 <section class="container py-5">
@@ -28,6 +57,42 @@
             </div>
             <div class="col-lg-6 text-center">
                 <img src="~/img/hero-illustration.svg" class="hero-illustration" alt="سفر مهاجرت" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        <div class="country-orbit-section">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+                <div class="text-end">
+                    <span class="text-uppercase text-primary fw-semibold">۲۶ مقصد محبوب</span>
+                    <h3 class="fw-bold mt-2 mb-0">پرچم کشورها در یک حلقه چرخان.</h3>
+                </div>
+                <p class="text-muted mb-0 small">پرچم‌ها بدون وقفه در یک مدار دایره‌ای حرکت می‌کنند.</p>
+            </div>
+            <div class="country-orbit">
+                <div class="orbit-track" style="--item-count:@orbitCountries.Length;">
+                    @for (var i = 0; i < orbitCountries.Length; i++)
+                    {
+                        var country = orbitCountries[i];
+                        var angle = (360m / orbitCountries.Length) * i;
+
+                        <div class="orbit-item" style="--angle:@angle">
+                            <div class="orbit-badge">
+                                <span class="orbit-flag">
+                                    <img src="@Url.Content($"~/images/contries/{country.Flag}")" alt="@country.Name" loading="lazy" />
+                                </span>
+                                <span class="orbit-name">@country.Name</span>
+                            </div>
+                        </div>
+                    }
+                    <div class="orbit-center">
+                        <span class="orbit-center-label">حلقه پرچم</span>
+                        <strong class="orbit-count">@orbitCountries.Length کشور</strong>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
