@@ -203,6 +203,53 @@
         });
     };
 
+    const initLoadingOverlay = () => {
+        const overlay = document.querySelector('[data-immigration-loader]');
+        if (!overlay) return;
+
+        const titleEl = overlay.querySelector('[data-loader-title]');
+        const subtitleEl = overlay.querySelector('[data-loader-subtitle]');
+
+        const setContent = (title, subtitle) => {
+            if (titleEl && title) {
+                titleEl.textContent = title;
+            }
+
+            if (subtitleEl && subtitle) {
+                subtitleEl.textContent = subtitle;
+            }
+        };
+
+        const showOverlay = (title, subtitle) => {
+            setContent(title, subtitle);
+            overlay.classList.add('is-active');
+        };
+
+        const hideOverlay = () => overlay.classList.remove('is-active');
+
+        const handlePageReady = () => {
+            setTimeout(() => hideOverlay(), 250);
+        };
+
+        if (document.readyState === 'complete') {
+            handlePageReady();
+        } else {
+            window.addEventListener('load', handlePageReady, { once: true });
+        }
+
+        const form = document.querySelector('.immigration-form-card form');
+        if (form) {
+            form.addEventListener('submit', (event) => {
+                if (typeof form.reportValidity === 'function' && !form.reportValidity()) {
+                    event.preventDefault();
+                    return;
+                }
+
+                showOverlay('در حال تحلیل پاسخ‌های تو', 'اطلاعاتت در حال پردازش است. نتیجه تا چند لحظه دیگر نمایش داده می‌شود.');
+            });
+        }
+    };
+
 
     const init = () => {
         initTooltips();
@@ -210,7 +257,8 @@
         initScrollButtons();
         initProgress();
         initScoreChart();
-        
+        initLoadingOverlay();
+
     };
 
     if (document.readyState === 'loading') {
