@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('flagBubblesField');
     if (!container) return;
 
+    const stage = container.closest('.process-flag-stage') || container.parentElement;
+
     const bubbleData = Array.from(container.querySelectorAll('.flag-bubble')).map((bubble) => {
         const size = 54 + Math.random() * 18;
         const width = container.clientWidth;
@@ -67,7 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    container.addEventListener('mousemove', (event) => {
+    const attachTarget = stage || container;
+
+    attachTarget.addEventListener('mousemove', (event) => {
         const rect = container.getBoundingClientRect();
         const mouseX = event.clientX - rect.left;
         const mouseY = event.clientY - rect.top;
