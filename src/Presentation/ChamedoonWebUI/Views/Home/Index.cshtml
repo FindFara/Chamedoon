@@ -2,8 +2,38 @@
 @using System.Globalization
 @using System.Linq
 @using System.Text.RegularExpressions
+@using System.IO
 @{
     ViewData["Title"] = "مهاجرت آسان";
+    var flagFiles = new[]
+    {
+        "austria.svg",
+        "bhutan.svg",
+        "brazil.svg",
+        "canada.svg",
+        "china.svg",
+        "finland.svg",
+        "germany.svg",
+        "india.svg",
+        "iran.svg",
+        "iraq.svg",
+        "italy.svg",
+        "japan.svg",
+        "kwait.svg",
+        "oman.svg",
+        "puerto rico.svg",
+        "russia.svg",
+        "saudi arabia.svg",
+        "senegal.svg",
+        "south korea.svg",
+        "spain.svg",
+        "sweden.svg",
+        "tanzania.svg",
+        "united arab emirates.svg",
+        "united kingdom.svg",
+        "united states.svg",
+        "yemen.svg"
+    };
 }
 
 <section class="container py-5">
@@ -177,14 +207,32 @@
     </div>
 </section>
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/flag-bubbles.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/flag-bubbles.js" asp-append-version="true"></script>
+}
+
 <section id="process" class="py-5 bg-white">
     <div class="container">
-        <div class="row align-items-center g-5">
-            <div class="col-lg-5 text-center text-lg-end">
-                <h2 class="fw-bold">یک مسیر شفاف، بخش‌بندی شده و قابل پیگیری.</h2>
-                <p class="text-muted">هر بخش از سفر مهاجرت از کشف تا استقرار با چک‌لیست‌ها و یادآورها پیش روی تو قرار می‌گیرد.</p>
+        <div class="process-flag-stage">
+            <div class="flag-bubbles-wrapper flag-bubbles-overlay">
+                <div class="flag-bubbles-field" id="flagBubblesField">
+                    @foreach (var flag in flagFiles)
+                    {
+                        var imagePath = Url.Content($"~/images/contries/{flag}");
+                        <img class="flag-bubble" src="@imagePath" alt="پرچم @System.IO.Path.GetFileNameWithoutExtension(flag)" loading="lazy" />
+                    }
+                </div>
             </div>
-            <div class="col-lg-7">
+            <div class="row align-items-center g-5 position-relative">
+                <div class="col-lg-5 text-center text-lg-end">
+                    <h2 class="fw-bold">یک مسیر شفاف، بخش‌بندی شده و قابل پیگیری.</h2>
+                    <p class="text-muted">هر بخش از سفر مهاجرت از کشف تا استقرار با چک‌لیست‌ها و یادآورها پیش روی تو قرار می‌گیرد.</p>
+                </div>
+                <div class="col-lg-7">
                 <div class="row g-4">
                     <div class="col-md-6">
                         <div class="process-step h-100" data-step="۱">
@@ -208,6 +256,7 @@
                         <div class="process-step h-100" data-step="۴">
                             <h5 class="fw-semibold">استقرار</h5>
                             <p class="text-muted">نکات طلایی برای شروع زندگی، کار و تحصیل در مقصد جدیدت رو دریافت کن.</p>
+                        </div>
                         </div>
                     </div>
                 </div>
