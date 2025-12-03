@@ -22,7 +22,7 @@ namespace ChamedoonWebUI.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var result = await _mediator.Send(new GetPopularBlogsQuery { Count = 3 });
+            var result = await _mediator.Send(new GetPopularBlogsQuery { Count = 4 });
             IReadOnlyList<BlogViewModel> popularArticles = Array.Empty<BlogViewModel>();
 
             if (result.IsSuccess && result.Result is not null)
