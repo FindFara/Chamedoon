@@ -31,7 +31,7 @@
                     </div>
                     <div class="glass-helper mb-3 blog-detail-excerpt">@Html.Encode(Model.ShortDescription)</div>
                     <div class="blog-detail-content">
-                        @Html.Encode(Model.ArticleDescription)
+                        @Html.Raw(Model.ArticleDescription)
                     </div>
                 </article>
             </div>
