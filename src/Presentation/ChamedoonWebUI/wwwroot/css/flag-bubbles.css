@@ -1,0 +1,35 @@
+.flag-bubbles-wrapper {
+    padding: 18px;
+    border-radius: 18px;
+    background: radial-gradient(circle at 20% 20%, rgba(86, 123, 227, 0.12), transparent 35%),
+        radial-gradient(circle at 80% 30%, rgba(0, 209, 178, 0.12), transparent 32%),
+        radial-gradient(circle at 50% 80%, rgba(255, 184, 0, 0.12), transparent 28%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.45));
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.04);
+}
+
+.flag-bubbles-field {
+    position: relative;
+    overflow: hidden;
+    height: 360px;
+    border-radius: 14px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(245, 249, 255, 0.9));
+}
+
+.flag-bubble {
+    position: absolute;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    transition: transform 0.2s ease-out;
+    user-select: none;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .flag-bubbles-field {
+        height: 280px;
+    }
+}
