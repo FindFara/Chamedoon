@@ -3,6 +3,7 @@ using Chamedoon.Domin.Configs;
 using Chamedoon.Infrastructure;
 using ChamedoonWebUI;
 using Chamedoon.Infrastructure.Persistence;
+using ChamedoonWebUI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,8 @@ await app.SeedIdentityDataAsync();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+app.UseXssProtection();
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -21,7 +21,9 @@
                 <div class="auth-card-header">
                     <h2>ورود به حساب</h2>
                 </div>
-                <form asp-action="Login" method="post" novalidate>
+                <form asp-action="Login" method="post" novalidate data-prevent-multi-submit="true">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="requestNonce" value="@(ViewData["LoginNonce"] as string)" />
                     <div class="glass-field">
                         <label asp-for="Email" class="form-label">ایمیل</label>
                         <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
@@ -40,7 +42,7 @@
                         <a asp-controller="Account" asp-action="ForgotPassword" class="text-primary fw-semibold">فراموشی رمز عبور؟</a>
                     </div>
                     <div class="text-danger small" asp-validation-summary="All"></div>
-                    <button type="submit" class="btn-glass-primary w-100 mt-3">ورود به چمدون</button>
+                    <button type="submit" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ورود به چمدون</button>
                 </form>
                 <div class="auth-divider">یا ورود با</div>
                 <a asp-controller="Account" asp-action="login-google" class="btn-google w-100">

@@ -22,6 +22,7 @@ using Microsoft.DotNet.Scaffolding.Shared;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using NuGet.Common;
+using System;
 using System.Security.Claims;
 
 namespace ChamedoonWebUI.Controllers;
@@ -39,27 +40,56 @@ public class AccountController : Controller
         _urls = urlOption.Value;
     }
 
+    private string PrepareRequestNonce(string actionKey)
+    {
+        var nonce = Guid.NewGuid().ToString("N");
+        TempData[actionKey] = nonce;
+        return nonce;
+    }
+
+    private bool IsRequestNonceValid(string actionKey, string? nonce)
+    {
+        var storedNonce = TempData.Peek(actionKey) as string;
+        if (string.IsNullOrEmpty(storedNonce) || storedNonce != nonce)
+        {
+            return false;
+        }
+
+        TempData.Remove(actionKey);
+        return true;
+    }
+
     #region Login
     [Route("login")]
     public IActionResult Login()
     {
+        ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
         return View();
     }
     [Route("login")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginUserViewModel register)
+    public async Task<IActionResult> Login(LoginUserViewModel register, string requestNonce)
     {
+        if (!IsRequestNonceValid(nameof(Login), requestNonce))
+        {
+            ModelState.AddModelError(string.Empty, "درخواست تکراری یا نامعتبر.");
+            ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
+            return View(register);
+        }
+
         if (ModelState.IsValid)
         {
             var user = (await _mediator.Send(new ManageLoginUserCommand { LoginUser = register }));
             if (user.IsSuccess is false || user.Result is null)
             {
                 ModelState.AddModelError(string.Empty, user.Message);
+                ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
                 return View(register);
             }
             return RedirectToAction("Index", "Home");
         }
+        ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
         return View(register);
     }
     #endregion
@@ -69,14 +99,22 @@ public class AccountController : Controller
     [Route("register")]
     public IActionResult Register()
     {
+        ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
         return View();
     }
 
     [Route("register")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterUser_VM register)
+    public async Task<IActionResult> Register(RegisterUser_VM register, string requestNonce)
     {
+        if (!IsRequestNonceValid(nameof(Register), requestNonce))
+        {
+            ModelState.AddModelError(string.Empty, "درخواست تکراری یا نامعتبر.");
+            ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+            return View(register);
+        }
+
         if (ModelState.IsValid)
         {
             var response = await _mediator.Send(new ManageRegisterUserCommand { RegisterUser = register });
@@ -84,11 +122,13 @@ public class AccountController : Controller
             if (!response.IsSuccess && response.Message != null)
             {
                 ViewData["ErrorMessage"] = string.Join(", ", response.Message);
+                ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
                 return View(register);
             }
 
             return RedirectToAction("EmailVerification");
         }
+        ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
         return View(register);
     }
 
@@ -108,14 +148,21 @@ public class AccountController : Controller
     [Route("ChangePass")]
     public IActionResult ChangePassword()
     {
+        ViewData["ChangePasswordNonce"] = PrepareRequestNonce(nameof(ChangePassword));
         return View();
     }
 
     [Route("ChangePass")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model, string requestNonce)
     {
+        if (!IsRequestNonceValid(nameof(ChangePassword), requestNonce))
+        {
+            ModelState.AddModelError(string.Empty, "درخواست تکراری یا نامعتبر.");
+            ViewData["ChangePasswordNonce"] = PrepareRequestNonce(nameof(ChangePassword));
+            return View(model);
+        }
 
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId))
@@ -128,6 +175,7 @@ public class AccountController : Controller
             return RedirectToAction("login", "Account");
 
         ModelState.AddModelError("", result.Message);
+        ViewData["ChangePasswordNonce"] = PrepareRequestNonce(nameof(ChangePassword));
 
         return View(model);
     }
@@ -144,13 +192,18 @@ public class AccountController : Controller
     [Route("Confirmemail")]
     public async Task<IActionResult> ConfirmEmail(string userId, string token)
     {
+        if (!long.TryParse(userId, out var parsedUserId))
+        {
+            return BadRequest("Invalid user identifier.");
+        }
+
         var result = await _mediator.Send(new ConfirmEmailQuery { Token = token, UserId = userId });
         if (!result.IsSuccess)
         {
             ModelState.AddModelError(string.Empty, result.Message);
             return View();
         }
-        var user = await _mediator.Send(new GetUserQuery { Id = long.Parse(userId) });
+        var user = await _mediator.Send(new GetUserQuery { Id = parsedUserId });
 
         if (user.IsSuccess && user.Result != null)
         {
@@ -200,23 +253,37 @@ public class AccountController : Controller
     [HttpGet("ForgotPassword")]
     public async Task<IActionResult> ForgotPassword()
     {
-        return View();
+        ViewData["ForgotPasswordNonce"] = PrepareRequestNonce(nameof(ForgotPassword));
+        return View(new ForgotPasswordQuery());
     }
 
     [HttpPost("ForgotPassword")]
-    public async Task<IActionResult> ForgotPassword(string email)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordQuery model, string requestNonce)
     {
+        if (!IsRequestNonceValid(nameof(ForgotPassword), requestNonce))
+        {
+            ModelState.AddModelError(string.Empty, "درخواست تکراری یا نامعتبر.");
+            ViewData["ForgotPasswordNonce"] = PrepareRequestNonce(nameof(ForgotPassword));
+            return View(model);
+        }
+
         if (!ModelState.IsValid)
-            return View();
+        {
+            ViewData["ForgotPasswordNonce"] = PrepareRequestNonce(nameof(ForgotPassword));
+            return View(model);
+        }
 
         var resetlink = $"{_urls.AppUrl}/auth/ResetPassword";
-        var result = await _mediator.Send(new ForgotPasswordQuery { Email = email, ResetLinkAction = resetlink });
+        model.ResetLinkAction = resetlink;
+        var result = await _mediator.Send(model);
 
         if (result.IsSuccess)
             ViewBag.Message = "ایمیل ارسال شد.";
         else
             ViewBag.Message = "کاربری با این ایمیل یافت نشد.";
-        return View();
+        ViewData["ForgotPasswordNonce"] = PrepareRequestNonce(nameof(ForgotPassword));
+        return View(model);
     }
     [HttpGet("ResetPassword")]
     public IActionResult ResetPassword(string email, string token)
@@ -226,13 +293,25 @@ public class AccountController : Controller
             return BadRequest("Invalid password reset request.");
         }
         var model = new ResetPasswordViewModel { Email = email  , Token = token };
+        ViewData["ResetPasswordNonce"] = PrepareRequestNonce(nameof(ResetPassword));
         return View(model);
     }
     [HttpPost("ResetPassword")]
-    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model, string requestNonce)
     {
-        if (!ModelState.IsValid)
+        if (!IsRequestNonceValid(nameof(ResetPassword), requestNonce))
+        {
+            ModelState.AddModelError(string.Empty, "درخواست تکراری یا نامعتبر.");
+            ViewData["ResetPasswordNonce"] = PrepareRequestNonce(nameof(ResetPassword));
             return View(model);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            ViewData["ResetPasswordNonce"] = PrepareRequestNonce(nameof(ResetPassword));
+            return View(model);
+        }
 
         var result = await _mediator.Send(new ResetPasswordCommand
         {
@@ -244,6 +323,7 @@ public class AccountController : Controller
         if (!result)
         {
             ModelState.AddModelError(string.Empty, "خطا در تغییر رمز عبور. لطفاً دوباره امتحان کنید.");
+            ViewData["ResetPasswordNonce"] = PrepareRequestNonce(nameof(ResetPassword));
             return View(model);
         }
         return RedirectToAction("Login");
