@@ -57,7 +57,7 @@
                         <div class="blog-body">
                             <a asp-controller="Blog" asp-action="Detail" asp-route-id="@item.Id" class="stretched-link"></a>
                             <h5 class="fw-semibold">@item.ArticleTitle</h5>
-                            <p class="glass-helper mb-0 blog-card-description">@item.ShortDescription</p>
+                            <p class="glass-helper mb-0 blog-card-description">@Html.Raw(item.ShortDescription)</p>
                             <div class="blog-footer">
                                 <a asp-controller="Blog" asp-action="Detail" asp-route-id="@item.Id" class="blog-link blog-read-more">ادامه مطلب</a>
                                 <div class="blog-meta">
