@@ -204,13 +204,37 @@
     };
 
 
+    const initLoadingOverlay = () => {
+        const overlay = document.querySelector('[data-loading-overlay]');
+        const form = document.querySelector('.immigration-form-card form');
+        if (!overlay || !form) return;
+
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        const showOverlay = () => {
+            overlay.removeAttribute('hidden');
+            overlay.classList.add('is-visible');
+            document.body.setAttribute('aria-busy', 'true');
+
+            if (submitButton) {
+                submitButton.setAttribute('disabled', 'disabled');
+            }
+        };
+
+        form.addEventListener('submit', () => {
+            showOverlay();
+        });
+    };
+
+
     const init = () => {
         initTooltips();
         initFieldHighlight();
         initScrollButtons();
         initProgress();
         initScoreChart();
-        
+        initLoadingOverlay();
+
     };
 
     if (document.readyState === 'loading') {
