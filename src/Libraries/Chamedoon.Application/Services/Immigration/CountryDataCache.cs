@@ -38,6 +38,7 @@ namespace Chamedoon.Application.Services.Immigration
 
             var countries = await _context.Countries
                 .AsNoTracking()
+                .AsSplitQuery()
                 .Include(c => c.LivingCosts)
                 .Include(c => c.Restrictions)
                 .Include(c => c.Jobs)
