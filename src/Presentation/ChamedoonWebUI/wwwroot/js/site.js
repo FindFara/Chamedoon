@@ -1,6 +1,21 @@
 (function () {
     const pageBody = document.body;
 
+    const loaderElement = document.getElementById('pageLoader');
+    if (loaderElement) {
+        const hideLoader = () => {
+            loaderElement.classList.add('is-hidden');
+            pageBody.classList.remove('page-loading');
+            setTimeout(() => loaderElement.remove(), 600);
+        };
+
+        if (document.readyState === 'complete') {
+            requestAnimationFrame(hideLoader);
+        } else {
+            window.addEventListener('load', hideLoader);
+        }
+    }
+
     const darkModeToggle = document.getElementById('darkModeToggle');
     if (darkModeToggle && pageBody.classList.contains('landing-page')) {
         const labelElement = darkModeToggle.querySelector('[data-role="label"]');
