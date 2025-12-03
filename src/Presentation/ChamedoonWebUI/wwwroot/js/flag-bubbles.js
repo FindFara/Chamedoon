@@ -25,6 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     });
 
+    const maxSpeed = 2.5;
+    const repelRadius = 110;
+
+    const clampSpeed = (value) => Math.max(Math.min(value, maxSpeed), -maxSpeed);
+
     const step = () => {
         const width = container.clientWidth;
         const height = container.clientHeight;
@@ -43,6 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 bubble.y = Math.min(Math.max(bubble.y, 0), Math.max(height - bubble.size, 0));
             }
 
+            bubble.vx = clampSpeed(bubble.vx);
+            bubble.vy = clampSpeed(bubble.vy);
+
             bubble.el.style.transform = `translate(${bubble.x}px, ${bubble.y}px)`;
         });
 
@@ -56,6 +64,26 @@ document.addEventListener('DOMContentLoaded', () => {
         bubbleData.forEach((bubble) => {
             bubble.x = Math.min(bubble.x, Math.max(width - bubble.size, 0));
             bubble.y = Math.min(bubble.y, Math.max(height - bubble.size, 0));
+        });
+    });
+
+    container.addEventListener('mousemove', (event) => {
+        const rect = container.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+
+        bubbleData.forEach((bubble) => {
+            const centerX = bubble.x + bubble.size / 2;
+            const centerY = bubble.y + bubble.size / 2;
+            const dx = centerX - mouseX;
+            const dy = centerY - mouseY;
+            const distance = Math.hypot(dx, dy) || 1;
+
+            if (distance < repelRadius) {
+                const force = (repelRadius - distance) / repelRadius;
+                bubble.vx += (dx / distance) * (1.4 * force);
+                bubble.vy += (dy / distance) * (1.4 * force);
+            }
         });
     });
 

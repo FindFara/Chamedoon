@@ -63,20 +63,6 @@
     </div>
 </section>
 
-<section class="py-5">
-    <div class="container">
-        <div class="flag-bubbles-wrapper">
-            <div class="flag-bubbles-field" id="flagBubblesField">
-                @foreach (var flag in flagFiles)
-                {
-                    var imagePath = Url.Content($"~/images/contries/{flag}");
-                    <img class="flag-bubble" src="@imagePath" alt="پرچم @System.IO.Path.GetFileNameWithoutExtension(flag)" loading="lazy" />
-                }
-            </div>
-        </div>
-    </div>
-</section>
-
 <section id="features" class="py-5">
     <div class="container">
         <div class="row justify-content-center text-center mb-5">
@@ -121,6 +107,20 @@
                     <p class="text-muted">از تجربه دیگر اعضای چمدون در انجمن استفاده کن و سوال بپرس.</p>
                     <a href="javascript:void(0)" class="stretched-link text-primary">ورود به انجمن</a>
                 </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-4">
+    <div class="container">
+        <div class="flag-bubbles-wrapper mt-2 mx-auto">
+            <div class="flag-bubbles-field" id="flagBubblesField">
+                @foreach (var flag in flagFiles)
+                {
+                    var imagePath = Url.Content($"~/images/contries/{flag}");
+                    <img class="flag-bubble" src="@imagePath" alt="پرچم @System.IO.Path.GetFileNameWithoutExtension(flag)" loading="lazy" />
+                }
             </div>
         </div>
     </div>
