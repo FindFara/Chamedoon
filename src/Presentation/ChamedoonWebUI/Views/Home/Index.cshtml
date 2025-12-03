@@ -33,6 +33,101 @@
     </div>
 </section>
 
+@{
+    var iconBaseUrl = "https://cdn.iconplanet.app/countries-flags/svg/";
+
+    var marqueeRowOne = new (string FlagCode, string Name)[]
+    {
+        ("ca", "کانادا"),
+        ("au", "استرالیا"),
+        ("de", "آلمان"),
+        ("nl", "هلند"),
+        ("se", "سوئد"),
+        ("gb", "انگلستان"),
+        ("at", "اتریش"),
+        ("be", "بلژیک"),
+        ("pl", "لهستان"),
+        ("nz", "نیوزیلند"),
+        ("jp", "ژاپن"),
+        ("sg", "سنگاپور"),
+        ("ie", "ایرلند"),
+        ("br", "برزیل"),
+        ("mx", "مکزیک"),
+        ("cn", "چین"),
+        ("hk", "هنگ‌کنگ"),
+        ("cz", "جمهوری چک"),
+        ("ro", "رومانی"),
+        ("hu", "مجارستان"),
+        ("za", "آفریقای جنوبی"),
+        ("my", "مالزی"),
+        ("th", "تایلند"),
+        ("ph", "فیلیپین")
+    };
+
+    var marqueeRowTwo = new (string FlagCode, string Name)[]
+    {
+        ("es", "اسپانیا"),
+        ("fr", "فرانسه"),
+        ("it", "ایتالیا"),
+        ("ch", "سوئیس"),
+        ("dk", "دانمارک"),
+        ("no", "نروژ"),
+        ("fi", "فنلاند"),
+        ("pt", "پرتغال"),
+        ("us", "آمریکا"),
+        ("ae", "امارات"),
+        ("sk", "اسلواکی"),
+        ("si", "اسلوونی"),
+        ("ua", "اوکراین"),
+        ("ar", "آرژانتین"),
+        ("cl", "شیلی"),
+        ("in", "هند"),
+        ("kr", "کره جنوبی"),
+        ("tr", "ترکیه"),
+        ("ru", "روسیه"),
+        ("eg", "مصر"),
+        ("sa", "عربستان"),
+        ("qa", "قطر"),
+        ("om", "عمان"),
+        ("kw", "کویت")
+    };
+}
+
+<section class="py-4">
+    <div class="container">
+        <div class="country-marquee-card">
+            <div class="country-marquee-row">
+                <div class="country-marquee track-right" aria-label="کشورها از چپ به راست">
+                    @for (var i = 0; i < 2; i++)
+                    {
+                        foreach (var country in marqueeRowOne)
+                        {
+                            <div class="country-chip">
+                                <img src="@($"{iconBaseUrl}{country.FlagCode}.svg")" class="country-flag" alt="@country.Name" loading="lazy" />
+                                <span class="visually-hidden">@country.Name</span>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="country-marquee-row">
+                <div class="country-marquee track-left" aria-label="کشورها از راست به چپ">
+                    @for (var i = 0; i < 2; i++)
+                    {
+                        foreach (var country in marqueeRowTwo)
+                        {
+                            <div class="country-chip">
+                                <img src="@($"{iconBaseUrl}{country.FlagCode}.svg")" class="country-flag" alt="@country.Name" loading="lazy" />
+                                <span class="visually-hidden">@country.Name</span>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section id="features" class="py-5">
     <div class="container">
         <div class="row justify-content-center text-center mb-5">
