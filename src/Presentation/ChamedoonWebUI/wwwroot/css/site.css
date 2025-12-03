@@ -608,6 +608,8 @@ a:hover {
 }
 
 .marquee-track {
+    --marquee-loop-count: 3;
+    --marquee-shift: calc(100% / var(--marquee-loop-count));
     display: inline-flex;
     align-items: center;
     gap: 0.85rem;
@@ -663,7 +665,7 @@ a:hover {
 
 @keyframes marquee-left {
     to {
-        transform: translateX(-50%);
+        transform: translateX(calc(-1 * var(--marquee-shift)));
     }
 }
 

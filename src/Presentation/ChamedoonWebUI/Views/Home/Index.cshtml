@@ -35,6 +35,14 @@
         ("ایتالیا", "italy.svg"),
         ("سنگال", "senegal.svg")
     };
+
+    var primaryMarqueeCountries = Enumerable.Range(0, 3)
+        .SelectMany(_ => primaryRowCountries)
+        .ToArray();
+
+    var secondaryMarqueeCountries = Enumerable.Range(0, 3)
+        .SelectMany(_ => secondaryRowCountries)
+        .ToArray();
 }
 
 <section class="container py-5">
@@ -77,20 +85,14 @@
             <div class="country-marquee">
                 <div class="marquee-row">
                     <div class="marquee-track">
-                        @foreach (var country in primaryRowCountries)
+                        @for (var i = 0; i < primaryMarqueeCountries.Length; i++)
                         {
-                            <div class="country-pill">
+                            var country = primaryMarqueeCountries[i];
+                            var isDuplicate = i >= primaryRowCountries.Length;
+
+                            <div class="country-pill" aria-hidden="@(isDuplicate.ToString().ToLower())">
                                 <div class="country-flag">
-                                    <img src="@Url.Content($"~/images/contries/{country.Flag}")" alt="@country.Name" loading="lazy" />
-                                </div>
-                                <span class="country-name">@country.Name</span>
-                            </div>
-                        }
-                        @foreach (var country in primaryRowCountries)
-                        {
-                            <div class="country-pill" aria-hidden="true">
-                                <div class="country-flag">
-                                    <img src="@Url.Content($"~/images/contries/{country.Flag}")" alt="" loading="lazy" />
+                                    <img src="@Url.Content($"~/images/contries/{country.Flag}")" alt="@(isDuplicate ? string.Empty : country.Name)" loading="lazy" />
                                 </div>
                                 <span class="country-name">@country.Name</span>
                             </div>
@@ -99,20 +101,14 @@
                 </div>
                 <div class="marquee-row reverse">
                     <div class="marquee-track">
-                        @foreach (var country in secondaryRowCountries)
+                        @for (var i = 0; i < secondaryMarqueeCountries.Length; i++)
                         {
-                            <div class="country-pill">
+                            var country = secondaryMarqueeCountries[i];
+                            var isDuplicate = i >= secondaryRowCountries.Length;
+
+                            <div class="country-pill" aria-hidden="@(isDuplicate.ToString().ToLower())">
                                 <div class="country-flag">
-                                    <img src="@Url.Content($"~/images/contries/{country.Flag}")" alt="@country.Name" loading="lazy" />
-                                </div>
-                                <span class="country-name">@country.Name</span>
-                            </div>
-                        }
-                        @foreach (var country in secondaryRowCountries)
-                        {
-                            <div class="country-pill" aria-hidden="true">
-                                <div class="country-flag">
-                                    <img src="@Url.Content($"~/images/contries/{country.Flag}")" alt="" loading="lazy" />
+                                    <img src="@Url.Content($"~/images/contries/{country.Flag}")" alt="@(isDuplicate ? string.Empty : country.Name)" loading="lazy" />
                                 </div>
                                 <span class="country-name">@country.Name</span>
                             </div>
