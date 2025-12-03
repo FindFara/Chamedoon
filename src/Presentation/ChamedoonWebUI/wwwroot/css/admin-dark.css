@@ -24,6 +24,17 @@ body.dark-mode .admin-section .form-select {
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
+body.dark-mode .admin-section .form-control::placeholder,
+body.dark-mode .admin-section .persian-datepicker-input::placeholder {
+    color: rgba(232, 237, 247, 0.7);
+}
+
+body.dark-mode .admin-section .form-select.payment-status-select,
+body.dark-mode .admin-section .form-select.payment-status-select option {
+    background-color: #0c1424;
+    color: #e8edf7;
+}
+
 body.dark-mode .admin-section .form-control:focus,
 body.dark-mode .admin-section .form-select:focus {
     border-color: rgba(255, 179, 71, 0.75);

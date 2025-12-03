@@ -35,10 +35,14 @@ public class BlogListItemViewModel
 
 public class BlogEditViewModel
 {
+    public const int TitleMaxLength = 150;
+    public const int ShortDescriptionMaxLength = 1500;
+
     public long? Id { get; set; }
 
     [Display(Name = "عنوان")]
     [Required(ErrorMessage = "وارد کردن عنوان الزامی است.")]
+    [MaxLength(TitleMaxLength, ErrorMessage = "حداکثر ۱۵۰ کاراکتر مجاز است.")]
     public string Title { get; set; } = string.Empty;
 
     [Display(Name = "نویسنده")]
@@ -47,7 +51,7 @@ public class BlogEditViewModel
 
     [Display(Name = "خلاصه")]
     [Required(ErrorMessage = "وارد کردن خلاصه الزامی است.")]
-    [MaxLength(2000, ErrorMessage = "حداکثر ۲۰۰۰ کاراکتر مجاز است.")]
+    [MaxLength(ShortDescriptionMaxLength, ErrorMessage = "حداکثر ۱۵۰۰ کاراکتر مجاز است.")]
     public string ShortDescription { get; set; } = string.Empty;
 
     [Display(Name = "متن مقاله")]

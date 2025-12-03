@@ -1,6 +1,8 @@
 using System.Linq;
 using Chamedoon.Application.Common.Interfaces.Admin;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Admin.Common.Models;
+using Chamedoon.Domin.Entity.Payments;
 using Chamedoon.Domin.Enums;
 using Chamedoon.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -58,6 +60,72 @@ public class AdminPaymentRepository : IAdminPaymentRepository
                 p.PaidAtUtc,
                 p.GatewayTrackId))
             .ToList();
+    }
+
+    public Task<PaginatedList<PaymentRequest>> GetPaymentsAsync(
+        string? search,
+        PaymentStatus? status,
+        DateTime? fromDate,
+        DateTime? toDate,
+        string? userName,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var query = _context.PaymentRequests
+            .Include(p => p.Customer)
+                .ThenInclude(c => c.User)
+            .AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var lowered = search.Trim().ToLower();
+            query = query.Where(p =>
+                (!string.IsNullOrEmpty(p.GatewayTrackId) && p.GatewayTrackId.ToLower().Contains(lowered)) ||
+                (!string.IsNullOrEmpty(p.ReferenceCode) && p.ReferenceCode.ToLower().Contains(lowered)) ||
+                (!string.IsNullOrEmpty(p.PlanId) && p.PlanId.ToLower().Contains(lowered)) ||
+                (!string.IsNullOrEmpty(p.Description) && p.Description.ToLower().Contains(lowered)) ||
+                (p.Customer != null && (
+                    (!string.IsNullOrEmpty(p.Customer.FirstName) && p.Customer.FirstName.ToLower().Contains(lowered)) ||
+                    (!string.IsNullOrEmpty(p.Customer.LastName) && p.Customer.LastName.ToLower().Contains(lowered)) ||
+                    (p.Customer.User != null && (
+                        (!string.IsNullOrEmpty(p.Customer.User.UserName) && p.Customer.User.UserName.ToLower().Contains(lowered)) ||
+                        (!string.IsNullOrEmpty(p.Customer.User.Email) && p.Customer.User.Email.ToLower().Contains(lowered))
+                    ))
+                )));
+        }
+
+        if (status.HasValue)
+        {
+            query = query.Where(p => p.Status == status.Value);
+        }
+
+        if (fromDate.HasValue)
+        {
+            var fromUtc = DateTime.SpecifyKind(fromDate.Value.Date, DateTimeKind.Unspecified);
+            query = query.Where(p => p.CreatedAtUtc >= fromUtc);
+        }
+
+        if (toDate.HasValue)
+        {
+            var toExclusive = DateTime.SpecifyKind(toDate.Value.Date.AddDays(1), DateTimeKind.Unspecified);
+            query = query.Where(p => p.CreatedAtUtc < toExclusive);
+        }
+
+        if (!string.IsNullOrWhiteSpace(userName))
+        {
+            var lowered = userName.Trim().ToLower();
+            query = query.Where(p => p.Customer != null && p.Customer.User != null && (
+                (!string.IsNullOrEmpty(p.Customer.User.UserName) && p.Customer.User.UserName.ToLower().Contains(lowered)) ||
+                (!string.IsNullOrEmpty(p.Customer.FirstName) && p.Customer.FirstName.ToLower().Contains(lowered)) ||
+                (!string.IsNullOrEmpty(p.Customer.LastName) && p.Customer.LastName.ToLower().Contains(lowered))));
+        }
+
+        query = query.OrderByDescending(p => p.CreatedAtUtc);
+
+        return PaginatedList<PaymentRequest>.CreateAsync(query, pageNumber, pageSize);
     }
 
     private static string BuildCustomerName(Domin.Entity.Customers.Customer? customer)

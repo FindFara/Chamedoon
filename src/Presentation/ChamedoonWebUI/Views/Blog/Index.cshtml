@@ -3,22 +3,21 @@
 @using System.Globalization
 @using System.Text.RegularExpressions
 @using ChamedoonWebUI.Models
-@{
+@{ 
     ViewData["Title"] = "وبلاگ";
     var writers = Model.Articles.Select(a => a.Writer).Distinct().ToList();
     var fallbackBlogImage = Url.Content("~/img/blog-placeholder.svg");
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/persian-datepicker.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/persian-datepicker.css" asp-append-version="true" />
 }
 
 <section class="glass-section">
     <div class="container">
         <div class="blog-hero">
             <h1 class="fw-bold">کاوش در تجربه‌های مهاجرت و زندگی در کشورهای مختلف.</h1>
-            <p class="glass-helper mb-0">مقالات چمدون توسط تیم تحقیق و کاربران باتجربه نوشته شده‌اند تا مسیر مهاجرت را
-                برایت شفاف کنند.</p>
+            <p class="glass-helper mb-0">مقالات چمدون توسط تیم تحقیق و کاربران باتجربه نوشته شده‌اند تا مسیر مهاجرت را برایت شفاف کنند.</p>
         </div>
 
         <div class="glass-card blog-search-card mb-4">
