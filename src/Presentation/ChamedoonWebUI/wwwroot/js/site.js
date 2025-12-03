@@ -1,6 +1,13 @@
 (function () {
     const pageBody = document.body;
 
+    const pageLoader = document.querySelector('[data-home-loader]');
+    if (pageLoader) {
+        const hideLoader = () => pageLoader.classList.remove('is-active');
+        window.addEventListener('load', hideLoader);
+        setTimeout(hideLoader, 1500);
+    }
+
     const darkModeToggle = document.getElementById('darkModeToggle');
     if (darkModeToggle && pageBody.classList.contains('landing-page')) {
         const labelElement = darkModeToggle.querySelector('[data-role="label"]');

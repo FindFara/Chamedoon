@@ -1981,7 +1981,73 @@ a:hover {
         align-items: center;
     }
 
-    .auth-benefits li {
-        justify-content: center;
+.auth-benefits li {
+    justify-content: center;
+}
+}
+
+.landing-loading-overlay {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle at 20% 20%, rgba(131, 172, 255, 0.14), transparent 38%),
+        radial-gradient(circle at 80% 0%, rgba(255, 180, 163, 0.16), transparent 32%),
+        rgba(9, 16, 36, 0.76);
+    backdrop-filter: blur(14px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 240ms ease, visibility 240ms ease;
+    z-index: 1055;
+}
+
+.landing-loading-overlay.is-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.landing-loading-card {
+    width: min(520px, 88vw);
+    padding: 1.5rem 1.75rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.24);
+    color: #e9eef5;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.landing-loading-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.landing-loading-spinner {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.24);
+    border-top-color: #7cb8ff;
+    animation: landing-spin 1s linear infinite;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
+}
+
+@keyframes landing-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 576px) {
+    .landing-loading-card {
+        padding: 1.25rem 1.35rem;
+    }
+
+    .landing-loading-spinner {
+        width: 46px;
+        height: 46px;
     }
 }
