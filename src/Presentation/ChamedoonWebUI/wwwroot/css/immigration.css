@@ -750,3 +750,44 @@ body.landing-page.dark-mode .validation-summary {
     color: #fecdd3;
     border-color: rgba(252, 165, 165, 0.4);
 }
+
+.immigration-loading {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    z-index: 1050;
+    backdrop-filter: blur(6px);
+}
+
+.immigration-loading.is-visible {
+    display: flex;
+}
+
+.immigration-loading .loading-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    max-width: 520px;
+    width: min(90vw, 520px);
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 16px 42px -24px rgba(15, 23, 42, 0.65);
+}
+
+.immigration-loading .loader {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 5px solid rgba(255, 255, 255, 0.25);
+    border-top-color: var(--primary);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
