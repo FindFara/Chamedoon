@@ -6,6 +6,7 @@ using FluentValidation;
 using Chamedoon.Application.Common.Behaviors;
 using Chamedoon.Application.Services.Admin.Blogs;
 using Chamedoon.Application.Services.Admin.Dashboard;
+using Chamedoon.Application.Services.Admin.Payments;
 using Chamedoon.Application.Services.Admin.Roles;
 using Chamedoon.Application.Services.Admin.Users;
 using Chamedoon.Application.Services.Immigration;
@@ -28,6 +29,7 @@ public static class ConfigureServices
         services.AddScoped<IAdminUserService, AdminUserService>();
         services.AddScoped<IAdminBlogService, AdminBlogService>();
         services.AddScoped<IAdminRoleService, AdminRoleService>();
+        services.AddScoped<IAdminPaymentService, AdminPaymentService>();
         services.AddScoped<IAdminDashboardService, AdminDashboardService>();
         services.AddScoped<IImmigrationEvaluationService, ImmigrationEvaluationService>();
         services.AddScoped<ICountryDataCache, CountryDataCache>();
