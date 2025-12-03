@@ -108,7 +108,7 @@ body {
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.user-menu-dropdown li + li .dropdown-item {
+.user-menu-dropdown li:has(.dropdown-item) + li:has(.dropdown-item) .dropdown-item {
     border-top: 1px solid rgba(15, 23, 42, 0.08);
 }
 

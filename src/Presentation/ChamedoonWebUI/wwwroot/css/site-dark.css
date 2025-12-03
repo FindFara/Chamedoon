@@ -66,7 +66,7 @@ body.landing-page.dark-mode .user-menu-dropdown .dropdown-item {
     color: #e2e8f0;
 }
 
-body.landing-page.dark-mode .user-menu-dropdown li + li .dropdown-item {
+body.landing-page.dark-mode .user-menu-dropdown li:has(.dropdown-item) + li:has(.dropdown-item) .dropdown-item {
     border-top: 1px solid rgba(148, 163, 184, 0.18);
 }
 
