@@ -62,7 +62,15 @@ public class AdminPaymentRepository : IAdminPaymentRepository
             .ToList();
     }
 
-    public Task<PaginatedList<PaymentRequest>> GetPaymentsAsync(string? search, PaymentStatus? status, int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public Task<PaginatedList<PaymentRequest>> GetPaymentsAsync(
+        string? search,
+        PaymentStatus? status,
+        DateTime? fromDate,
+        DateTime? toDate,
+        string? userName,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -92,6 +100,27 @@ public class AdminPaymentRepository : IAdminPaymentRepository
         if (status.HasValue)
         {
             query = query.Where(p => p.Status == status.Value);
+        }
+
+        if (fromDate.HasValue)
+        {
+            var fromUtc = DateTime.SpecifyKind(fromDate.Value.Date, DateTimeKind.Unspecified);
+            query = query.Where(p => p.CreatedAtUtc >= fromUtc);
+        }
+
+        if (toDate.HasValue)
+        {
+            var toExclusive = DateTime.SpecifyKind(toDate.Value.Date.AddDays(1), DateTimeKind.Unspecified);
+            query = query.Where(p => p.CreatedAtUtc < toExclusive);
+        }
+
+        if (!string.IsNullOrWhiteSpace(userName))
+        {
+            var lowered = userName.Trim().ToLower();
+            query = query.Where(p => p.Customer != null && p.Customer.User != null && (
+                (!string.IsNullOrEmpty(p.Customer.User.UserName) && p.Customer.User.UserName.ToLower().Contains(lowered)) ||
+                (!string.IsNullOrEmpty(p.Customer.FirstName) && p.Customer.FirstName.ToLower().Contains(lowered)) ||
+                (!string.IsNullOrEmpty(p.Customer.LastName) && p.Customer.LastName.ToLower().Contains(lowered))));
         }
 
         query = query.OrderByDescending(p => p.CreatedAtUtc);

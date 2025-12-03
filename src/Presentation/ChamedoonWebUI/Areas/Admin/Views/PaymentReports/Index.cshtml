@@ -16,13 +16,25 @@
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
             <form method="get" class="row g-3 align-items-end">
-                <div class="col-md-6">
-                    <label for="search" class="form-label">جستجو</label>
-                    <input id="search" name="search" value="@Model.SearchTerm" class="form-control" placeholder="کد پیگیری، نام کاربر، ایمیل یا پلن" />
+                <div class="col-md-4 col-lg-3">
+                    <label for="fromDate" class="form-label">از تاریخ</label>
+                    <input id="fromDate" name="fromDate" type="date" value="@Model.FromDate?.ToString("yyyy-MM-dd")" class="form-control" />
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4 col-lg-3">
+                    <label for="toDate" class="form-label">تا تاریخ</label>
+                    <input id="toDate" name="toDate" type="date" value="@Model.ToDate?.ToString("yyyy-MM-dd")" class="form-control" />
+                </div>
+                <div class="col-md-4 col-lg-3">
+                    <label for="userName" class="form-label">نام کاربر</label>
+                    <input id="userName" name="userName" value="@Model.UserName" class="form-control" placeholder="نام یا نام کاربری" />
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <label for="search" class="form-label">جستجو</label>
+                    <input id="search" name="search" value="@Model.SearchTerm" class="form-control" placeholder="کد پیگیری، توضیحات یا پلن" />
+                </div>
+                <div class="col-md-6 col-lg-3">
                     <label for="status" class="form-label">وضعیت</label>
-                    <select id="status" name="status" class="form-select">
+                    <select id="status" name="status" class="form-select payment-status-select">
                         <option value="">همه وضعیت‌ها</option>
                         @foreach (var status in statuses)
                         {
@@ -40,7 +52,7 @@
                         }
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6 col-lg-3">
                     <button type="submit" class="btn btn-outline-primary w-100">اعمال فیلتر</button>
                 </div>
             </form>
@@ -120,7 +132,10 @@
                                    asp-route-page="@(Model.CurrentPage - 1)"
                                    asp-route-pageSize="@Model.PageSize"
                                    asp-route-search="@Model.SearchTerm"
-                                   asp-route-status="@((int?)Model.SelectedStatus)">قبلی</a>
+                                   asp-route-status="@((int?)Model.SelectedStatus)"
+                                   asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
+                                   asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")"
+                                   asp-route-userName="@Model.UserName">قبلی</a>
                             </li>
                             @for (var i = startPage; i <= endPage; i++)
                             {
@@ -130,7 +145,10 @@
                                        asp-route-page="@i"
                                        asp-route-pageSize="@Model.PageSize"
                                        asp-route-search="@Model.SearchTerm"
-                                       asp-route-status="@((int?)Model.SelectedStatus)">@i</a>
+                                       asp-route-status="@((int?)Model.SelectedStatus)"
+                                       asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
+                                       asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")"
+                                       asp-route-userName="@Model.UserName">@i</a>
                                 </li>
                             }
                             <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : string.Empty)">
@@ -139,7 +157,10 @@
                                    asp-route-page="@(Model.CurrentPage + 1)"
                                    asp-route-pageSize="@Model.PageSize"
                                    asp-route-search="@Model.SearchTerm"
-                                   asp-route-status="@((int?)Model.SelectedStatus)">بعدی</a>
+                                   asp-route-status="@((int?)Model.SelectedStatus)"
+                                   asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
+                                   asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")"
+                                   asp-route-userName="@Model.UserName">بعدی</a>
                             </li>
                         </ul>
                     </nav>

@@ -8,6 +8,9 @@ public class PaymentReportIndexViewModel
     public List<PaymentReportItemViewModel> Payments { get; set; } = new();
     public string? SearchTerm { get; set; }
     public PaymentStatus? SelectedStatus { get; set; }
+    public DateTime? FromDate { get; set; }
+    public DateTime? ToDate { get; set; }
+    public string? UserName { get; set; }
     public int CurrentPage { get; set; }
     public int TotalPages { get; set; }
     public int PageSize { get; set; }

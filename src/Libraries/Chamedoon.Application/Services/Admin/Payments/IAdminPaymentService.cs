@@ -9,6 +9,9 @@ public interface IAdminPaymentService
     Task<OperationResult<PaginatedList<AdminPaymentDto>>> GetPaymentsAsync(
         string? search,
         PaymentStatus? status,
+        DateTime? fromDate,
+        DateTime? toDate,
+        string? userName,
         int pageNumber,
         int pageSize,
         CancellationToken cancellationToken);

@@ -18,11 +18,22 @@ public class AdminPaymentService : IAdminPaymentService
     public async Task<OperationResult<PaginatedList<AdminPaymentDto>>> GetPaymentsAsync(
         string? search,
         PaymentStatus? status,
+        DateTime? fromDate,
+        DateTime? toDate,
+        string? userName,
         int pageNumber,
         int pageSize,
         CancellationToken cancellationToken)
     {
-        var payments = await _paymentRepository.GetPaymentsAsync(search, status, pageNumber, pageSize, cancellationToken);
+        var payments = await _paymentRepository.GetPaymentsAsync(
+            search,
+            status,
+            fromDate,
+            toDate,
+            userName,
+            pageNumber,
+            pageSize,
+            cancellationToken);
         var mappedItems = payments.Items.Select(payment => payment.ToAdminPaymentDto()).ToList();
         var paginated = new PaginatedList<AdminPaymentDto>(mappedItems, payments.TotalCount, payments.PageNumber, pageSize);
 

@@ -15,12 +15,28 @@ public class PaymentReportsController : Controller
         _paymentService = paymentService;
     }
 
-    public async Task<IActionResult> Index(string? search, PaymentStatus? status, int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Index(
+        string? search,
+        PaymentStatus? status,
+        DateTime? fromDate,
+        DateTime? toDate,
+        string? userName,
+        int page = 1,
+        int pageSize = 10,
+        CancellationToken cancellationToken = default)
     {
         page = page < 1 ? 1 : page;
         pageSize = pageSize < 1 ? 10 : pageSize;
 
-        var paymentsResult = await _paymentService.GetPaymentsAsync(search, status, page, pageSize, cancellationToken);
+        var paymentsResult = await _paymentService.GetPaymentsAsync(
+            search,
+            status,
+            fromDate,
+            toDate,
+            userName,
+            page,
+            pageSize,
+            cancellationToken);
         if (!paymentsResult.IsSuccess || paymentsResult.Result is null)
         {
             return Problem(paymentsResult.Message);
@@ -31,6 +47,9 @@ public class PaymentReportsController : Controller
             Payments = paymentsResult.Result.Items.Select(PaymentReportItemViewModel.FromDto).ToList(),
             SearchTerm = search,
             SelectedStatus = status,
+            FromDate = fromDate,
+            ToDate = toDate,
+            UserName = userName,
             CurrentPage = paymentsResult.Result.PageNumber,
             TotalPages = paymentsResult.Result.TotalPages,
             PageSize = pageSize,
