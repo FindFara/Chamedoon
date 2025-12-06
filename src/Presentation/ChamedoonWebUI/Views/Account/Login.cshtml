@@ -1,4 +1,4 @@
-﻿@model Chamedoon.Application.Services.Account.Login.ViewModel.LoginUserViewModel
+@model Chamedoon.Application.Services.Account.Login.ViewModel.LoginUserViewModel
 @{
     ViewData["Title"] = "ورود به چمدون";
 }
@@ -14,7 +14,7 @@
                     اگر هنوز حسابی نداری در چند ثانیه می‌توانی ثبت‌نام کنی.
                 </p>
                 <ul class="auth-benefits">
-                    <li>در صورت نیاز به راهنمایی با پشتیبانی در تماس باش.<</li>
+                    <li>در صورت نیاز به راهنمایی با پشتیبانی در تماس باش.</li>
                 </ul>
             </div>
             <div class="glass-card auth-card">
@@ -25,31 +25,24 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@(ViewData["LoginNonce"] as string)" />
                     <div class="glass-field">
-                        <label asp-for="Email" class="form-label">ایمیل</label>
-                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
-                        <span asp-validation-for="Email" class="text-danger small"></span>
+                        <label asp-for="UserNameOrEmail" class="form-label">ایمیل یا نام کاربری</label>
+                        <input asp-for="UserNameOrEmail" class="form-control glass-input" placeholder="username یا example@mail.com" />
+                        <span asp-validation-for="UserNameOrEmail" class="text-danger small"></span>
                     </div>
                     <div class="glass-field">
-                        <button type="submit" name="actionType" value="sendCode" class="btn btn-outline-secondary btn-sm float-start mb-2">
-                            ارسال کد به ایمیل
-                        </button>
-                        <label asp-for="VerificationCode" class="form-label">کد تایید</label>
-                        <input asp-for="VerificationCode" type="text" class="form-control glass-input" placeholder="کد چهار رقمی" />
-                        <span asp-validation-for="VerificationCode" class="text-danger small"></span>
+                        <label asp-for="Password" class="form-label">رمز عبور</label>
+                        <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>
-                    <div class="auth-secondary-actions mt-2">
+                    <div class="auth-secondary-actions mt-2 d-flex justify-content-between align-items-center">
                         <label class="glass-checkbox">
                             <input asp-for="RememberMe" type="checkbox" />
                             <span>مرا به خاطر بسپار</span>
                         </label>
-                        <span class="text-muted small">ورود تنها با کد تایید ایمیل انجام می‌شود.</span>
+                        <a asp-action="LoginWithCode" class="small">ورود با رمز یکبار مصرف</a>
                     </div>
-                    @if (ViewBag.InfoMessage != null)
-                    {
-                        <div class="alert alert-info py-2">@ViewBag.InfoMessage</div>
-                    }
                     <div class="text-danger small" asp-validation-summary="All"></div>
-                    <button type="submit" name="actionType" value="login" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ورود به چمدون</button>
+                    <button type="submit" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ورود به چمدون</button>
                 </form>
                 <div class="auth-divider">یا ورود با</div>
                 <a asp-controller="Account" asp-action="login-google" class="btn-google w-100">

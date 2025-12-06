@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Chamedoon.Application.Common.Extensions;
 using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Register.ViewModel;
@@ -31,9 +31,9 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
     public async Task<OperationResult<long>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         User user = mapper.Map<User>(request.RegisterUser);
-        user.UserName = string.Concat("U-",StringExtensions.GenerateRandomString(8));
+        user.UserName = request.RegisterUser.UserName ?? string.Concat("U-", StringExtensions.GenerateRandomString(8));
         user.EmailConfirmed = true;
-        var registerUser = await userManager.CreateAsync(user);
+        var registerUser = await userManager.CreateAsync(user, request.RegisterUser.Password ?? string.Empty);
         if (registerUser.Succeeded)
         {
             await userManager.AddToRoleAsync(user, "Member");

@@ -25,19 +25,50 @@
                 <form asp-action="Register" method="post" novalidate data-prevent-multi-submit="true">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@(ViewData["RegisterNonce"] as string)" />
+                    <input type="hidden" asp-for="Stage" />
+
                     <div class="glass-field">
                         <label asp-for="Email" class="form-label">ایمیل</label>
-                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
+                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" @(Model.Stage != Chamedoon.Application.Services.Account.Register.ViewModel.RegisterStep.EnterEmail ? "readonly" : "") />
                         <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
-                    <div class="glass-field">
-                        <button type="submit" name="actionType" value="sendCode" class="btn btn-outline-secondary btn-sm float-start mb-2">
-                            ارسال کد به ایمیل
-                        </button>
-                        <label asp-for="VerificationCode" class="form-label">کد تایید</label>
-                        <input asp-for="VerificationCode" type="text" class="form-control glass-input" placeholder="کد چهار رقمی" />
-                        <span asp-validation-for="VerificationCode" class="text-danger small"></span>
-                    </div>
+
+                    @if (Model.Stage == Chamedoon.Application.Services.Account.Register.ViewModel.RegisterStep.EnterEmail)
+                    {
+                        <button type="submit" name="actionType" value="sendCode" class="btn btn-outline-secondary btn-sm mb-3">ارسال کد به ایمیل</button>
+                    }
+
+                    @if (Model.Stage >= Chamedoon.Application.Services.Account.Register.ViewModel.RegisterStep.VerifyCode)
+                    {
+                        <div class="glass-field">
+                            <label asp-for="VerificationCode" class="form-label">کد تایید</label>
+                            <div class="d-flex gap-2">
+                                <input asp-for="VerificationCode" type="text" class="form-control glass-input" placeholder="کد چهار رقمی" />
+                                <button type="submit" name="actionType" value="verifyCode" class="btn btn-outline-secondary">تایید کد</button>
+                            </div>
+                            <span asp-validation-for="VerificationCode" class="text-danger small"></span>
+                        </div>
+                    }
+
+                    @if (Model.Stage == Chamedoon.Application.Services.Account.Register.ViewModel.RegisterStep.SetCredentials)
+                    {
+                        <div class="glass-field">
+                            <label asp-for="UserName" class="form-label">نام کاربری</label>
+                            <input asp-for="UserName" class="form-control glass-input" placeholder="نام کاربری" />
+                            <span asp-validation-for="UserName" class="text-danger small"></span>
+                        </div>
+                        <div class="glass-field">
+                            <label asp-for="Password" class="form-label">رمز عبور</label>
+                            <input asp-for="Password" type="password" class="form-control glass-input" placeholder="حداقل ۶ کاراکتر" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <div class="glass-field">
+                            <label asp-for="ConfirmPassword" class="form-label">تکرار رمز عبور</label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control glass-input" placeholder="تکرار رمز" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                    }
+
                     @if (ViewData["ErrorMessage"] != null)
                     {
                         <div class="text-danger small">@ViewData["ErrorMessage"]</div>
@@ -47,7 +78,10 @@
                         <div class="alert alert-info py-2">@ViewBag.InfoMessage</div>
                     }
                     <div class="text-danger small" asp-validation-summary="All"></div>
-                    <button type="submit" name="actionType" value="register" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ثبت‌نام و ادامه</button>
+                    @if (Model.Stage == Chamedoon.Application.Services.Account.Register.ViewModel.RegisterStep.SetCredentials)
+                    {
+                        <button type="submit" name="actionType" value="register" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ثبت‌نام</button>
+                    }
                 </form>
                 <div class="auth-divider">یا ثبت‌نام با</div>
                 <a asp-controller="Account" asp-action="login-google" class="btn-google w-100">

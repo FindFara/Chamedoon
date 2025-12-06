@@ -95,7 +95,7 @@ public class AccountController : Controller
         return true;
     }
 
-    #region Login
+        #region Login
     [Route("login")]
     public IActionResult Login()
     {
@@ -105,80 +105,124 @@ public class AccountController : Controller
     [Route("login")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginUserViewModel register, string requestNonce, string? actionType)
+    public async Task<IActionResult> Login(LoginUserViewModel loginModel, string requestNonce)
     {
         if (!IsRequestNonceValid(nameof(Login), requestNonce))
         {
-            ModelState.AddModelError(string.Empty, "درخواست تکراری یا نامعتبر.");
+            ModelState.AddModelError(string.Empty, "درخواست تکرار یا نامعتبر.");
             ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
-            return View(register);
-        }
-
-        if (string.Equals(actionType, "sendCode", StringComparison.OrdinalIgnoreCase))
-        {
-            ModelState.Remove(nameof(LoginUserViewModel.VerificationCode));
-
-            if (!ModelState.IsValid)
-            {
-                ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
-                return View(register);
-            }
-
-            var user = await _mediator.Send(new GetUserQuery { Email = register.Email });
-            if (user.IsSuccess is false || user.Result is null)
-            {
-                ModelState.AddModelError(string.Empty, "کاربری با این ایمیل یافت نشد.");
-                ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
-                return View(register);
-            }
-
-            await SendVerificationCodeAsync(register.Email, LoginCodePurpose);
-            ViewBag.LoginCodeSent = true;
-            ViewBag.InfoMessage = "کد تایید به ایمیل شما ارسال شد.";
-            ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
-            return View(register);
+            return View(loginModel);
         }
 
         if (!ModelState.IsValid)
         {
             ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
-            return View(register);
+            return View(loginModel);
         }
 
-        if (!ValidateVerificationCode(register.Email, LoginCodePurpose, register.VerificationCode))
+        var loginResult = await _mediator.Send(new ManageLoginUserCommand { LoginUser = loginModel });
+        if (!loginResult.IsSuccess || loginResult.Result is null)
         {
-            ModelState.AddModelError(nameof(LoginUserViewModel.VerificationCode), "کد وارد شده نامعتبر است یا منقضی شده است.");
+            ModelState.AddModelError(string.Empty, loginResult.Message ?? "خطا در ورود");
             ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
-            return View(register);
+            return View(loginModel);
         }
 
-        var existingUser = await _mediator.Send(new GetUserQuery { Email = register.Email });
-        if (existingUser.IsSuccess is false || existingUser.Result is null)
-        {
-            ModelState.AddModelError(string.Empty, "کاربری با این ایمیل یافت نشد.");
-            ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
-            return View(register);
-        }
-
-        var signInResult = await _mediator.Send(new SignInUserCommand { UserId = existingUser.Result.Id.ToString(), IsPersistent = register.RememberMe });
+        var signInResult = await _mediator.Send(new SignInUserCommand { UserId = loginResult.Result.Id.ToString(), IsPersistent = loginModel.RememberMe });
         if (!signInResult.IsSuccess)
         {
             ModelState.AddModelError(string.Empty, signInResult.Message);
             ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
-            return View(register);
+            return View(loginModel);
+        }
+
+        return RedirectToAction("Index", "Home");
+    }
+
+    [Route("login/code")]
+    public IActionResult LoginWithCode()
+    {
+        ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
+        return View(new LoginWithCodeViewModel());
+    }
+
+    [Route("login/code")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> LoginWithCode(LoginWithCodeViewModel loginModel, string requestNonce, string? actionType)
+    {
+        if (!IsRequestNonceValid(nameof(LoginWithCode), requestNonce))
+        {
+            ModelState.AddModelError(string.Empty, "درخواست تکرار یا نامعتبر.");
+            ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
+            return View(loginModel);
+        }
+
+        if (string.Equals(actionType, "sendCode", StringComparison.OrdinalIgnoreCase))
+        {
+            ModelState.Remove(nameof(LoginWithCodeViewModel.VerificationCode));
+
+            if (!ModelState.IsValid)
+            {
+                ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
+                return View(loginModel);
+            }
+
+            var existingUser = await _mediator.Send(new GetUserQuery { Email = loginModel.Email });
+            if (existingUser.IsSuccess is false || existingUser.Result is null)
+            {
+                ModelState.AddModelError(string.Empty, "کاربری با این ایمیل یافت نشد.");
+                ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
+                return View(loginModel);
+            }
+
+            await SendVerificationCodeAsync(loginModel.Email, LoginCodePurpose);
+            ViewBag.InfoMessage = "کد ورود ارسال شد.";
+            ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
+            return View(loginModel);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
+            return View(loginModel);
+        }
+
+        if (!ValidateVerificationCode(loginModel.Email, LoginCodePurpose, loginModel.VerificationCode ?? string.Empty))
+        {
+            ModelState.AddModelError(nameof(LoginWithCodeViewModel.VerificationCode), "کد وارد شده نامعتبر است یا منقضی شده است.");
+            ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
+            return View(loginModel);
+        }
+
+        var userLookup = await _mediator.Send(new GetUserQuery { Email = loginModel.Email });
+        if (userLookup.IsSuccess is false || userLookup.Result is null)
+        {
+            ModelState.AddModelError(string.Empty, "کاربری با این ایمیل یافت نشد.");
+            ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
+            return View(loginModel);
+        }
+
+        var signInResult = await _mediator.Send(new SignInUserCommand { UserId = userLookup.Result.Id.ToString(), IsPersistent = loginModel.RememberMe });
+        if (!signInResult.IsSuccess)
+        {
+            ModelState.AddModelError(string.Empty, signInResult.Message);
+            ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
+            return View(loginModel);
         }
 
         return RedirectToAction("Index", "Home");
     }
     #endregion
 
-    #region Register
+
+        #region Register
 
     [Route("register")]
     public IActionResult Register()
     {
         ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
-        return View();
+        return View(new RegisterUser_VM { Stage = RegisterStep.EnterEmail });
     }
 
     [Route("register")]
@@ -196,9 +240,13 @@ public class AccountController : Controller
         if (string.Equals(actionType, "sendCode", StringComparison.OrdinalIgnoreCase))
         {
             ModelState.Remove(nameof(RegisterUser_VM.VerificationCode));
+            ModelState.Remove(nameof(RegisterUser_VM.UserName));
+            ModelState.Remove(nameof(RegisterUser_VM.Password));
+            ModelState.Remove(nameof(RegisterUser_VM.ConfirmPassword));
 
             if (!ModelState.IsValid)
             {
+                register.Stage = RegisterStep.EnterEmail;
                 ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
                 return View(register);
             }
@@ -207,6 +255,7 @@ public class AccountController : Controller
             if (!duplicationCheck.IsSuccess)
             {
                 ModelState.AddModelError(string.Empty, duplicationCheck.Message);
+                register.Stage = RegisterStep.EnterEmail;
                 ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
                 return View(register);
             }
@@ -214,21 +263,74 @@ public class AccountController : Controller
             await SendVerificationCodeAsync(register.Email, RegisterCodePurpose);
             ViewBag.RegisterCodeSent = true;
             ViewBag.InfoMessage = "کد تایید برای ایجاد حساب ارسال شد.";
+            register.Stage = RegisterStep.VerifyCode;
             ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
             return View(register);
         }
 
-        if (!ModelState.IsValid)
+        if (string.Equals(actionType, "verifyCode", StringComparison.OrdinalIgnoreCase))
         {
+            ModelState.Remove(nameof(RegisterUser_VM.UserName));
+            ModelState.Remove(nameof(RegisterUser_VM.Password));
+            ModelState.Remove(nameof(RegisterUser_VM.ConfirmPassword));
+
+            if (!ModelState.IsValid)
+            {
+                register.Stage = RegisterStep.VerifyCode;
+                ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+                return View(register);
+            }
+
+            if (!ValidateVerificationCode(register.Email, RegisterCodePurpose, register.VerificationCode ?? string.Empty))
+            {
+                ModelState.AddModelError(nameof(RegisterUser_VM.VerificationCode), "کد وارد شده نامعتبر است یا منقضی شده است.");
+                register.Stage = RegisterStep.VerifyCode;
+                ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+                return View(register);
+            }
+
+            TempData[nameof(RegisterStep)] = RegisterStep.SetCredentials.ToString();
+            TempData["VerifiedEmail"] = register.Email;
+            register.Stage = RegisterStep.SetCredentials;
+            register.VerificationCode = string.Empty;
+            ViewBag.InfoMessage = "کد تایید شد. نام کاربری و رمز عبور خود را تعیین کنید.";
             ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
             return View(register);
         }
+
+        var verifiedEmail = TempData.Peek("VerifiedEmail") as string;
+        var verifiedStageValue = TempData.Peek(nameof(RegisterStep)) as string;
+        RegisterStep? verifiedStage = Enum.TryParse<RegisterStep>(verifiedStageValue, out var stage) ? stage : null;
+
+        ModelState.Remove(nameof(RegisterUser_VM.VerificationCode));
+
+        if (!ModelState.IsValid || verifiedEmail != register.Email || verifiedStage != RegisterStep.SetCredentials)
+        {
+            if (verifiedEmail != register.Email || verifiedStage != RegisterStep.SetCredentials)
+            {
+                ModelState.AddModelError(string.Empty, "ابتدا ایمیل خود را تایید کنید.");
+                register.Stage = RegisterStep.VerifyCode;
+            }
+            else
+            {
+                register.Stage = RegisterStep.SetCredentials;
+            }
+
+            ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+            return View(register);
+        }
+
+        TempData.Remove("VerifiedEmail");
+        TempData.Remove(nameof(RegisterStep));
 
         var response = await _mediator.Send(new ManageRegisterUserCommand { RegisterUser = register });
 
         if (!response.IsSuccess && response.Message != null)
         {
             ViewData["ErrorMessage"] = string.Join(", ", response.Message);
+            register.Stage = RegisterStep.SetCredentials;
+            TempData[nameof(RegisterStep)] = RegisterStep.SetCredentials.ToString();
+            TempData["VerifiedEmail"] = register.Email;
             ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
             return View(register);
         }
@@ -243,6 +345,7 @@ public class AccountController : Controller
     }
 
     #endregion
+
 
     #region Logout
     [Route("logout")]

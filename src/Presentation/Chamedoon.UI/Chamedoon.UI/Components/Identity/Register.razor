@@ -1,4 +1,4 @@
-﻿@page "/Register"
+@page "/Register"
 @using Chamedoon.UI.Services
 @layout Chamedoon.UI.Components.Pages.EmptyLayout
 @inject IAccountOperation account
@@ -28,30 +28,72 @@
                                     <div class="mb-3">
                                         <div class="form-icon position-relative">
                                             <i data-feather="user" class="mdi mdi-account fea icon-sm icons"></i>
-                                            <InputText type="email" class="form-control ps-5" placeholder="ایمیل" @bind-Value="registerUser_VM.Email" />
+                                            <InputText type="email" class="form-control ps-5" placeholder="ایمیل" @bind-Value="registerUser_VM.Email" readonly="@(registerUser_VM.Stage != RegisterStep.EnterEmail)" />
                                             <ValidationMessage For="@(() => registerUser_VM.Email)" />
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        <div class="form-icon position-relative">
-                                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                                <span class="text-muted small">کد تایید به ایمیل شما ارسال می‌شود.</span>
-                                                <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="SendCodeAsync">ارسال کد</button>
+                                @if (registerUser_VM.Stage == RegisterStep.EnterEmail)
+                                {
+                                    <div class="col-lg-12 mb-2">
+                                        <button class="btn btn-outline-secondary w-100" type="button" @onclick="SendCodeAsync">ارسال کد</button>
+                                    </div>
+                                }
+
+                                @if (registerUser_VM.Stage >= RegisterStep.VerifyCode)
+                                {
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <div class="form-icon position-relative">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="text-muted small">کد تایید به ایمیل شما ارسال می‌شود.</span>
+                                                    <button class="btn btn-outline-secondary btn-sm" type="button" @onclick="VerifyCodeAsync">تایید کد</button>
+                                                </div>
+                                                <i data-feather="key" class="mdi mdi-key fea icon-sm icons"></i>
+                                                <InputText type="text" class="form-control ps-5" placeholder="کد تایید" @bind-Value="registerUser_VM.VerificationCode" />
+                                                <ValidationMessage For="@(() => registerUser_VM.VerificationCode)" />
                                             </div>
-                                            <i data-feather="key" class="mdi mdi-key fea icon-sm icons"></i>
-                                            <InputText type="text" class="form-control ps-5" placeholder="کد تایید" @bind-Value="registerUser_VM.VerificationCode" />
-                                            <ValidationMessage For="@(() => registerUser_VM.VerificationCode)" />
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-12 mb-0">
-                                    <div class="d-grid">
-                                        <button class="btn btn-primary" type="submit">ثبت نام</button>
+                                }
+
+                                @if (registerUser_VM.Stage == RegisterStep.SetCredentials)
+                                {
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <div class="form-icon position-relative">
+                                                <i data-feather="at-sign" class="mdi mdi-account fea icon-sm icons"></i>
+                                                <InputText type="text" class="form-control ps-5" placeholder="نام کاربری" @bind-Value="registerUser_VM.UserName" />
+                                                <ValidationMessage For="@(() => registerUser_VM.UserName)" />
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <div class="form-icon position-relative">
+                                                <i data-feather="lock" class="mdi mdi-lock fea icon-sm icons"></i>
+                                                <InputText type="password" class="form-control ps-5" placeholder="رمز عبور" @bind-Value="registerUser_VM.Password" />
+                                                <ValidationMessage For="@(() => registerUser_VM.Password)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <div class="form-icon position-relative">
+                                                <i data-feather="lock" class="mdi mdi-lock fea icon-sm icons"></i>
+                                                <InputText type="password" class="form-control ps-5" placeholder="تکرار رمز عبور" @bind-Value="registerUser_VM.ConfirmPassword" />
+                                                <ValidationMessage For="@(() => registerUser_VM.ConfirmPassword)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-0">
+                                        <div class="d-grid">
+                                            <button class="btn btn-primary" type="submit">ثبت نام</button>
+                                        </div>
+                                    </div>
+                                }
+
                                 <div class="col-lg-12 mt-4 text-center">
                                     <div class="row">
                                         <div class="d-grid">
@@ -85,6 +127,7 @@
     private bool success, errors;
     private string error;
     private string? infoMessage;
+    private string? verifiedEmail;
     private const string RegisterCodePurpose = "register";
     private static readonly TimeSpan VerificationCodeExpiration = TimeSpan.FromMinutes(5);
 
@@ -93,18 +136,17 @@
         success = errors = false;
         infoMessage = string.Empty;
 
-        if (string.IsNullOrWhiteSpace(registerUser_VM.Email))
+        if (registerUser_VM.Stage != RegisterStep.SetCredentials || verifiedEmail != registerUser_VM.Email)
         {
             errors = true;
-            error = "وارد کردن ایمیل الزامی است.";
-
+            error = "ابتدا ایمیل خود را تایید کنید.";
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(registerUser_VM.VerificationCode))
+        if (string.IsNullOrWhiteSpace(registerUser_VM.UserName) || string.IsNullOrWhiteSpace(registerUser_VM.Password))
         {
             errors = true;
-            error = "کد تایید را وارد کنید.";
+            error = "نام کاربری و رمز عبور را وارد کنید.";
             return;
         }
 
@@ -141,6 +183,35 @@
             "کد تایید چمدون",
             $"<p>کد تایید شما: <strong>{code}</strong></p><p>این کد به مدت ۵ دقیقه معتبر است.</p>");
 
+        registerUser_VM.Stage = RegisterStep.VerifyCode;
         infoMessage = "کد تایید ارسال شد.";
+    }
+
+    private Task VerifyCodeAsync()
+    {
+        success = errors = false;
+        infoMessage = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(registerUser_VM.VerificationCode))
+        {
+            errors = true;
+            error = "کد تایید را وارد کنید.";
+            return Task.CompletedTask;
+        }
+
+        var cacheKey = $"{RegisterCodePurpose}:{registerUser_VM.Email.ToLowerInvariant()}";
+        if (!memoryCache.TryGetValue<string>(cacheKey, out var storedCode) || storedCode != registerUser_VM.VerificationCode)
+        {
+            errors = true;
+            error = "کد وارد شده صحیح نیست یا منقضی شده است.";
+            return Task.CompletedTask;
+        }
+
+        memoryCache.Remove(cacheKey);
+        verifiedEmail = registerUser_VM.Email;
+        registerUser_VM.Stage = RegisterStep.SetCredentials;
+        registerUser_VM.VerificationCode = string.Empty;
+        infoMessage = "کد تایید شد. حالا نام کاربری و رمز عبور خود را وارد کنید.";
+        return Task.CompletedTask;
     }
 }
