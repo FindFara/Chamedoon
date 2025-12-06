@@ -1,6 +1,7 @@
 ﻿@model Chamedoon.Application.Services.Account.Login.ViewModel.LoginUserViewModel
 @{
     ViewData["Title"] = "ورود به چمدون";
+    Layout = "~/Views/Shared/AuthLayout.cshtml";
 }
 
 <section class="glass-section auth-section login-centered">
@@ -16,12 +17,12 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@(ViewData["LoginNonce"] as string)" />
                     <div class="glass-field">
-                        <label asp-for="Identifier" class="form-label">ایمیل یا نام کاربری</label>
+                        <label asp-for="Identifier" class="form-label text-end w-100">ایمیل یا نام کاربری</label>
                         <input asp-for="Identifier" type="text" class="form-control glass-input" placeholder="نام کاربری یا example@mail.com" />
                         <span asp-validation-for="Identifier" class="text-danger small"></span>
                     </div>
                     <div class="glass-field">
-                        <label asp-for="Password" class="form-label">رمز عبور</label>
+                        <label asp-for="Password" class="form-label text-end w-100">رمز عبور</label>
                         <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور" />
                         <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>

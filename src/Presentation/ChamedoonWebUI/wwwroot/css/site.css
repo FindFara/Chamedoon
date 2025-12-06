@@ -1332,14 +1332,14 @@ a:hover {
 }
 
 .auth-section.login-centered .container {
-    min-height: calc(100vh - 160px);
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .auth-card-shell {
-    width: min(560px, 100%);
+    width: min(440px, 100%);
     margin: 0 auto;
 }
 
@@ -1379,10 +1379,29 @@ a:hover {
 }
 
 .auth-card {
-    padding: clamp(1.75rem, 4vw, 2.5rem);
+    padding: clamp(1.5rem, 3.4vw, 2.1rem);
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+}
+
+.glass-field .form-label {
+    text-align: end;
+    width: 100%;
+}
+
+.auth-standalone-body {
+    min-height: 100vh;
+    background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.14), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.16), transparent 50%),
+        var(--body-bg);
+}
+
+.auth-standalone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
 }
 
 .auth-card-header {
