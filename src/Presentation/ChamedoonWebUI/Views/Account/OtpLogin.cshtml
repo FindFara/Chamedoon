@@ -1,0 +1,84 @@
+@{
+    ViewData["Title"] = "ورود با رمز یکبار مصرف";
+}
+
+<section class="glass-section auth-section">
+    <div class="container">
+        <div class="auth-grid">
+            <div class="auth-intro text-lg-end">
+                <span class="badge">ورود بدون رمز عبور</span>
+                <h1 class="fw-bold">ورود سریع با رمز یکبار مصرف</h1>
+                <p class="text-muted mb-4">
+                    برای ورود کافیست ایمیلت را وارد کنی تا یک کد چهار رقمی برایت ارسال شود.
+                    بعد از دریافت کد، آن را وارد کن تا وارد حساب کاربری‌ات شوی.
+                </p>
+                <ul class="auth-benefits">
+                    <li>بدون نیاز به حفظ رمز عبور</li>
+                    <li>ارسال سریع کد امنیتی به ایمیل</li>
+                    <li>ورود امن و راحت به حساب کاربری</li>
+                </ul>
+            </div>
+            <div class="glass-card auth-card">
+                <div class="auth-card-header">
+                    <h2>دریافت رمز یکبار مصرف</h2>
+                    <p class="glass-helper mb-0">ایمیلت را وارد کن تا کد ارسال شود.</p>
+                </div>
+                <form class="otp-form" novalidate>
+                    <div class="glass-field" id="otpEmailWrapper">
+                        <label for="otpEmail" class="form-label">ایمیل</label>
+                        <input id="otpEmail" type="email" class="form-control glass-input" placeholder="example@mail.com" required />
+                        <span class="text-danger small d-none" id="otpEmailError">لطفا یک ایمیل معتبر وارد کن.</span>
+                    </div>
+                    <div class="glass-field d-none" id="otpCodeWrapper">
+                        <label for="otpCode" class="form-label">کد چهار رقمی</label>
+                        <input id="otpCode" type="text" inputmode="numeric" maxlength="4" class="form-control glass-input" placeholder="••••" />
+                        <p class="glass-helper mb-0">کد ارسال شده به ایمیلت را وارد کن.</p>
+                    </div>
+                    <div class="text-danger small d-none" id="otpStatus"></div>
+                    <button type="button" class="btn-glass-primary w-100 mt-3" id="otpContinue">ادامه</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const emailInput = document.getElementById('otpEmail');
+            const codeInput = document.getElementById('otpCode');
+            const emailWrapper = document.getElementById('otpEmailWrapper');
+            const codeWrapper = document.getElementById('otpCodeWrapper');
+            const continueButton = document.getElementById('otpContinue');
+            const emailError = document.getElementById('otpEmailError');
+            const statusMessage = document.getElementById('otpStatus');
+
+            let codeRequested = false;
+
+            continueButton.addEventListener('click', function () {
+                if (!codeRequested) {
+                    const emailValue = emailInput.value.trim();
+                    const isValidEmail = /\S+@\S+\.\S+/.test(emailValue);
+
+                    if (!isValidEmail) {
+                        emailError.classList.remove('d-none');
+                        statusMessage.classList.add('d-none');
+                        return;
+                    }
+
+                    emailError.classList.add('d-none');
+                    statusMessage.textContent = 'کد ورود برای ایمیل وارد شده ارسال شد.';
+                    statusMessage.classList.remove('d-none');
+                    emailWrapper.classList.add('d-none');
+                    codeWrapper.classList.remove('d-none');
+                    continueButton.textContent = 'تایید کد';
+                    codeRequested = true;
+                    codeInput.focus();
+                } else {
+                    statusMessage.textContent = 'کد وارد شده ثبت شد.';
+                    statusMessage.classList.remove('d-none');
+                }
+            });
+        });
+    </script>
+}
