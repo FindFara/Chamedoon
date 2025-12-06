@@ -25,9 +25,9 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@(ViewData["LoginNonce"] as string)" />
                     <div class="glass-field">
-                        <label asp-for="Email" class="form-label">ایمیل</label>
-                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
-                        <span asp-validation-for="Email" class="text-danger small"></span>
+                        <label asp-for="Identifier" class="form-label">ایمیل یا نام کاربری</label>
+                        <input asp-for="Identifier" type="text" class="form-control glass-input" placeholder="نام کاربری یا example@mail.com" />
+                        <span asp-validation-for="Identifier" class="text-danger small"></span>
                     </div>
                     <div class="glass-field">
                         <label asp-for="Password" class="form-label">رمز عبور</label>
@@ -45,6 +45,7 @@
                     <button type="submit" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ورود به چمدون</button>
                 </form>
                 <div class="auth-divider">یا ورود با</div>
+                <a asp-controller="Account" asp-action="OtpLogin" class="btn-outline-glass w-100 mb-2">ورود با رمز یکبار مصرف</a>
                 <a asp-controller="Account" asp-action="login-google" class="btn-google w-100">
                     <span aria-hidden="true">🔐</span>
                     ورود با حساب گوگل
