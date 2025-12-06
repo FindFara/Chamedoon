@@ -1362,6 +1362,11 @@ a:hover {
     justify-items: center;
 }
 
+.auth-grid-single {
+    grid-template-columns: 1fr;
+    justify-items: center;
+}
+
 .auth-intro {
     display: flex;
     flex-direction: column;
