@@ -58,7 +58,7 @@
             continueButton.addEventListener('click', function () {
                 if (!codeRequested) {
                     const emailValue = emailInput.value.trim();
-                    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue);
+                    const isValidEmail = /^[^\s]+[^\s]+\.[^\s]+$/.test(emailValue);
 
                     if (!isValidEmail) {
                         emailError.classList.remove('d-none');
