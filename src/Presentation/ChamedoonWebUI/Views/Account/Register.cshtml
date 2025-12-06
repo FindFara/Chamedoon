@@ -1,4 +1,4 @@
-@model Chamedoon.Application.Services.Account.Register.ViewModel.RegisterUser_VM
+@model ChamedoonWebUI.Models.RegisterWithCodeViewModel
 @{ 
     ViewData["Title"] = "ثبت‌نام در چمدون";
     ViewData["HideChrome"] = true;
@@ -19,22 +19,47 @@
                 <form asp-action="Register" method="post" novalidate data-prevent-multi-submit="true">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@(ViewData["RegisterNonce"] as string)" />
-                    <div class="glass-field">
-                        <label asp-for="Email" class="form-label">ایمیل</label>
-                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
-                        <span asp-validation-for="Email" class="text-danger small"></span>
-                    </div>
-                    <div class="glass-field">
-                        <label asp-for="Password" class="form-label">رمز عبور</label>
-                        <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور قدرتمند" />
-                        <span asp-validation-for="Password" class="text-danger small"></span>
-                    </div>
-                    @if (ViewData["ErrorMessage"] != null)
+                    @if (!Model.CodeSent)
                     {
-                        <div class="text-danger small">@ViewData["ErrorMessage"]</div>
+                        <div class="glass-field">
+                            <label asp-for="Email" class="form-label">ایمیل</label>
+                            <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="text-danger small" asp-validation-summary="All"></div>
+                        <button type="submit" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ارسال کد تأیید</button>
                     }
-                    <div class="text-danger small" asp-validation-summary="All"></div>
-                    <button type="submit" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ثبت‌نام و ادامه</button>
+                    else
+                    {
+                        <input type="hidden" asp-for="Email" />
+                        <input type="hidden" asp-for="CodeSent" value="true" />
+                        <div class="glass-field">
+                            <label class="form-label">کد تأیید ارسال شده به @Model.Email</label>
+                            <div class="d-flex gap-2 justify-content-between code-input-group">
+                                @for (var i = 0; i < 4; i++)
+                                {
+                                    <input name="CodeDigits[@i]" value="@(Model.CodeDigits?.ElementAtOrDefault(i) ?? string.Empty)" class="form-control glass-input text-center code-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" />
+                                }
+                            </div>
+                            <span asp-validation-for="CodeDigits" class="text-danger small"></span>
+                        </div>
+                        <div class="glass-field">
+                            <label asp-for="Password" class="form-label">رمز عبور</label>
+                            <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور قدرتمند" />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+                        <div class="glass-field">
+                            <label asp-for="ConfirmPassword" class="form-label">تایید رمز عبور</label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control glass-input" placeholder="تکرار رمز عبور" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                        @if (ViewData["ErrorMessage"] != null)
+                        {
+                            <div class="text-danger small">@ViewData["ErrorMessage"]</div>
+                        }
+                        <div class="text-danger small" asp-validation-summary="All"></div>
+                        <button type="submit" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">تایید کد و ساخت حساب</button>
+                    }
                 </form>
                 <div class="auth-divider">یا ثبت‌نام با</div>
                 <a asp-controller="Account" asp-action="login-google" class="btn-google w-100">
@@ -48,3 +73,26 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        (function () {
+            const inputs = document.querySelectorAll('.code-input');
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', (event) => {
+                    const value = event.target.value.replace(/\D/g, '');
+                    event.target.value = value.slice(0, 1);
+                    if (event.target.value && inputs[index + 1]) {
+                        inputs[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener('keydown', (event) => {
+                    if (event.key === 'Backspace' && !event.target.value && inputs[index - 1]) {
+                        inputs[index - 1].focus();
+                    }
+                });
+            });
+        })();
+    </script>
+}
