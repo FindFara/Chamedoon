@@ -82,38 +82,73 @@
     <script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.3/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         (function () {
-            tinymce.init({
-                selector: 'textarea.rich-text-short',
-                menubar: false,
-                directionality: 'rtl',
-                min_height: 220,
-                plugins: 'lists link emoticons paste',
-                toolbar: 'undo redo | bold italic underline forecolor backcolor | bullist numlist | link emoticons | removeformat',
-                paste_as_text: false,
-                branding: false
-            });
+            const editorBackground = {
+                light: '#ffffff',
+                dark: '#0c1424'
+            };
 
-            tinymce.init({
-                selector: 'textarea.rich-text-long',
-                menubar: true,
-                directionality: 'rtl',
-                min_height: 420,
-                plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount codesample',
-                toolbar: 'undo redo | styles | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image codesample table | removeformat preview fullscreen',
-                automatic_uploads: true,
-                file_picker_types: 'image',
-                images_file_types: 'jpg,jpeg,png,gif,webp',
-                images_upload_handler: function (blobInfo, success, failure) {
-                    try {
-                        const dataUrl = 'data:' + blobInfo.blob().type + ';base64,' + blobInfo.base64();
-                        success(dataUrl);
-                    } catch (error) {
-                        failure('امکان بارگذاری تصویر وجود ندارد.');
-                    }
-                },
-                branding: false,
-                content_style: 'body { font-family: Vazirmatn, sans-serif; } pre, code { direction: ltr; text-align: left; }'
-            });
+            const editorText = {
+                light: '#111827',
+                dark: '#e5edff'
+            };
+
+            const buildThemeOptions = () => {
+                const isDark = document.body.classList.contains('dark-mode');
+                return {
+                    skin: isDark ? 'oxide-dark' : 'oxide',
+                    content_css: isDark ? 'dark' : 'default',
+                    content_style: `body { font-family: Vazirmatn, sans-serif; background-color: ${isDark ? editorBackground.dark : editorBackground.light}; color: ${isDark ? editorText.dark : editorText.light}; } pre, code { direction: ltr; text-align: left; } a { color: ${isDark ? '#93c5fd' : '#0ea5e9'}; } p, div, span { color: ${isDark ? editorText.dark : editorText.light}; }`
+                };
+            };
+
+            const initEditors = () => {
+                const themeOptions = buildThemeOptions();
+
+                tinymce.init({
+                    selector: 'textarea.rich-text-short',
+                    menubar: false,
+                    directionality: 'rtl',
+                    min_height: 220,
+                    plugins: 'lists link emoticons paste',
+                    toolbar: 'undo redo | bold italic underline forecolor backcolor | bullist numlist | link emoticons | removeformat',
+                    paste_as_text: false,
+                    branding: false,
+                    ...themeOptions
+                });
+
+                tinymce.init({
+                    selector: 'textarea.rich-text-long',
+                    menubar: true,
+                    directionality: 'rtl',
+                    min_height: 420,
+                    plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table help wordcount codesample',
+                    toolbar: 'undo redo | styles | bold italic underline forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image codesample table | removeformat preview fullscreen',
+                    automatic_uploads: true,
+                    file_picker_types: 'image',
+                    images_file_types: 'jpg,jpeg,png,gif,webp',
+                    images_upload_handler: function (blobInfo, success, failure) {
+                        try {
+                            const dataUrl = 'data:' + blobInfo.blob().type + ';base64,' + blobInfo.base64();
+                            success(dataUrl);
+                        } catch (error) {
+                            failure('امکان بارگذاری تصویر وجود ندارد.');
+                        }
+                    },
+                    branding: false,
+                    ...themeOptions
+                });
+            };
+
+            const rebuildEditors = () => {
+                if (window.tinymce?.editors?.length) {
+                    window.tinymce.editors.forEach(editor => editor.remove());
+                }
+                initEditors();
+            };
+
+            initEditors();
+
+            window.addEventListener('adminThemeChanged', rebuildEditors);
 
             const form = document.querySelector('form[data-blog-editor]') ?? document.querySelector('form');
             form?.addEventListener('submit', function () {
