@@ -29,11 +29,16 @@ public class ManageLoginUserQueryHandler : IRequestHandler<ManageLoginUserComman
     #region Method
     public async Task<OperationResult<UserDetails_VM>> Handle(ManageLoginUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await mediator.Send(new GetUserQuery { Email = request.LoginUser.Email });
-        if (user.IsSuccess is false)
-            return OperationResult<UserDetails_VM>.Fail();
+        var identifier = request.LoginUser.Identifier;
+        var user = await mediator.Send(new GetUserQuery { Email = identifier, UserName = identifier });
+        if (user.IsSuccess is false || user.Result is null)
+            return OperationResult<UserDetails_VM>.Fail(user.Message);
 
-        OperationResult<bool> checkUser = await mediator.Send(new CheckUserNameAndPasswordMatchQuery { LoginUser = request.LoginUser, UserName =user.Result.UserName});
+        OperationResult<bool> checkUser = await mediator.Send(new CheckUserNameAndPasswordMatchQuery
+        {
+            LoginUser = request.LoginUser,
+            UserName = user.Result.UserName
+        });
         if (checkUser.IsSuccess is false)
             return OperationResult<UserDetails_VM>.Fail(checkUser.Message);
 
