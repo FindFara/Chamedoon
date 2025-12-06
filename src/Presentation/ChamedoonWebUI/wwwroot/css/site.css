@@ -1299,11 +1299,67 @@ a:hover {
     z-index: 1;
 }
 
+.auth-section-centered {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: clamp(2rem, 5vw, 3.5rem) 0;
+    overflow: hidden;
+}
+
+.auth-section-centered .container {
+    display: flex;
+    justify-content: center;
+}
+
+.auth-abstract-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.auth-abstract-bg .blob {
+    position: absolute;
+    width: 30rem;
+    height: 30rem;
+    filter: blur(80px);
+    opacity: 0.6;
+    border-radius: 999px;
+}
+
+.auth-abstract-bg .blob-1 {
+    top: -6rem;
+    right: -8rem;
+    background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.45), rgba(56, 189, 248, 0));
+}
+
+.auth-abstract-bg .blob-2 {
+    bottom: -10rem;
+    left: -6rem;
+    background: radial-gradient(circle at 70% 70%, rgba(16, 185, 129, 0.35), rgba(45, 55, 72, 0));
+}
+
+.auth-abstract-bg .grid-pattern {
+    position: absolute;
+    inset: 10% 5%;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.12), transparent 55%),
+        radial-gradient(circle at 70% 70%, rgba(59, 130, 246, 0.1), transparent 50%);
+    mask-image: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
 .auth-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     align-items: center;
     gap: clamp(2rem, 5vw, 4rem);
+}
+
+.auth-grid-compact {
+    max-width: 960px;
+    width: 100%;
+    margin: 0 auto;
+    justify-items: center;
 }
 
 .auth-intro {
@@ -1326,6 +1382,12 @@ a:hover {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+}
+
+.auth-card-compact {
+    width: min(420px, 100%);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 24px 64px -28px rgba(15, 23, 42, 0.35);
 }
 
 .auth-card-header {
