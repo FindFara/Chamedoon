@@ -690,6 +690,51 @@ body.landing-page.dark-mode .result-insights {
     border-color: rgba(148, 163, 184, 0.35);
 }
 
+body.landing-page.dark-mode .score-rings {
+    background: radial-gradient(circle at 10% 20%, rgba(148, 163, 184, 0.08), rgba(15, 23, 42, 0));
+    border-radius: 1rem;
+}
+
+body.landing-page.dark-mode .ring-item {
+    color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .ring-visual {
+    background: radial-gradient(circle at 25% 25%, rgba(148, 163, 184, 0.14), rgba(15, 23, 42, 0.9));
+    box-shadow: 0 24px 52px -24px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+body.landing-page.dark-mode .ring-track {
+    stroke: rgba(226, 232, 240, 0.16);
+}
+
+body.landing-page.dark-mode .ring-country {
+    color: #e5e7eb;
+}
+
+body.landing-page.dark-mode .ring-meta,
+body.landing-page.dark-mode .ring-meta .visa-pill {
+    color: #cbd5f5;
+}
+
+body.landing-page.dark-mode .ring-meta .visa-pill {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(165, 180, 252, 0.25);
+}
+
+body.landing-page.dark-mode .ring-tip .tip-dot {
+    background: #0f172a;
+    border-color: rgba(165, 180, 252, 0.9);
+    box-shadow: 0 10px 24px -12px rgba(99, 102, 241, 0.65);
+}
+
+body.landing-page.dark-mode .ring-tip .tip-label {
+    background: rgba(99, 102, 241, 0.22);
+    color: #e0e7ff;
+    border-color: rgba(165, 180, 252, 0.45);
+    box-shadow: 0 18px 36px -18px rgba(99, 102, 241, 0.65);
+}
+
 body.landing-page.dark-mode .insight-pill {
     background: rgba(79, 70, 229, 0.3);
     color: #cbd5f5;
