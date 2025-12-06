@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Chamedoon.Application.Common.Models;
+﻿using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Login.ViewModel;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Account.Users.ViewModel;
@@ -14,15 +13,13 @@ public class ManageLoginUserQueryHandler : IRequestHandler<ManageLoginUserComman
 {
     #region Property
     private readonly IMediator mediator;
-    private readonly IMapper mapper;
 
     #endregion
 
     #region Ctor
-    public ManageLoginUserQueryHandler(IMediator mediator, IMapper mapper)
+    public ManageLoginUserQueryHandler(IMediator mediator)
     {
         this.mediator = mediator;
-        this.mapper = mapper;
     }
     #endregion
 
@@ -33,11 +30,7 @@ public class ManageLoginUserQueryHandler : IRequestHandler<ManageLoginUserComman
         if (user.IsSuccess is false)
             return OperationResult<UserDetails_VM>.Fail();
 
-        OperationResult<bool> checkUser = await mediator.Send(new CheckUserNameAndPasswordMatchQuery { LoginUser = request.LoginUser, UserName =user.Result.UserName});
-        if (checkUser.IsSuccess is false)
-            return OperationResult<UserDetails_VM>.Fail(checkUser.Message);
-
-        return OperationResult<UserDetails_VM>.Success(mapper.Map<UserDetails_VM>(user.Result));
+        return OperationResult<UserDetails_VM>.Fail("ورود با رمز عبور غیرفعال شده است. لطفاً از کد تایید استفاده کنید.");
     }
 
     #endregion

@@ -31,16 +31,23 @@
                         <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
                     <div class="glass-field">
-                        <label asp-for="Password" class="form-label">رمز عبور</label>
-                        <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور قدرتمند" />
-                        <span asp-validation-for="Password" class="text-danger small"></span>
+                        <button type="submit" name="actionType" value="sendCode" class="btn btn-outline-secondary btn-sm float-start mb-2">
+                            ارسال کد به ایمیل
+                        </button>
+                        <label asp-for="VerificationCode" class="form-label">کد تایید</label>
+                        <input asp-for="VerificationCode" type="text" class="form-control glass-input" placeholder="کد چهار رقمی" />
+                        <span asp-validation-for="VerificationCode" class="text-danger small"></span>
                     </div>
                     @if (ViewData["ErrorMessage"] != null)
                     {
                         <div class="text-danger small">@ViewData["ErrorMessage"]</div>
                     }
+                    @if (ViewBag.InfoMessage != null)
+                    {
+                        <div class="alert alert-info py-2">@ViewBag.InfoMessage</div>
+                    }
                     <div class="text-danger small" asp-validation-summary="All"></div>
-                    <button type="submit" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ثبت‌نام و ادامه</button>
+                    <button type="submit" name="actionType" value="register" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ثبت‌نام و ادامه</button>
                 </form>
                 <div class="auth-divider">یا ثبت‌نام با</div>
                 <a asp-controller="Account" asp-action="login-google" class="btn-google w-100">
