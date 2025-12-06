@@ -20,17 +20,28 @@
                 <form asp-action="LoginWithCode" method="post" novalidate data-prevent-multi-submit="true">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@(ViewData["LoginWithCodeNonce"] as string)" />
+                    <input type="hidden" asp-for="CodeSent" />
                     <div class="glass-field">
                         <label asp-for="Email" class="form-label">ایمیل</label>
-                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
+                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" @(Model.CodeSent ? "readonly" : string.Empty) />
                         <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
                     <div class="glass-field">
                         <button type="submit" name="actionType" value="sendCode" class="btn btn-outline-secondary btn-sm float-start mb-2">
-                            ارسال کد به ایمیل
+                            @(Model.CodeSent ? "ارسال مجدد کد" : "ارسال کد به ایمیل")
                         </button>
-                        <label asp-for="VerificationCode" class="form-label">کد تایید</label>
-                        <input asp-for="VerificationCode" type="text" class="form-control glass-input" placeholder="کد چهار رقمی" />
+                        <label class="form-label">کد تایید</label>
+                        <input type="hidden" asp-for="VerificationCode" />
+                        <div class="d-flex gap-2 otp-input-group" data-target="VerificationCode">
+                            <input class="form-control glass-input otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="رقم اول کد" @(Model.CodeSent ? string.Empty : "disabled") />
+                            <input class="form-control glass-input otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="رقم دوم کد" @(Model.CodeSent ? string.Empty : "disabled") />
+                            <input class="form-control glass-input otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="رقم سوم کد" @(Model.CodeSent ? string.Empty : "disabled") />
+                            <input class="form-control glass-input otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="رقم چهارم کد" @(Model.CodeSent ? string.Empty : "disabled") />
+                        </div>
+                        @if (!Model.CodeSent)
+                        {
+                            <small class="text-muted">پس از ارسال کد، امکان وارد کردن آن فعال می‌شود.</small>
+                        }
                         <span asp-validation-for="VerificationCode" class="text-danger small"></span>
                     </div>
                     <div class="auth-secondary-actions mt-2 d-flex justify-content-between align-items-center">
@@ -54,3 +65,59 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        (function () {
+            const groups = document.querySelectorAll('.otp-input-group');
+
+            groups.forEach(group => {
+                const targetId = group.getAttribute('data-target');
+                const hidden = document.getElementById(targetId);
+                const inputs = Array.from(group.querySelectorAll('.otp-input'));
+
+                const syncHidden = () => {
+                    const value = inputs.map(i => i.value).join('');
+                    if (hidden) {
+                        hidden.value = value;
+                    }
+                };
+
+                inputs.forEach((input, index) => {
+                    input.addEventListener('input', (e) => {
+                        input.value = input.value.replace(/[^0-9]/g, '');
+                        if (input.value && index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        }
+                        syncHidden();
+                    });
+
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Backspace' && !input.value && index > 0) {
+                            inputs[index - 1].focus();
+                        }
+                    });
+
+                    input.addEventListener('paste', (e) => {
+                        const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, inputs.length);
+                        inputs.forEach((box, boxIndex) => {
+                            box.value = text[boxIndex] ?? '';
+                        });
+                        syncHidden();
+                        const nextIndex = Math.min(text.length, inputs.length - 1);
+                        inputs[nextIndex]?.focus();
+                        e.preventDefault();
+                    });
+                });
+
+                if (hidden && hidden.value) {
+                    hidden.value.split('').forEach((digit, i) => {
+                        if (inputs[i]) {
+                            inputs[i].value = digit;
+                        }
+                    });
+                }
+            });
+        })();
+    </script>
+}

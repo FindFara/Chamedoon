@@ -17,4 +17,6 @@ public class LoginWithCodeViewModel
 
     [Display(Name = "مرا به خاطر بسپار")]
     public bool RememberMe { get; set; }
+
+    public bool CodeSent { get; set; }
 }

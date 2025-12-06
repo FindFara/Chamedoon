@@ -161,6 +161,7 @@ public class AccountController : Controller
         if (string.Equals(actionType, "sendCode", StringComparison.OrdinalIgnoreCase))
         {
             ModelState.Remove(nameof(LoginWithCodeViewModel.VerificationCode));
+            ModelState.Remove(nameof(LoginWithCodeViewModel.CodeSent));
 
             if (!ModelState.IsValid)
             {
@@ -178,12 +179,14 @@ public class AccountController : Controller
 
             await SendVerificationCodeAsync(loginModel.Email, LoginCodePurpose);
             ViewBag.InfoMessage = "کد ورود ارسال شد.";
+            loginModel.CodeSent = true;
             ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
             return View(loginModel);
         }
 
         if (!ModelState.IsValid)
         {
+            loginModel.CodeSent = loginModel.CodeSent || !string.IsNullOrWhiteSpace(loginModel.VerificationCode);
             ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
             return View(loginModel);
         }
@@ -191,6 +194,7 @@ public class AccountController : Controller
         if (!ValidateVerificationCode(loginModel.Email, LoginCodePurpose, loginModel.VerificationCode ?? string.Empty))
         {
             ModelState.AddModelError(nameof(LoginWithCodeViewModel.VerificationCode), "کد وارد شده نامعتبر است یا منقضی شده است.");
+            loginModel.CodeSent = true;
             ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
             return View(loginModel);
         }
@@ -199,6 +203,7 @@ public class AccountController : Controller
         if (userLookup.IsSuccess is false || userLookup.Result is null)
         {
             ModelState.AddModelError(string.Empty, "کاربری با این ایمیل یافت نشد.");
+            loginModel.CodeSent = true;
             ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
             return View(loginModel);
         }
@@ -207,6 +212,7 @@ public class AccountController : Controller
         if (!signInResult.IsSuccess)
         {
             ModelState.AddModelError(string.Empty, signInResult.Message);
+            loginModel.CodeSent = true;
             ViewData["LoginWithCodeNonce"] = PrepareRequestNonce(nameof(LoginWithCode));
             return View(loginModel);
         }

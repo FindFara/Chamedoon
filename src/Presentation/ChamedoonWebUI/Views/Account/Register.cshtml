@@ -42,8 +42,14 @@
                     {
                         <div class="glass-field">
                             <label asp-for="VerificationCode" class="form-label">کد تایید</label>
-                            <div class="d-flex gap-2">
-                                <input asp-for="VerificationCode" type="text" class="form-control glass-input" placeholder="کد چهار رقمی" />
+                            <input type="hidden" asp-for="VerificationCode" />
+                            <div class="d-flex gap-2 flex-wrap flex-lg-nowrap align-items-center">
+                                <div class="d-flex gap-2 otp-input-group" data-target="VerificationCode">
+                                    <input class="form-control glass-input otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="رقم اول کد" />
+                                    <input class="form-control glass-input otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="رقم دوم کد" />
+                                    <input class="form-control glass-input otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="رقم سوم کد" />
+                                    <input class="form-control glass-input otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="رقم چهارم کد" />
+                                </div>
                                 <button type="submit" name="actionType" value="verifyCode" class="btn btn-outline-secondary">تایید کد</button>
                             </div>
                             <span asp-validation-for="VerificationCode" class="text-danger small"></span>
@@ -95,3 +101,59 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        (function () {
+            const groups = document.querySelectorAll('.otp-input-group');
+
+            groups.forEach(group => {
+                const targetId = group.getAttribute('data-target');
+                const hidden = document.getElementById(targetId);
+                const inputs = Array.from(group.querySelectorAll('.otp-input'));
+
+                const syncHidden = () => {
+                    const value = inputs.map(i => i.value).join('');
+                    if (hidden) {
+                        hidden.value = value;
+                    }
+                };
+
+                inputs.forEach((input, index) => {
+                    input.addEventListener('input', () => {
+                        input.value = input.value.replace(/[^0-9]/g, '');
+                        if (input.value && index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        }
+                        syncHidden();
+                    });
+
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Backspace' && !input.value && index > 0) {
+                            inputs[index - 1].focus();
+                        }
+                    });
+
+                    input.addEventListener('paste', (e) => {
+                        const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, inputs.length);
+                        inputs.forEach((box, boxIndex) => {
+                            box.value = text[boxIndex] ?? '';
+                        });
+                        syncHidden();
+                        const nextIndex = Math.min(text.length, inputs.length - 1);
+                        inputs[nextIndex]?.focus();
+                        e.preventDefault();
+                    });
+                });
+
+                if (hidden && hidden.value) {
+                    hidden.value.split('').forEach((digit, i) => {
+                        if (inputs[i]) {
+                            inputs[i].value = digit;
+                        }
+                    });
+                }
+            });
+        })();
+    </script>
+}
