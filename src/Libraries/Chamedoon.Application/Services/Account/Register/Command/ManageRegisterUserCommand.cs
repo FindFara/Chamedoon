@@ -3,8 +3,8 @@ using Chamedoon.Application.Services.Account.Query;
 using Chamedoon.Application.Services.Account.Register.ViewModel;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Customers.Command;
-using Chamedoon.Application.Services.Email.Query;
 using MediatR;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Chamedoon.Application.Services.Account.Register.Command;
 
@@ -16,18 +16,26 @@ public class ManageRegisterUserCommandHandler : IRequestHandler<ManageRegisterUs
 {
     #region Property
     private readonly IMediator mediator;
+    private readonly IMemoryCache memoryCache;
     #endregion
 
     #region Ctor
-    public ManageRegisterUserCommandHandler(IMediator mediator)
+    public ManageRegisterUserCommandHandler(IMediator mediator, IMemoryCache memoryCache)
     {
         this.mediator = mediator;
+        this.memoryCache = memoryCache;
     }
     #endregion
 
     #region Method
     public async Task<OperationResult<bool>> Handle(ManageRegisterUserCommand request, CancellationToken cancellationToken)
     {
+        var cacheKey = $"register:{request.RegisterUser.Email.ToLowerInvariant()}";
+        if (!memoryCache.TryGetValue<string>(cacheKey, out var storedCode) || storedCode != request.RegisterUser.VerificationCode)
+            return OperationResult<bool>.Fail("کد تایید نامعتبر است یا منقضی شده است.");
+
+        memoryCache.Remove(cacheKey);
+
         //Check Duplicated Email
         var checkEmail = await mediator.Send(new CheckDuplicatedEmailQuery { Email = request.RegisterUser.Email });
         if (checkEmail.IsSuccess is false)
