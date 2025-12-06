@@ -1,6 +1,5 @@
 ﻿using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Application.Common.Models;
-using Chamedoon.Application.Services.Email.Query;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,10 +33,9 @@ public class CheckDuplicatedEmailQueryHandler : IRequestHandler<CheckDuplicatedE
         {
             var user = await mediator.Send(new GetUserQuery { Email = request.Email });
 
-            if (!user.Result.EmailConfirmed)
+            if (user.IsSuccess && user.Result is not null && !user.Result.EmailConfirmed)
             {
-                await mediator.Send(new SendTokenToUserEmailQuery { UserName = user.Result.UserName });
-                return OperationResult<bool>.Fail("ایمیل شما قبلاً ثبت شده اما هنوز تأیید نشده. لطفاً ایمیل خود را تأیید کنید.");
+                return OperationResult<bool>.Fail("ایمیل شما قبلاً ثبت شده اما هنوز تأیید نشده است. لطفاً کد تأیید جدید دریافت کنید.");
             }
             return OperationResult<bool>.Fail("این ایمیل قبلاً استفاده شده است. لطفاً لاگین کنید.");
         }

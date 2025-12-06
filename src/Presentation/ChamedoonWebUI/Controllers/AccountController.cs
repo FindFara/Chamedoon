@@ -1,4 +1,3 @@
-﻿using Azure.Core;
 using Chamedoon.Application.Services.Account.Login.Command;
 using Chamedoon.Application.Services.Account.Login.Query;
 using Chamedoon.Application.Services.Account.Login.ViewModel;
@@ -16,14 +15,13 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.DotNet.Scaffolding.Shared;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using NuGet.Common;
-using System;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Linq;
 
 namespace ChamedoonWebUI.Controllers;
 
@@ -100,13 +98,13 @@ public class AccountController : Controller
     public IActionResult Register()
     {
         ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
-        return View();
+        return View(new RegisterWithCodeViewModel());
     }
 
     [Route("register")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterUser_VM register, string requestNonce)
+    public async Task<IActionResult> Register(RegisterWithCodeViewModel register, string requestNonce)
     {
         if (!IsRequestNonceValid(nameof(Register), requestNonce))
         {
@@ -115,21 +113,121 @@ public class AccountController : Controller
             return View(register);
         }
 
-        if (ModelState.IsValid)
+        if (!register.CodeSent)
         {
-            var response = await _mediator.Send(new ManageRegisterUserCommand { RegisterUser = register });
-
-            if (!response.IsSuccess && response.Message != null)
+            if (!ModelState.IsValid)
             {
-                ViewData["ErrorMessage"] = string.Join(", ", response.Message);
                 ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
                 return View(register);
             }
 
-            return RedirectToAction("EmailVerification");
+            var verificationCode = RandomNumberGenerator.GetInt32(1000, 10000).ToString("D4");
+            TempData["RegisterEmail"] = register.Email;
+            TempData["RegisterCode"] = verificationCode;
+
+            var sendResult = await _mediator.Send(new SendVerificationCodeEmailQuery
+            {
+                Email = register.Email,
+                VerificationCode = verificationCode
+            });
+
+            if (!sendResult.IsSuccess)
+            {
+                ModelState.AddModelError(string.Empty, sendResult.Message ?? "ارسال کد تأیید ناموفق بود.");
+                ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+                return View(register);
+            }
+
+            register.CodeSent = true;
+            register.CodeDigits = new string[4];
+            ModelState.Clear();
+            ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+            TempData.Keep("RegisterEmail");
+            TempData.Keep("RegisterCode");
+            return View(register);
         }
-        ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
-        return View(register);
+
+        register.CodeSent = true;
+        register.CodeDigits ??= new string[4];
+
+        var storedEmail = TempData.Peek("RegisterEmail") as string;
+        var storedCode = TempData.Peek("RegisterCode") as string;
+
+        if (string.IsNullOrEmpty(storedEmail) || string.IsNullOrEmpty(storedCode))
+        {
+            ModelState.AddModelError(string.Empty, "کد تأیید منقضی شده است. لطفاً دوباره درخواست بده.");
+            register.CodeSent = false;
+            ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+            return View(register);
+        }
+
+        var enteredCode = string.Concat(register.CodeDigits).Trim();
+        if (enteredCode.Length != 4 || !enteredCode.All(char.IsDigit))
+        {
+            ModelState.AddModelError(nameof(register.CodeDigits), "کد تأیید باید شامل چهار رقم باشد.");
+        }
+
+        if (string.IsNullOrWhiteSpace(register.Password))
+        {
+            ModelState.AddModelError(nameof(register.Password), "رمز عبور را وارد کن.");
+        }
+
+        if (string.IsNullOrWhiteSpace(register.ConfirmPassword))
+        {
+            ModelState.AddModelError(nameof(register.ConfirmPassword), "تکرار رمز عبور را وارد کن.");
+        }
+
+        if (!string.IsNullOrWhiteSpace(register.Password) &&
+            !string.IsNullOrWhiteSpace(register.ConfirmPassword) &&
+            register.Password != register.ConfirmPassword)
+        {
+            ModelState.AddModelError(nameof(register.ConfirmPassword), "رمزهای عبور یکسان نیست.");
+        }
+
+        if (!string.Equals(register.Email, storedEmail, StringComparison.OrdinalIgnoreCase))
+        {
+            ModelState.AddModelError(string.Empty, "ایمیل وارد شده با ایمیلی که کد برای آن ارسال شد مطابقت ندارد.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+            TempData.Keep("RegisterEmail");
+            TempData.Keep("RegisterCode");
+            return View(register);
+        }
+
+        if (enteredCode != storedCode)
+        {
+            ModelState.AddModelError(nameof(register.CodeDigits), "کد تأیید صحیح نیست.");
+            ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+            TempData.Keep("RegisterEmail");
+            TempData.Keep("RegisterCode");
+            return View(register);
+        }
+
+        var response = await _mediator.Send(new ManageRegisterUserCommand
+        {
+            RegisterUser = new RegisterUser_VM
+            {
+                Email = register.Email,
+                Password = register.Password!
+            }
+        });
+
+        if (!response.IsSuccess && response.Message != null)
+        {
+            ViewData["ErrorMessage"] = string.Join(", ", response.Message);
+            ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+            TempData.Keep("RegisterEmail");
+            TempData.Keep("RegisterCode");
+            return View(register);
+        }
+
+        TempData.Remove("RegisterEmail");
+        TempData.Remove("RegisterCode");
+
+        return RedirectToAction(nameof(Login));
     }
 
     #endregion
