@@ -2,7 +2,6 @@
 using Chamedoon.Application.Common.Extensions;
 using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Register.ViewModel;
-using Chamedoon.Application.Services.Email.Query;
 using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -18,15 +17,13 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
     #region Property
     private readonly IMapper mapper;
     private readonly UserManager<User> userManager;
-    private readonly IMediator mediator;
     #endregion
 
     #region Ctor
-    public RegisterUserCommandHandler(IMapper mapper, UserManager<User> userManager, IMediator mediator)
+    public RegisterUserCommandHandler(IMapper mapper, UserManager<User> userManager)
     {
         this.mapper = mapper;
         this.userManager = userManager;
-        this.mediator = mediator;
     }
     #endregion
 
@@ -35,11 +32,11 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
     {
         User user = mapper.Map<User>(request.RegisterUser);
         user.UserName = string.Concat("U-",StringExtensions.GenerateRandomString(8));
-        var registerUser = await userManager.CreateAsync(user, request.RegisterUser.Password);
+        user.EmailConfirmed = true;
+        var registerUser = await userManager.CreateAsync(user);
         if (registerUser.Succeeded)
         {
             await userManager.AddToRoleAsync(user, "Member");
-            var tokenUser = await mediator.Send(new SendTokenToUserEmailQuery { UserName = user.UserName });
 
             return OperationResult<long>.Success(user.Id);
         }
