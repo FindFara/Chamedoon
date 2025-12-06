@@ -21,17 +21,27 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@(ViewData["LoginWithCodeNonce"] as string)" />
                     <input type="hidden" asp-for="CodeSent" />
-                    <div class="glass-field">
-                        <label asp-for="Email" class="form-label">ایمیل</label>
-                        @{
-                            string? ro = Model.CodeSent ? "readonly" : null;
-                        }
-                        <input asp-for="Email"
-                               type="email"
-                               class="form-control glass-input"
-                               placeholder="example@mail.com"
-                               readonly="@ro" />                        <span asp-validation-for="Email" class="text-danger small"></span>
-                    </div>
+
+                    @if (!Model.CodeSent)
+                    {
+                        <div class="glass-field">
+                            <label asp-for="Email" class="form-label">ایمیل</label>
+                            <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <button type="submit" name="actionType" value="sendCode" class="btn btn-outline-secondary w-100 mb-3">
+                            ارسال کد به ایمیل
+                        </button>
+                    }
+                    else
+                    {
+                        <input type="hidden" asp-for="Email" />
+                        <div class="alert alert-info d-flex justify-content-between align-items-center py-2">
+                            <span>کد به <strong>@Model.Email</strong> ارسال شد.</span>
+                            <button type="submit" name="actionType" value="sendCode" class="btn btn-link p-0">ارسال مجدد کد</button>
+                        </div>
+                    }
+
                     <div class="glass-field">
                         <button type="submit" name="actionType" value="sendCode" class="btn btn-outline-secondary btn-sm float-start mb-2">
                             @(Model.CodeSent ? "ارسال مجدد کد" : "ارسال کد به ایمیل")
