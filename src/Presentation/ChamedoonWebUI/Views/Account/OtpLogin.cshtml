@@ -3,26 +3,14 @@
     Layout = "~/Views/Shared/AuthLayout.cshtml";
 }
 
-<section class="glass-section auth-section">
+<section class="glass-section auth-section login-centered">
     <div class="container">
-        <div class="auth-grid">
-            <div class="auth-intro text-lg-end">
-                <span class="badge">ورود بدون رمز عبور</span>
-                <h1 class="fw-bold">ورود سریع با رمز یکبار مصرف</h1>
-                <p class="text-muted mb-4">
-                    برای ورود کافیست ایمیلت را وارد کنی تا یک کد چهار رقمی برایت ارسال شود.
-                    بعد از دریافت کد، آن را وارد کن تا وارد حساب کاربری‌ات شوی.
-                </p>
-                <ul class="auth-benefits">
-                    <li>بدون نیاز به حفظ رمز عبور</li>
-                    <li>ارسال سریع کد امنیتی به ایمیل</li>
-                    <li>ورود امن و راحت به حساب کاربری</li>
-                </ul>
-            </div>
-            <div class="glass-card auth-card">
-                <div class="auth-card-header">
-                    <h2>دریافت رمز یکبار مصرف</h2>
-                    <p class="glass-helper mb-0">ایمیلت را وارد کن تا کد ارسال شود.</p>
+        <div class="auth-card-shell">
+            <div class="glass-card auth-card auth-card-simple text-center">
+                <div class="auth-icon-badge" aria-hidden="true">📧</div>
+                <div class="auth-card-header text-center">
+                    <h2>ورود با رمز یکبار مصرف</h2>
+                    <p class="auth-subtitle">کد یکبار مصرف را با ایمیلت دریافت کن</p>
                 </div>
                 <form class="otp-form" novalidate>
                     <div class="glass-field" id="otpEmailWrapper">
@@ -32,12 +20,15 @@
                     </div>
                     <div class="glass-field d-none" id="otpCodeWrapper">
                         <label for="otpCode" class="form-label text-end w-100">کد چهار رقمی</label>
-                        <input id="otpCode" type="text" inputmode="numeric" maxlength="4" class="form-control glass-input" placeholder="••••" />
+                        <input id="otpCode" type="text" inputmode="numeric" maxlength="4" class="form-control glass-input" placeholder="OTP-کد" />
                         <p class="glass-helper mb-0">کد ارسال شده به ایمیلت را وارد کن.</p>
                     </div>
                     <div class="text-danger small d-none" id="otpStatus"></div>
-                    <button type="button" class="btn-glass-primary w-100 mt-3" id="otpContinue">ادامه</button>
+                    <button type="button" class="btn-auth-primary w-100" id="otpContinue">ادامه</button>
                 </form>
+                <div class="auth-meta text-center">
+                    <a asp-controller="Account" asp-action="Login" class="auth-otp-link">بازگشت به ورود با رمز عبور</a>
+                </div>
             </div>
         </div>
     </div>

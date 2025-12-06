@@ -7,34 +7,36 @@
 <section class="glass-section auth-section login-centered">
     <div class="container">
         <div class="auth-card-shell">
-            <div class="glass-card auth-card auth-card-compact">
-                <div class="auth-card-header text-center">
-                    <span class="badge">بازگشت به چمدون</span>
-                    <h2>ورود به حساب</h2>
-                    <p class="text-muted">با نام کاربری یا ایمیل وارد شو تا ادامه مسیر را دنبال کنیم.</p>
+            <div class="glass-card auth-card auth-card-simple text-center">
+                <div class="auth-icon-badge" aria-hidden="true">
+                    🔒
                 </div>
-                <form asp-action="Login" method="post" novalidate data-prevent-multi-submit="true">
+                <div class="auth-card-header text-center">
+                    <h2>ورود یا ساخت حساب در چمدون</h2>
+                    <p class="auth-subtitle">با نام کاربری یا ایمیل</p>
+                </div>
+                <form asp-action="Login" method="post" novalidate data-prevent-multi-submit="true" class="auth-form">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@(ViewData["LoginNonce"] as string)" />
                     <div class="glass-field">
                         <label asp-for="Identifier" class="form-label text-end w-100">ایمیل یا نام کاربری</label>
-                        <input asp-for="Identifier" type="text" class="form-control glass-input" placeholder="نام کاربری یا example@mail.com" />
+                        <input asp-for="Identifier" type="text" class="form-control glass-input" placeholder="example@mail.com" />
                         <span asp-validation-for="Identifier" class="text-danger small"></span>
                     </div>
                     <div class="glass-field">
                         <label asp-for="Password" class="form-label text-end w-100">رمز عبور</label>
-                        <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور" />
+                        <input asp-for="Password" type="password" class="form-control glass-input" placeholder="••••••••" />
                         <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>
-                    <div class="auth-secondary-actions mt-2">
+                    <div class="auth-secondary-actions justify-content-between">
                         <label class="glass-checkbox">
                             <input asp-for="RememberMe" type="checkbox" />
                             <span>مرا به خاطر بسپار</span>
                         </label>
-                        <a asp-controller="Account" asp-action="OtpLogin" class="text-primary fw-semibold">ورود با رمز یکبار مصرف</a>
+                        <a asp-controller="Account" asp-action="OtpLogin" class="auth-otp-link">ورود با رمز یکبار مصرف</a>
                     </div>
                     <div class="text-danger small" asp-validation-summary="All"></div>
-                    <button type="submit" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ورود به چمدون</button>
+                    <button type="submit" class="btn-auth-primary w-100" data-processing-text="در حال پردازش...">ادامه</button>
                 </form>
                 <div class="auth-divider">یا ورود با</div>
                 <a asp-controller="Account" asp-action="login-google" class="btn-google w-100">
