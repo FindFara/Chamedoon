@@ -29,7 +29,14 @@
 
                     <div class="glass-field">
                         <label asp-for="Email" class="form-label">ایمیل</label>
-                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" @(Model.Stage != Chamedoon.Application.Services.Account.Register.ViewModel.RegisterStep.EnterEmail ? "readonly" : "") />
+                        @{
+                            var isReadOnly = Model.Stage != Chamedoon.Application.Services.Account.Register.ViewModel.RegisterStep.EnterEmail;
+                        }
+                        <input asp-for="Email"
+                               type="email"
+                               class="form-control glass-input"
+                               placeholder="example@mail.com"
+                               readonly="@(isReadOnly ? "readonly" : null)" />
                         <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
 

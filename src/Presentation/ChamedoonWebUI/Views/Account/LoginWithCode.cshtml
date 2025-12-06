@@ -23,8 +23,14 @@
                     <input type="hidden" asp-for="CodeSent" />
                     <div class="glass-field">
                         <label asp-for="Email" class="form-label">ایمیل</label>
-                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" @(Model.CodeSent ? "readonly" : string.Empty) />
-                        <span asp-validation-for="Email" class="text-danger small"></span>
+                        @{
+                            string? ro = Model.CodeSent ? "readonly" : null;
+                        }
+                        <input asp-for="Email"
+                               type="email"
+                               class="form-control glass-input"
+                               placeholder="example@mail.com"
+                               readonly="@ro" />                        <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
                     <div class="glass-field">
                         <button type="submit" name="actionType" value="sendCode" class="btn btn-outline-secondary btn-sm float-start mb-2">
