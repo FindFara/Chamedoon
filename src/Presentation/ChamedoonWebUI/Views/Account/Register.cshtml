@@ -1,26 +1,20 @@
 @model Chamedoon.Application.Services.Account.Register.ViewModel.RegisterUser_VM
-@{
+@{ 
     ViewData["Title"] = "ثبت‌نام در چمدون";
+    ViewData["HideChrome"] = true;
 }
 
-<section class="glass-section auth-section">
+<section class="glass-section auth-section auth-section-centered">
+    <div class="auth-abstract-bg" aria-hidden="true">
+        <span class="blob blob-1"></span>
+        <span class="blob blob-2"></span>
+        <span class="grid-pattern"></span>
+    </div>
     <div class="container">
-        <div class="auth-grid">
-            <div class="auth-intro text-lg-end">
-                <span class="badge">شروع تجربه جدید</span>
-                <h1 class="fw-bold">تنها چند کلیک تا دسترسی به نقشه راه مهاجرتی شخصی.</h1>
-                <p class="text-muted mb-4">
-                    با ساخت حساب، مسیرهای پیشنهادی، مدارک موردنیاز و امتیازبندی دقیق را در قالب یک داشبورد شفاف دنبال کن.
-                </p>
-                <ul class="auth-benefits">
-                    <li>پروفایل شخصی با امکان ذخیره مدارک و پیشرفت</li>
-                    <li>دریافت پیشنهاد کشور و نوع ویزا بر اساس شرایط واقعی</li>
-                    <li>دسترسی به محتوای تخصصی و تجربه‌های کاربران</li>
-                </ul>
-            </div>
-            <div class="glass-card auth-card">
-                <div class="auth-card-header">
-                    <h2>ایجاد حساب جدید</h2>
+        <div class="auth-grid auth-grid-compact auth-grid-single">
+            <div class="glass-card auth-card auth-card-compact">
+                <div class="auth-card-header text-center">
+                    <h2 class="mb-0">ایجاد حساب جدید</h2>
                 </div>
                 <form asp-action="Register" method="post" novalidate data-prevent-multi-submit="true">
                     @Html.AntiForgeryToken()

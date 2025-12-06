@@ -17,59 +17,59 @@
     }
 
     const darkModeToggle = document.getElementById('darkModeToggle');
-    if (darkModeToggle && pageBody.classList.contains('landing-page')) {
-        const labelElement = darkModeToggle.querySelector('[data-role="label"]');
-        const labelLight = darkModeToggle.getAttribute('data-label-light') || 'حالت شب';
-        const labelDark = darkModeToggle.getAttribute('data-label-dark') || 'حالت روز';
+    if (pageBody.classList.contains('landing-page')) {
+        const labelElement = darkModeToggle?.querySelector('[data-role="label"]');
+        const labelLight = darkModeToggle?.getAttribute('data-label-light') || 'حالت شب';
+        const labelDark = darkModeToggle?.getAttribute('data-label-dark') || 'حالت روز';
 
         const applyMode = (mode) => {
             const isDark = mode === 'dark';
             pageBody.classList.toggle('dark-mode', isDark);
-            darkModeToggle.dataset.mode = mode;
-            darkModeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-            if (labelElement) {
-                labelElement.textContent = isDark ? labelDark : labelLight;
+            if (darkModeToggle) {
+                darkModeToggle.dataset.mode = mode;
+                darkModeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+                if (labelElement) {
+                    labelElement.textContent = isDark ? labelDark : labelLight;
+                }
+                const nextTitle = isDark ? labelDark : labelLight;
+                darkModeToggle.dataset.label = nextTitle;
+                darkModeToggle.setAttribute('aria-label', nextTitle);
+                darkModeToggle.setAttribute('title', nextTitle);
             }
-            const nextTitle = isDark ? labelDark : labelLight;
-            darkModeToggle.dataset.label = nextTitle;
-            darkModeToggle.setAttribute('aria-label', nextTitle);
-            darkModeToggle.setAttribute('title', nextTitle);
         };
 
-        let storedPreference = null;
-        try {
-            storedPreference = localStorage.getItem('landing-theme');
-        } catch (error) {
-            storedPreference = null;
-        }
+        const readPreference = () => {
+            try {
+                return localStorage.getItem('landing-theme');
+            } catch (error) {
+                return null;
+            }
+        };
 
         const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const storedPreference = readPreference();
         let activeMode = storedPreference === 'dark' || storedPreference === 'light'
             ? storedPreference
             : (prefersDark ? 'dark' : 'light');
 
         applyMode(activeMode);
 
-        darkModeToggle.addEventListener('click', () => {
-            activeMode = activeMode === 'dark' ? 'light' : 'dark';
-            applyMode(activeMode);
-            try {
-                localStorage.setItem('landing-theme', activeMode);
-            } catch (error) {
-                // Ignore storage write issues (e.g. Safari private mode)
-            }
-        });
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('click', () => {
+                activeMode = activeMode === 'dark' ? 'light' : 'dark';
+                applyMode(activeMode);
+                try {
+                    localStorage.setItem('landing-theme', activeMode);
+                } catch (error) {
+                    // Ignore storage write issues (e.g. Safari private mode)
+                }
+            });
+        }
 
         if (window.matchMedia) {
             const schemeListener = (event) => {
                 const newMode = event.matches ? 'dark' : 'light';
-                const stored = (() => {
-                    try {
-                        return localStorage.getItem('landing-theme');
-                    } catch (error) {
-                        return null;
-                    }
-                })();
+                const stored = readPreference();
                 if (stored !== 'dark' && stored !== 'light') {
                     activeMode = newMode;
                     applyMode(activeMode);
