@@ -1,7 +1,5 @@
-﻿using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Login.ViewModel;
-using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -17,35 +15,29 @@ public class CheckUserNameAndPasswordMatchQuery : IRequest<OperationResult<bool>
 public class CheckUserNameAndPasswordMatchHandler : IRequestHandler<CheckUserNameAndPasswordMatchQuery, OperationResult<bool>>
 {
     #region Property
-    private readonly IApplicationDbContext context;
-    private readonly SignInManager<User> signinmanager;
+    private readonly SignInManager<User> signInManager;
+    private readonly UserManager<User> userManager;
     #endregion
 
     #region Ctor
-    public CheckUserNameAndPasswordMatchHandler(IApplicationDbContext context, SignInManager<User> signinmanager)
+    public CheckUserNameAndPasswordMatchHandler(SignInManager<User> signInManager, UserManager<User> userManager)
     {
-        this.context = context;
-        this.signinmanager = signinmanager;
+        this.signInManager = signInManager;
+        this.userManager = userManager;
     }
     #endregion
 
     #region Method
     public async Task<OperationResult<bool>> Handle(CheckUserNameAndPasswordMatchQuery request, CancellationToken cancellationToken)
     {
-        var loginUser = await signinmanager.PasswordSignInAsync(
-             request.UserName,
-             request.LoginUser.Password,
-             request.LoginUser.RememberMe,
-             true);
+        var user = await userManager.FindByNameAsync(request.UserName);
+        if (user is null)
+            return OperationResult<bool>.Fail("کاربری با این مشخصات یافت نشد.");
 
-        if (loginUser.IsLockedOut)
-            return OperationResult<bool>
-                .Fail("اکانت شما به دلیل ورود های ناموفق قفل شده است ، چند دقیقه دیگر دوباره امتحان کنید");
-
-        if (loginUser.Succeeded)
-            return OperationResult<bool>.Success(true);
-
-        return OperationResult<bool>.Fail("مشکلی در ورود رخ داده است ، لطفا چند دقیقه دیگر دوباره امتحان کنید");
+        var checkPassword = await signInManager.CheckPasswordSignInAsync(user, request.LoginUser.Password, lockoutOnFailure: false);
+        return checkPassword.Succeeded
+            ? OperationResult<bool>.Success(true)
+            : OperationResult<bool>.Fail("رمز عبور نادرست است.");
     }
 
     #endregion

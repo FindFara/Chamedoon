@@ -1,0 +1,139 @@
+@model Chamedoon.Application.Services.Account.Login.ViewModel.LoginWithCodeViewModel
+@{
+    ViewData["Title"] = "ورود با کد";
+}
+
+<section class="glass-section auth-section">
+    <div class="container">
+        <div class="auth-grid">
+            <div class="auth-intro text-lg-end">
+                <span class="badge">ورود سریع</span>
+                <h1 class="fw-bold">دریافت کد یکبارمصرف و ورود فوری</h1>
+                <p class="text-muted mb-4">
+                    ایمیل خود را وارد کن تا کد ورود برایت ارسال شود. بعد از تایید، وارد حساب کاربری می‌شوی.
+                </p>
+            </div>
+            <div class="glass-card auth-card">
+                <div class="auth-card-header">
+                    <h2>ورود با کد یکبار مصرف</h2>
+                </div>
+                <form asp-action="LoginWithCode" method="post" novalidate data-prevent-multi-submit="true">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="requestNonce" value="@(ViewData["LoginWithCodeNonce"] as string)" />
+                    <input type="hidden" asp-for="CodeSent" />
+
+                    @if (!Model.CodeSent)
+                    {
+                        <div class="glass-field">
+                            <label asp-for="Email" class="form-label">ایمیل</label>
+                            <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <button type="submit" name="actionType" value="sendCode" class="btn btn-outline-secondary w-100 mb-3">
+                            ارسال کد به ایمیل
+                        </button>
+                    }
+                    else
+                    {
+                        <input type="hidden" asp-for="Email" />
+                        <div class="alert alert-info d-flex justify-content-between align-items-center py-2">
+                            <span>کد به <strong>@Model.Email</strong> ارسال شد.</span>
+                            <button type="submit" name="actionType" value="sendCode" class="btn btn-link p-0">ارسال مجدد کد</button>
+                        </div>
+                    }
+
+                    <div class="glass-field">
+                        <button type="submit" name="actionType" value="sendCode" class="btn btn-outline-secondary btn-sm float-start mb-2">
+                            @(Model.CodeSent ? "ارسال مجدد کد" : "ارسال کد به ایمیل")
+                        </button>
+                        <label class="form-label">کد تایید</label>
+                        <input type="hidden" asp-for="VerificationCode" />
+                        <div class="d-flex gap-2 otp-input-group" data-target="VerificationCode">
+                            <input class="form-control glass-input otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="رقم اول کد" @(Model.CodeSent ? string.Empty : "disabled") />
+                            <input class="form-control glass-input otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="رقم دوم کد" @(Model.CodeSent ? string.Empty : "disabled") />
+                            <input class="form-control glass-input otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="رقم سوم کد" @(Model.CodeSent ? string.Empty : "disabled") />
+                            <input class="form-control glass-input otp-input" maxlength="1" inputmode="numeric" pattern="[0-9]*" aria-label="رقم چهارم کد" @(Model.CodeSent ? string.Empty : "disabled") />
+                        </div>
+                        @if (!Model.CodeSent)
+                        {
+                            <small class="text-muted">پس از ارسال کد، امکان وارد کردن آن فعال می‌شود.</small>
+                        }
+                        <span asp-validation-for="VerificationCode" class="text-danger small"></span>
+                    </div>
+                    <div class="auth-secondary-actions mt-2 d-flex justify-content-between align-items-center">
+                        <label class="glass-checkbox">
+                            <input asp-for="RememberMe" type="checkbox" />
+                            <span>مرا به خاطر بسپار</span>
+                        </label>
+                        <a asp-action="Login" class="small">ورود با رمز عبور</a>
+                    </div>
+                    @if (ViewBag.InfoMessage != null)
+                    {
+                        <div class="alert alert-info py-2">@ViewBag.InfoMessage</div>
+                    }
+                    <div class="text-danger small" asp-validation-summary="All"></div>
+                    <button type="submit" name="actionType" value="login" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ورود</button>
+                </form>
+                <div class="auth-meta text-center mt-3">
+                    <span>هنوز عضو نیستی؟ <a asp-controller="Account" asp-action="Register">ثبت‌نام سریع</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            const groups = document.querySelectorAll('.otp-input-group');
+
+            groups.forEach(group => {
+                const targetId = group.getAttribute('data-target');
+                const hidden = document.getElementById(targetId);
+                const inputs = Array.from(group.querySelectorAll('.otp-input'));
+
+                const syncHidden = () => {
+                    const value = inputs.map(i => i.value).join('');
+                    if (hidden) {
+                        hidden.value = value;
+                    }
+                };
+
+                inputs.forEach((input, index) => {
+                    input.addEventListener('input', (e) => {
+                        input.value = input.value.replace(/[^0-9]/g, '');
+                        if (input.value && index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        }
+                        syncHidden();
+                    });
+
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Backspace' && !input.value && index > 0) {
+                            inputs[index - 1].focus();
+                        }
+                    });
+
+                    input.addEventListener('paste', (e) => {
+                        const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, inputs.length);
+                        inputs.forEach((box, boxIndex) => {
+                            box.value = text[boxIndex] ?? '';
+                        });
+                        syncHidden();
+                        const nextIndex = Math.min(text.length, inputs.length - 1);
+                        inputs[nextIndex]?.focus();
+                        e.preventDefault();
+                    });
+                });
+
+                if (hidden && hidden.value) {
+                    hidden.value.split('').forEach((digit, i) => {
+                        if (inputs[i]) {
+                            inputs[i].value = digit;
+                        }
+                    });
+                }
+            });
+        })();
+    </script>
+}
