@@ -3,31 +3,22 @@
     ViewData["Title"] = "ورود به چمدون";
 }
 
-<section class="glass-section auth-section">
+<section class="glass-section auth-section login-centered">
     <div class="container">
-        <div class="auth-grid">
-            <div class="auth-intro text-lg-end">
-                <span class="badge">بازگشت به چمدون</span>
-                <h1 class="fw-bold">ورود به حساب کاربری و ادامه مسیر مهاجرتی‌ات.</h1>
-                <p class="text-muted mb-4">
-                    با ورود به حساب می‌توانی روند ارزیابی، مدارک ذخیره‌شده و توصیه‌های هوشمند را ادامه دهی.
-                    اگر هنوز حسابی نداری در چند ثانیه می‌توانی ثبت‌نام کنی.
-                </p>
-                <ul class="auth-benefits">
-                    <li>در صورت نیاز به راهنمایی با پشتیبانی در تماس باش.<</li>
-                </ul>
-            </div>
-            <div class="glass-card auth-card">
-                <div class="auth-card-header">
+        <div class="auth-card-shell">
+            <div class="glass-card auth-card auth-card-compact">
+                <div class="auth-card-header text-center">
+                    <span class="badge">بازگشت به چمدون</span>
                     <h2>ورود به حساب</h2>
+                    <p class="text-muted">با نام کاربری یا ایمیل وارد شو تا ادامه مسیر را دنبال کنیم.</p>
                 </div>
                 <form asp-action="Login" method="post" novalidate data-prevent-multi-submit="true">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@(ViewData["LoginNonce"] as string)" />
                     <div class="glass-field">
-                        <label asp-for="Email" class="form-label">ایمیل</label>
-                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
-                        <span asp-validation-for="Email" class="text-danger small"></span>
+                        <label asp-for="Identifier" class="form-label">ایمیل یا نام کاربری</label>
+                        <input asp-for="Identifier" type="text" class="form-control glass-input" placeholder="نام کاربری یا example@mail.com" />
+                        <span asp-validation-for="Identifier" class="text-danger small"></span>
                     </div>
                     <div class="glass-field">
                         <label asp-for="Password" class="form-label">رمز عبور</label>
@@ -39,7 +30,7 @@
                             <input asp-for="RememberMe" type="checkbox" />
                             <span>مرا به خاطر بسپار</span>
                         </label>
-                        <a asp-controller="Account" asp-action="ForgotPassword" class="text-primary fw-semibold">فراموشی رمز عبور؟</a>
+                        <a asp-controller="Account" asp-action="OtpLogin" class="text-primary fw-semibold">ورود با رمز یکبار مصرف</a>
                     </div>
                     <div class="text-danger small" asp-validation-summary="All"></div>
                     <button type="submit" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ورود به چمدون</button>

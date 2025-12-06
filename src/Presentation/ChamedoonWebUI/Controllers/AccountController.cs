@@ -66,6 +66,12 @@ public class AccountController : Controller
         ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
         return View();
     }
+
+    [Route("login/otp")]
+    public IActionResult OtpLogin()
+    {
+        return View();
+    }
     [Route("login")]
     [HttpPost]
     [ValidateAntiForgeryToken]

@@ -1299,6 +1299,63 @@ a:hover {
     z-index: 1;
 }
 
+.auth-section.login-centered {
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.12), transparent 35%),
+        radial-gradient(circle at 85% 10%, rgba(52, 211, 153, 0.15), transparent 32%),
+        radial-gradient(circle at 25% 90%, rgba(236, 72, 153, 0.1), transparent 34%),
+        linear-gradient(135deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0.08));
+}
+
+.auth-section.login-centered::before,
+.auth-section.login-centered::after {
+    content: "";
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    border-radius: 999px;
+    filter: blur(60px);
+    opacity: 0.65;
+}
+
+.auth-section.login-centered::before {
+    top: -160px;
+    right: -120px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.18), transparent 55%);
+}
+
+.auth-section.login-centered::after {
+    bottom: -200px;
+    left: -120px;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.2), transparent 55%);
+}
+
+.auth-section.login-centered .container {
+    min-height: calc(100vh - 160px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-card-shell {
+    width: min(560px, 100%);
+    margin: 0 auto;
+}
+
+.auth-card-compact {
+    gap: 1.1rem;
+    text-align: center;
+}
+
+.auth-card-compact .badge {
+    align-self: center;
+}
+
+.auth-card-compact .auth-secondary-actions {
+    justify-content: center;
+}
+
 .auth-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
