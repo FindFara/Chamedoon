@@ -11,12 +11,10 @@ namespace ChamedoonWebUI.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IMediator _mediator;
 
-        public HomeController(ILogger<HomeController> logger, IMediator mediator)
+        public HomeController(IMediator mediator)
         {
-            _logger = logger;
             _mediator = mediator;
         }
 
@@ -39,16 +37,6 @@ namespace ChamedoonWebUI.Controllers
         }
 
         public IActionResult About()
-        {
-            return View();
-        }
-
-        public IActionResult Landing()
-        {
-            return View("~/Views/Landing/Index.cshtml");
-        }
-
-        public IActionResult Privacy()
         {
             return View();
         }
