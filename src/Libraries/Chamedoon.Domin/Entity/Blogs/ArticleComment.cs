@@ -4,8 +4,8 @@ using Chamedoon.Domin.Entity.Users;
 namespace Chamedoon.Domin.Entity.Blogs;
 public class ArticleComment : BaseAuditableEntity
 {
-    public int ArticleId { get; set; }
-    public int UserId { get; set; }
+    public long ArticleId { get; set; }
+    public long UserId { get; set; }
     public bool ReaedAdmin { get; set; }
     public required string Message { get; set; }
 

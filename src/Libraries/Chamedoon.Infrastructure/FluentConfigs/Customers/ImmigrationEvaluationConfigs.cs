@@ -11,6 +11,9 @@ namespace Chamedoon.Infrastructure.FluentConfigs.Customers
             builder.Property(evaluation => evaluation.JobTitle)
                 .HasMaxLength(256);
 
+            builder.Property(evaluation => evaluation.InvestmentAmount)
+                .HasPrecision(18, 2);
+
             builder.Property(evaluation => evaluation.PhoneNumber)
                 .HasMaxLength(32);
 

@@ -5,6 +5,7 @@ using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Payments;
 using Chamedoon.Domin.Entity.Permissions;
 using Chamedoon.Domin.Entity.Users;
+using Chamedoon.Infrastructure.FluentConfigs.Blog;
 using Chamedoon.Infrastructure.FluentConfigs.Customers;
 using Chamedoon.Infrastructure.FluentConfigs.Countries;
 using Chamedoon.Infrastructure.FluentConfigs.Payments;
@@ -90,6 +91,8 @@ public class ApplicationDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new UserRoleConfigs());
         modelBuilder.ApplyConfiguration(new RoleConfigs());
         modelBuilder.ApplyConfiguration(new RolePermissionConfigs());
+        modelBuilder.ApplyConfiguration(new ArticleConfigs());
+        modelBuilder.ApplyConfiguration(new ArticleCommentConfigs());
         modelBuilder.ApplyConfiguration(new CustomerConfigs());
         modelBuilder.ApplyConfiguration(new ImmigrationEvaluationConfigs());
         modelBuilder.ApplyConfiguration(new PaymentRequestConfigs());
