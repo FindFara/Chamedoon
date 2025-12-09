@@ -13,6 +13,7 @@ namespace Chamedoon.Infrastructure.FluentConfigs.Countries
             builder.Property(c => c.Key).HasMaxLength(64).IsRequired();
             builder.Property(c => c.Name).HasMaxLength(128).IsRequired();
             builder.Property(c => c.InvestmentCurrency).HasMaxLength(64);
+            builder.Property(c => c.InvestmentAmount).HasPrecision(18, 2);
 
             builder.HasMany(c => c.LivingCosts)
                 .WithOne(l => l.Country)
