@@ -19,6 +19,7 @@
                 <form asp-action="Register" method="post" novalidate data-prevent-multi-submit="true">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@(ViewData["RegisterNonce"] as string)" />
+                    <input type="hidden" name="returnUrl" value="@(ViewData["ReturnUrl"] as string)" />
                     <div class="glass-field">
                         <label asp-for="Email" class="form-label">ایمیل</label>
                         <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
