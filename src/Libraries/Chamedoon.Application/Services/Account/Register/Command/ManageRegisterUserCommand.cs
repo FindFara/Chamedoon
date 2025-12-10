@@ -5,6 +5,8 @@ using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Customers.Command;
 using Chamedoon.Application.Services.Email.Query;
 using MediatR;
+using System;
+using System.Net.Mail;
 
 namespace Chamedoon.Application.Services.Account.Register.Command;
 
@@ -28,6 +30,10 @@ public class ManageRegisterUserCommandHandler : IRequestHandler<ManageRegisterUs
     #region Method
     public async Task<OperationResult<bool>> Handle(ManageRegisterUserCommand request, CancellationToken cancellationToken)
     {
+        var emailValidation = ValidateEmail(request.RegisterUser.Email);
+        if (emailValidation.IsSuccess is false)
+            return emailValidation;
+
         //Check Duplicated Email
         var checkEmail = await mediator.Send(new CheckDuplicatedEmailQuery { Email = request.RegisterUser.Email });
         if (checkEmail.IsSuccess is false)
@@ -43,6 +49,35 @@ public class ManageRegisterUserCommandHandler : IRequestHandler<ManageRegisterUs
             return OperationResult<bool>.Fail(addCustomer.Message);
 
         return OperationResult<bool>.Success(true);
+    }
+
+    private static OperationResult<bool> ValidateEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email) || IsValidEmailFormat(email) is false)
+            return OperationResult<bool>.Fail("ایمیل وارد شده معتبر نمی باشد.");
+
+        if (IsGmailAddress(email) is false)
+            return OperationResult<bool>.Fail("ثبت نام تنها با ایمیل های Gmail امکان پذیر است.");
+
+        return OperationResult<bool>.Success(true);
+    }
+
+    private static bool IsValidEmailFormat(string email)
+    {
+        try
+        {
+            _ = new MailAddress(email);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private static bool IsGmailAddress(string email)
+    {
+        return email.Trim().EndsWith("@gmail.com", StringComparison.OrdinalIgnoreCase);
     }
 
     #endregion
