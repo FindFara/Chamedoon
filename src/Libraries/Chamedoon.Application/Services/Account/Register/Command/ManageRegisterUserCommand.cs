@@ -1,5 +1,6 @@
 using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Register.ViewModel;
+using Chamedoon.Application.Services.Account.Login.Command;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Customers.Command;
 using MediatR;
@@ -38,6 +39,14 @@ public class ManageRegisterUserCommandHandler : IRequestHandler<ManageRegisterUs
         var addCustomer = await mediator.Send(new AddCustomerCommand { Id = regisrer.Result }, cancellationToken);
         if (addCustomer.IsSuccess is false)
             return OperationResult<bool>.Fail(addCustomer.Message);
+
+        var signIn = await mediator.Send(new SignInUserCommand
+        {
+            UserId = regisrer.Result.ToString(),
+            IsPersistent = false
+        }, cancellationToken);
+        if (signIn.IsSuccess is false)
+            return OperationResult<bool>.Fail(signIn.Message);
 
         return OperationResult<bool>.Success(true);
     }
