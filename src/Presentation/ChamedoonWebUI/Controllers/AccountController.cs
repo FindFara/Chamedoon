@@ -59,6 +59,35 @@ public class AccountController : Controller
         return true;
     }
 
+    private string GetSafeReturnUrl(string? returnUrl)
+    {
+        var fallbackUrl = Url.Action("Index", "Home") ?? "/";
+
+        var candidateUrl = string.IsNullOrWhiteSpace(returnUrl)
+            ? Request.Headers["Referer"].ToString()
+            : returnUrl;
+
+        if (!string.IsNullOrWhiteSpace(candidateUrl))
+        {
+            if (Url.IsLocalUrl(candidateUrl) && !candidateUrl.Contains("/auth/register", StringComparison.OrdinalIgnoreCase))
+            {
+                return candidateUrl;
+            }
+
+            if (Uri.TryCreate(candidateUrl, UriKind.Absolute, out var absoluteUri)
+                && string.Equals(absoluteUri.Host, Request.Host.Host, StringComparison.OrdinalIgnoreCase))
+            {
+                var relative = absoluteUri.PathAndQuery;
+                if (Url.IsLocalUrl(relative) && !relative.Contains("/auth/register", StringComparison.OrdinalIgnoreCase))
+                {
+                    return relative;
+                }
+            }
+        }
+
+        return fallbackUrl;
+    }
+
     #region Login
     [Route("login")]
     public IActionResult Login()
@@ -97,21 +126,23 @@ public class AccountController : Controller
     #region Register
 
     [Route("register")]
-    public IActionResult Register()
+    public IActionResult Register(string? returnUrl = null)
     {
         ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+        ViewData["ReturnUrl"] = GetSafeReturnUrl(returnUrl);
         return View();
     }
 
     [Route("register")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Register(RegisterUser_VM register, string requestNonce)
+    public async Task<IActionResult> Register(RegisterUser_VM register, string requestNonce, string? returnUrl)
     {
         if (!IsRequestNonceValid(nameof(Register), requestNonce))
         {
             ModelState.AddModelError(string.Empty, "درخواست تکراری یا نامعتبر.");
             ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+            ViewData["ReturnUrl"] = GetSafeReturnUrl(returnUrl);
             return View(register);
         }
 
@@ -123,12 +154,15 @@ public class AccountController : Controller
             {
                 ViewData["ErrorMessage"] = string.Join(", ", response.Message);
                 ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+                ViewData["ReturnUrl"] = GetSafeReturnUrl(returnUrl);
                 return View(register);
             }
 
-            return RedirectToAction("EmailVerification");
+            var safeReturnUrl = GetSafeReturnUrl(returnUrl);
+            return LocalRedirect(safeReturnUrl);
         }
         ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+        ViewData["ReturnUrl"] = GetSafeReturnUrl(returnUrl);
         return View(register);
     }
 
@@ -182,12 +216,6 @@ public class AccountController : Controller
     #endregion
 
     #region ConfirmEmail
-    [Route("emailverify")]
-    public IActionResult EmailVerification()
-    {
-        return View();
-    }
-
     [HttpGet]
     [Route("Confirmemail")]
     public async Task<IActionResult> ConfirmEmail(string userId, string token)
