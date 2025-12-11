@@ -176,4 +176,40 @@
             });
         });
     });
+
+    const passwordToggleButtons = document.querySelectorAll('[data-password-toggle]');
+    passwordToggleButtons.forEach(button => {
+        const targetId = button.getAttribute('data-target');
+        const input = targetId ? document.getElementById(targetId) : null;
+        if (!input) {
+            return;
+        }
+
+        const icon = button.querySelector('img');
+        const showIcon = button.getAttribute('data-icon-show');
+        const hideIcon = button.getAttribute('data-icon-hide');
+
+        const updateState = (visible) => {
+            button.dataset.state = visible ? 'visible' : 'hidden';
+            button.setAttribute('aria-pressed', visible ? 'true' : 'false');
+            button.setAttribute('aria-label', visible ? 'پنهان کردن رمز عبور' : 'نمایش رمز عبور');
+
+            if (icon && showIcon && hideIcon) {
+                icon.src = visible ? hideIcon : showIcon;
+            }
+        };
+
+        updateState(input.type === 'text');
+
+        button.addEventListener('click', () => {
+            const isVisible = input.type === 'text';
+            input.type = isVisible ? 'password' : 'text';
+            updateState(!isVisible);
+            input.focus({ preventScroll: true });
+            const valueLength = input.value.length;
+            if (typeof input.setSelectionRange === 'function') {
+                input.setSelectionRange(valueLength, valueLength);
+            }
+        });
+    });
 })();
