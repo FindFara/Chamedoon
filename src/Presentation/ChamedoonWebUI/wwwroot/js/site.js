@@ -176,4 +176,29 @@
             });
         });
     });
+
+    const passwordToggleButtons = document.querySelectorAll('[data-toggle-password]');
+    passwordToggleButtons.forEach(button => {
+        const wrapper = button.closest('.password-input-wrapper');
+        const input = wrapper?.querySelector('input');
+        if (!input) {
+            return;
+        }
+
+        const setState = (visible) => {
+            input.type = visible ? 'text' : 'password';
+            button.dataset.active = visible ? 'true' : 'false';
+            const label = visible ? 'مخفی کردن رمز عبور' : 'نمایش رمز عبور';
+            button.setAttribute('aria-pressed', visible ? 'true' : 'false');
+            button.setAttribute('aria-label', label);
+            button.setAttribute('title', label);
+        };
+
+        button.addEventListener('click', () => {
+            const shouldShow = input.type === 'password';
+            setState(shouldShow);
+        });
+
+        setState(false);
+    });
 })();
