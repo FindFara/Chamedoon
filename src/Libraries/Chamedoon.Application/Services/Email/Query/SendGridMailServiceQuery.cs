@@ -52,11 +52,6 @@ namespace Chamedoon.Application.Services.Email.Query
                 message.To.Add(toEmail);
 
                 await client.SendMailAsync(message);
-
-                _logger.LogInformation(
-                    "Email sent successfully to {Recipient} with subject {Subject}",
-                    toEmail,
-                    subject);
             }
             catch (Exception ex)
             {
