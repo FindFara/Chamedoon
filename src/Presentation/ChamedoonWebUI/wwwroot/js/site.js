@@ -154,23 +154,31 @@
     passwordToggleButtons.forEach(button => {
         const inputId = button.dataset.inputId;
         const input = inputId ? document.getElementById(inputId) : null;
-        const icon = button.querySelector('img');
-        const showIcon = button.dataset.iconShow;
-        const hideIcon = button.dataset.iconHide;
+        const showIcon = button.querySelector('[data-icon-state="show"]');
+        const hideIcon = button.querySelector('[data-icon-state="hide"]');
 
         if (!input) {
             return;
         }
 
+        const updateToggleVisuals = (shouldShow) => {
+            if (showIcon) {
+                showIcon.classList.toggle('is-active', shouldShow);
+            }
+
+            if (hideIcon) {
+                hideIcon.classList.toggle('is-active', !shouldShow);
+            }
+
+            button.setAttribute('aria-pressed', shouldShow ? 'true' : 'false');
+        };
+
+        updateToggleVisuals(input.type !== 'password');
+
         button.addEventListener('click', () => {
             const willShow = input.type === 'password';
             input.type = willShow ? 'text' : 'password';
-
-            if (icon && showIcon && hideIcon) {
-                icon.src = willShow ? showIcon : hideIcon;
-            }
-
-            button.setAttribute('aria-pressed', willShow ? 'true' : 'false');
+            updateToggleVisuals(willShow);
         });
     });
 

@@ -32,11 +32,21 @@
                                     class="password-toggle"
                                     data-password-toggle
                                     data-input-id="Password"
-                                    data-icon-show="@Url.Content("~/icons/eye-password-show.svg")"
-                                    data-icon-hide="@Url.Content("~/icons/eye-password-hide.svg")"
                                     aria-label="نمایش یا پنهان کردن رمز"
                                     aria-pressed="false">
-                                <img src="@Url.Content("~/icons/eye-password-hide.svg")" alt="" aria-hidden="true" />
+                                <span class="password-toggle-icon password-toggle-icon-show" data-icon-state="show" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                                        <circle cx="12" cy="12" r="3.25" />
+                                    </svg>
+                                </span>
+                                <span class="password-toggle-icon password-toggle-icon-hide is-active" data-icon-state="hide" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="m3 3 18 18" />
+                                        <path d="M10.585 10.585A2 2 0 0 0 12 14a2 2 0 0 0 1.414-.586" />
+                                        <path d="M9.88 5.09A10.114 10.114 0 0 1 12 5c6 0 9.5 6 9.5 6a14.05 14.05 0 0 1-2.259 2.855m-3.123 2.198C14.81 16.64 13.46 17 12 17c-6 0-9.5-6-9.5-6a15.37 15.37 0 0 1 3.328-3.945" />
+                                    </svg>
+                                </span>
                             </button>
                         </div>
                         <span asp-validation-for="Password" class="text-danger small"></span>
