@@ -412,14 +412,17 @@ body.landing-page.dark-mode .glass-card .form-select option {
     color: #e2e8f0;
 }
 
-body.landing-page.dark-mode .password-toggle img {
-    filter: brightness(0) invert(1);
-    opacity: 0.72;
+body.landing-page.dark-mode .password-toggle {
+    color: #e2e8f0;
 }
 
-body.landing-page.dark-mode .password-toggle:hover img,
-body.landing-page.dark-mode .password-toggle:focus-visible img {
-    opacity: 0.95;
+body.landing-page.dark-mode .password-toggle-icon {
+    opacity: 0.78;
+}
+
+body.landing-page.dark-mode .password-toggle:hover .password-toggle-icon,
+body.landing-page.dark-mode .password-toggle:focus-visible .password-toggle-icon {
+    opacity: 1;
 }
 
 body.landing-page.dark-mode .glass-checkbox {
