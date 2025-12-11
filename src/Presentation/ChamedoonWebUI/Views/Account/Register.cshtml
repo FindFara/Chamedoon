@@ -42,23 +42,7 @@
                         </div>
                         <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>
-                    <div class="glass-field">
-                        <label asp-for="RePassword" class="form-label">تکرار رمز عبور</label>
-                        <div class="password-input-wrapper">
-                            <input asp-for="RePassword" type="password" class="form-control glass-input" placeholder="تکرار رمز عبور" />
-                            <button type="button"
-                                    class="password-toggle"
-                                    data-password-toggle
-                                    data-input-id="RePassword"
-                                    data-icon-show="@Url.Content("~/icons/eye-password-show.svg")"
-                                    data-icon-hide="@Url.Content("~/icons/eye-password-hide.svg")"
-                                    aria-label="نمایش یا پنهان کردن رمز"
-                                    aria-pressed="false">
-                                <img src="@Url.Content("~/icons/eye-password-hide.svg")" alt="" aria-hidden="true" />
-                            </button>
-                        </div>
-                        <span asp-validation-for="RePassword" class="text-danger small"></span>
-                    </div>
+
                     @if (ViewData["ErrorMessage"] != null)
                     {
                         <div class="text-danger small">@ViewData["ErrorMessage"]</div>
