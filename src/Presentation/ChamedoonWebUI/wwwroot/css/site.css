@@ -1417,12 +1417,79 @@ a:hover {
     margin-top: 0.2rem;
 }
 
+.password-input-wrapper {
+    position: relative;
+}
+
+.password-input-wrapper .glass-input {
+    padding-inline-end: 3rem;
+}
+
+.password-toggle {
+    position: absolute;
+    inset-inline-end: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.9rem;
+    height: 1.9rem;
+    border: none;
+    background: transparent;
+    color: #9ca3af;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.15rem;
+    cursor: pointer;
+    border-radius: 999px;
+    transition: color 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+    opacity: 0.85;
+}
+
+.password-toggle:focus-visible {
+    outline: 2px solid #6b7280;
+    outline-offset: 3px;
+}
+
+.password-toggle:hover {
+    color: #4b5563;
+    background: rgba(0, 0, 0, 0.03);
+    opacity: 1;
+}
+
+.password-toggle[data-active="true"] {
+    color: #374151;
+}
+
+.password-toggle img {
+    width: 1.1rem;
+    height: 1.1rem;
+    display: block;
+    filter: grayscale(1);
+    opacity: 0.9;
+}
+
+.password-toggle [data-icon="open"] {
+    display: none;
+}
+
+.password-toggle[data-active="true"] [data-icon="open"] {
+    display: block;
+}
+
+.password-toggle[data-active="true"] [data-icon="closed"] {
+    display: none;
+}
+
 .auth-secondary-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
+}
+
+.auth-secondary-actions a {
+    white-space: nowrap;
 }
 
 .auth-meta {
@@ -2203,12 +2270,13 @@ a:hover {
     }
 
     .auth-secondary-actions {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .auth-grid {
-        text-align: center;
+        text-align: right;
     }
 
     .auth-intro .badge {
