@@ -1115,12 +1115,14 @@ a:hover {
 .glass-card label {
     font-weight: 600;
     color: var(--text-dark);
+    text-align: right;
 }
 
 .glass-field {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
+    align-items: flex-start;
 }
 
 .glass-input {
@@ -1417,12 +1419,63 @@ a:hover {
     margin-top: 0.2rem;
 }
 
+.password-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-input-wrapper .glass-input {
+    padding-inline-end: 3rem;
+}
+
+.password-toggle-btn {
+    position: absolute;
+    inset-inline-end: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: transparent;
+    padding: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    color: var(--text-muted);
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.password-toggle-btn img {
+    width: 1.15rem;
+    height: 1.15rem;
+    display: block;
+}
+
+.password-toggle-btn:hover,
+.password-toggle-btn:focus {
+    color: var(--text-dark);
+    background-color: rgba(148, 163, 184, 0.15);
+}
+
 .auth-secondary-actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
+}
+
+.auth-card form,
+.auth-card .glass-field,
+.auth-card .glass-field .form-label,
+.auth-secondary-actions,
+.auth-secondary-actions a,
+.auth-secondary-actions label {
+    text-align: right;
+}
+
+.auth-secondary-actions a {
+    white-space: nowrap;
 }
 
 .auth-meta {
@@ -2203,12 +2256,21 @@ a:hover {
     }
 
     .auth-secondary-actions {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        align-items: center;
     }
 
     .auth-grid {
         text-align: center;
+    }
+
+    .auth-card form,
+    .auth-card .glass-field,
+    .auth-card .glass-field .form-label,
+    .auth-secondary-actions,
+    .auth-secondary-actions a,
+    .auth-secondary-actions label {
+        text-align: right;
     }
 
     .auth-intro .badge {
