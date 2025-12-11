@@ -476,21 +476,6 @@ body.landing-page.dark-mode .btn-google:focus {
     background: rgba(82, 11, 11, 0.6);
 }
 
-body.landing-page.dark-mode .floating-alert__box--error {
-    --alert-bg: rgba(24, 33, 51, 0.9);
-    --alert-border: rgba(239, 68, 68, 0.55);
-    --alert-text: #fecdd3;
-    --alert-accent: #ef4444;
-}
-
-body.landing-page.dark-mode .floating-alert__box {
-    box-shadow: 0 22px 48px -24px rgba(2, 6, 23, 0.8);
-}
-
-body.landing-page.dark-mode .floating-alert__close {
-    color: var(--alert-text, #e2e8f0);
-}
-
 body.landing-page.dark-mode .auth-meta,
 body.landing-page.dark-mode .glass-helper,
 body.landing-page.dark-mode .blog-card .blog-meta,
