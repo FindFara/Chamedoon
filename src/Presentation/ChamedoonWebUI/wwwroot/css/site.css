@@ -1473,6 +1473,7 @@ a:hover {
     font-weight: 600;
 }
 
+
 .auth-divider {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
