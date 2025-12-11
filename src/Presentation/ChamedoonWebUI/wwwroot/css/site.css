@@ -1430,12 +1430,15 @@ a:hover {
     inset-inline-end: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
+    width: 1.9rem;
+    height: 1.9rem;
     border: none;
     background: transparent;
-    color: #6b7280;
-    display: grid;
-    place-items: center;
-    padding: 0.2rem;
+    color: #9ca3af;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.15rem;
     cursor: pointer;
     border-radius: 999px;
     transition: color 0.2s ease, background 0.2s ease, opacity 0.2s ease;
@@ -1448,21 +1451,23 @@ a:hover {
 }
 
 .password-toggle:hover {
-    color: #111827;
+    color: #4b5563;
     background: rgba(0, 0, 0, 0.03);
     opacity: 1;
 }
 
 .password-toggle[data-active="true"] {
-    color: #111827;
+    color: #374151;
 }
 
 .password-toggle svg {
-    width: 1.1rem;
-    height: 1.1rem;
+    width: 1.05rem;
+    height: 1.05rem;
     stroke: currentColor;
     stroke-width: 1.5;
     fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .password-toggle [data-icon="open"] {
