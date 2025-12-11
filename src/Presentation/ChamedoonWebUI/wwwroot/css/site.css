@@ -1432,7 +1432,7 @@ a:hover {
     transform: translateY(-50%);
     border: none;
     background: transparent;
-    color: var(--text-muted);
+    color: #111;
     display: grid;
     place-items: center;
     padding: 0.25rem;
@@ -1442,17 +1442,37 @@ a:hover {
 }
 
 .password-toggle:focus-visible {
-    outline: 2px solid var(--primary);
+    outline: 2px solid #111;
     outline-offset: 2px;
 }
 
 .password-toggle:hover {
-    color: var(--primary);
-    background: rgba(79, 70, 229, 0.08);
+    color: #000;
+    background: rgba(0, 0, 0, 0.05);
 }
 
 .password-toggle[data-active="true"] {
-    color: var(--primary);
+    color: #000;
+}
+
+.password-toggle svg {
+    width: 1.35rem;
+    height: 1.35rem;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    fill: none;
+}
+
+.password-toggle [data-icon="open"] {
+    display: none;
+}
+
+.password-toggle[data-active="true"] [data-icon="open"] {
+    display: block;
+}
+
+.password-toggle[data-active="true"] [data-icon="closed"] {
+    display: none;
 }
 
 .auth-secondary-actions {
