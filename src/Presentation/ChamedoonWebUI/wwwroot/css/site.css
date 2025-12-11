@@ -1131,6 +1131,47 @@ a:hover {
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
+.password-input-wrapper {
+    position: relative;
+}
+
+.password-input-wrapper .glass-input {
+    padding-inline-end: 3rem;
+}
+
+.password-toggle {
+    position: absolute;
+    inset-inline-end: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    padding: 0.3rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+}
+
+.password-toggle img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.55;
+    filter: grayscale(0.25);
+}
+
+.dark-mode .password-toggle img {
+    opacity: 0.85;
+    filter: invert(1) brightness(1.25) contrast(1.05);
+}
+
+.password-toggle:hover,
+.password-toggle:focus-visible {
+    opacity: 0.95;
+}
+
 .glass-input:focus {
     border-color: rgba(79, 70, 229, 0.65);
     background: rgba(255, 255, 255, 0.95);
@@ -2203,12 +2244,20 @@ a:hover {
     }
 
     .auth-secondary-actions {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
     }
 
     .auth-grid {
-        text-align: center;
+        text-align: start;
+    }
+
+    .auth-grid .glass-field,
+    .auth-grid .glass-field label,
+    .auth-grid .glass-input {
+        text-align: right;
     }
 
     .auth-intro .badge {

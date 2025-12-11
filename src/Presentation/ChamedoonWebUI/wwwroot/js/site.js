@@ -150,6 +150,30 @@
         });
     }
 
+    const passwordToggleButtons = document.querySelectorAll('[data-password-toggle]');
+    passwordToggleButtons.forEach(button => {
+        const inputId = button.dataset.inputId;
+        const input = inputId ? document.getElementById(inputId) : null;
+        const icon = button.querySelector('img');
+        const showIcon = button.dataset.iconShow;
+        const hideIcon = button.dataset.iconHide;
+
+        if (!input) {
+            return;
+        }
+
+        button.addEventListener('click', () => {
+            const willShow = input.type === 'password';
+            input.type = willShow ? 'text' : 'password';
+
+            if (icon && showIcon && hideIcon) {
+                icon.src = willShow ? showIcon : hideIcon;
+            }
+
+            button.setAttribute('aria-pressed', willShow ? 'true' : 'false');
+        });
+    });
+
     const preventMultiSubmitForms = document.querySelectorAll('form[data-prevent-multi-submit]');
     preventMultiSubmitForms.forEach(form => {
         form.addEventListener('submit', (event) => {
