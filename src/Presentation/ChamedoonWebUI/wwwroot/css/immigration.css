@@ -871,17 +871,115 @@ body.landing-page.dark-mode .validation-summary {
     box-shadow: 0 16px 42px -24px rgba(15, 23, 42, 0.65);
 }
 
-.immigration-loading .loader {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    border: 5px solid rgba(255, 255, 255, 0.25);
-    border-top-color: var(--primary);
-    animation: spin 1s linear infinite;
+.immigration-loading .loading-visual {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
 }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
+.immigration-loading .loading-arc {
+    position: absolute;
+    inset: 12px;
+    border-radius: 50%;
+    border: 3px dashed rgba(255, 255, 255, 0.32);
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    opacity: 0.85;
+    filter: drop-shadow(0 4px 12px rgba(15, 23, 42, 0.35));
+    transform: rotate(-6deg);
+}
+
+.immigration-loading .loading-suitcase {
+    position: absolute;
+    width: 46px;
+    height: 34px;
+    border-radius: 10px 10px 12px 12px;
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    border: 2px solid rgba(51, 65, 85, 0.55);
+    box-shadow: 0 10px 24px -12px rgba(15, 23, 42, 0.75), inset 0 0 0 2px rgba(255, 255, 255, 0.65);
+    display: block;
+    overflow: visible;
+    offset-path: path('M 6 78 Q 48 10 90 78');
+    offset-distance: 0%;
+    offset-rotate: 0deg;
+    animation: suitcase-ride 2.4s ease-in-out infinite;
+}
+
+.immigration-loading .loading-suitcase::before,
+.immigration-loading .loading-suitcase::after {
+    content: '';
+    position: absolute;
+    bottom: -9px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #0f172a, #1f2937);
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.immigration-loading .loading-suitcase::before {
+    left: 8px;
+}
+
+.immigration-loading .loading-suitcase::after {
+    right: 8px;
+}
+
+.immigration-loading .loading-suitcase .suitcase-lid {
+    position: absolute;
+    top: -11px;
+    left: 12px;
+    right: 12px;
+    height: 14px;
+    border: 2px solid rgba(51, 65, 85, 0.7);
+    border-bottom: 0;
+    border-radius: 8px 8px 0 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(226, 232, 240, 0.9));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.immigration-loading .loading-suitcase .suitcase-strap {
+    position: absolute;
+    top: 4px;
+    width: 8px;
+    height: 26px;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.9));
+    border-radius: 6px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), 0 6px 8px -6px rgba(15, 23, 42, 0.6);
+}
+
+.immigration-loading .loading-suitcase .suitcase-strap:nth-of-type(2) {
+    left: 12px;
+}
+
+.immigration-loading .loading-suitcase .suitcase-strap:nth-of-type(3) {
+    right: 12px;
+}
+
+@keyframes suitcase-ride {
+    0% {
+        offset-distance: 0%;
+        transform: translateY(0) rotate(-6deg);
+    }
+
+    50% {
+        offset-distance: 100%;
+        transform: translateY(-2px) rotate(6deg);
+    }
+
+    100% {
+        offset-distance: 0%;
+        transform: translateY(0) rotate(-6deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .immigration-loading .loading-suitcase {
+        animation-duration: 3.4s;
     }
 }
