@@ -27,7 +27,18 @@
                     </div>
                     <div class="glass-field">
                         <label asp-for="Password" class="form-label">رمز عبور</label>
-                        <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور قدرتمند" />
+                        <div class="password-input-wrapper">
+                            <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور قدرتمند" />
+                            <button type="button"
+                                    class="password-toggle-btn"
+                                    data-password-toggle
+                                    data-target="Password"
+                                    data-icon-show='@Url.Content("~/icons/eye.svg")'
+                                    data-icon-hide='@Url.Content("~/icons/eye-off.svg")'
+                                    aria-label="نمایش رمز عبور">
+                                <img src="~/icons/eye.svg" asp-append-version="true" alt="" aria-hidden="true" />
+                            </button>
+                        </div>
                         <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>
                     @if (ViewData["ErrorMessage"] != null)
