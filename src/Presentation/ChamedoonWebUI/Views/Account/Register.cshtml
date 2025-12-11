@@ -22,14 +22,20 @@
                     <input type="hidden" name="returnUrl" value="@(ViewData["ReturnUrl"] as string)" />
                     <div class="glass-field">
                         <label asp-for="Email" class="form-label">ایمیل</label>
-                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
-                        <span asp-validation-for="Email" class="text-danger small"></span>
-                    </div>
-                    <div class="glass-field">
-                        <label asp-for="Password" class="form-label">رمز عبور</label>
+                    <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
+                    <span asp-validation-for="Email" class="text-danger small"></span>
+                </div>
+                <div class="glass-field">
+                    <label asp-for="Password" class="form-label">رمز عبور</label>
+                    <div class="password-input-wrapper">
                         <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور قدرتمند" />
-                        <span asp-validation-for="Password" class="text-danger small"></span>
+                        <button type="button" class="password-toggle" data-toggle-password aria-label="نمایش رمز عبور" aria-pressed="false" data-active="false">
+                            <img src="~/icons/eye-open.svg" alt="" loading="lazy" data-icon="open" />
+                            <img src="~/icons/eye-closed.svg" alt="" loading="lazy" data-icon="closed" />
+                        </button>
                     </div>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
                     @if (ViewData["ErrorMessage"] != null)
                     {
                         <div class="text-danger small">@ViewData["ErrorMessage"]</div>
