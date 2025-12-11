@@ -8,7 +8,7 @@
 <section class="glass-section auth-section auth-section-centered">
     @if (hasErrors)
     {
-        <div class="floating-alert" role="alert" aria-live="assertive">
+        <div class="floating-alert" role="alert" aria-live="assertive" data-auto-dismiss-after="4000">
             <div class="floating-alert__box floating-alert__box--error">
                 <div class="floating-alert__icon" aria-hidden="true">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" role="img">
@@ -19,6 +19,12 @@
                 <div class="floating-alert__content">
                     <p class="floating-alert__title mb-1">خطا در ورود</p>
                     <div class="floating-alert__message" asp-validation-summary="All"></div>
+                </div>
+                <div class="floating-alert__timer" aria-hidden="true" data-alert-timer>
+                    <svg viewBox="0 0 32 32" role="presentation" focusable="false">
+                        <circle class="floating-alert__timer-track" cx="16" cy="16" r="14" />
+                        <circle class="floating-alert__timer-progress" cx="16" cy="16" r="14" />
+                    </svg>
                 </div>
                 <button type="button" class="floating-alert__close" data-dismiss-alert aria-label="بستن هشدار">✕</button>
             </div>
@@ -41,12 +47,10 @@
                     <div class="glass-field">
                         <label asp-for="Email" class="form-label">ایمیل</label>
                         <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
-                        <span asp-validation-for="Email" class="text-danger small"></span>
                     </div>
                     <div class="glass-field">
                         <label asp-for="Password" class="form-label">رمز عبور</label>
                         <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور" />
-                        <span asp-validation-for="Password" class="text-danger small"></span>
                     </div>
                     <div class="auth-secondary-actions mt-2">
                         <label class="glass-checkbox">

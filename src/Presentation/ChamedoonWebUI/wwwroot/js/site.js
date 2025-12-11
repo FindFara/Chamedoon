@@ -201,15 +201,40 @@
         });
     });
 
-    const dismissButtons = document.querySelectorAll('[data-dismiss-alert]');
-    dismissButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const alert = button.closest('.floating-alert');
-            if (!alert) return;
-            alert.classList.add('is-dismissed');
-            const box = alert.querySelector('.floating-alert__box');
-            const duration = box ? parseFloat(getComputedStyle(box).animationDuration) * 1000 : 300;
-            setTimeout(() => alert.remove(), duration);
-        });
+    const getAlertAnimationDuration = (alert) => {
+        const box = alert?.querySelector('.floating-alert__box');
+        return box ? parseFloat(getComputedStyle(box).animationDuration) * 1000 : 300;
+    };
+
+    const dismissAlert = (alert) => {
+        if (!alert || alert.dataset.dismissing === 'true') return;
+        alert.dataset.dismissing = 'true';
+        alert.classList.add('is-dismissed');
+        setTimeout(() => alert.remove(), getAlertAnimationDuration(alert));
+    };
+
+    const floatingAlerts = document.querySelectorAll('.floating-alert');
+    floatingAlerts.forEach(alert => {
+        const closeButton = alert.querySelector('[data-dismiss-alert]');
+        const timerElement = alert.querySelector('[data-alert-timer]');
+        const autoDismissAfter = parseInt(alert.getAttribute('data-auto-dismiss-after') || '0', 10);
+        let autoDismissTimer = null;
+
+        if (timerElement && autoDismissAfter > 0) {
+            timerElement.style.setProperty('--alert-timer-duration', `${autoDismissAfter}ms`);
+        }
+
+        if (closeButton) {
+            closeButton.addEventListener('click', () => {
+                if (autoDismissTimer) {
+                    clearTimeout(autoDismissTimer);
+                }
+                dismissAlert(alert);
+            });
+        }
+
+        if (autoDismissAfter > 0) {
+            autoDismissTimer = setTimeout(() => dismissAlert(alert), autoDismissAfter);
+        }
     });
 })();

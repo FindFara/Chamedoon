@@ -22,3 +22,12 @@ body.landing-page.dark-mode .floating-alert__close:hover,
 body.landing-page.dark-mode .floating-alert__close:focus-visible {
     background: rgba(30, 41, 59, 0.7);
 }
+
+body.landing-page.dark-mode .floating-alert__timer {
+    background: rgba(15, 23, 42, 0.55);
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+body.landing-page.dark-mode .floating-alert__timer-track {
+    stroke: rgba(148, 163, 184, 0.75);
+}

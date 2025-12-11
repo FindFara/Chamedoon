@@ -18,7 +18,7 @@
     position: relative;
     width: min(640px, 100%);
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr auto auto;
     gap: 0.85rem;
     align-items: start;
     padding: 1rem 1.1rem;
@@ -107,6 +107,43 @@
     margin-bottom: 0.2rem;
 }
 
+.floating-alert__timer {
+    --alert-timer-duration: 4s;
+
+    position: relative;
+    z-index: 1;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 999px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.floating-alert__timer svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.floating-alert__timer-track {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.7);
+    stroke-width: 3;
+}
+
+.floating-alert__timer-progress {
+    fill: none;
+    stroke: var(--alert-accent);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 88;
+    stroke-dashoffset: 88;
+    animation: alert-timer var(--alert-timer-duration) linear forwards;
+}
+
 .floating-alert__close {
     position: relative;
     z-index: 1;
@@ -152,5 +189,15 @@
     to {
         transform: translateY(-20%);
         opacity: 0;
+    }
+}
+
+@keyframes alert-timer {
+    from {
+        stroke-dashoffset: 88;
+    }
+
+    to {
+        stroke-dashoffset: 0;
     }
 }
