@@ -1131,6 +1131,22 @@ a:hover {
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
+.dark-mode .glass-input {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(165, 180, 252, 0.4);
+    color: #e5e7eb;
+}
+
+.dark-mode .glass-input::placeholder {
+    color: #cbd5e1;
+}
+
+.dark-mode .glass-input:focus {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(165, 180, 252, 0.72);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.24);
+}
+
 .password-input-wrapper {
     position: relative;
 }
