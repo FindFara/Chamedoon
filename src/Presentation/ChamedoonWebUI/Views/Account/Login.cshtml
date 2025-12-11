@@ -2,9 +2,23 @@
 @{
     ViewData["Title"] = "ورود به چمدون";
     ViewData["HideChrome"] = true;
+    var hasErrors = (ViewData.ModelState?.ErrorCount ?? 0) > 0;
 }
 
 <section class="glass-section auth-section auth-section-centered">
+    @if (hasErrors)
+    {
+        <div class="floating-alert" role="alert" aria-live="assertive">
+            <div class="floating-alert__box floating-alert__box--error">
+                <div class="floating-alert__icon" aria-hidden="true">⚠️</div>
+                <div class="floating-alert__content">
+                    <p class="floating-alert__title mb-1">خطا در ورود</p>
+                    <div class="floating-alert__message" asp-validation-summary="All"></div>
+                </div>
+                <button type="button" class="floating-alert__close" data-dismiss-alert aria-label="بستن هشدار">✕</button>
+            </div>
+        </div>
+    }
     <div class="auth-abstract-bg" aria-hidden="true">
         <span class="blob blob-1"></span>
         <span class="blob blob-2"></span>
@@ -36,7 +50,6 @@
                         </label>
                         <a asp-controller="Account" asp-action="ForgotPassword" class="text-primary fw-semibold">فراموشی رمز عبور؟</a>
                     </div>
-                    <div class="text-danger small" asp-validation-summary="All"></div>
                     <button type="submit" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ورود به چمدون</button>
                 </form>
                 <div class="auth-divider">یا ورود با</div>

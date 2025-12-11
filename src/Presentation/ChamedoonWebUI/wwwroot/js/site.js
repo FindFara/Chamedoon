@@ -200,4 +200,16 @@
             });
         });
     });
+
+    const dismissButtons = document.querySelectorAll('[data-dismiss-alert]');
+    dismissButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const alert = button.closest('.floating-alert');
+            if (!alert) return;
+            alert.classList.add('is-dismissed');
+            const box = alert.querySelector('.floating-alert__box');
+            const duration = box ? parseFloat(getComputedStyle(box).animationDuration) * 1000 : 300;
+            setTimeout(() => alert.remove(), duration);
+        });
+    });
 })();
