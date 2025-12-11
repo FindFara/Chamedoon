@@ -44,6 +44,12 @@ public static class ConfigureServices
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders()
             .AddErrorDescriber<PersianIdentityErrorDescriber>();
+
+        services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequireUppercase = false;
+            options.Password.RequireNonAlphanumeric = false;
+        });
         return services;
 
     }

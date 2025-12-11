@@ -46,18 +46,18 @@
                     <input type="hidden" name="requestNonce" value="@(ViewData["LoginNonce"] as string)" />
                     <div class="glass-field">
                         <label asp-for="Email" class="form-label">ایمیل</label>
-                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" />
+                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" data-validate-email="true" data-disallow-persian="true" />
                     </div>
                     <div class="glass-field">
                         <label asp-for="Password" class="form-label">رمز عبور</label>
-                        <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور" />
+                        <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور" data-disallow-persian="true" />
                     </div>
                     <div class="auth-secondary-actions mt-2">
                         <label class="glass-checkbox">
                             <input asp-for="RememberMe" type="checkbox" />
                             <span>مرا به خاطر بسپار</span>
                         </label>
-                        <a asp-controller="Account" asp-action="ForgotPassword" class="text-primary fw-semibold">فراموشی رمز عبور؟</a>
+                        @* <a asp-controller="Account" asp-action="ForgotPassword" class="text-primary fw-semibold">فراموشی رمز عبور؟</a> *@
                     </div>
                     <button type="submit" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ورود به چمدون</button>
                 </form>

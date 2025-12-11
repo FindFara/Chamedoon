@@ -277,7 +277,7 @@ public class AccountController : Controller
 
     #region ForgotPassword
 
-
+    /*
     [HttpGet("ForgotPassword")]
     public async Task<IActionResult> ForgotPassword()
     {
@@ -356,5 +356,6 @@ public class AccountController : Controller
         }
         return RedirectToAction("Login");
     }
+    */
     #endregion
 }
