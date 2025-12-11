@@ -237,4 +237,101 @@
             autoDismissTimer = setTimeout(() => dismissAlert(alert), autoDismissAfter);
         }
     });
+
+    const persianCharPattern = /[\u0600-\u06FF]/g;
+    const enforceNonPersianInput = (input) => {
+        if (!input) return;
+
+        const removePersianCharacters = (value) => value.replace(persianCharPattern, '');
+
+        input.addEventListener('input', () => {
+            const sanitized = removePersianCharacters(input.value);
+            const hadPersianText = sanitized !== input.value;
+
+            if (hadPersianText) {
+                input.value = sanitized;
+                input.setCustomValidity('لطفاً از حروف فارسی استفاده نکنید.');
+            } else {
+                input.setCustomValidity('');
+            }
+
+            if (!document.activeElement || document.activeElement !== input) {
+                input.reportValidity();
+            }
+        });
+
+        input.addEventListener('blur', () => {
+            if (persianCharPattern.test(input.value)) {
+                input.setCustomValidity('لطفاً از حروف فارسی استفاده نکنید.');
+            } else {
+                input.setCustomValidity('');
+            }
+        });
+    };
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const attachEmailValidator = (input) => {
+        if (!input) return;
+
+        const validate = () => {
+            const value = input.value.trim();
+            if (value === '') {
+                input.setCustomValidity('');
+                return true;
+            }
+
+            if (!emailPattern.test(value)) {
+                input.setCustomValidity('فرمت ایمیل صحیح نیست.');
+                return false;
+            }
+
+            input.setCustomValidity('');
+            return true;
+        };
+
+        input.addEventListener('input', validate);
+        input.addEventListener('blur', validate);
+    };
+
+    const englishOnlyInputs = document.querySelectorAll('[data-disallow-persian="true"]');
+    englishOnlyInputs.forEach(enforceNonPersianInput);
+
+    const emailInputs = document.querySelectorAll('[data-validate-email="true"]');
+    emailInputs.forEach(attachEmailValidator);
+
+    const formsWithEmailValidation = new Set();
+    emailInputs.forEach(input => {
+        if (input.form) {
+            formsWithEmailValidation.add(input.form);
+        }
+    });
+
+    formsWithEmailValidation.forEach(form => {
+        form.addEventListener('submit', (event) => {
+            let isValid = true;
+
+            const formEmailInputs = form.querySelectorAll('[data-validate-email="true"]');
+            formEmailInputs.forEach(input => {
+                const value = input.value.trim();
+                if (value && !emailPattern.test(value)) {
+                    input.setCustomValidity('فرمت ایمیل صحیح نیست.');
+                    isValid = false;
+                    input.reportValidity();
+                }
+            });
+
+            const formEnglishOnlyInputs = form.querySelectorAll('[data-disallow-persian="true"]');
+            formEnglishOnlyInputs.forEach(input => {
+                if (persianCharPattern.test(input.value)) {
+                    input.setCustomValidity('لطفاً از حروف فارسی استفاده نکنید.');
+                    isValid = false;
+                    input.reportValidity();
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    });
 })();
