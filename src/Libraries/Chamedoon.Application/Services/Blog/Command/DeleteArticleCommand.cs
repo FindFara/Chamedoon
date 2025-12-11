@@ -9,7 +9,7 @@ namespace Chamedoon.Application.Services.Blog.Command
 {
     public class DeleteArticleCommand : IRequest<OperationResult<bool>>
     {
-        public Article_VM Article { get; set; } = new();
+        public ArticleViewModel Article { get; set; } = new();
     }
     public class DeleteArticleCommandHandler : IRequestHandler<DeleteArticleCommand, OperationResult<bool>>
     {

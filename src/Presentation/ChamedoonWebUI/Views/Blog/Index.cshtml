@@ -1,0 +1,209 @@
+@model ChamedoonWebUI.Models.BlogIndexViewModel
+@using System.Linq
+@using System.Globalization
+@using System.Text.RegularExpressions
+@using ChamedoonWebUI.Models
+@{ 
+    ViewData["Title"] = "وبلاگ";
+    var writers = Model.Articles.Select(a => a.Writer).Distinct().ToList();
+    var fallbackBlogImage = Url.Content("~/img/blog-placeholder.svg");
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/persian-datepicker.css" asp-append-version="true" />
+}
+
+<section class="glass-section">
+    <div class="container">
+        <div class="blog-hero">
+            <h1 class="fw-bold">کاوش در تجربه‌های مهاجرت و زندگی در کشورهای مختلف.</h1>
+            <p class="glass-helper mb-0">مقالات چمدون توسط تیم تحقیق و کاربران باتجربه نوشته شده‌اند تا مسیر مهاجرت را برایت شفاف کنند.</p>
+        </div>
+
+        <div class="glass-card blog-search-card mb-4">
+            @await Html.PartialAsync("_SearchForm", new BlogSearchFormViewModel
+            {
+                Search = Model.Search,
+                Writer = Model.Writer,
+                DateFrom = Model.DateFrom,
+                DateTo = Model.DateTo,
+                Writers = writers,
+                FieldIdSuffix = string.Empty,
+                SubmitLabel = "جستجو"
+            })
+        </div>
+
+        @if (!Model.Articles.Any())
+        {
+            <div class="glass-card blog-empty-state">
+                <h4 class="fw-semibold mb-2">مقاله‌ای مطابق فیلترها یافت نشد</h4>
+                <p class="glass-helper mb-0">فیلترها را تغییر بده یا کلمه کلیدی دیگری وارد کن تا نتایج بیشتری نمایش داده
+                    شود.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-4 popular-articles-grid">
+                @{ var cardIndex = 0; }
+                @foreach (var article in Model.Articles)
+                {
+                    var visitCountText = article.VisitCount.ToString("N0", CultureInfo.CreateSpecificCulture("fa-IR"));
+                    cardIndex++;
+                    var stepDelay = (cardIndex * 0.12).ToString("0.##", CultureInfo.InvariantCulture);
+                    var shortDescriptionText = Regex.Replace(article.ShortDescription ?? string.Empty, "<.*?>", string.Empty);
+                    var imageSrc = string.IsNullOrWhiteSpace(article.ArticleImageName)
+                        ? fallbackBlogImage
+                        : (article.ArticleImageName!.StartsWith("data:image", System.StringComparison.OrdinalIgnoreCase)
+                           || article.ArticleImageName.StartsWith("http", System.StringComparison.OrdinalIgnoreCase))
+                            ? article.ArticleImageName
+                            : Url.Content($"~/images/blog/{article.ArticleImageName}");
+                    <div class="col-md-6 col-xl-3">
+                        <article class="popular-article-card h-100" style="--card-delay:@stepDelay">
+                            <div class="popular-article-image">
+                                <img src="@imageSrc" alt="@article.ArticleTitle" loading="lazy"/>
+                            </div>
+                            <div class="popular-article-body">
+                                <h5 class="fw-semibold">@article.ArticleTitle</h5>
+                                <p class="text-muted popular-article-description">@shortDescriptionText</p>
+                            </div>
+                            <div class="popular-article-meta">
+                                <span class="popular-article-author"
+                                      aria-label="@article.Writer">✍️ @article.Writer</span>
+                                <span class="popular-article-visit" aria-label="@visitCountText بازدید">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+                                         viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" stroke="currentColor"
+                                              stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6"
+                                                stroke-linecap="round" stroke-linejoin="round"></circle>
+                                    </svg>
+                                    <span>@visitCountText</span>
+                                </span>
+                            </div>
+                            <a asp-controller="Blog" asp-action="Detail" asp-route-id="@article.Id"
+                               class="stretched-link" aria-label="مشاهده مطلب @article.ArticleTitle"></a>
+                        </article>
+                    </div>
+                }
+            </div>
+        }
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="صفحه‌های وبلاگ" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : string.Empty)">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)"
+                           asp-route-search="@Model.Search" asp-route-writer="@Model.Writer"
+                           asp-route-dateFrom="@(Model.DateFrom?.ToString("yyyy-MM-dd"))"
+                           asp-route-dateTo="@(Model.DateTo?.ToString("yyyy-MM-dd"))">قبلی</a>
+                    </li>
+                    @for (var i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : string.Empty)">
+                            <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-search="@Model.Search"
+                               asp-route-writer="@Model.Writer"
+                               asp-route-dateFrom="@(Model.DateFrom?.ToString("yyyy-MM-dd"))"
+                               asp-route-dateTo="@(Model.DateTo?.ToString("yyyy-MM-dd"))">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : string.Empty)">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)"
+                           asp-route-search="@Model.Search" asp-route-writer="@Model.Writer"
+                           asp-route-dateFrom="@(Model.DateFrom?.ToString("yyyy-MM-dd"))"
+                           asp-route-dateTo="@(Model.DateTo?.ToString("yyyy-MM-dd"))">بعدی</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/persian-datepicker.js" asp-append-version="true"></script>
+    <script>
+        (function () {
+            const initBlogPage = () => {
+                if (window.PersianDatePicker && typeof window.PersianDatePicker.init === 'function') {
+                    window.PersianDatePicker.init();
+                }
+
+                const notifyShare = (button, message) => {
+                    button.classList.add('is-shared');
+                    button.setAttribute('data-share-feedback', message);
+                    window.setTimeout(() => {
+                        button.classList.remove('is-shared');
+                        button.removeAttribute('data-share-feedback');
+                    }, 2000);
+                };
+
+                const copyToClipboard = async (text) => {
+                    if (!text) {
+                        return false;
+                    }
+
+                    if (navigator.clipboard && window.isSecureContext) {
+                        try {
+                            await navigator.clipboard.writeText(text);
+                            return true;
+                        } catch (error) {
+                            // fallback to legacy approach
+                        }
+                    }
+
+                    try {
+                        const textArea = document.createElement('textarea');
+                        textArea.value = text;
+                        textArea.setAttribute('readonly', '');
+                        textArea.style.position = 'fixed';
+                        textArea.style.opacity = '0';
+
+                        const container = document.body || document.documentElement;
+                        container.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+
+                        const successful = document.execCommand('copy');
+                        textArea.remove();
+                        return successful;
+                    } catch (error) {
+                        return false;
+                    }
+                };
+
+                document.querySelectorAll('.blog-share-button').forEach((button) => {
+                    button.addEventListener('click', async () => {
+                        const url = button.getAttribute('data-share-url');
+                        const title = button.getAttribute('data-share-title');
+                        if (!url) {
+                            return;
+                        }
+
+                        if (navigator.share) {
+                            try {
+                                await navigator.share({title, url});
+                                notifyShare(button, 'ارسال شد');
+                                return;
+                            } catch (error) {
+                                // کاربر اشتراک‌گذاری را لغو کرده است یا پشتیبانی نمی‌شود
+                            }
+                        }
+
+                        if (await copyToClipboard(url)) {
+                            notifyShare(button, 'کپی شد');
+                            return;
+                        }
+
+                        notifyShare(button, 'لینک: ' + url);
+                    });
+                });
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initBlogPage, {once: true});
+            } else {
+                initBlogPage();
+            }
+        })();
+    </script>
+}

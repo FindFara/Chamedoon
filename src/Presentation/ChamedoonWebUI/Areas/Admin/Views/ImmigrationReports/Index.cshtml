@@ -1,0 +1,249 @@
+@model ChamedoonWebUI.Areas.Admin.ViewModels.ImmigrationAnalyticsViewModel
+@using System.Text.Json
+@using System.Text.Encodings.Web
+@{
+    ViewData["Title"] = "گزارش ارزیابی مهاجرت";
+    var jsonOptions = new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+
+    var ageLabels = Model.AgeDistribution.Select(item => item.Label).ToList();
+    var ageValues = Model.AgeDistribution.Select(item => item.Percentage).ToList();
+    var jobLabels = Model.JobDistribution.Select(item => item.Label).ToList();
+    var jobValues = Model.JobDistribution.Select(item => item.Percentage).ToList();
+    var degreeLabels = Model.DegreeDistribution.Select(item => item.Label).ToList();
+    var degreeValues = Model.DegreeDistribution.Select(item => item.Percentage).ToList();
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h3 mb-1">گزارش ارزیابی مهاجرت</h1>
+            <p class="text-muted mb-0">مرور توزیع سنی، شغلی و تحصیلی کاربران شرکت‌کننده در ارزیابی</p>
+        </div>
+        <div class="badge bg-primary fs-6">
+            @Model.TotalEvaluations.ToString("N0") ارزیابی ذخیره شده
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-xl-4">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">توزیع سنی</h5>
+                    <small class="text-muted">درصد هر بازه</small>
+                </div>
+                <div class="card-body">
+                    @if (Model.TotalEvaluations > 0 && Model.AgeDistribution.Any())
+                    {
+                        <div class="chart-container">
+                            <canvas id="ageChart" aria-label="نمودار توزیع سنی" role="img"></canvas>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">داده‌ای برای نمایش وجود ندارد.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-4">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">وضعیت شغلی</h5>
+                    <small class="text-muted">سهم هر دسته شغلی</small>
+                </div>
+                <div class="card-body">
+                    @if (Model.TotalEvaluations > 0 && Model.JobDistribution.Any())
+                    {
+                        <div class="chart-container">
+                            <canvas id="jobChart" aria-label="نمودار دسته‌های شغلی" role="img"></canvas>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">داده‌ای برای نمایش وجود ندارد.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-4">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">تحصیلات</h5>
+                    <small class="text-muted">درصد مقاطع تحصیلی</small>
+                </div>
+                <div class="card-body">
+                    @if (Model.TotalEvaluations > 0 && Model.DegreeDistribution.Any())
+                    {
+                        <div class="chart-container">
+                            <canvas id="degreeChart" aria-label="نمودار تحصیلات" role="img"></canvas>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">داده‌ای برای نمایش وجود ندارد.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card admin-card shadow-sm border-0 mt-4">
+        <div class="card-header bg-transparent d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+            <div>
+                <h5 class="mb-1">لیست ارزیابی‌ها</h5>
+                <small class="text-muted">مشاهده و جستجوی همه ارزیابی‌های ثبت‌شده</small>
+            </div>
+            <form method="get" class="d-flex gap-2" role="search">
+                <input type="search" name="query" value="@Model.Query" class="form-control" placeholder="جستجو بر اساس نام، تلفن یا عنوان شغلی" aria-label="جستجو" />
+                <button type="submit" class="btn btn-primary">جستجو</button>
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">مشتری</th>
+                        <th scope="col">تلفن</th>
+                        <th scope="col">سن</th>
+                        <th scope="col">وضعیت تاهل</th>
+                        <th scope="col">دسته شغلی</th>
+                        <th scope="col">عنوان شغلی</th>
+                        <th scope="col">تحصیلات</th>
+                        <th scope="col">مدرک زبان</th>
+                        <th scope="col">تمایل به تحصیل</th>
+                        <th scope="col">تاریخ ثبت</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Evaluations.Any())
+                    {
+                        foreach (var item in Model.Evaluations)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@item.CustomerName</td>
+                                <td>@item.PhoneNumber ?? "-"</td>
+                                <td>@(item.Age > 0 ? item.Age.ToString() : "نامشخص")</td>
+                                <td>@item.MaritalStatus</td>
+                                <td>@item.JobCategory</td>
+                                <td>@(!string.IsNullOrWhiteSpace(item.JobTitle) ? item.JobTitle : "-")</td>
+                                <td>@item.DegreeLevel</td>
+                                <td>@item.LanguageCertificate</td>
+                                <td>
+                                    @if (item.WillingToStudy)
+                                    {
+                                        <span class="badge bg-success-subtle text-success">بله</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary-subtle text-secondary">خیر</span>
+                                    }
+                                </td>
+                                <td>@item.CreatedAtUtc.ToLocalTime().ToString("yyyy/MM/dd HH:mm")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="10" class="text-center text-muted py-4">اطلاعاتی برای نمایش وجود ندارد.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (Model.TotalPages > 1)
+        {
+            var startPage = Math.Max(1, Model.CurrentPage - 2);
+            var endPage = Math.Min(Model.TotalPages, startPage + 4);
+            startPage = Math.Max(1, endPage - 4);
+
+            <nav aria-label="صفحات ارزیابی" class="p-3 admin-pagination">
+                <ul class="pagination justify-content-end mb-0">
+                    <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : string.Empty)">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@(Model.CurrentPage - 1)"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-query="@Model.Query">قبلی</a>
+                    </li>
+                    @for (var i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : string.Empty)">
+                            <a class="page-link"
+                               asp-action="Index"
+                               asp-route-page="@i"
+                               asp-route-pageSize="@Model.PageSize"
+                               asp-route-query="@Model.Query">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : string.Empty)">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@(Model.CurrentPage + 1)"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-query="@Model.Query">بعدی</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+    <script>
+        (function () {
+            if (typeof window.Chart === 'undefined') {
+                console.warn('Chart.js is not available.');
+                return;
+            }
+
+            const palette = ['#2563eb', '#22c55e', '#f97316', '#a855f7', '#06b6d4', '#ef4444'];
+            const ageLabels = @Html.Raw(JsonSerializer.Serialize(ageLabels, jsonOptions));
+            const ageValues = @Html.Raw(JsonSerializer.Serialize(ageValues, jsonOptions));
+            const jobLabels = @Html.Raw(JsonSerializer.Serialize(jobLabels, jsonOptions));
+            const jobValues = @Html.Raw(JsonSerializer.Serialize(jobValues, jsonOptions));
+            const degreeLabels = @Html.Raw(JsonSerializer.Serialize(degreeLabels, jsonOptions));
+            const degreeValues = @Html.Raw(JsonSerializer.Serialize(degreeValues, jsonOptions));
+
+            const buildChart = (id, labels, data) => {
+                const canvas = document.getElementById(id);
+                if (!canvas || !labels.length || !data.length) {
+                    return;
+                }
+
+                return new Chart(canvas, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: labels.map((_, idx) => palette[idx % palette.length]),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => `${context.label}: ${context.parsed}%`
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+
+            buildChart('ageChart', ageLabels, ageValues);
+            buildChart('jobChart', jobLabels, jobValues);
+            buildChart('degreeChart', degreeLabels, degreeValues);
+        })();
+    </script>
+}

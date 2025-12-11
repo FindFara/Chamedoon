@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Chamedoon.Application.Services.Blog.Query
 {
-    public class GetBlogQuery : IRequest<OperationResult<Article_VM>>
+    public class GetBlogQuery : IRequest<OperationResult<ArticleViewModel>>
     {
         public long Id { get; set; }
         public string? Title { get; set; }
     }
-    public class GetBlogQueryHandler : IRequestHandler<GetBlogQuery, OperationResult<Article_VM>>
+    public class GetBlogQueryHandler : IRequestHandler<GetBlogQuery, OperationResult<ArticleViewModel>>
     {
         #region Property
         private readonly IApplicationDbContext _context;
@@ -30,7 +30,7 @@ namespace Chamedoon.Application.Services.Blog.Query
         #endregion
 
         #region Method
-        public async Task<OperationResult<Article_VM>> Handle(GetBlogQuery request, CancellationToken cancellationToken)
+        public async Task<OperationResult<ArticleViewModel>> Handle(GetBlogQuery request, CancellationToken cancellationToken)
         {
 
             Article? article = await _context.Article
@@ -40,7 +40,7 @@ namespace Chamedoon.Application.Services.Blog.Query
             if (article is null)
                 OperationResult<User>.Fail("مقاله ای با مشخصات واد شده یافت نشد");
 
-            return OperationResult<Article_VM>.Success(mapper.Map<Article_VM>(article));
+            return OperationResult<ArticleViewModel>.Success(mapper.Map<ArticleViewModel>(article));
         }
 
         #endregion

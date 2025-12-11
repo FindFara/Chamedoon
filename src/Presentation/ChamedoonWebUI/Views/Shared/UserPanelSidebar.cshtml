@@ -1,47 +1,64 @@
-﻿    <div class="sidebar sticky-bar p-4 rounded shadow-md">
-        <div class="widget mt-4 pt-2">
-            <h6 class="widget-title">تکمیل حساب کاربری  :</h6>
-            <div class="progress-box mt-4">
-                <h6 class="title text-muted">پیش رفتن  </h6>
-                <div class="progress">
-                    <div class="progress-bar position-relative bg-primary" style="width:50%;">
-                        <div class="progress-value d-block text-muted h6">48 / 100</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="widget mt-4">
-            <ul class="list-unstyled sidebar-nav mb-0" id="navmenu-nav">
-
-                <li class="navbar-item account-menu px-0">
-                    <a asp-controller="UserPanel" asp-action="Index" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                        <span class="h4 mb-0"><i class="mdi mdi-account"></i></span>
-                        <h6 class="mb-0 ms-2">پروفایل </h6>
-                    </a>
-                </li>
-
-                <li class="navbar-item account-menu px-0 mt-2">
-                    <a asp-controller="UserPanel" asp-action="Edit" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                        <span class="h4 mb-0"><i class="mdi mdi-file-edit"></i></span>
-                        <h6 class="mb-0 ms-2">ویرایش حساب کاربری </h6>
-                    </a>
-                </li>
-
-
-                <li class="navbar-item account-menu px-0 mt-2">
-                <a asp-controller="Account" asp-action="ChangePassword" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                        <span class="h4 mb-0"><i class="mdi mdi-lock"></i></span>
-                        <h6 class="mb-0 ms-2">تغییر رمز عبور </h6>
-                    </a>
-                </li>
-
-                <li class="navbar-item account-menu px-0 mt-2">
-                    <a asp-controller="Account" asp-action="Logout" class="navbar-link d-flex rounded shadow align-items-center py-2 px-4">
-                        <span class="h4 mb-0"><i class="mdi mdi-logout"></i></span>
-                        <h6 class="mb-0 ms-2">خروج از حساب </h6>
-                    </a>
-                </li>
-            </ul>
-        </div>
+@using System
+@using Chamedoon.Application.Services.Subscription
+@{
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    var subscriptionStatus = ViewBag.SubscriptionStatus as SubscriptionStatus;
+    string LinkClass(string action, string controller) =>
+        string.Equals(currentAction, action, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase)
+            ? "dashboard-link active"
+            : "dashboard-link";
+}
+<div class="glass-card dashboard-pane panel-subscription-card">
+    <div class="panel-subscription-illustration" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="42" height="42" fill="none">
+            <rect x="8" y="14" width="48" height="34" rx="8" stroke="currentColor" stroke-width="2.2" />
+            <path d="M20 14v-3.5a4.5 4.5 0 0 1 4.5-4.5h15a4.5 4.5 0 0 1 4.5 4.5V14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+            <path d="M16 28h32" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+            <path d="M20 38h12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+            <path d="M36 38h8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+        </svg>
     </div>
+    <div class="panel-subscription-body">
+        <span class="panel-subscription-label">وضعیت اشتراک</span>
+        @if (subscriptionStatus is null)
+        {
+            <p class="panel-subscription-title mb-0">بدون اشتراک فعال</p>
+            <p class="panel-subscription-meta mb-0">با انتخاب پلن، ارزیابی را سریع شروع کن.</p>
+        }
+        else
+        {
+            <p class="panel-subscription-title mb-0">@subscriptionStatus.PlanTitle</p>
+            <p class="panel-subscription-meta mb-1">@subscriptionStatus.RemainingDays روز باقی مانده</p>
+            if (subscriptionStatus.EvaluationLimit is int limit)
+            {
+                <span class="panel-subscription-chip">@subscriptionStatus.UsedEvaluations / @limit استعلام</span>
+            }
+            else
+            {
+                <span class="panel-subscription-chip">استعلام نامحدود</span>
+            }
+        }
+        <a asp-controller="Subscription" asp-action="Index" class="panel-subscription-link">مدیریت اشتراک</a>
+    </div>
+</div>
 
+<nav class="glass-card dashboard-pane dashboard-menu" aria-label="منوی پنل کاربری">
+    <a asp-controller="UserPanel" asp-action="Index" class="@LinkClass("Index", "UserPanel")">
+        <span aria-hidden="true">👤</span>
+        <span>پروفایل</span>
+    </a>
+    <a asp-controller="UserPanel" asp-action="Edit" class="@LinkClass("Edit", "UserPanel")">
+        <span aria-hidden="true">✏️</span>
+        <span>ویرایش اطلاعات</span>
+    </a>
+    <a asp-controller="Account" asp-action="ChangePassword" class="@LinkClass("ChangePassword", "Account")">
+        <span aria-hidden="true">🔒</span>
+        <span>تغییر رمز عبور</span>
+    </a>
+    <a asp-controller="Account" asp-action="Logout" class="dashboard-link">
+        <span aria-hidden="true">🚪</span>
+        <span>خروج از حساب</span>
+    </a>
+</nav>

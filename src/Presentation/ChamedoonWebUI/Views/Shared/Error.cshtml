@@ -1,14 +1,139 @@
-﻿@{
-    ViewData["Title"] = "Error";
+@{
+    Layout = null;
+    ViewData["Title"] = "۴۰۴ | صفحه پیدا نشد";
 }
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;800&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --ink: #0f172a;
+            --muted: #6b7280;
+            --accent: #f97316;
+            --accent-2: #6366f1;
+            --accent-3: #06b6d4;
+            --surface: rgba(255, 255, 255, 0.9);
+        }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
+        * {
+            box-sizing: border-box;
+        }
 
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>Development environment should not be enabled in deployed applications</strong>, as it can result in sensitive information from exceptions being displayed to end users. For local debugging, development environment can be enabled by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>, and restarting the application.
-</p>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(1.5rem, 3vw, 3rem);
+            background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.15), transparent 32%),
+                radial-gradient(circle at 80% 10%, rgba(6, 182, 212, 0.12), transparent 30%),
+                radial-gradient(circle at 50% 80%, rgba(249, 115, 22, 0.12), transparent 32%),
+                #eef2ff;
+            font-family: 'Vazirmatn', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--ink);
+        }
+
+        .error-shell {
+            position: relative;
+            width: min(900px, 100%);
+            overflow: hidden;
+            border-radius: 26px;
+            padding: clamp(1.75rem, 3vw, 3rem);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.82));
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 24px 70px -45px rgba(15, 23, 42, 0.65);
+            text-align: center;
+        }
+
+        .floating-ring {
+            position: absolute;
+            inset: auto;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, rgba(99, 102, 241, 0.0) 65%);
+            filter: blur(10px);
+        }
+
+        .floating-ring--left {
+            top: -60px;
+            left: -80px;
+        }
+
+        .floating-ring--right {
+            bottom: -70px;
+            right: -90px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.18) 0%, rgba(6, 182, 212, 0.0) 65%);
+        }
+        
+        .error-code {
+            font-size: clamp(4.5rem, 10vw, 7rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin: 0 0 0.6rem;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2), var(--accent-3));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 8px 26px rgba(99, 102, 241, 0.25);
+        }
+
+        .error-title {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            margin: 0 0 0.5rem;
+            font-weight: 700;
+        }
+
+        .error-text {
+            margin: 0 auto 1.8rem;
+            max-width: 520px;
+            color: var(--muted);
+            font-weight: 500;
+            line-height: 1.8;
+        }
+
+        .home-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.9rem 1.3rem;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent-2), #312e81);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 18px 32px -18px rgba(99, 102, 241, 0.75);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 22px 36px -18px rgba(99, 102, 241, 0.9);
+        }
+
+        .home-button:focus-visible {
+            outline: 3px solid rgba(99, 102, 241, 0.35);
+            outline-offset: 4px;
+        }
+    </style>
+</head>
+<body>
+    <main class="error-shell" aria-labelledby="error-title">
+        <div class="floating-ring floating-ring--left" aria-hidden="true"></div>
+        <div class="floating-ring floating-ring--right" aria-hidden="true"></div>
+        <h1 class="error-code">۴۰۴</h1>
+        <p id="error-title" class="error-title">صفحه‌ای که دنبالش می‌گردید پیدا نشد</p>
+        <p class="error-text">به نظر می‌رسد لینک تغییر کرده یا آدرس اشتباه وارد شده است. برای ادامه می‌توانید به صفحه اصلی برگردید.</p>
+        <a class="home-button" href="/">بازگشت به خانه</a>
+    </main>
+</body>
+</html>

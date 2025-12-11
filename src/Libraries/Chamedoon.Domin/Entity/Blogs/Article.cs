@@ -12,6 +12,7 @@ public class Article : BaseAuditableEntity
 
     #region Relations
     public List<ArticleComment> ArticleComment { get; set; }
+
     #endregion
 
 }

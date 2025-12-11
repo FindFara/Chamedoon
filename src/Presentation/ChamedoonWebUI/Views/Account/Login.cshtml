@@ -1,86 +1,73 @@
-﻿@model Chamedoon.Application.Services.Account.Login.ViewModel.LoginUserViewModel;
+﻿@model Chamedoon.Application.Services.Account.Login.ViewModel.LoginUserViewModel
 @{
-    ViewData["Title"] = "ورود به سایت";
-    Layout = null;
+    ViewData["Title"] = "ورود به چمدون";
+    ViewData["HideChrome"] = true;
+    var hasErrors = (ViewData.ModelState?.ErrorCount ?? 0) > 0;
 }
-<partial name="Styles" />
-<partial name="MetaTags" />
 
-<div class="back-to-home rounded d-none d-sm-block">
-    <a asp-controller="Home" asp-action="Index">
-        <button type="button" class="btn btn-icon btn-primary">
-            <i data-feather="home" class="mdi mdi-home-outline icons"></i>
-        </button>
-    </a>
-</div>
-<!-- شوع آن -->
-<section class="bg-home bg-circle-gradiant d-flex align-items-center" style="background: url('/images/bg.png')">
-    <div class="bg-overlay bg-overlay-white"></div>
+<section class="glass-section auth-section auth-section-centered">
+    @if (hasErrors)
+    {
+        <div class="floating-alert" role="alert" aria-live="assertive" data-auto-dismiss-after="4000">
+            <div class="floating-alert__box floating-alert__box--error">
+                <div class="floating-alert__icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" role="img">
+                        <path d="M12 3.5 3.75 19.25c-.47.9.16 1.99 1.16 1.99h14.18c1 0 1.63-1.09 1.16-1.99L12 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                        <path d="M12 9v5M12 16.5h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="floating-alert__content">
+                    <p class="floating-alert__title mb-1">خطا در ورود</p>
+                    <div class="floating-alert__message" asp-validation-summary="All"></div>
+                </div>
+                <div class="floating-alert__timer" aria-hidden="true" data-alert-timer>
+                    <svg viewBox="0 0 32 32" role="presentation" focusable="false">
+                        <circle class="floating-alert__timer-track" cx="16" cy="16" r="14" />
+                        <circle class="floating-alert__timer-progress" cx="16" cy="16" r="14" />
+                    </svg>
+                </div>
+                <button type="button" class="floating-alert__close" data-dismiss-alert aria-label="بستن هشدار">✕</button>
+            </div>
+        </div>
+    }
+    <div class="auth-abstract-bg" aria-hidden="true">
+        <span class="blob blob-1"></span>
+        <span class="blob blob-2"></span>
+        <span class="grid-pattern"></span>
+    </div>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-5 col-md-8">
-                <div class="card login-page bg-white shadow rounded border-0">
-                    <div class="card-body">
-                        <h4 class="card-title text-center"> ورود </h4>
-                        <form asp-action="Login" method="post" class="login-form mt-4" novalidate>
-                            <div class="row">
-
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        @* <label class="form-label">ایمیل  <span class="text-danger">*</span></label> *@
-                                        <div class="form-icon position-relative">
-                                            <i class="mdi mdi-account align-middle icons"></i>
-                                            <input asp-for="Email" type="email" class="form-control ps-5" placeholder="ایمیل">
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-lg-12">
-                                    <div class="mb-3">
-                                        @* <label class="form-label">رمز عبور  <span class="text-danger">*</span></label> *@
-                                        <div class="form-icon position-relative">
-                                            <i data-feather="key" class="mdi mdi-key fea icon-sm icons"></i>
-                                            <input asp-for="Password" type="password" class="form-control ps-5" placeholder="رمز عبور ">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="text-danger" asp-validation-summary="All"></div>
-
-                                <div class="col-lg-12">
-                                    <div class="d-flex justify-content-between">
-                                        <div class="mb-3">
-
-                                            <div class="text-dark fw-bold">
-                                                <label asp-for="RememberMe" class="text-dark fw-bold">
-                                                    <input asp-for="RememberMe" /> مرا به خاطر بسپار
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <p class="forgot-pass mb-0"><a asp-controller="auth" asp-action="ForgotPassword" class="text-dark fw-bold">فراموشی رمز عبور؟ </a></p>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-12 mb-0">
-                                    <div class="d-grid">
-                                        <button class="btn btn-primary">ورود  </button>
-                                    </div>
-                                </div>
-                                <div class="col-12 text-center">
-                                    <p class="mb-0 mt-3"><small class="text-dark me-2">حسابی ندارید؟ </small> <a asp-controller="Account" asp-action="Register" class="text-dark fw-bold">ثبت نام کنید </a></p>
-                                </div>
-
-                                <div class="col-lg-12 mt-4 text-center">
-                                    <div class="row">
-                                        <div class="d-grid">
-                                            <a asp-controller="auth" asp-action="login-google" class="btn btn-light"><i class="mdi mdi-google text-danger"></i> ورود با گوگل </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+        <div class="auth-grid auth-grid-compact auth-grid-single">
+            <div class="glass-card auth-card auth-card-compact">
+                <div class="auth-card-header text-center">
+                    <h2 class="mb-0">ورود به حساب</h2>
+                </div>
+                <form asp-action="Login" method="post" novalidate data-prevent-multi-submit="true">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="requestNonce" value="@(ViewData["LoginNonce"] as string)" />
+                    <div class="glass-field">
+                        <label asp-for="Email" class="form-label">ایمیل</label>
+                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" data-validate-email="true" data-disallow-persian="true" />
                     </div>
+                    <div class="glass-field">
+                        <label asp-for="Password" class="form-label">رمز عبور</label>
+                        <input asp-for="Password" type="password" class="form-control glass-input" placeholder="رمز عبور" data-disallow-persian="true" />
+                    </div>
+                    <div class="auth-secondary-actions mt-2">
+                        <label class="glass-checkbox">
+                            <input asp-for="RememberMe" type="checkbox" />
+                            <span>مرا به خاطر بسپار</span>
+                        </label>
+                        @* <a asp-controller="Account" asp-action="ForgotPassword" class="text-primary fw-semibold">فراموشی رمز عبور؟</a> *@
+                    </div>
+                    <button type="submit" class="btn-glass-primary w-100 mt-3" data-processing-text="در حال پردازش...">ورود به چمدون</button>
+                </form>
+                <div class="auth-divider">یا ورود با</div>
+                <a asp-controller="Account" asp-action="login-google" class="btn-google w-100">
+                    <span aria-hidden="true">🔐</span>
+                    ورود با حساب گوگل
+                </a>
+                <div class="auth-meta text-center">
+                    <span>هنوز عضو نیستی؟ <a asp-controller="Account" asp-action="Register">ثبت‌نام سریع</a></span>
                 </div>
             </div>
         </div>

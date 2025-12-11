@@ -10,7 +10,7 @@ namespace Chamedoon.Application.Services.Blog.Command
 {
     public class EditArticleCommand : IRequest<OperationResult<bool>>
     {
-        public Article_VM Article { get; set; } = new();
+        public ArticleViewModel Article { get; set; } = new();
     }
     public class EditArticleCommandHandler : IRequestHandler<EditArticleCommand, OperationResult<bool>>
     {

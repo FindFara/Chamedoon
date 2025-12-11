@@ -1,0 +1,524 @@
+@model DashboardViewModel
+@using System.Linq
+@using System.Text.Json
+@using System.Text.Encodings.Web
+@using Chamedoon.Domin.Enums
+@{
+    ViewData["Title"] = "داشبورد";
+    var jsonOptions = new JsonSerializerOptions
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
+    var monthlyRegistrationLabels = Model.MonthlyRegistrations.Select(item => item.Month).ToList();
+    var monthlyRegistrationValues = Model.MonthlyRegistrations.Select(item => item.Count).ToList();
+    var monthlySubscriptionValues = Model.MonthlyActiveSubscriptions.Select(item => item.Count).ToList();
+    var monthlyBlogViewLabels = Model.MonthlyBlogViews.Select(item => item.Month).ToList();
+    var monthlyBlogViewValues = Model.MonthlyBlogViews.Select(item => item.Count).ToList();
+    string PaymentStatusClass(PaymentStatus status) => status switch
+    {
+        PaymentStatus.Paid => "bg-success",
+        PaymentStatus.Pending => "bg-warning text-dark",
+        PaymentStatus.Redirected => "bg-warning text-dark",
+        PaymentStatus.Failed => "bg-danger",
+        PaymentStatus.Cancelled => "bg-secondary",
+        _ => "bg-secondary"
+    };
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h3 mb-1">داشبورد مدیریتی</h1>
+            <p class="text-muted mb-0">نمای کلی از وضعیت سامانه و فعالیت‌های اخیر</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-12 col-xl-4">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">کاربران</h5>
+                        <small class="text-muted">مرور وضعیت و آخرین ثبت‌نام‌ها</small>
+                    </div>
+                    <span class="badge bg-success rounded-pill">+@Model.NewUsersThisMonth.ToString("N0") این ماه</span>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-column gap-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small">کل کاربران</div>
+                                <h4 class="mb-0">@Model.TotalUsers.ToString("N0")</h4>
+                            </div>
+                            <span class="badge bg-secondary">@Model.ActiveUsers.ToString("N0") فعال</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small">اشتراک فعال</div>
+                                <h6 class="mb-0">@Model.UsersWithActiveSubscription.ToString("N0") کاربر</h6>
+                            </div>
+                            <small class="text-muted">از @Model.TotalUsers.ToString("N0")</small>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-2">روند ثبت‌نام و اشتراک</h6>
+                        @if (Model.MonthlyRegistrations.Any())
+                        {
+                            <div class="chart-container">
+                                <canvas id="monthlyUsersChart" aria-label="نمودار کاربران جدید" role="img"></canvas>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">داده‌ای برای نمایش نمودار ثبت‌نام موجود نیست.</p>
+                        }
+                    </div>
+
+                    <div>
+                        <h6 class="text-muted mb-2">کاربران اخیر (بدون فیلتر وضعیت)</h6>
+                        @if (Model.RecentUsers.Any())
+                        {
+                            <div class="table-responsive">
+                                <table class="table align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>نام</th>
+                                            <th>ایمیل</th>
+                                            <th>نقش</th>
+                                            <th class="text-nowrap">وضعیت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var user in Model.RecentUsers)
+                                        {
+                                            <tr>
+                                                <td>@(string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName)</td>
+                                                <td>@user.Email</td>
+                                                <td>@(string.IsNullOrWhiteSpace(user.RoleName) ? "-" : user.RoleName)</td>
+                                                <td>
+                                                    <span class="badge @(user.IsActive ? "bg-success" : "bg-danger")">@(user.IsActive ? "فعال" : "غیرفعال")</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">کاربری ثبت نشده است.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-4">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">پرداخت‌ها</h5>
+                        <small class="text-muted">گزارش ۳۰ روز اخیر</small>
+                    </div>
+                    <span class="badge bg-primary">@Model.PaymentSummary.SuccessfulCount.ToString("N0") موفق</span>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-column gap-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small">مبلغ موفق</div>
+                                <h4 class="mb-0">@Model.PaymentSummary.SuccessfulAmount.ToString("N0") <small class="text-muted">تومان</small></h4>
+                            </div>
+                            <span class="badge bg-success">@Model.PaymentSummary.SuccessfulCount.ToString("N0") تراکنش</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">در انتظار تایید</span>
+                            <span class="badge bg-warning text-dark rounded-pill">@Model.PaymentSummary.PendingCount.ToString("N0")</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">ناموفق / لغو شده</span>
+                            <span class="badge bg-danger rounded-pill">@Model.PaymentSummary.FailedCount.ToString("N0")</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h6 class="text-muted mb-2">پرداخت‌های اخیر</h6>
+                        @if (Model.RecentPayments.Any())
+                        {
+                            <div class="table-responsive">
+                                <table class="table align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>کاربر</th>
+                                            <th>پلن</th>
+                                            <th>مبلغ</th>
+                                            <th>وضعیت</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var payment in Model.RecentPayments)
+                                        {
+                                            <tr>
+                                                <td>@payment.CustomerName</td>
+                                                <td>@payment.PlanTitle</td>
+                                                <td>@payment.Amount.ToString("N0") <small class="text-muted">تومان</small></td>
+                                                <td><span class="badge @PaymentStatusClass(payment.Status)">@payment.StatusLabel</span></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">تراکنشی برای نمایش موجود نیست.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-4">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">وبلاگ</h5>
+                        <small class="text-muted">آمار انتشار و بازدید</small>
+                    </div>
+                    <span class="badge bg-info text-dark">@Model.TotalViews.ToString("N0") بازدید</span>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex flex-column gap-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="text-muted small">کل مقالات</div>
+                                <h4 class="mb-0">@Model.TotalBlogPosts.ToString("N0")</h4>
+                            </div>
+                            <small class="text-muted">منتشر شده: @Model.PublishedBlogPosts.ToString("N0")</small>
+                        </div>
+                        <div class="text-muted small">@Model.DraftBlogPosts.ToString("N0") مقاله در حالت پیش‌نویس است.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-2">روند بازدید مقالات</h6>
+                        @if (Model.MonthlyBlogViews.Any())
+                        {
+                            <div class="chart-container">
+                                <canvas id="blogViewsChart" aria-label="نمودار بازدید مقالات" role="img"></canvas>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">برای نمایش نمودار بازدید اطلاعاتی موجود نیست.</p>
+                        }
+                    </div>
+
+                    <div>
+                        <h6 class="text-muted mb-2">محبوب‌ترین مقالات</h6>
+                        @if (Model.PopularPosts.Any())
+                        {
+                            <ul class="list-group list-group-flush">
+                                @foreach (var post in Model.PopularPosts)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>@post.Title</span>
+                                        <span class="badge bg-primary rounded-pill">@post.VisitCount.ToString("N0") بازدید</span>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">داده‌ای موجود نیست.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-1">
+        <div class="col-lg-6">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">توزیع نقش‌ها</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RoleDistribution.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var role in Model.RoleDistribution)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>@role.RoleName</span>
+                                    <span class="badge bg-secondary rounded-pill">@role.UserCount.ToString("N0") کاربر</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">نقشی ثبت نشده است.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">فعالیت اشتراک‌ها</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.MonthlyActiveSubscriptions.Any())
+                    {
+                        <div class="chart-container">
+                            <canvas id="monthlySubscriptionsChart" aria-label="نمودار اشتراک‌های فعال" role="img"></canvas>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">اطلاعاتی برای نمایش اشتراک‌های فعال موجود نیست.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-1">
+        <div class="col-lg-12">
+            <div class="card admin-card shadow-sm border-0 h-100">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0">فعالیت اخیر تراکنش‌ها</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentPayments.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>کاربر</th>
+                                        <th>پلن</th>
+                                        <th>مبلغ</th>
+                                        <th>کدرهگیری</th>
+                                        <th>وضعیت</th>
+                                        <th class="text-nowrap">تاریخ پرداخت</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var payment in Model.RecentPayments)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div>@payment.CustomerName</div>
+                                                @if (!string.IsNullOrWhiteSpace(payment.TrackId))
+                                                {
+                                                    <small class="text-muted">@payment.CustomerName</small>
+                                                }
+                                            </td>
+                                            <td>@payment.PlanTitle</td>
+                                            <td>@payment.Amount.ToString("N0") <small class="text-muted">تومان</small></td>
+                                            <td>@(string.IsNullOrWhiteSpace(payment.TrackId) ? "-" : payment.TrackId)</td>
+                                            <td><span class="badge @PaymentStatusClass(payment.Status)">@payment.StatusLabel</span></td>
+                                            <td class="text-nowrap">
+                                                <div>@payment.PaidAtUtc?.ToString("yyyy/MM/dd") ?? "-"</div>
+                                                @if (payment.PaidAtUtc.HasValue)
+                                                {
+                                                    <small class="text-muted">@payment.PaidAtUtc.Value.ToString("HH:mm")</small>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">تراکنشی در بازه اخیر ثبت نشده است.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+    <script>
+        (function () {
+            if (typeof window.Chart === 'undefined') {
+                console.warn('Chart.js is not available.');
+                return;
+            }
+            const monthlyLabels = @Html.Raw(JsonSerializer.Serialize(monthlyRegistrationLabels, jsonOptions));
+            const monthlyValues = @Html.Raw(JsonSerializer.Serialize(monthlyRegistrationValues, jsonOptions));
+            const monthlySubscriptionValues = @Html.Raw(JsonSerializer.Serialize(monthlySubscriptionValues, jsonOptions));
+            const blogMonthLabels = @Html.Raw(JsonSerializer.Serialize(monthlyBlogViewLabels, jsonOptions));
+            const blogMonthValues = @Html.Raw(JsonSerializer.Serialize(monthlyBlogViewValues, jsonOptions));
+
+            const charts = [];
+
+            const hexToRgba = (hex, alpha) => {
+                if (!hex) {
+                    return `rgba(37, 99, 235, ${alpha})`;
+                }
+
+                const normalized = hex.trim();
+                if (!normalized.startsWith('#')) {
+                    return normalized;
+                }
+
+                let value = normalized.substring(1);
+                if (value.length === 3) {
+                    value = value.split('').map(char => char + char).join('');
+                }
+
+                const intValue = parseInt(value, 16);
+                const r = (intValue >> 16) & 255;
+                const g = (intValue >> 8) & 255;
+                const b = intValue & 255;
+                return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            };
+
+            const getColors = () => {
+                const style = getComputedStyle(document.body);
+                return {
+                    accent: style.getPropertyValue('--admin-accent').trim() || '#2563eb',
+                    success: style.getPropertyValue('--admin-success').trim() || '#22c55e',
+                    text: style.getPropertyValue('--admin-text').trim() || '#1f2937',
+                    muted: style.getPropertyValue('--admin-muted').trim() || '#6b7280',
+                    border: style.getPropertyValue('--admin-border').trim() || 'rgba(229, 231, 235, 0.7)',
+                    surface: style.getPropertyValue('--admin-surface').trim() || '#ffffff'
+                };
+            };
+
+            const applyColors = (chart) => {
+                const colors = getColors();
+                const palette = [colors.accent, colors.success];
+
+                chart.data.datasets.forEach((dataset, index) => {
+                    const color = palette[index % palette.length];
+                    if (chart.config.type === 'line') {
+                        dataset.borderColor = color;
+                        dataset.backgroundColor = hexToRgba(color, 0.2);
+                        dataset.pointBackgroundColor = colors.surface;
+                        dataset.pointBorderColor = color;
+                        dataset.pointHoverBackgroundColor = color;
+                        dataset.pointHoverBorderColor = colors.surface;
+                    } else if (chart.config.type === 'bar') {
+                        dataset.backgroundColor = hexToRgba(color, 0.75);
+                        dataset.borderColor = color;
+                    }
+                });
+
+                chart.options.plugins = chart.options.plugins || {};
+                chart.options.plugins.legend = chart.options.plugins.legend || {};
+                chart.options.plugins.legend.labels = chart.options.plugins.legend.labels || {};
+                chart.options.plugins.legend.labels.color = colors.muted;
+
+                chart.options.plugins.tooltip = chart.options.plugins.tooltip || {};
+                chart.options.plugins.tooltip.backgroundColor = colors.surface;
+                chart.options.plugins.tooltip.titleColor = colors.text;
+                chart.options.plugins.tooltip.bodyColor = colors.text;
+                chart.options.plugins.tooltip.borderColor = colors.border;
+                chart.options.plugins.tooltip.borderWidth = 1;
+
+                if (chart.options.scales?.x) {
+                    chart.options.scales.x.ticks = chart.options.scales.x.ticks || {};
+                    chart.options.scales.x.grid = chart.options.scales.x.grid || {};
+                    chart.options.scales.x.ticks.color = colors.muted;
+                    chart.options.scales.x.grid.color = colors.border;
+                }
+
+                if (chart.options.scales?.y) {
+                    chart.options.scales.y.ticks = chart.options.scales.y.ticks || {};
+                    chart.options.scales.y.grid = chart.options.scales.y.grid || {};
+                    chart.options.scales.y.ticks.color = colors.muted;
+                    chart.options.scales.y.grid.color = colors.border;
+                }
+
+                chart.update();
+            };
+
+            const monthlyCanvas = document.getElementById('monthlyUsersChart');
+            if (monthlyCanvas && monthlyLabels.length && monthlyValues.length) {
+                const monthlyUsersChart = new Chart(monthlyCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: monthlyLabels,
+                        datasets: [{
+                            label: 'کاربران جدید',
+                            data: monthlyValues,
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }, {
+                            label: 'کاربران با اشتراک فعال',
+                            data: monthlySubscriptionValues,
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: { display: true }
+                        }
+                    }
+                });
+
+                charts.push(monthlyUsersChart);
+                applyColors(monthlyUsersChart);
+            }
+
+            const blogCanvas = document.getElementById('blogViewsChart');
+            if (blogCanvas && blogMonthLabels.length && blogMonthValues.length) {
+                const blogViewsChart = new Chart(blogCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: blogMonthLabels,
+                        datasets: [{
+                            label: 'بازدید مقالات',
+                            data: blogMonthValues,
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+
+                charts.push(blogViewsChart);
+                applyColors(blogViewsChart);
+            }
+
+            window.addEventListener('adminThemeChanged', () => {
+                charts.forEach(applyColors);
+            });
+        })();
+    </script>
+}

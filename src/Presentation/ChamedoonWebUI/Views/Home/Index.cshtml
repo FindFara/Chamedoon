@@ -1,555 +1,345 @@
-﻿@{
-    ViewData["Title"] = "Index";
+@model ChamedoonWebUI.Models.HomeIndexViewModel
+@using System.Globalization
+@using System.Linq
+@using System.Text.RegularExpressions
+@using System.IO
+@{
+    ViewData["Title"] = "مهاجرت آسان";
+    var flagFiles = new[]
+    {
+        "austria.svg",
+        "bhutan.svg",
+        "brazil.svg",
+        "canada.svg",
+        "china.svg",
+        "finland.svg",
+        "germany.svg",
+        "india.svg",
+        "iran.svg",
+        "iraq.svg",
+        "italy.svg",
+        "japan.svg",
+        "kwait.svg",
+        "oman.svg",
+        "puerto rico.svg",
+        "russia.svg",
+        "saudi arabia.svg",
+        "senegal.svg",
+        "south korea.svg",
+        "spain.svg",
+        "sweden.svg",
+        "tanzania.svg",
+        "united arab emirates.svg",
+        "united kingdom.svg",
+        "united states.svg",
+        "yemen.svg"
+    };
 }
-<!--
-    <div id="preloader">
-        <div id="status">
-            <div class="spinner">
-                <div class="double-bounce1"></div>
-                <div class="double-bounce2"></div>
+
+<section class="container py-5">
+    <div class="hero-section">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 text-center text-lg-end">
+                <span class="hero-badge"><span class="dot"></span> بدون چمدون، کجا می‌خوای بری؟</span>
+                <h1 class="display-5 fw-bold mt-4">پیشنهاد بهترین راه مهاجرت و بهترین کشور بر اساس شخصیت و شرایط تو.</h1>
+                <p class="text-muted mt-3">با چمدون هر بخش از سفر مهاجرتت به صورت گام‌به‌گام پیش می‌رود؛ از شناخت مسیر تا آماده‌سازی مدارک و تجربه زندگی در مقصد جدید.</p>
+                <div class="d-flex flex-wrap justify-content-center justify-content-lg-end gap-3 mt-4">
+                    <a asp-controller="Immigration" asp-action="Index" class="btn-glass-primary btn-lg px-4">شروع ارزیابی مهاجرت</a>
+                    <a asp-controller="Blog" asp-action="Index" class="btn-outline-glass btn-lg px-4">وبلاگ</a>
+                </div>
+                <div class="d-flex flex-column flex-sm-row align-items-center gap-3 mt-4 text-muted small justify-content-center justify-content-lg-end">
+                    <div class="d-flex align-items-center gap-2">
+                        <strong class="text-dark fs-5">۱۲هزار+</strong>
+                        تطبیق موفق مقصد
+                    </div>
+                    <span class="vr d-none d-sm-inline"></span>
+                    <span>همراهی ویژه برای دانشجوها، نیروهای متخصص و خانواده‌ها.</span>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="~/img/hero-illustration.svg" class="hero-illustration" alt="سفر مهاجرت" />
             </div>
         </div>
-    </div>
--->
-<!--Start Mine-->
-<section class="bg-half-260 d-table w-100 background" id="home">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6 col-md-6">
-                <div class="title-heading mt-4">
-                    <h2 class="mb-3 topheader-text">
-                        <span class="text-primary topheader-text background-chamedoon">بدون چمدون</span><br>کجا میخوای
-                        بری ؟
-                    </h2>
-                    <p class="para-desc text-muted">
-                        پیشنهاد بهترین راه مهاجرت و بهترین کشور<br /> بر اساس شخصیت و
-                        شرایط شما .
-                    </p>
-                    <div class="mt-4 pt-2">
-                        <a href="javascript:void(0)" class="btn btn-pills btn-primary m-1">شروع تست </a>
-                        <a href="#!" data-type="youtube" data-id="yba7hPeTSjk"
-                           class="mdi mdi-book-outline btn btn-icon btn-pills btn-primary m-1 lightbox">
-                            <i data-feather="video" class="icons"></i>
-                        </a><span class="fw-bold text-uppercase small align-middle ms-1">مشاهده نمونه خروجی</span>
-                    </div>
-                </div>
-            </div><!--end col-->
-
-            <div class="col-lg-6 col-md-6 mt-4 pt-2 mt-sm-0 pt-sm-0">
-                <img src="images/digital/seo.gif" class="img-fluid" alt="">
-            </div><!--end col-->
-        </div><!--end row-->
-    </div><!--end container-->
-</section>
-<!--End Mine-->
-<!--Start Detail-->
-<section class="section overflow-hidden">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3 col-md-6 col-12">
-                <div class="card border-0 text-center features feature-clean rounded">
-                    <div class="icons text-primary text-center mx-auto">
-                        <i class="mdi mdi-wallet-travel d-block rounded h3 mb-0"></i></h3>
-                    </div>
-
-                    <div class="card-body p-0 mt-4">
-                        <a href="javascript:void(0)" class="title h5 text-dark">وبلاگ چمدون</a>
-                        <p class="text-muted mt-3 mb-0">
-                            شامل مطالب متنوع از کشور ها ، انواع ویزا ، تجربه ها و ...
-                        </p>
-                        <div class="mt-2">
-                            <a href="javascript:void(0)" class="text-primary">
-                                ادامه مطلب
-                                <i data-feather="arrow-left" class="fea icon-sm"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div><!--end col-->
-
-            <div class="col-lg-3 col-md-6 col-12 mt-4 mt-sm-0 pt-4 pt-sm-0">
-                <div class="card border-0 text-center features feature-clean rounded">
-                    <div class="icons text-primary text-center mx-auto">
-                        <i class="mdi mdi-airplane d-block rounded h3 mb-0"></i></h3>
-                    </div>
-
-                    <div class="card-body p-0 mt-4">
-                        <a href="javascript:void(0)" class="title h5 text-dark">کجا مهاجرت کنم ؟</a>
-                        <p class="text-muted mt-3 mb-0">
-                            میتونه بهترین کشور بر اساس شخصیت و موقعیت شما رو پیشنهاد بده
-                        </p>
-                        <div class="mt-2">
-                            <a href="javascript:void(0)" class="text-primary">
-                                ادامه مطلب <i data-feather="arrow-left" class="fea icon-sm"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-6 col-12 mt-4 mt-lg-0 pt-4 pt-lg-0">
-                <div class="card border-0 text-center features feature-clean rounded">
-                    <div class="icons text-primary text-center mx-auto">
-                        <i class="mdi mdi-ticket-percent d-block rounded h3 mb-0"></i></h3>
-                    </div>
-
-                    <div class="card-body p-0 mt-4">
-                        <a href="javascript:void(0)" class="title h5 text-dark">شانس مهاجرتم چقدره ؟</a>
-                        <p class="text-muted mt-3 mb-0">شانس مهاجرتت به کشور انتخابی رو بهت میگه .</p>
-                        <div class="mt-2">
-                            <a href="javascript:void(0)" class="text-primary">
-                                ادامه مطلب <i data-feather="arrow-left" class="fea icon-sm"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-12 mt-4 mt-lg-0 pt-4 pt-lg-0">
-                <div class="card border-0 text-center features feature-clean rounded">
-                    <div class="icons text-primary text-center mx-auto">
-                        <i class="mdi mdi-account-group d-block rounded h3 mb-0"></i></h3>
-                    </div>
-
-                    <div class="card-body p-0 mt-4">
-                        <a href="javascript:void(0)" class="title h5 text-dark">تجربه کاربران چمدون</a>
-                        <p class="text-muted mt-3 mb-0">
-                            میتونی از تجربه کاربران چمدون هم در بخش انجمن استفاده بکنی .
-                        </p>
-                        <div class="mt-2">
-                            <a href="javascript:void(0)" class="text-primary">
-                                ادامه مطلب <i data-feather="arrow-left" class="fea icon-sm"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container-fluid mt-70 mt-60">
-        <div class="row">
-            <div class="col-md-12 mt-4 pt-2">
-                <div class="tiny-six-item">
-                    <div class="tiny-slide">
-                        <div class="popular-tour rounded-md position-relative overflow-hidden mx-2">
-                            <img src="images/travel/dubai.jpg" class="img-fluid" alt="">
-                            <div class="overlay-work bg-dark"></div>
-                            <div class="content">
-                                <a href="javascript:void(0)" class="title text-white h4 title-dark">دبی </a>
-                            </div>
-                        </div><!--end tour post-->
-                    </div>
-
-                    <div class="tiny-slide">
-                        <div class="popular-tour rounded-md position-relative overflow-hidden mx-2">
-                            <img src="images/travel/thailand.jpg" class="img-fluid" alt="">
-                            <div class="overlay-work bg-dark"></div>
-                            <div class="content">
-                                <a href="javascript:void(0)" class="title text-white h4 title-dark">تایلند </a>
-                            </div>
-                        </div><!--end tour post-->
-                    </div>
-
-                    <div class="tiny-slide">
-                        <div class="popular-tour rounded-md position-relative overflow-hidden mx-2">
-                            <img src="images/travel/india.jpg" class="img-fluid" alt="">
-                            <div class="overlay-work bg-dark"></div>
-                            <div class="content">
-                                <a href="javascript:void(0)" class="title text-white h4 title-dark">هند </a>
-                            </div>
-                        </div><!--end tour post-->
-                    </div>
-
-                    <div class="tiny-slide">
-                        <div class="popular-tour rounded-md position-relative overflow-hidden mx-2">
-                            <img src="images/travel/london.jpg" class="img-fluid" alt="">
-                            <div class="overlay-work bg-dark"></div>
-                            <div class="content">
-                                <a href="javascript:void(0)" class="title text-white h4 title-dark">لندن </a>
-                            </div>
-                        </div><!--end tour post-->
-                    </div>
-
-                    <div class="tiny-slide">
-                        <div class="popular-tour rounded-md position-relative overflow-hidden mx-2">
-                            <img src="images/travel/paris.jpg" class="img-fluid" alt="">
-                            <div class="overlay-work bg-dark"></div>
-                            <div class="content">
-                                <a href="javascript:void(0)" class="title text-white h4 title-dark">پاریس </a>
-                            </div>
-                        </div><!--end tour post-->
-                    </div>
-
-                    <div class="tiny-slide">
-                        <div class="popular-tour rounded-md position-relative overflow-hidden mx-2">
-                            <img src="images/travel/singapore.jpg" class="img-fluid" alt="">
-                            <div class="overlay-work bg-dark"></div>
-                            <div class="content">
-                                <a href="javascript:void(0)" class="title text-white h4 title-dark">سنگاپور </a>
-                            </div>
-                        </div><!--end tour post-->
-                    </div>
-
-                    <div class="tiny-slide">
-                        <div class="popular-tour rounded-md position-relative overflow-hidden mx-2">
-                            <img src="images/travel/dubai.jpg" class="img-fluid" alt="">
-                            <div class="overlay-work bg-dark"></div>
-                            <div class="content">
-                                <a href="javascript:void(0)" class="title text-white h4 title-dark">دبی </a>
-                            </div>
-                        </div><!--end tour post-->
-                    </div>
-                </div>
-            </div><!--end col-->
-        </div><!--end row-->
     </div>
 </section>
-<!--End Detail-->
-<!--Start Blog-->
-<section class="section mt-70">
+
+@{
+    var iconBaseUrl = "https://cdn.iconplanet.app/countries-flags/svg/";
+
+    var marqueeRowOne = new (string FlagCode, string Name)[]
+    {
+        ("ca", "کانادا"),
+        ("au", "استرالیا"),
+        ("de", "آلمان"),
+        ("nl", "هلند"),
+        ("se", "سوئد"),
+        ("gb", "انگلستان"),
+        ("at", "اتریش"),
+        ("be", "بلژیک"),
+        ("pl", "لهستان"),
+        ("nz", "نیوزیلند"),
+        ("jp", "ژاپن"),
+        ("sg", "سنگاپور"),
+        ("ie", "ایرلند"),
+        ("br", "برزیل"),
+        ("mx", "مکزیک"),
+        ("cn", "چین"),
+        ("hk", "هنگ‌کنگ"),
+        ("cz", "جمهوری چک"),
+        ("ro", "رومانی"),
+        ("hu", "مجارستان"),
+        ("za", "آفریقای جنوبی"),
+        ("my", "مالزی"),
+        ("th", "تایلند"),
+        ("ph", "فیلیپین")
+    };
+
+    var marqueeRowTwo = new (string FlagCode, string Name)[]
+    {
+        ("es", "اسپانیا"),
+        ("fr", "فرانسه"),
+        ("it", "ایتالیا"),
+        ("ch", "سوئیس"),
+        ("dk", "دانمارک"),
+        ("no", "نروژ"),
+        ("fi", "فنلاند"),
+        ("pt", "پرتغال"),
+        ("us", "آمریکا"),
+        ("ae", "امارات"),
+        ("sk", "اسلواکی"),
+        ("si", "اسلوونی"),
+        ("ua", "اوکراین"),
+        ("ar", "آرژانتین"),
+        ("cl", "شیلی"),
+        ("in", "هند"),
+        ("kr", "کره جنوبی"),
+        ("tr", "ترکیه"),
+        ("ru", "روسیه"),
+        ("eg", "مصر"),
+        ("sa", "عربستان"),
+        ("qa", "قطر"),
+        ("om", "عمان"),
+        ("kw", "کویت")
+    };
+}
+
+<section id="features" class="py-5">
     <div class="container">
-        <div class="d-flex justify-content-between mt-2">
-            <div class="page-next col-8">
-                <nav aria-label="breadcrumb" class="d-inline-block">
-                    <ul class="breadcrumb bg-white rounded shadow mb-0">
-                        <li class="breadcrumb-item"><a href="/">خانه</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"> جدیدترین مقالات</li>
-                    </ul>
-                </nav>
+        <div class="row justify-content-center text-center mb-5">
+            <div class="col-lg-7">
+                <span class="text-uppercase text-primary fw-semibold">چرا چمدون؟</span>
+                <h2 class="fw-bold mt-2">همه ابزارهایی که برای حرکت نیاز داری، در قالب بخش‌های منظم.</h2>
+                <p class="text-muted">از انتخاب کشور تا شناخت تجربه کاربران، همه‌چیز در دسترس توست تا با اطمینان تصمیم بگیری.</p>
             </div>
-            <div></div>
-            <div class="col-4 mt-sm-0">
-                <div class="text-center text-md-end">
-                    <a class="btn btn-soft-primary" href="/Blog">
-                        بیشتر
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="feather feather-arrow-left fea icon-sm">
-                            <line x1="19" y1="12" x2="5" y2="12"></line>
-                            <polyline points="12 19 5 12 12 5"></polyline>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-
         </div>
-        <div class="row mt-5">
-            <div class="col-lg-3 col-md-6 mb-4 pb-2">
-                <div class="card blog rounded border-0 shadow overflow-hidden">
-                    <div class="position-relative">
-                        <img src="images/blog/01.jpg" class="card-img-top" alt="...">
-                        <div class="overlay rounded-top bg-dark"></div>
-                    </div>
-                    <div class="card-body content">
-                        <h6>
-                            <a href="javascript:void(0)" class="card-title title text-dark">
-                                برنامه های خود را به
-                                روش
-                                خود طراحی کنید
-                            </a></h5>
-                            <div class="post-meta d-flex justify-content-between mt-3">
-                                <ul class="list-unstyled mb-0">
-                                    <li class="list-inline-item me-2 mb-0">
-                                        <a href="javascript:void(0)"
-                                           class="text-muted like"><i class="uil uil-heart me-1"></i>33</a>
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <a href="javascript:void(0)"
-                                           class="text-muted comments"><i class="uil uil-comment me-1"></i>08</a>
-                                    </li>
-                                </ul>
-                                <a href="page-blog-detail.html" class="text-muted readmore">
-                                    ادامه مطلب <i class="uil uil-angle-left-b align-middle"></i>
-                                </a>
-                            </div>
-                    </div>
-                    <div class="author">
-                        <small class="text-light user d-block"><i class="uil uil-user"></i> کالوین لورس</small>
-                        <small class="text-light date">
-                            <i class="uil uil-calendar-alt"></i> اردیبهشت
-                            1400
-                        </small>
-                    </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">📰</div>
+                    <h5 class="fw-semibold">وبلاگ چمدون</h5>
+                    <p class="text-muted">مطالب متنوع درباره کشورها، انواع ویزا و تجربه‌های واقعی مهاجرها.</p>
+                    <a asp-controller="Blog" asp-action="Index" class="stretched-link text-primary">مطالعه بیشتر</a>
                 </div>
-            </div><!--end col-->
-
-            <div class="col-lg-3 col-md-6 mb-4 pb-2">
-                <div class="card blog rounded border-0 shadow overflow-hidden">
-                    <div class="position-relative">
-                        <img src="images/blog/02.jpg" class="card-img-top" alt="...">
-                        <div class="overlay rounded-top bg-dark"></div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">🗺️</div>
+                    <h5 class="fw-semibold">کجا مهاجرت کنم؟</h5>
+                    <p class="text-muted">بر اساس شخصیت و موقعیتت بهترین مقصدها به تو پیشنهاد داده می‌شود.</p>
+                    <a asp-controller="Immigration" asp-action="Index" class="stretched-link text-primary">شروع مقایسه</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h5 class="fw-semibold">شانس موفقیت</h5>
+                    <p class="text-muted">احتمال موفقیتت برای مقصدهای مختلف محاسبه و ساده توضیح داده می‌شود.</p>
+                    <a asp-controller="Immigration" asp-action="Index" class="stretched-link text-primary">بررسی شانس</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <div class="d-flex align-items-center gap-2">
+                        <h5 class="fw-semibold mb-0">تجربه کاربران</h5>
+                        <span class="badge bg-light text-primary border">به زودی</span>
                     </div>
-                    <div class="card-body content">
-                        <h6>
-                            <a href="javascript:void(0)" class="card-title title text-dark">
-                                برنامه ها چگونه
-                                دنیای
-                                اطلاعات را تغییر می دهند
-                            </a>
-                        </h6>
-                        <div class="post-meta d-flex justify-content-between mt-3">
-                            <ul class="list-unstyled mb-0">
-                                <li class="list-inline-item me-2 mb-0">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted like"><i class="uil uil-heart me-1"></i>33</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted comments"><i class="uil uil-comment me-1"></i>08</a>
-                                </li>
-                            </ul>
-                            <a href="page-blog-detail.html" class="text-muted readmore">
-                                ادامه مطلب <i class="uil uil-angle-left-b align-middle"></i>
-                            </a>
+                    <p class="text-muted">از تجربه دیگر اعضای چمدون در انجمن استفاده کن و سوال بپرس.</p>
+                    <a href="javascript:void(0)" class="stretched-link text-primary">ورود به انجمن</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/flag-bubbles.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/flag-bubbles.js" asp-append-version="true"></script>
+}
+
+<section id="process" class="py-5 bg-white">
+    <div class="container">
+        <div class="process-flag-stage">
+            <div class="flag-bubbles-wrapper flag-bubbles-overlay">
+                <div class="flag-bubbles-field" id="flagBubblesField">
+                    @foreach (var flag in flagFiles)
+                    {
+                        var imagePath = Url.Content($"~/images/contries/{flag}");
+                        <img class="flag-bubble" src="@imagePath" alt="پرچم @System.IO.Path.GetFileNameWithoutExtension(flag)" loading="lazy" />
+                    }
+                </div>
+            </div>
+            <div class="row align-items-center g-5 position-relative">
+                <div class="col-lg-5 text-center text-lg-end">
+                    <h2 class="fw-bold">یک مسیر شفاف، بخش‌بندی شده و قابل پیگیری.</h2>
+                    <p class="text-muted">هر بخش از سفر مهاجرت از کشف تا استقرار با چک‌لیست‌ها و یادآورها پیش روی تو قرار می‌گیرد.</p>
+                </div>
+                <div class="col-lg-7">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="process-step h-100" data-step="۱">
+                            <h5 class="fw-semibold">کشف</h5>
+                            <p class="text-muted">با تست تعاملی، پروفایل خودت رو بشناس و پیشنهادهای متناسب دریافت کن.</p>
                         </div>
                     </div>
-                    <div class="author">
-                        <small class="text-light user d-block"><i class="uil uil-user"></i> کالوین لورس</small>
-                        <small class="text-light date">
-                            <i class="uil uil-calendar-alt"></i> اردیبهشت
-                            1400
-                        </small>
-                    </div>
-                </div>
-            </div><!--end col-->
-
-            <div class="col-lg-3 col-md-6 mb-4 pb-2">
-                <div class="card blog rounded border-0 shadow overflow-hidden">
-                    <div class="position-relative">
-                        <img src="images/blog/03.jpg" class="card-img-top" alt="...">
-                        <div class="overlay rounded-top bg-dark"></div>
-                    </div>
-                    <div class="card-body content">
-                        <h5>
-                            <a href="javascript:void(0)" class="card-title title text-dark">
-                                هوشمندترین برنامه ها
-                                برای تجارت و کار
-                            </a>
-                        </h5>
-                        <div class="post-meta d-flex justify-content-between mt-3">
-                            <ul class="list-unstyled mb-0">
-                                <li class="list-inline-item me-2 mb-0">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted like"><i class="uil uil-heart me-1"></i>33</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted comments"><i class="uil uil-comment me-1"></i>08</a>
-                                </li>
-                            </ul>
-                            <a href="page-blog-detail.html" class="text-muted readmore">
-                                ادامه مطلب <i class="uil uil-angle-left-b align-middle"></i>
-                            </a>
+                    <div class="col-md-6">
+                        <div class="process-step h-100" data-step="۲">
+                            <h5 class="fw-semibold">آماده‌سازی</h5>
+                            <p class="text-muted">چک‌لیست مدارک و اقدامات لازم رو بر اساس مقصد دلخواهت دنبال کن.</p>
                         </div>
                     </div>
-                    <div class="author">
-                        <small class="text-light user d-block"><i class="uil uil-user"></i> کالوین لورس</small>
-                        <small class="text-light date">
-                            <i class="uil uil-calendar-alt"></i> اردیبهشت
-                            1400
-                        </small>
-                    </div>
-                </div>
-            </div><!--end col-->
-
-            <div class="col-lg-3 col-md-6 mb-4 pb-2">
-                <div class="card blog rounded border-0 shadow overflow-hidden">
-                    <div class="position-relative">
-                        <img src="images/blog/04.jpg" class="card-img-top" alt="...">
-                        <div class="overlay rounded-top bg-dark"></div>
-                    </div>
-                    <div class="card-body content">
-                        <h5>
-                            <a href="javascript:void(0)" class="card-title title text-dark">
-                                برنامه ها چگونه
-                                دنیای
-                                اطلاعات را تغییر می دهند
-                            </a>
-                        </h5>
-                        <div class="post-meta d-flex justify-content-between mt-3">
-                            <ul class="list-unstyled mb-0">
-                                <li class="list-inline-item me-2 mb-0">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted like"><i class="uil uil-heart me-1"></i>33</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted comments"><i class="uil uil-comment me-1"></i>08</a>
-                                </li>
-                            </ul>
-                            <a href="page-blog-detail.html" class="text-muted readmore">
-                                ادامه مطلب <i class="uil uil-angle-left-b align-middle"></i>
-                            </a>
+                    <div class="col-md-6">
+                        <div class="process-step h-100" data-step="۳">
+                            <h5 class="fw-semibold">اقدام</h5>
+                            <p class="text-muted">جدول زمان‌بندی، هزینه‌ها و مدارک رو قبل از ارسال درخواست مرور کن.</p>
                         </div>
                     </div>
-                    <div class="author">
-                        <small class="text-light user d-block"><i class="uil uil-user"></i> کالوین لورس</small>
-                        <small class="text-light date">
-                            <i class="uil uil-calendar-alt"></i> اردیبهشت
-                            1400
-                        </small>
-                    </div>
-                </div>
-            </div><!--end col-->
-
-            <div class="col-lg-3 col-md-6 mb-4 pb-2">
-                <div class="card blog rounded border-0 shadow overflow-hidden">
-                    <div class="position-relative">
-                        <img src="images/blog/05.jpg" class="card-img-top" alt="...">
-                        <div class="overlay rounded-top bg-dark"></div>
-                    </div>
-                    <div class="card-body content">
-                        <h5>
-                            <a href="javascript:void(0)" class="card-title title text-dark">
-                                برنامه های خود را به
-                                روش
-                                خود طراحی کنید
-                            </a>
-                        </h5>
-                        <div class="post-meta d-flex justify-content-between mt-3">
-                            <ul class="list-unstyled mb-0">
-                                <li class="list-inline-item me-2 mb-0">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted like"><i class="uil uil-heart me-1"></i>33</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted comments"><i class="uil uil-comment me-1"></i>08</a>
-                                </li>
-                            </ul>
-                            <a href="page-blog-detail.html" class="text-muted readmore">
-                                ادامه مطلب <i class="uil uil-angle-left-b align-middle"></i>
-                            </a>
+                    <div class="col-md-6">
+                        <div class="process-step h-100" data-step="۴">
+                            <h5 class="fw-semibold">استقرار</h5>
+                            <p class="text-muted">نکات طلایی برای شروع زندگی، کار و تحصیل در مقصد جدیدت رو دریافت کن.</p>
                         </div>
-                    </div>
-                    <div class="author">
-                        <small class="text-light user d-block"><i class="uil uil-user"></i> کالوین لورس</small>
-                        <small class="text-light date">
-                            <i class="uil uil-calendar-alt"></i> اردیبهشت
-                            1400
-                        </small>
-                    </div>
-                </div>
-            </div><!--end col-->
-
-            <div class="col-lg-3 col-md-6 mb-4 pb-2">
-                <div class="card blog rounded border-0 shadow overflow-hidden">
-                    <div class="position-relative">
-                        <img src="images/blog/06.jpg" class="card-img-top" alt="...">
-                        <div class="overlay rounded-top bg-dark"></div>
-                    </div>
-                    <div class="card-body content">
-                        <h5>
-                            <a href="javascript:void(0)" class="card-title title text-dark">
-                                هوشمندترین برنامه ها
-                                برای تجارت و کار
-                            </a>
-                        </h5>
-                        <div class="post-meta d-flex justify-content-between mt-3">
-                            <ul class="list-unstyled mb-0">
-                                <li class="list-inline-item me-2 mb-0">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted like"><i class="uil uil-heart me-1"></i>33</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted comments"><i class="uil uil-comment me-1"></i>08</a>
-                                </li>
-                            </ul>
-                            <a href="page-blog-detail.html" class="text-muted readmore">
-                                ادامه مطلب <i class="uil uil-angle-left-b align-middle"></i>
-                            </a>
                         </div>
-                    </div>
-                    <div class="author">
-                        <small class="text-light user d-block"><i class="uil uil-user"></i> کالوین لورس</small>
-                        <small class="text-light date">
-                            <i class="uil uil-calendar-alt"></i> اردیبهشت
-                            1400
-                        </small>
-                    </div>
-                </div>
-            </div><!--end col-->
-
-            <div class="col-lg-3 col-md-6 mb-4 pb-2">
-                <div class="card blog rounded border-0 shadow overflow-hidden">
-                    <div class="position-relative">
-                        <img src="images/blog/07.jpg" class="card-img-top" alt="...">
-                        <div class="overlay rounded-top bg-dark"></div>
-                    </div>
-                    <div class="card-body content">
-                        <h5>
-                            <a href="javascript:void(0)" class="card-title title text-dark">
-                                برنامه های خود را به
-                                روش
-                                خود طراحی کنید
-                            </a>
-                        </h5>
-                        <div class="post-meta d-flex justify-content-between mt-3">
-                            <ul class="list-unstyled mb-0">
-                                <li class="list-inline-item me-2 mb-0">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted like"><i class="uil uil-heart me-1"></i>33</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted comments"><i class="uil uil-comment me-1"></i>08</a>
-                                </li>
-                            </ul>
-                            <a href="page-blog-detail.html" class="text-muted readmore">
-                                ادامه مطلب <i class="uil uil-angle-left-b align-middle"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="author">
-                        <small class="text-light user d-block"><i class="uil uil-user"></i> کالوین لورس</small>
-                        <small class="text-light date">
-                            <i class="uil uil-calendar-alt"></i> اردیبهشت
-                            1400
-                        </small>
-                    </div>
-                </div>
-            </div><!--end col-->
-
-            <div class="col-lg-3 col-md-6 mb-4 pb-2">
-                <div class="card blog rounded border-0 shadow overflow-hidden">
-                    <div class="position-relative">
-                        <img src="images/blog/08.jpg" class="card-img-top" alt="...">
-                        <div class="overlay rounded-top bg-dark"></div>
-                    </div>
-                    <div class="card-body content">
-                        <h5>
-                            <a href="javascript:void(0)" class="card-title title text-dark">
-                                هوشمندترین برنامه ها
-                                برای تجارت و کار
-                            </a>
-                        </h5>
-                        <div class="post-meta d-flex justify-content-between mt-3">
-                            <ul class="list-unstyled mb-0">
-                                <li class="list-inline-item me-2 mb-0">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted like"><i class="uil uil-heart me-1"></i>33</a>
-                                </li>
-                                <li class="list-inline-item">
-                                    <a href="javascript:void(0)"
-                                       class="text-muted comments"><i class="uil uil-comment me-1"></i>08</a>
-                                </li>
-                            </ul>
-                            <a href="page-blog-detail.html" class="text-muted readmore">
-                                ادامه مطلب <i class="uil uil-angle-left-b align-middle"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="author">
-                        <small class="text-light user d-block"><i class="uil uil-user"></i> کالوین لورس</small>
-                        <small class="text-light date">
-                            <i class="uil uil-calendar-alt"></i> اردیبهشت
-                            1400
-                        </small>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-<!--End Blog-->
+
+<section id="insights" class="py-5">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+            <div class="text-end">
+                <span class="text-uppercase text-primary fw-semibold">پر بازدیدترین وبلاگ‌ها</span>
+            </div>
+            <a asp-controller="Blog" asp-action="Index" class="popular-article-more-link">
+                <span>بیشتر</span>
+            </a>
+        </div>
+        @{ var fallbackBlogImage = Url.Content("~/img/blog-placeholder.svg"); }
+        <div class="row g-4 popular-articles-grid">
+            @if (Model.PopularArticles.Any())
+            {
+                var cardIndex = 0;
+                foreach (var article in Model.PopularArticles.Take(4))
+                {
+                    var visitCountText = article.VisitCount.ToString("N0", CultureInfo.CreateSpecificCulture("fa-IR"));
+                    cardIndex++;
+                    var stepDelay = (cardIndex * 0.12).ToString("0.##", CultureInfo.InvariantCulture);
+                    var shortDescriptionText = Regex.Replace(article.ShortDescription ?? string.Empty, "<.*?>", string.Empty);
+                    var imageSrc = string.IsNullOrWhiteSpace(article.ArticleImageName)
+                        ? fallbackBlogImage
+                        : (article.ArticleImageName!.StartsWith("data:image", System.StringComparison.OrdinalIgnoreCase)
+                            || article.ArticleImageName.StartsWith("http", System.StringComparison.OrdinalIgnoreCase))
+                            ? article.ArticleImageName
+                            : Url.Content($"~/images/blog/{article.ArticleImageName}");
+                    <div class="col-md-6 col-xl-3">
+                        <article class="popular-article-card h-100" style="--card-delay:@stepDelay">
+                            <div class="popular-article-image">
+                                <img src="@imageSrc" alt="@article.ArticleTitle" loading="lazy" />
+                            </div>
+                            <div class="popular-article-body">
+                                <h5 class="fw-semibold">@article.ArticleTitle</h5>
+                                <p class="text-muted popular-article-description">@shortDescriptionText</p>
+                            </div>
+                            <div class="popular-article-meta">
+                                <span class="popular-article-author" aria-label="@article.Writer">✍️ @article.Writer</span>
+                                <span class="popular-article-visit" aria-label="@visitCountText بازدید">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                                        <path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></circle>
+                                    </svg>
+                                    <span>@visitCountText</span>
+                                </span>
+                            </div>
+                            <a asp-controller="Blog" asp-action="Detail" asp-route-id="@article.Id" class="stretched-link" aria-label="مشاهده مطلب @article.ArticleTitle"></a>
+                        </article>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="popular-article-empty">
+                        <h5 class="fw-semibold mb-2">فعلاً آماری ثبت نشده است</h5>
+                        <p class="mb-0 text-muted">به زودی محبوب‌ترین مقالات براساس بازدید کاربران نمایش داده می‌شود.</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section id="testimonials" class="py-5 bg-white">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col">
+                <span class="text-uppercase text-primary fw-semibold">نظرات کاربران</span>
+                <h2 class="fw-bold mt-2">کاربرهای چمدون چه می‌گویند؟</h2>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="testimonial-card">
+                    <p>«نقشه راه بخش‌بندی شده باعث شد پرونده ویزای دانشجویی‌ام دقیق و به‌موقع پیش بره. هر مرحله که تموم می‌شد، به هدفم نزدیک‌تر می‌شدم.»</p>
+                    <h6 class="fw-semibold mb-0">سارا ک.</h6>
+                    <small class="text-muted">مهاجرت تحصیلی به هلند</small>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="testimonial-card">
+                    <p>«پیشنهادهای وبلاگ همیشه تازه و دقیق بود. تونستم سه مقصد کاری مختلف رو با هم مقایسه کنم و بهترینش رو انتخاب کنم.»</p>
+                    <h6 class="fw-semibold mb-0">فرهاد م.</h6>
+                    <small class="text-muted">نیروی متخصص در برلین</small>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="testimonial-card">
+                    <p>«از آماده‌سازی مدارک تا ماه اول بعد از ورود، اپلیکیشن هر جا لازم بود کنارمون بود و تجربه خانواده‌های دیگه رو در اختیارمون گذاشت.»</p>
+                    <h6 class="fw-semibold mb-0">نیلوفر آ.</h6>
+                    <small class="text-muted">جابجایی خانوادگی به کلگری</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="cta-section text-center text-lg-end">
+            <div class="row align-items-center g-4">
+                <div class="col-lg-8">
+                    <h3 class="fw-bold mb-3">آماده‌ای فصل جدید زندگیت رو شروع کنی؟</h3>
+                    <p class="mb-0">هزاران نفر با چمدون مسیر مهاجرت‌شون رو مدیریت می‌کنن. اولین بخش شخصی‌سازی شده همین حالا منتظر توست.</p>
+                </div>
+                <div class="col-lg-4 text-lg-end">
+                    <a asp-controller="Account" asp-action="Register" class="btn-glass-light btn-lg px-4">ساخت حساب کاربری</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

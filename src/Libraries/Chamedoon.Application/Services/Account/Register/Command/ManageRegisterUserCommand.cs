@@ -1,9 +1,8 @@
-﻿using Chamedoon.Application.Common.Models;
-using Chamedoon.Application.Services.Account.Query;
+using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Register.ViewModel;
+using Chamedoon.Application.Services.Account.Login.Command;
 using Chamedoon.Application.Services.Account.Users.Query;
 using Chamedoon.Application.Services.Customers.Command;
-using Chamedoon.Application.Services.Email.Query;
 using MediatR;
 
 namespace Chamedoon.Application.Services.Account.Register.Command;
@@ -28,24 +27,29 @@ public class ManageRegisterUserCommandHandler : IRequestHandler<ManageRegisterUs
     #region Method
     public async Task<OperationResult<bool>> Handle(ManageRegisterUserCommand request, CancellationToken cancellationToken)
     {
-        //Check Duplicated Email
-        var checkEmail = await mediator.Send(new CheckDuplicatedEmailQuery { Email = request.RegisterUser.Email });
-        if (checkEmail.IsSuccess is false)
-            return OperationResult<bool>.Fail(checkEmail.Message);
+        var emailValidation = await mediator.Send(new ValidateRegistrationEmailQuery { Email = request.RegisterUser.Email }, cancellationToken);
+        if (emailValidation.IsSuccess is false)
+            return emailValidation;
 
         //Register User
-        var regisrer = await mediator.Send(new RegisterUserCommand { RegisterUser = request.RegisterUser });
+        var regisrer = await mediator.Send(new RegisterUserCommand { RegisterUser = request.RegisterUser }, cancellationToken);
         if (regisrer.IsSuccess is false)
             return OperationResult<bool>.Fail(regisrer.Message);
 
-        var addCustomer = await mediator.Send(new AddCustomerCommand { Id = regisrer.Result});
+        var addCustomer = await mediator.Send(new AddCustomerCommand { Id = regisrer.Result }, cancellationToken);
         if (addCustomer.IsSuccess is false)
             return OperationResult<bool>.Fail(addCustomer.Message);
+
+        var signIn = await mediator.Send(new SignInUserCommand
+        {
+            UserId = regisrer.Result.ToString(),
+            IsPersistent = false
+        }, cancellationToken);
+        if (signIn.IsSuccess is false)
+            return OperationResult<bool>.Fail(signIn.Message);
 
         return OperationResult<bool>.Success(true);
     }
 
     #endregion
 }
-
-

@@ -1,0 +1,146 @@
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Chamedoon.Application.Services.Admin.Common.Models;
+
+namespace ChamedoonWebUI.Areas.Admin.ViewModels;
+
+public class UsersIndexViewModel
+{
+    public IReadOnlyList<UserListItemViewModel> Users { get; init; } = Array.Empty<UserListItemViewModel>();
+    public IReadOnlyList<RoleOptionViewModel> Roles { get; init; } = Array.Empty<RoleOptionViewModel>();
+    public string? SearchTerm { get; init; }
+    public long? SelectedRoleId { get; init; }
+    public int CurrentPage { get; init; }
+    public int TotalPages { get; init; }
+    public int PageSize { get; init; }
+    public int TotalCount { get; init; }
+}
+
+public class UserListItemViewModel
+{
+    public long Id { get; init; }
+    public string Email { get; init; } = string.Empty;
+    public string UserName { get; init; } = string.Empty;
+    public string? FullName { get; init; }
+    public long? RoleId { get; init; }
+    public string? RoleName { get; init; }
+    public bool IsActive { get; init; }
+    public DateTime CreatedAt { get; init; }
+    public string? SubscriptionPlanTitle { get; init; }
+    public DateTime? SubscriptionEndDateUtc { get; init; }
+
+    public static UserListItemViewModel FromDto(AdminUserDto dto)
+        => new()
+        {
+            Id = dto.Id,
+            Email = dto.Email,
+            UserName = dto.UserName,
+            FullName = dto.FullName,
+            RoleId = dto.RoleId,
+            RoleName = dto.RoleName,
+            IsActive = dto.IsActive,
+            CreatedAt = dto.CreatedAt,
+            SubscriptionPlanTitle = dto.SubscriptionPlanTitle,
+            SubscriptionEndDateUtc = dto.SubscriptionEndDateUtc
+        };
+}
+
+public class RoleOptionViewModel
+{
+    public long Id { get; init; }
+    public string Name { get; init; } = string.Empty;
+}
+
+public class SubscriptionPlanOptionViewModel
+{
+    public string Id { get; init; } = string.Empty;
+    public string Title { get; init; } = string.Empty;
+}
+
+public class UserEditViewModel : IValidatableObject
+{
+    public long? Id { get; set; }
+
+    [Display(Name = "ایمیل")]
+    [Required(ErrorMessage = "وارد کردن ایمیل الزامی است.")]
+    [EmailAddress(ErrorMessage = "ایمیل وارد شده معتبر نیست.")]
+    public string Email { get; set; } = string.Empty;
+
+    [Display(Name = "نام کاربری")]
+    [Required(ErrorMessage = "وارد کردن نام کاربری الزامی است.")]
+    public string UserName { get; set; } = string.Empty;
+
+    [Display(Name = "نام کامل")]
+    public string? FullName { get; set; }
+
+    [Display(Name = "نقش")]
+    public long? RoleId { get; set; }
+
+    [Display(Name = "کاربر فعال است؟")]
+    public bool IsActive { get; set; } = true;
+
+    [Display(Name = "کلمه عبور")]
+    [DataType(DataType.Password)]
+    public string? Password { get; set; }
+
+    public IEnumerable<RoleOptionViewModel> Roles { get; set; } = Array.Empty<RoleOptionViewModel>();
+    public IEnumerable<SubscriptionPlanOptionViewModel> Plans { get; set; } = Array.Empty<SubscriptionPlanOptionViewModel>();
+    [Display(Name = "اشتراک فعال")]
+    public string? SubscriptionPlanId { get; set; }
+
+    [Display(Name = "تاریخ شروع اشتراک")]
+    public DateTime? SubscriptionStartDateUtc { get; set; }
+
+    [Display(Name = "تاریخ پایان اشتراک")]
+    public DateTime? SubscriptionEndDateUtc { get; set; }
+
+    [Display(Name = "استعلام‌های استفاده‌شده")]
+    public int UsedEvaluations { get; set; }
+
+    public bool IsNew => !Id.HasValue;
+
+    public AdminUserInput ToInput()
+        => new()
+        {
+            Id = Id,
+            Email = Email,
+            UserName = UserName,
+            FullName = FullName,
+            RoleId = RoleId,
+            IsActive = IsActive,
+            Password = Password,
+            SubscriptionPlanId = SubscriptionPlanId,
+            SubscriptionStartDateUtc = SubscriptionStartDateUtc,
+            SubscriptionEndDateUtc = SubscriptionEndDateUtc,
+            UsedEvaluations = UsedEvaluations
+        };
+
+    public static UserEditViewModel FromDto(AdminUserDto dto)
+        => new()
+        {
+            Id = dto.Id,
+            Email = dto.Email,
+            UserName = dto.UserName,
+            FullName = dto.FullName,
+            RoleId = dto.RoleId,
+            IsActive = dto.IsActive,
+            SubscriptionPlanId = dto.SubscriptionPlanId,
+            SubscriptionStartDateUtc = dto.SubscriptionStartDateUtc,
+            SubscriptionEndDateUtc = dto.SubscriptionEndDateUtc,
+            UsedEvaluations = dto.UsedEvaluations
+        };
+
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (IsNew && string.IsNullOrWhiteSpace(Password))
+        {
+            yield return new ValidationResult("وارد کردن کلمه عبور برای کاربر جدید الزامی است.", new[] { nameof(Password) });
+        }
+
+        if (UsedEvaluations < 0)
+        {
+            yield return new ValidationResult("تعداد استعلام نمی‌تواند منفی باشد.", new[] { nameof(UsedEvaluations) });
+        }
+    }
+}

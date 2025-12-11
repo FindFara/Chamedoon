@@ -1,0 +1,203 @@
+.floating-alert {
+    position: fixed;
+    top: 1rem;
+    inset-inline: 0.75rem;
+    display: flex;
+    justify-content: center;
+    z-index: 1200;
+    pointer-events: none;
+}
+
+.floating-alert__box {
+    --alert-bg: rgba(255, 255, 255, 0.88);
+    --alert-border: rgba(79, 70, 229, 0.16);
+    --alert-text: #0f172a;
+    --alert-accent: #ef4444;
+    --alert-glow: rgba(239, 68, 68, 0.15);
+
+    position: relative;
+    width: min(640px, 100%);
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    gap: 0.85rem;
+    align-items: start;
+    padding: 1rem 1.1rem;
+    background: linear-gradient(140deg, var(--alert-bg), rgba(255, 255, 255, 0.92));
+    color: var(--alert-text);
+    border: 1px solid var(--alert-border);
+    border-radius: 1.1rem;
+    box-shadow: 0 28px 60px -30px rgba(15, 23, 42, 0.35);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    overflow: hidden;
+    transform: translateY(-130%);
+    opacity: 0;
+    animation: alert-slide-down 0.45s ease forwards;
+    pointer-events: auto;
+}
+
+.floating-alert__box::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    background: radial-gradient(circle at 18% 20%, var(--alert-glow), transparent 45%),
+        radial-gradient(circle at 82% 16%, rgba(79, 70, 229, 0.12), transparent 42%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.floating-alert__box::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.floating-alert__box--error {
+    --alert-bg: rgba(255, 255, 255, 0.86);
+    --alert-border: rgba(239, 68, 68, 0.28);
+    --alert-text: #7f1d1d;
+    --alert-accent: #ef4444;
+    --alert-glow: rgba(239, 68, 68, 0.22);
+}
+
+.floating-alert__icon {
+    position: relative;
+    z-index: 1;
+    width: 2.75rem;
+    height: 2.75rem;
+    display: grid;
+    place-items: center;
+    border-radius: 1rem;
+    background: linear-gradient(135deg, var(--alert-accent), #f97316);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 14px 26px -16px rgba(239, 68, 68, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.floating-alert__icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: block;
+}
+
+.floating-alert__title {
+    position: relative;
+    z-index: 1;
+    font-weight: 700;
+    color: var(--alert-text);
+}
+
+.floating-alert__message {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    color: var(--alert-text);
+}
+
+.floating-alert__message ul {
+    margin: 0.2rem 0 0;
+    padding-inline-start: 1rem;
+}
+
+.floating-alert__message li {
+    margin-bottom: 0.2rem;
+}
+
+.floating-alert__timer {
+    --alert-timer-duration: 4s;
+
+    position: relative;
+    z-index: 1;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: grid;
+    place-items: center;
+    background: rgba(255, 255, 255, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    border-radius: 999px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.floating-alert__timer svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.floating-alert__timer-track {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.7);
+    stroke-width: 3;
+}
+
+.floating-alert__timer-progress {
+    fill: none;
+    stroke: var(--alert-accent);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 88;
+    stroke-dashoffset: 88;
+    animation: alert-timer var(--alert-timer-duration) linear forwards;
+}
+
+.floating-alert__close {
+    position: relative;
+    z-index: 1;
+    border: none;
+    background: rgba(255, 255, 255, 0.28);
+    color: var(--alert-text);
+    border-radius: 0.65rem;
+    padding: 0.2rem 0.45rem;
+    opacity: 0.8;
+    transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+}
+
+.floating-alert__close:hover,
+.floating-alert__close:focus-visible {
+    opacity: 1;
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.5);
+    outline: none;
+}
+
+.floating-alert.is-dismissed .floating-alert__box {
+    animation: alert-slide-up 0.3s ease forwards;
+}
+
+@keyframes alert-slide-down {
+    from {
+        transform: translateY(-150%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes alert-slide-up {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateY(-20%);
+        opacity: 0;
+    }
+}
+
+@keyframes alert-timer {
+    from {
+        stroke-dashoffset: 88;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
+}

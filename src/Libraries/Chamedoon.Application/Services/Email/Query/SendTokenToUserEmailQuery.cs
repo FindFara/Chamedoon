@@ -52,12 +52,17 @@ namespace Chamedoon.Application.Services.Email.Query
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
             string url = $"{AppUrl}/auth/Confirmemail?userid={user.Result.Id}&token={encodedToken}";
-
-            await emailService.SendMail(user.Result.Email
+            try
+            {
+               await emailService.SendMail(user.Result.Email
                  , "Confirm Your Email"
                  , "<h1>Wellcome </h1>"
                  + $"<p>confirme your email<a href ='{url}'> clicking here</a></p> ");
-
+            }
+            catch (Exception)
+            {
+                return OperationResult<bool>.Fail();
+            }
             return OperationResult<bool>.Success(true);
         }
 

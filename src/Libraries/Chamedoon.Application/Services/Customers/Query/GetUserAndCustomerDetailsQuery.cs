@@ -3,6 +3,7 @@ using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Users.ViewModel;
 using Chamedoon.Application.Services.Customers.ViewModel;
+using Chamedoon.Application.Services.Customers;
 using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Users;
 using MediatR;
@@ -42,6 +43,7 @@ public class GetUserAndCustomerDetailsHandler : IRequestHandler<GetUserAndCustom
         var customer = await _context.Customers.AsNoTracking().FirstOrDefaultAsync(c=>c.Id == user.Id) ?? new Customer();
 
         var CustomerDitails = mapper.Map<CustomerDetailsViewModel>(customer);
+        CustomerDitails.ProfileImage = ProfileImageHelper.NormalizeProfileImage(CustomerDitails.ProfileImage);
         CustomerDitails.User = mapper.Map<UserDetails_VM>(user);
 
         return OperationResult<CustomerDetailsViewModel>.Success(CustomerDitails);

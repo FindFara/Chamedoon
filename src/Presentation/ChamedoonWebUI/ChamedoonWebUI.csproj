@@ -7,86 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\css\fonts\anjoman\woff2\Anjoman-Bold.woff2" />
-    <None Include="wwwroot\css\fonts\anjoman\woff2\Anjoman-Light.woff2" />
-    <None Include="wwwroot\css\fonts\anjoman\woff2\Anjoman-Regular.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-black.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-blackitalic.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-bold.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-bolditalic.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-demibold.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-demibolditalic.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-extrabold.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-extrabolditalic.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-extralight.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-extralightitalic.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-light.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-lightitalic.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-medium.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-mediumitalic.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-regular.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-regularitalic.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-thin.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-thinitalic.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-ultrabold.woff2" />
-    <None Include="wwwroot\css\fonts\dana\woff2\dana-ultrabolditalic.woff2" />
-    <None Include="wwwroot\css\fonts\index.php" />
-    <None Include="wwwroot\css\fonts\iransansdn\woff2\iransansdn.woff2" />
-    <None Include="wwwroot\css\fonts\iransansdn\woff2\iransansdnbold.woff2" />
-    <None Include="wwwroot\css\fonts\iransansdn\woff2\iransansdnlight.woff2" />
-    <None Include="wwwroot\css\fonts\iransansfanum\woff2\IRANSansWeb%28FaNum%29.woff2" />
-    <None Include="wwwroot\css\fonts\iransansfanum\woff2\IRANSansWeb%28FaNum%29_Black.woff2" />
-    <None Include="wwwroot\css\fonts\iransansfanum\woff2\IRANSansWeb%28FaNum%29_Bold.woff2" />
-    <None Include="wwwroot\css\fonts\iransansfanum\woff2\IRANSansWeb%28FaNum%29_Light.woff2" />
-    <None Include="wwwroot\css\fonts\iransansfanum\woff2\IRANSansWeb%28FaNum%29_Medium.woff2" />
-    <None Include="wwwroot\css\fonts\iransansfanum\woff2\IRANSansWeb%28FaNum%29_UltraLight.woff2" />
-    <None Include="wwwroot\css\fonts\iransans\woff2\IRANSansWeb.woff2" />
-    <None Include="wwwroot\css\fonts\iransans\woff2\IRANSansWeb_Black.woff2" />
-    <None Include="wwwroot\css\fonts\iransans\woff2\IRANSansWeb_Bold.woff2" />
-    <None Include="wwwroot\css\fonts\iransans\woff2\IRANSansWeb_Light.woff2" />
-    <None Include="wwwroot\css\fonts\iransans\woff2\IRANSansWeb_Medium.woff2" />
-    <None Include="wwwroot\css\fonts\iransans\woff2\IRANSansWeb_UltraLight.woff2" />
-    <None Include="wwwroot\css\fonts\iranyekanfanum\svg\iranyekanwebblackfanum.svg" />
-    <None Include="wwwroot\css\fonts\iranyekanfanum\svg\iranyekanwebboldfanum.svg" />
-    <None Include="wwwroot\css\fonts\iranyekanfanum\svg\iranyekanwebextrablackfanum.svg" />
-    <None Include="wwwroot\css\fonts\iranyekanfanum\svg\iranyekanwebextraboldfanum.svg" />
-    <None Include="wwwroot\css\fonts\iranyekanfanum\svg\iranyekanweblightfanum.svg" />
-    <None Include="wwwroot\css\fonts\iranyekanfanum\svg\iranyekanwebmediumfanum.svg" />
-    <None Include="wwwroot\css\fonts\iranyekanfanum\svg\iranyekanwebregularfanum.svg" />
-    <None Include="wwwroot\css\fonts\iranyekanfanum\svg\iranyekanwebthinfanum.svg" />
-    <None Include="wwwroot\css\fonts\iranyekan\svg\iranyekanwebblack.svg" />
-    <None Include="wwwroot\css\fonts\iranyekan\svg\iranyekanwebbold.svg" />
-    <None Include="wwwroot\css\fonts\iranyekan\svg\iranyekanwebextrablack.svg" />
-    <None Include="wwwroot\css\fonts\iranyekan\svg\iranyekanwebextrabold.svg" />
-    <None Include="wwwroot\css\fonts\iranyekan\svg\iranyekanweblight.svg" />
-    <None Include="wwwroot\css\fonts\iranyekan\svg\iranyekanwebmedium.svg" />
-    <None Include="wwwroot\css\fonts\iranyekan\svg\iranyekanwebregular.svg" />
-    <None Include="wwwroot\css\fonts\iranyekan\svg\iranyekanwebthin.svg" />
-    <None Include="wwwroot\css\fonts\nahid\Nahid.woff2" />
-    <None Include="wwwroot\css\fonts\sahel\Sahel-Black.woff2" />
-    <None Include="wwwroot\css\fonts\sahel\Sahel-Bold.woff2" />
-    <None Include="wwwroot\css\fonts\sahel\Sahel.woff2" />
-    <None Include="wwwroot\css\fonts\samim\Samim-Bold.woff2" />
-    <None Include="wwwroot\css\fonts\samim\Samim.woff2" />
-    <None Include="wwwroot\css\fonts\shabnam\Shabnam-Bold.woff2" />
-    <None Include="wwwroot\css\fonts\shabnam\Shabnam-Light.woff2" />
-    <None Include="wwwroot\css\fonts\shabnam\Shabnam.woff2" />
-    <None Include="wwwroot\css\fonts\tanha\Tanha.woff2" />
-    <None Include="wwwroot\css\fonts\vazir\Vazir-Bold.woff2" />
-    <None Include="wwwroot\css\fonts\vazir\Vazir-Light.woff2" />
-    <None Include="wwwroot\css\fonts\vazir\Vazir-Medium.woff2" />
-    <None Include="wwwroot\css\fonts\vazir\Vazir-Thin.woff2" />
-    <None Include="wwwroot\css\fonts\vazir\Vazir.woff2" />
-    <None Include="wwwroot\js\aos.js" />
-    <None Include="wwwroot\js\app.js" />
-    <None Include="wwwroot\js\bootstrap.bundle.min.js" />
-    <None Include="wwwroot\js\feather.min.js" />
-    <None Include="wwwroot\js\plugins.init.js" />
-    <None Include="wwwroot\js\shuffle.min.js" />
-    <None Include="wwwroot\js\site.js" />
-    <None Include="wwwroot\js\swiper.min.js" />
-    <None Include="wwwroot\js\tiny-slider.js" />
-    <None Include="wwwroot\js\tobii.min.js" />
+    <Compile Remove="wwwroot\images\error\**" />
+    <Content Remove="wwwroot\images\error\**" />
+    <EmbeddedResource Remove="wwwroot\images\error\**" />
+    <None Remove="wwwroot\images\error\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -100,8 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="wwwroot\js\" />
     <Folder Include="wwwroot\lib\bootstrap\" />
     <Folder Include="wwwroot\lib\bootstrap\dist\js\" />
     <Folder Include="wwwroot\lib\jquery-validation-unobtrusive\" />

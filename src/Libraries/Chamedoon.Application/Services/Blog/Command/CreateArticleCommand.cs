@@ -8,7 +8,7 @@ namespace Chamedoon.Application.Services.Blog.Command;
 
 public class CreateArticleCommand : IRequest<OperationResult<bool>>
 {
-    public Article_VM? Article { get; set; }
+    public ArticleViewModel? Article { get; set; }
 }
 public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand, OperationResult<bool>>
 {

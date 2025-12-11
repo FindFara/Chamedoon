@@ -4,6 +4,13 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
 using Chamedoon.Application.Common.Behaviors;
+using Chamedoon.Application.Services.Admin.Blogs;
+using Chamedoon.Application.Services.Admin.Dashboard;
+using Chamedoon.Application.Services.Admin.Payments;
+using Chamedoon.Application.Services.Admin.Roles;
+using Chamedoon.Application.Services.Admin.Users;
+using Chamedoon.Application.Services.Immigration;
+using Chamedoon.Application.Services.Payments;
 
 
 namespace Chamedoon.Application;
@@ -19,6 +26,16 @@ public static class ConfigureServices
             //cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
         });
         services.AddScoped<IEmailService, SendGridMailService>();
+        services.AddScoped<IAdminUserService, AdminUserService>();
+        services.AddScoped<IAdminBlogService, AdminBlogService>();
+        services.AddScoped<IAdminRoleService, AdminRoleService>();
+        services.AddScoped<IAdminPaymentService, AdminPaymentService>();
+        services.AddScoped<IAdminDashboardService, AdminDashboardService>();
+        services.AddScoped<IImmigrationEvaluationService, ImmigrationEvaluationService>();
+        services.AddScoped<ICountryDataCache, CountryDataCache>();
+        services.AddScoped<ImmigrationScoringService>();
+        services.AddScoped<PaymentService>();
+        services.AddMemoryCache();
 
         return services;
     }

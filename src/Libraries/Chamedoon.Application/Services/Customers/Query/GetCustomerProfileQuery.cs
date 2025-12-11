@@ -2,6 +2,7 @@
 using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Customers.ViewModel;
+using Chamedoon.Application.Services.Customers;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 namespace Chamedoon.Application.Services.Customers.Query
@@ -28,13 +29,16 @@ namespace Chamedoon.Application.Services.Customers.Query
                 .Where(c => c.Id == user.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (customer == null || string.IsNullOrEmpty(customer.ProfileImage))
+            if (customer == null)
             {
                 return OperationResult<CustomerProfileViewModel>.Fail();
             }
 
+            var profile = mapper.Map<CustomerProfileViewModel>(customer);
+            profile.ProfileImage = ProfileImageHelper.NormalizeProfileImage(profile.ProfileImage);
+
             return OperationResult<CustomerProfileViewModel>
-                .Success(mapper.Map< CustomerProfileViewModel> (customer));
+                .Success(profile);
         }
     }
 }

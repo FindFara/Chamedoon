@@ -1,0 +1,106 @@
+@model UserEditViewModel
+@{ 
+    ViewData["Title"] = Model.IsNew ? "ایجاد کاربر" : "ویرایش کاربر";
+    var startValue = Model.SubscriptionStartDateUtc?.ToString("yyyy-MM-dd");
+    var endValue = Model.SubscriptionEndDateUtc?.ToString("yyyy-MM-dd");
+}
+
+<div class="container-fluid py-4 admin-section users-section">
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-transparent">
+            <h1 class="h4 mb-0">@ViewData["Title"]</h1>
+        </div>
+        <div class="card-body">
+            <form asp-action="@(Model.IsNew ? "Create" : "Edit")" asp-route-id="@(Model.IsNew ? null : Model.Id)" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="UserName" class="form-label"></label>
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="FullName" class="form-label"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="RoleId" class="form-label"></label>
+                        <select asp-for="RoleId" class="form-select" asp-items="@(new SelectList(Model.Roles, nameof(RoleOptionViewModel.Id), nameof(RoleOptionViewModel.Name)))">
+                            <option value="">بدون نقش</option>
+                        </select>
+                        <span asp-validation-for="RoleId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="SubscriptionPlanId" class="form-label"></label>
+                        <select asp-for="SubscriptionPlanId" class="form-select" asp-items="@(new SelectList(Model.Plans, nameof(SubscriptionPlanOptionViewModel.Id), nameof(SubscriptionPlanOptionViewModel.Title)))">
+                            <option value="">بدون اشتراک</option>
+                        </select>
+                        <span asp-validation-for="SubscriptionPlanId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span class="form-text text-muted">@((Model.IsNew) ? "کلمه عبور برای کاربر جدید الزامی است." : "در صورت عدم تغییر خالی بگذارید.")</span>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="SubscriptionStartDateUtc" class="form-label"></label>
+                        <div class="persian-datepicker-field">
+                            <input type="text" id="subscriptionStartDisplay" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ شروع" value="@startValue" autocomplete="off" data-persian-picker data-alt-field="#subscriptionStartValue" />
+                            <input type="hidden" id="subscriptionStartValue" name="SubscriptionStartDateUtc" value="@startValue" />
+                        </div>
+                        <span asp-validation-for="SubscriptionStartDateUtc" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="SubscriptionEndDateUtc" class="form-label"></label>
+                        <div class="persian-datepicker-field">
+                            <input type="text" id="subscriptionEndDisplay" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ پایان" value="@endValue" autocomplete="off" data-persian-picker data-alt-field="#subscriptionEndValue" />
+                            <input type="hidden" id="subscriptionEndValue" name="SubscriptionEndDateUtc" value="@endValue" />
+                        </div>
+                        <span asp-validation-for="SubscriptionEndDateUtc" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="UsedEvaluations" class="form-label"></label>
+                        <input asp-for="UsedEvaluations" class="form-control" min="0" />
+                        <span asp-validation-for="UsedEvaluations" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center">
+                        <div class="form-check mt-4">
+                            <input asp-for="IsActive" class="form-check-input" />
+                            <label asp-for="IsActive" class="form-check-label"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-outline-secondary">بازگشت</a>
+                    <button type="submit" class="btn btn-primary">ذخیره</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/persian-datepicker.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/persian-datepicker.js" asp-append-version="true"></script>
+    <script>
+        (function () {
+            if (window.PersianDatePicker && typeof window.PersianDatePicker.init === 'function') {
+                window.PersianDatePicker.init();
+            }
+        })();
+    </script>
+}
