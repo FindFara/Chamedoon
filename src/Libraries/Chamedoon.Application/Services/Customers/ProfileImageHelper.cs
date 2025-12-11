@@ -4,7 +4,7 @@ namespace Chamedoon.Application.Services.Customers;
 
 public static class ProfileImageHelper
 {
-    private const string DefaultAvatarPath = "wwwroot/img/avatar.jpg";
+    private const string DefaultAvatarPath = "wwwroot/img/default-avatar.svg";
     private static string? _defaultBase64;
 
     public static string ConvertToBase64(IFormFile profileImage)
@@ -77,6 +77,7 @@ public static class ProfileImageHelper
             ".png" => "image/png",
             ".gif" => "image/gif",
             ".webp" => "image/webp",
+            ".svg" => "image/svg+xml",
             _ => "application/octet-stream"
         };
     }
