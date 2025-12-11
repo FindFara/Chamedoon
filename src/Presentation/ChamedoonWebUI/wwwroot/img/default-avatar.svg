@@ -1,0 +1,22 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Chamedoon default user avatar</title>
+  <desc id="desc">Minimal user silhouette on a vibrant circular gradient background.</desc>
+  <defs>
+    <linearGradient id="bg" x1="24" y1="18" x2="176" y2="182" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4f46e5"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="60" y1="48" x2="140" y2="132" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="white" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <circle cx="100" cy="100" r="96" fill="url(#bg)"/>
+  <circle cx="100" cy="72" r="34" fill="#f8fafc"/>
+  <path d="M44 170c6.4-30.5 32.6-50 56-50s49.6 19.5 56 50c-16.2 12.4-35.7 20-56 20s-39.8-7.6-56-20Z" fill="#e5e7eb"/>
+  <path d="M56 164c5.5-22 23.2-36 44-36s38.5 14 44 36c-12.2 8.8-27.5 14-44 14s-31.8-5.2-44-14Z" fill="#fff" fill-opacity="0.9"/>
+  <circle cx="96" cy="70" r="8" fill="#0ea5e9"/>
+  <circle cx="124" cy="70" r="8" fill="#0ea5e9"/>
+  <path d="M92 94c5 5.6 11 8.4 18 8.4s13-2.8 18-8.4" stroke="#0ea5e9" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="100" cy="88" r="76" fill="url(#shine)"/>
+</svg>
