@@ -45,8 +45,8 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@(ViewData["LoginNonce"] as string)" />
                     <div class="glass-field">
-                        <label asp-for="Email" class="form-label">ایمیل</label>
-                        <input asp-for="Email" type="email" class="form-control glass-input" placeholder="example@mail.com" data-validate-email="true" data-disallow-persian="true" />
+                        <label asp-for="PhoneNumber" class="form-label">شماره موبایل</label>
+                        <input asp-for="PhoneNumber" class="form-control glass-input" placeholder="09*********" inputmode="tel" />
                     </div>
                     <div class="glass-field">
                         <label asp-for="Password" class="form-label">رمز عبور</label>

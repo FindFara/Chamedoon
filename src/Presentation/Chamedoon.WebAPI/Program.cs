@@ -1,4 +1,5 @@
 using Chamedoon.Application;
+using Chamedoon.Domin.Configs;
 using Chamedoon.Infrastructure;
 using Chamedoon.WebAPI;
 using Serilog;
@@ -18,6 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddWebAPIServices(builder.Configuration);
+builder.Services.Configure<SmsConfig>(builder.Configuration.GetSection("Sms"));
 var logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()

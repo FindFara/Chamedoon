@@ -12,6 +12,7 @@ public class GetUserQuery : IRequest<OperationResult<User>>
     public long? Id { get; set; }
     public string? UserName { get; set; }
     public string? Email { get; set; }
+    public string? PhoneNumber { get; set; }
 }
 public class GetUserByIdQueryHandler : IRequestHandler<GetUserQuery, OperationResult<User>>
 {
@@ -36,7 +37,8 @@ public class GetUserByIdQueryHandler : IRequestHandler<GetUserQuery, OperationRe
             .SingleOrDefaultAsync(u =>
                                    u.Id == request.Id ||
                                    u.NormalizedUserName == (request.UserName ?? "").ToUpper() ||
-                                   u.NormalizedEmail == (request.Email ?? "").ToUpper());
+                                   u.NormalizedEmail == (request.Email ?? "").ToUpper() ||
+                                   u.PhoneNumber == request.PhoneNumber);
         if (user is null)
             return OperationResult<User>.Fail("کاربری با مشخصات واد شده یافت نشد");
 
