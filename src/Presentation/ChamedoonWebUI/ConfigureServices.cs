@@ -52,7 +52,7 @@ public static class ConfigureServices
 
         services.ConfigureApplicationCookie(options =>
         {
-            options.LoginPath = "/auth/login";
+            options.LoginPath = "/auth/phone";
             options.LogoutPath = "/auth/logout";
             options.AccessDeniedPath = "/auth/AccessDenied";
             options.Cookie.HttpOnly = true;
