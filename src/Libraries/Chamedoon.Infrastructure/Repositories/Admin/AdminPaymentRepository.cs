@@ -20,20 +20,25 @@ public class AdminPaymentRepository : IAdminPaymentRepository
 
     public async Task<DashboardPaymentSummaryDto> GetPaymentSummaryAsync(DateTime since, CancellationToken cancellationToken)
     {
-        var query = _context.PaymentRequests.AsNoTracking().Where(p => p.CreatedAtUtc >= since);
-
-        var successfulAmount = await query.Where(p => p.Status == PaymentStatus.Paid)
-            .SumAsync(p => (long)p.Amount, cancellationToken);
-        var successfulCount = await query.CountAsync(p => p.Status == PaymentStatus.Paid, cancellationToken);
-        var failedCount = await query.CountAsync(p => p.Status == PaymentStatus.Failed, cancellationToken);
-        var pendingCount = await query.CountAsync(p => p.Status == PaymentStatus.Pending || p.Status == PaymentStatus.Redirected, cancellationToken);
+        var summary = await _context.PaymentRequests
+            .AsNoTracking()
+            .Where(p => p.CreatedAtUtc >= since)
+            .GroupBy(_ => 1)
+            .Select(group => new
+            {
+                SuccessfulAmount = group.Where(p => p.Status == PaymentStatus.Paid).Sum(p => (long)p.Amount),
+                SuccessfulCount = group.Count(p => p.Status == PaymentStatus.Paid),
+                FailedCount = group.Count(p => p.Status == PaymentStatus.Failed),
+                PendingCount = group.Count(p => p.Status == PaymentStatus.Pending || p.Status == PaymentStatus.Redirected)
+            })
+            .SingleOrDefaultAsync(cancellationToken);
 
         return new DashboardPaymentSummaryDto
         {
-            SuccessfulAmount = successfulAmount,
-            SuccessfulCount = successfulCount,
-            FailedCount = failedCount,
-            PendingCount = pendingCount
+            SuccessfulAmount = summary?.SuccessfulAmount ?? 0,
+            SuccessfulCount = summary?.SuccessfulCount ?? 0,
+            FailedCount = summary?.FailedCount ?? 0,
+            PendingCount = summary?.PendingCount ?? 0
         };
     }
 
