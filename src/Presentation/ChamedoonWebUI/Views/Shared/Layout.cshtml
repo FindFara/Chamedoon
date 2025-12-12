@@ -19,6 +19,23 @@
     <link rel="stylesheet" href="~/css/alerts.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site-dark.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/alerts-dark.css" asp-append-version="true" />
+    <script>
+        (function () {
+            const readPreference = () => {
+                try {
+                    return localStorage.getItem('landing-theme');
+                } catch (error) {
+                    return null;
+                }
+            };
+
+            const storedPreference = readPreference();
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = storedPreference === 'dark' || (storedPreference !== 'light' && prefersDark);
+
+            document.documentElement.classList.toggle('dark-mode', isDark);
+        })();
+    </script>
     @RenderSection("Styles", required: false)
 </head>
 <body class="landing-page page-loading @(hideChrome ? "landing-page--minimal" : string.Empty)">
