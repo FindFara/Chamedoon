@@ -152,6 +152,48 @@ public class AccountController : Controller
         return View("PhoneLogin", model);
     }
 
+    [Route("phone/resend")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ResendPhoneCode(PhoneLoginViewModel model, string requestNonce, string? returnUrl)
+    {
+        if (!IsRequestNonceValid(nameof(VerifyPhoneCode), requestNonce))
+        {
+            ModelState.AddModelError(string.Empty, "درخواست تکراری یا نامعتبر.");
+        }
+        else if (string.IsNullOrWhiteSpace(model.PhoneNumber))
+        {
+            ModelState.AddModelError(string.Empty, "شماره موبایل یافت نشد.");
+        }
+        else
+        {
+            var response = await _mediator.Send(new SendPhoneVerificationCodeCommand
+            {
+                PhoneNumber = model.PhoneNumber
+            });
+
+            if (!response.IsSuccess)
+            {
+                ModelState.AddModelError(string.Empty, response.Message);
+            }
+            else
+            {
+                return RedirectToAction(nameof(VerifyPhoneCode), new
+                {
+                    phoneNumber = model.PhoneNumber,
+                    returnUrl,
+                    message = "کد تایید مجدداً ارسال شد."
+                });
+            }
+        }
+
+        ViewData["PhoneLoginNonce"] = PrepareRequestNonce(nameof(VerifyPhoneCode));
+        ViewData["ReturnUrl"] = GetSafeReturnUrl(returnUrl);
+        model.CodeSent = true;
+        model.AlertMessage ??= "کد تایید برای شما ارسال شد.";
+        return View("VerifyPhoneCode", model);
+    }
+
     [Route("phone/verify")]
     [HttpPost]
     [ValidateAntiForgeryToken]
