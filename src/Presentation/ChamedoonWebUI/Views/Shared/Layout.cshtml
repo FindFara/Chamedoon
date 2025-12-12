@@ -77,16 +77,32 @@
                         <div class="landing-controls">
                             <div class="landing-actions">
                                 <div class="dropdown user-menu-dropdown">
-                                    <button class="icon-button dropdown-toggle user-menu-toggle" type="button" id="userMenuToggle" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="حساب کاربری" title="حساب کاربری">
-                                        <span class="visually-hidden">حساب کاربری</span>
-                                        @await Component.InvokeAsync("UserProfileImage", new { viewName = "Badge" })
-                                        <span class="user-menu-icon" aria-hidden="true">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
-                                                <path d="M12 12c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.2-5 5 2.2 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                                <path d="M5.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </span>
-                                    </button>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <button class="icon-button dropdown-toggle user-menu-toggle" type="button" id="userMenuToggle" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="حساب کاربری" title="حساب کاربری">
+                                            <span class="visually-hidden">حساب کاربری</span>
+                                            @await Component.InvokeAsync("UserProfileImage", new { viewName = "Badge" })
+                                            <span class="user-menu-icon" aria-hidden="true">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
+                                                    <path d="M12 12c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.2-5 5 2.2 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M5.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </span>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <a class="icon-button user-menu-toggle" asp-controller="Account" asp-action="PhoneLogin" aria-label="حساب کاربری" title="ورود یا ثبت‌نام">
+                                            <span class="visually-hidden">ورود یا ثبت نام</span>
+                                            @await Component.InvokeAsync("UserProfileImage", new { viewName = "Badge" })
+                                            <span class="user-menu-icon" aria-hidden="true">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
+                                                    <path d="M12 12c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.2-5 5 2.2 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M5.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </span>
+                                        </a>
+                                    }
                                     <ul class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userMenuToggle">
                                         @if (User.Identity.IsAuthenticated)
                                         {
@@ -107,10 +123,7 @@
                                         else
                                         {
                                             <li>
-                                                <a class="dropdown-item" asp-controller="Account" asp-action="Login">ورود</a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" asp-controller="Account" asp-action="Register">ثبت‌نام</a>
+                                                <a class="dropdown-item" asp-controller="Account" asp-action="PhoneLogin">ورود / ثبت‌نام</a>
                                             </li>
                                         }
                                     </ul>
@@ -186,8 +199,7 @@
                         }
                         else
                         {
-                            <a class="btn btn-sm btn-primary" asp-controller="Account" asp-action="Login">ورود</a>
-                            <a class="btn btn-sm btn-outline-primary" asp-controller="Account" asp-action="Register">ثبت‌نام</a>
+                            <a class="btn btn-sm btn-primary" asp-controller="Account" asp-action="PhoneLogin">ورود / ثبت‌نام</a>
                         }
                     </div>
                 </div>
