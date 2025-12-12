@@ -1,0 +1,62 @@
+@model ChamedoonWebUI.Models.PhoneLoginViewModel
+@{
+    ViewData["Title"] = "ورود و ثبت نام با موبایل";
+    var nonce = ViewData["PhoneLoginNonce"] as string ?? string.Empty;
+    var returnUrl = ViewData["ReturnUrl"] as string ?? Url.Action("Index", "Home");
+}
+<section class="auth-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary bg-opacity-10 text-primary" style="width:64px;height:64px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" fill="none">
+                                    <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.6" />
+                                    <path d="M9 7h6m-6 4h6m-6 4h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                                </svg>
+                            </div>
+                            <h1 class="h4 mt-3">ورود / ثبت‌نام با شماره موبایل</h1>
+                            <p class="text-muted mb-0">کد تایید برای شما پیامک می‌شود و نیاز به رمز عبور نیست.</p>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.AlertMessage))
+                        {
+                            <div class="alert alert-info" role="alert">@Model.AlertMessage</div>
+                        }
+                        <div asp-validation-summary="All" class="text-danger small mb-3"></div>
+
+                        <form asp-action="SendPhoneCode" method="post" class="mb-3">
+                            <input type="hidden" name="requestNonce" value="@nonce" />
+                            <input type="hidden" name="returnUrl" value="@returnUrl" />
+                            <div class="mb-3">
+                                <label asp-for="PhoneNumber" class="form-label"></label>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="مثال: 09123456789" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">ارسال کد تایید</button>
+                        </form>
+
+                        <form asp-action="VerifyPhoneCode" method="post">
+                            <input type="hidden" name="requestNonce" value="@nonce" />
+                            <input type="hidden" name="returnUrl" value="@returnUrl" />
+                            <input type="hidden" asp-for="PhoneNumber" />
+                            <div class="mb-3">
+                                <label asp-for="Code" class="form-label"></label>
+                                <input asp-for="Code" class="form-control" placeholder="کد ۶ رقمی" @(Model.CodeSent ? "" : "disabled") />
+                                <span asp-validation-for="Code" class="text-danger"></span>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100" @(Model.CodeSent ? "" : "disabled")>تایید و ورود</button>
+                        </form>
+                        <p class="text-center text-muted mt-3 mb-0">با ارسال کد، قوانین و حریم خصوصی چمدون را می‌پذیرم.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
