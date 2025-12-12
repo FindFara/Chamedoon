@@ -9,7 +9,7 @@ namespace Chamedoon.UI.Services
 {
     internal interface IAccountOperation
     {
-        internal Task<OperationResult<bool>> Register(RegisterUser_VM registerUser);
+        internal Task<OperationResult<long>> Register(RegisterUser_VM registerUser);
 
     }
     internal class AccountOperation : IAccountOperation
@@ -20,7 +20,7 @@ namespace Chamedoon.UI.Services
         {
             _mediator = mediator;
         }
-        public async Task<OperationResult<bool>> Register(RegisterUser_VM registerUser)
+        public async Task<OperationResult<long>> Register(RegisterUser_VM registerUser)
         {
             return await _mediator.Send(new ManageRegisterUserCommand { RegisterUser = registerUser });
         }
