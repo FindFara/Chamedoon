@@ -98,6 +98,26 @@ public class AccountController : Controller
         return View("PhoneLogin", new PhoneLoginViewModel { AlertMessage = message });
     }
 
+    [Route("phone/verify")]
+    [HttpGet]
+    public IActionResult VerifyPhoneCode(string phoneNumber, string? returnUrl = null, string? message = null)
+    {
+        if (string.IsNullOrWhiteSpace(phoneNumber))
+        {
+            return RedirectToAction(nameof(PhoneLogin), new { returnUrl });
+        }
+
+        ViewData["PhoneLoginNonce"] = PrepareRequestNonce(nameof(VerifyPhoneCode));
+        ViewData["ReturnUrl"] = GetSafeReturnUrl(returnUrl);
+
+        return View("VerifyPhoneCode", new PhoneLoginViewModel
+        {
+            PhoneNumber = phoneNumber,
+            CodeSent = true,
+            AlertMessage = message ?? "کد تایید برای شما ارسال شد."
+        });
+    }
+
     [Route("phone/send")]
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -117,8 +137,12 @@ public class AccountController : Controller
             }
             else
             {
-                model.CodeSent = true;
-                model.AlertMessage = "کد تایید برای شما ارسال شد.";
+                return RedirectToAction(nameof(VerifyPhoneCode), new
+                {
+                    phoneNumber = model.PhoneNumber,
+                    returnUrl,
+                    message = "کد تایید برای شما ارسال شد."
+                });
             }
         }
 
@@ -133,7 +157,7 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> VerifyPhoneCode(PhoneLoginViewModel model, string requestNonce, string? returnUrl)
     {
-        if (!IsRequestNonceValid(nameof(PhoneLogin), requestNonce))
+        if (!IsRequestNonceValid(nameof(VerifyPhoneCode), requestNonce))
         {
             ModelState.AddModelError(string.Empty, "درخواست تکراری یا نامعتبر.");
         }
@@ -162,10 +186,11 @@ public class AccountController : Controller
             }
         }
 
-        model.CodeSent = true;
-        ViewData["PhoneLoginNonce"] = PrepareRequestNonce(nameof(PhoneLogin));
+        ViewData["PhoneLoginNonce"] = PrepareRequestNonce(nameof(VerifyPhoneCode));
         ViewData["ReturnUrl"] = GetSafeReturnUrl(returnUrl);
-        return View("PhoneLogin", model);
+        model.CodeSent = true;
+        model.AlertMessage ??= "کد تایید برای شما ارسال شد.";
+        return View("VerifyPhoneCode", model);
     }
     #endregion
 
