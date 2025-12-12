@@ -1,6 +1,6 @@
 @model ChamedoonWebUI.Models.PhoneLoginViewModel
 @{
-    ViewData["Title"] = "ورود و ثبت نام با موبایل";
+    ViewData["Title"] = "تایید کد ورود";
     ViewData["HideChrome"] = true;
     var nonce = ViewData["PhoneLoginNonce"] as string ?? string.Empty;
     var returnUrl = ViewData["ReturnUrl"] as string ?? Url.Action("Index", "Home");
@@ -18,7 +18,7 @@
                     </svg>
                 </div>
                 <div class="floating-alert__content">
-                    <p class="floating-alert__title mb-1">خطا در ورود</p>
+                    <p class="floating-alert__title mb-1">خطا در تایید</p>
                     <div class="floating-alert__message" asp-validation-summary="All"></div>
                 </div>
                 <div class="floating-alert__timer" aria-hidden="true" data-alert-timer>
@@ -58,25 +58,35 @@
         <div class="auth-grid auth-grid-compact auth-grid-single">
             <div class="glass-card auth-card auth-card-compact">
                 <div class="auth-card-header text-center">
-                    <h2 class="mb-1">ورود / ثبت‌نام با موبایل</h2>
-                    <p class="text-muted mb-0">بدون نیاز به رمز عبور، با کد تایید وارد شوید.</p>
+                    <h2 class="mb-1">تایید کد ورود</h2>
+                    <p class="text-muted mb-0">کد ارسال‌شده را وارد کنید.</p>
                 </div>
 
-                <form asp-action="SendPhoneCode" method="post" novalidate data-prevent-multi-submit="true" data-form="send-phone-code">
+                <div class="auth-meta text-center mb-2 text-muted">
+                    <small>کد تایید تا چند دقیقه معتبر است.</small>
+                </div>
+
+                <form asp-action="VerifyPhoneCode" method="post" novalidate data-prevent-multi-submit="true">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@nonce" />
                     <input type="hidden" name="returnUrl" value="@returnUrl" />
                     <div class="glass-field">
-                        <label asp-for="PhoneNumber" class="form-label">شماره موبایل</label>
-                        <input asp-for="PhoneNumber" class="form-control glass-input" placeholder="مثال: 09123456789" />
-                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        <label asp-for="Code" class="form-label">کد تایید</label>
+                        <input asp-for="Code" class="form-control glass-input" placeholder="کد ۶ رقمی" />
+                        <span asp-validation-for="Code" class="text-danger"></span>
                     </div>
-                    <button type="submit" class="btn-glass-primary w-100" id="sendCodeButton" data-processing-text="در حال ارسال..." @(Model.CodeSent ? "disabled" : null)>ارسال کد تایید</button>
-                    <div id="resendCountdown" class="text-center text-muted mt-2" style="display:@(Model.CodeSent ? "block" : "none")" aria-live="polite"></div>
+                    <button type="submit" class="btn-glass-primary w-100" data-processing-text="در حال تایید...">تایید و ورود</button>
                 </form>
 
                 <div class="auth-meta text-center mt-3">
-                    <span>با ارسال کد، قوانین و حریم خصوصی چمدون را می‌پذیرم.</span>
+                    <div id="verifyCountdown" class="text-muted" style="display:@(Model.CodeSent ? "block" : "none")" aria-live="polite"></div>
+                    <form asp-action="ResendPhoneCode" method="post" class="mt-2" novalidate data-prevent-multi-submit="true" data-form="resend-code" style="display:@(Model.CodeSent ? "none" : "block")">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="requestNonce" value="@nonce" />
+                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                        <button type="submit" class="btn-glass-primary w-100" id="resendCodeButton" data-processing-text="در حال ارسال...">ارسال مجدد کد تایید</button>
+                    </form>
+                    <a class="link-muted d-block mt-3" asp-action="PhoneLogin" asp-route-returnUrl="@returnUrl">اصلاح شماره موبایل</a>
                 </div>
             </div>
         </div>
@@ -87,10 +97,10 @@
     <partial name="_ValidationScriptsPartial" />
     <script>
         (() => {
-            const sendForm = document.querySelector('[data-form="send-phone-code"]');
-            const sendButton = document.getElementById('sendCodeButton');
-            const countdownLabel = document.getElementById('resendCountdown');
             const cooldownSeconds = 120;
+            const countdownLabel = document.getElementById('verifyCountdown');
+            const resendForm = document.querySelector('[data-form="resend-code"]');
+            const resendButton = document.getElementById('resendCodeButton');
             const codeWasSent = @(Model.CodeSent.ToString().ToLower());
 
             const formatTime = (seconds) => {
@@ -100,27 +110,26 @@
             };
 
             const updateCountdown = (remaining) => {
-                if (countdownLabel) {
-                    countdownLabel.textContent = `ارسال مجدد کد پس از ${formatTime(remaining)}`;
-                }
+                if (!countdownLabel) return;
+                countdownLabel.textContent = `ارسال مجدد کد پس از ${formatTime(remaining)}`;
             };
 
             const startCooldown = () => {
-                if (!sendButton) return;
+                if (!countdownLabel) return;
                 let remaining = cooldownSeconds;
-                sendButton.disabled = true;
-                if (countdownLabel) {
-                    countdownLabel.style.display = 'block';
-                    updateCountdown(remaining);
+                countdownLabel.style.display = 'block';
+                if (resendForm) {
+                    resendForm.style.display = 'none';
                 }
+                updateCountdown(remaining);
 
                 const intervalId = setInterval(() => {
                     remaining -= 1;
                     if (remaining <= 0) {
                         clearInterval(intervalId);
-                        sendButton.disabled = false;
-                        if (countdownLabel) {
-                            countdownLabel.style.display = 'none';
+                        countdownLabel.style.display = 'none';
+                        if (resendForm) {
+                            resendForm.style.display = 'block';
                         }
                         return;
                     }
@@ -133,10 +142,10 @@
                 startCooldown();
             }
 
-            if (sendForm) {
-                sendForm.addEventListener('submit', () => {
-                    if (sendButton) {
-                        sendButton.disabled = true;
+            if (resendForm) {
+                resendForm.addEventListener('submit', () => {
+                    if (resendButton) {
+                        resendButton.disabled = true;
                     }
                 });
             }
