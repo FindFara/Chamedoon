@@ -45,7 +45,7 @@
                 <div class="auth-card-header text-center">
                     <h2 class="mb-0">ایجاد حساب جدید</h2>
                 </div>
-                <form asp-action="Register" method="post" novalidate data-prevent-multi-submit="true">
+                <form asp-action="PhoneLogin" method="get" novalidate data-prevent-multi-submit="true">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@(ViewData["RegisterNonce"] as string)" />
                     <input type="hidden" name="returnUrl" value="@(ViewData["ReturnUrl"] as string)" />
@@ -65,7 +65,7 @@
                     ثبت‌نام با حساب گوگل
                 </a>
                 <div class="auth-meta text-center">
-                    <span>قبلاً حساب ساخته‌ای؟ <a asp-controller="Account" asp-action="Login">ورود به چمدون</a></span>
+                    <span>قبلاً حساب ساخته‌ای؟ <a asp-controller="Account" asp-action="PhoneLogin">ورود به چمدون</a></span>
                 </div>
             </div>
         </div>
