@@ -1,0 +1,154 @@
+@model ChamedoonWebUI.Models.PhoneLoginViewModel
+@{
+    ViewData["Title"] = "تایید کد ورود";
+    ViewData["HideChrome"] = true;
+    var nonce = ViewData["PhoneLoginNonce"] as string ?? string.Empty;
+    var returnUrl = ViewData["ReturnUrl"] as string ?? Url.Action("Index", "Home");
+    var hasErrors = (ViewData.ModelState?.ErrorCount ?? 0) > 0;
+}
+<section class="glass-section auth-section auth-section-centered">
+    @if (hasErrors)
+    {
+        <div class="floating-alert" role="alert" aria-live="assertive" data-auto-dismiss-after="4000">
+            <div class="floating-alert__box floating-alert__box--error">
+                <div class="floating-alert__icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" role="img">
+                        <path d="M12 3.5 3.75 19.25c-.47.9.16 1.99 1.16 1.99h14.18c1 0 1.63-1.09 1.16-1.99L12 3.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                        <path d="M12 9v5M12 16.5h.01" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="floating-alert__content">
+                    <p class="floating-alert__title mb-1">خطا در تایید</p>
+                    <div class="floating-alert__message" asp-validation-summary="All"></div>
+                </div>
+                <div class="floating-alert__timer" aria-hidden="true" data-alert-timer>
+                    <svg viewBox="0 0 32 32" role="presentation" focusable="false">
+                        <circle class="floating-alert__timer-track" cx="16" cy="16" r="14" />
+                        <circle class="floating-alert__timer-progress" cx="16" cy="16" r="14" />
+                    </svg>
+                </div>
+                <button type="button" class="floating-alert__close" data-dismiss-alert aria-label="بستن هشدار">✕</button>
+            </div>
+        </div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.AlertMessage))
+    {
+        <div class="floating-alert" role="status" aria-live="polite" data-auto-dismiss-after="4000">
+            <div class="floating-alert__box floating-alert__box--info">
+                <div class="floating-alert__content">
+                    <p class="floating-alert__title mb-1">اعلان سیستم</p>
+                    <div class="floating-alert__message">@Model.AlertMessage</div>
+                </div>
+                <div class="floating-alert__timer" aria-hidden="true" data-alert-timer>
+                    <svg viewBox="0 0 32 32" role="presentation" focusable="false">
+                        <circle class="floating-alert__timer-track" cx="16" cy="16" r="14" />
+                        <circle class="floating-alert__timer-progress" cx="16" cy="16" r="14" />
+                    </svg>
+                </div>
+                <button type="button" class="floating-alert__close" data-dismiss-alert aria-label="بستن اعلان">✕</button>
+            </div>
+        </div>
+    }
+    <div class="auth-abstract-bg" aria-hidden="true">
+        <span class="blob blob-1"></span>
+        <span class="blob blob-2"></span>
+        <span class="grid-pattern"></span>
+    </div>
+    <div class="container">
+        <div class="auth-grid auth-grid-compact auth-grid-single">
+            <div class="glass-card auth-card auth-card-compact">
+                <div class="auth-card-header text-center">
+                    <h2 class="mb-1">تایید کد ورود</h2>
+                    <p class="text-muted mb-0">کد ارسال‌شده را وارد کنید.</p>
+                </div>
+
+                <div class="auth-meta text-center mb-2 text-muted">
+                    <small>کد تایید تا چند دقیقه معتبر است.</small>
+                </div>
+
+                <form asp-action="VerifyPhoneCode" method="post" novalidate data-prevent-multi-submit="true">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="requestNonce" value="@nonce" />
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <div class="glass-field">
+                        <label asp-for="Code" class="form-label">کد تایید</label>
+                        <input asp-for="Code" class="form-control glass-input" placeholder="کد ۵ رقمی" />
+                        <span asp-validation-for="Code" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn-glass-primary w-100" data-processing-text="در حال تایید...">تایید و ورود</button>
+                </form>
+
+                <div class="auth-meta text-center mt-3">
+                    <div id="verifyCountdown" class="text-muted" style="display:@(Model.CodeSent ? "block" : "none")" aria-live="polite"></div>
+                    <form asp-action="ResendPhoneCode" method="post" class="mt-2" novalidate data-prevent-multi-submit="true" data-form="resend-code" style="display:@(Model.CodeSent ? "none" : "block")">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="requestNonce" value="@nonce" />
+                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                        <button type="submit" class="btn-glass-primary w-100" id="resendCodeButton" data-processing-text="در حال ارسال...">ارسال مجدد کد تایید</button>
+                    </form>
+                    <a class="link-muted d-block mt-3" asp-action="PhoneLogin" asp-route-returnUrl="@returnUrl">اصلاح شماره موبایل</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (() => {
+            const cooldownSeconds = 120;
+            const countdownLabel = document.getElementById('verifyCountdown');
+            const resendForm = document.querySelector('[data-form="resend-code"]');
+            const resendButton = document.getElementById('resendCodeButton');
+            const codeWasSent = @(Model.CodeSent.ToString().ToLower());
+
+            const formatTime = (seconds) => {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            };
+
+            const updateCountdown = (remaining) => {
+                if (!countdownLabel) return;
+                countdownLabel.textContent = `ارسال مجدد کد پس از ${formatTime(remaining)}`;
+            };
+
+            const startCooldown = () => {
+                if (!countdownLabel) return;
+                let remaining = cooldownSeconds;
+                countdownLabel.style.display = 'block';
+                if (resendForm) {
+                    resendForm.style.display = 'none';
+                }
+                updateCountdown(remaining);
+
+                const intervalId = setInterval(() => {
+                    remaining -= 1;
+                    if (remaining <= 0) {
+                        clearInterval(intervalId);
+                        countdownLabel.style.display = 'none';
+                        if (resendForm) {
+                            resendForm.style.display = 'block';
+                        }
+                        return;
+                    }
+
+                    updateCountdown(remaining);
+                }, 1000);
+            };
+
+            if (codeWasSent) {
+                startCooldown();
+            }
+
+            if (resendForm) {
+                resendForm.addEventListener('submit', () => {
+                    if (resendButton) {
+                        resendButton.disabled = true;
+                    }
+                });
+            }
+        })();
+    </script>
+}

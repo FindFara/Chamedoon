@@ -12,8 +12,8 @@
     --alert-bg: rgba(255, 255, 255, 0.88);
     --alert-border: rgba(79, 70, 229, 0.16);
     --alert-text: #0f172a;
-    --alert-accent: #ef4444;
-    --alert-glow: rgba(239, 68, 68, 0.15);
+    --alert-accent: #7c3aed;
+    --alert-glow: rgba(99, 102, 241, 0.18);
 
     position: relative;
     width: min(640px, 100%);
@@ -57,11 +57,11 @@
 }
 
 .floating-alert__box--error {
-    --alert-bg: rgba(255, 255, 255, 0.86);
-    --alert-border: rgba(239, 68, 68, 0.28);
-    --alert-text: #7f1d1d;
-    --alert-accent: #ef4444;
-    --alert-glow: rgba(239, 68, 68, 0.22);
+    --alert-bg: rgba(255, 255, 255, 0.9);
+    --alert-border: rgba(79, 70, 229, 0.35);
+    --alert-text: #312e81;
+    --alert-accent: #7c3aed;
+    --alert-glow: rgba(79, 70, 229, 0.18);
 }
 
 .floating-alert__icon {
@@ -72,10 +72,10 @@
     display: grid;
     place-items: center;
     border-radius: 1rem;
-    background: linear-gradient(135deg, var(--alert-accent), #f97316);
+    background: linear-gradient(135deg, var(--alert-accent), #6366f1);
     color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 14px 26px -16px rgba(239, 68, 68, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    box-shadow: 0 14px 26px -16px rgba(99, 102, 241, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .floating-alert__icon svg {
@@ -116,6 +116,8 @@
     height: 2.5rem;
     display: grid;
     place-items: center;
+    order: -1;
+    justify-self: start;
     background: rgba(255, 255, 255, 0.28);
     border: 1px solid rgba(255, 255, 255, 0.55);
     border-radius: 999px;
