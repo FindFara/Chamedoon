@@ -63,6 +63,7 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="requestNonce" value="@nonce" />
                     <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <input asp-for="PhoneNumber" type="hidden" />
                     <div class="glass-field">
                         <label asp-for="Code" class="form-label">کد تایید</label>
                         <input asp-for="Code" class="form-control glass-input" placeholder="کد ۵ رقمی" />
