@@ -14,6 +14,7 @@ builder.Services.AddApplicationServices();
 builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<SmtpConfig>(builder.Configuration.GetSection("Smtp"));
 builder.Services.Configure<UrlsConfig>(builder.Configuration.GetSection("Urls"));
+builder.Services.Configure<MelipayamakConfig>(builder.Configuration.GetSection(MelipayamakConfig.SectionName));
 
 
 var app = builder.Build();
