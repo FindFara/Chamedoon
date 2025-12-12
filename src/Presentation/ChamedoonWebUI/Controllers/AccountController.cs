@@ -109,6 +109,8 @@ public class AccountController : Controller
 
         ViewData["PhoneLoginNonce"] = PrepareRequestNonce(nameof(VerifyPhoneCode));
         ViewData["ReturnUrl"] = GetSafeReturnUrl(returnUrl);
+        TempData["PendingPhoneNumber"] = phoneNumber;
+        TempData.Keep("PendingPhoneNumber");
 
         return View("VerifyPhoneCode", new PhoneLoginViewModel
         {
@@ -161,15 +163,25 @@ public class AccountController : Controller
         {
             ModelState.AddModelError(string.Empty, "درخواست تکراری یا نامعتبر.");
         }
-        else if (string.IsNullOrWhiteSpace(model.PhoneNumber))
-        {
-            ModelState.AddModelError(string.Empty, "شماره موبایل یافت نشد.");
-        }
         else
         {
+            var pendingPhone = (TempData.Peek("PendingPhoneNumber") as string) ?? model.PhoneNumber;
+
+            if (string.IsNullOrWhiteSpace(pendingPhone))
+            {
+                ModelState.AddModelError(string.Empty, "شماره موبایل یافت نشد.");
+                TempData.Remove("PendingPhoneNumber");
+            }
+            else
+            {
+                TempData["PendingPhoneNumber"] = pendingPhone;
+                TempData.Keep("PendingPhoneNumber");
+
+                model.PhoneNumber = pendingPhone;
+
             var response = await _mediator.Send(new SendPhoneVerificationCodeCommand
             {
-                PhoneNumber = model.PhoneNumber
+                    PhoneNumber = pendingPhone
             });
 
             if (!response.IsSuccess)
@@ -180,10 +192,11 @@ public class AccountController : Controller
             {
                 return RedirectToAction(nameof(VerifyPhoneCode), new
                 {
-                    phoneNumber = model.PhoneNumber,
+                    phoneNumber = pendingPhone,
                     returnUrl,
                     message = "کد تایید مجدداً ارسال شد."
                 });
+            }
             }
         }
 
@@ -202,6 +215,15 @@ public class AccountController : Controller
         if (!IsRequestNonceValid(nameof(VerifyPhoneCode), requestNonce))
         {
             ModelState.AddModelError(string.Empty, "درخواست تکراری یا نامعتبر.");
+        }
+
+        if (string.IsNullOrWhiteSpace(model.PhoneNumber))
+        {
+            var pendingPhone = TempData.Peek("PendingPhoneNumber") as string;
+            if (!string.IsNullOrWhiteSpace(pendingPhone))
+            {
+                model.PhoneNumber = pendingPhone;
+            }
         }
 
         if (string.IsNullOrWhiteSpace(model.Code))
@@ -226,6 +248,12 @@ public class AccountController : Controller
                 var safeReturnUrl = GetSafeReturnUrl(returnUrl);
                 return LocalRedirect(safeReturnUrl);
             }
+        }
+
+        if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
+        {
+            TempData["PendingPhoneNumber"] = model.PhoneNumber;
+            TempData.Keep("PendingPhoneNumber");
         }
 
         ViewData["PhoneLoginNonce"] = PrepareRequestNonce(nameof(VerifyPhoneCode));
