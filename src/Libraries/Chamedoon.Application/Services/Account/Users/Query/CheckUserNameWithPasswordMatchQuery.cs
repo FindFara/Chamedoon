@@ -5,6 +5,7 @@ using Chamedoon.Domin.Base;
 using Chamedoon.Domin.Entity.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chamedoon.Application.Services.Account.Users.Query;
 
@@ -32,11 +33,15 @@ public class CheckUserNameAndPasswordMatchHandler : IRequestHandler<CheckUserNam
     #region Method
     public async Task<OperationResult<bool>> Handle(CheckUserNameAndPasswordMatchQuery request, CancellationToken cancellationToken)
     {
-        var loginUser = await signinmanager.PasswordSignInAsync(
-             request.UserName,
-             request.LoginUser.Password,
-             request.LoginUser.RememberMe,
-             true);
+        var user = await context.User.SingleOrDefaultAsync(u => u.NormalizedUserName == request.UserName.ToUpper(), cancellationToken);
+
+        if (user == null)
+            return OperationResult<bool>.Fail("کاربری یافت نشد.");
+
+        var loginUser = await signinmanager.CheckPasswordSignInAsync(
+            user,
+            request.LoginUser.Password,
+            true);
 
         if (loginUser.IsLockedOut)
             return OperationResult<bool>
