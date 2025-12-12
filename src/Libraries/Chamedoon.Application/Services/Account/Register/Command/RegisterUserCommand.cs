@@ -35,6 +35,8 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
     {
         User user = mapper.Map<User>(request.RegisterUser);
         user.UserName = string.Concat("U-",StringExtensions.GenerateRandomString(8));
+        user.PhoneNumberConfirmed = true;
+        user.TwoFactorEnabled = true;
         var registerUser = await userManager.CreateAsync(user, request.RegisterUser.Password);
         if (registerUser.Succeeded)
         {
