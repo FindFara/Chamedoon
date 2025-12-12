@@ -1,44 +1,39 @@
-﻿using AutoMapper;
 using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Account.Login.ViewModel;
 using Chamedoon.Application.Services.Account.Users.Query;
-using Chamedoon.Application.Services.Account.Users.ViewModel;
 using MediatR;
 
 namespace Chamedoon.Application.Services.Account.Login.Command;
-public class ManageLoginUserCommand : IRequest<OperationResult<UserDetails_VM>>
+
+public class ManageLoginUserCommand : IRequest<OperationResult<long>>
 {
     public required LoginUserViewModel LoginUser { get; set; }
 }
-public class ManageLoginUserQueryHandler : IRequestHandler<ManageLoginUserCommand, OperationResult<UserDetails_VM>>
+
+public class ManageLoginUserQueryHandler : IRequestHandler<ManageLoginUserCommand, OperationResult<long>>
 {
-    #region Property
-    private readonly IMediator mediator;
-    private readonly IMapper mapper;
+    private readonly IMediator _mediator;
 
-    #endregion
-
-    #region Ctor
-    public ManageLoginUserQueryHandler(IMediator mediator, IMapper mapper)
+    public ManageLoginUserQueryHandler(IMediator mediator)
     {
-        this.mediator = mediator;
-        this.mapper = mapper;
+        _mediator = mediator;
     }
-    #endregion
 
-    #region Method
-    public async Task<OperationResult<UserDetails_VM>> Handle(ManageLoginUserCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<long>> Handle(ManageLoginUserCommand request, CancellationToken cancellationToken)
     {
-        var user = await mediator.Send(new GetUserQuery { Email = request.LoginUser.Email });
-        if (user.IsSuccess is false)
-            return OperationResult<UserDetails_VM>.Fail(user.Message);
+        var user = await _mediator.Send(new GetUserQuery { PhoneNumber = request.LoginUser.PhoneNumber }, cancellationToken);
+        if (user.IsSuccess is false || user.Result is null)
+            return OperationResult<long>.Fail(user.Message);
 
-        OperationResult<bool> checkUser = await mediator.Send(new CheckUserNameAndPasswordMatchQuery { LoginUser = request.LoginUser, UserName =user.Result.UserName});
+        var checkUser = await _mediator.Send(new CheckUserNameAndPasswordMatchQuery
+        {
+            LoginUser = request.LoginUser,
+            UserName = user.Result.UserName
+        }, cancellationToken);
+
         if (checkUser.IsSuccess is false)
-            return OperationResult<UserDetails_VM>.Fail(checkUser.Message);
+            return OperationResult<long>.Fail(checkUser.Message);
 
-        return OperationResult<UserDetails_VM>.Success(mapper.Map<UserDetails_VM>(user.Result));
+        return OperationResult<long>.Success(user.Result.Id);
     }
-
-    #endregion
 }
