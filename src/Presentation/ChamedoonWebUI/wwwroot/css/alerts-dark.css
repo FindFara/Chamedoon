@@ -1,12 +1,12 @@
 body.landing-page.dark-mode .floating-alert__box {
-    --alert-bg: rgba(17, 24, 39, 0.82);
-    --alert-border: rgba(124, 58, 237, 0.5);
-    --alert-text: #f8fafc;
-    --alert-accent: #a855f7;
-    --alert-glow: rgba(124, 58, 237, 0.32);
+    --alert-bg: rgba(15, 23, 42, 0.82);
+    --alert-border: rgba(56, 189, 248, 0.5);
+    --alert-text: #e0f2fe;
+    --alert-accent: #0ea5e9;
+    --alert-glow: rgba(56, 189, 248, 0.32);
 
     box-shadow: 0 28px 60px -30px rgba(2, 6, 23, 0.8);
-    background: linear-gradient(150deg, rgba(30, 41, 59, 0.9), var(--alert-bg));
+    background: linear-gradient(150deg, rgba(15, 23, 42, 0.9), var(--alert-bg));
 }
 
 body.landing-page.dark-mode .floating-alert__box::after {
