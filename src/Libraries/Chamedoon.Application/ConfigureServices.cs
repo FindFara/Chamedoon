@@ -11,6 +11,7 @@ using Chamedoon.Application.Services.Admin.Roles;
 using Chamedoon.Application.Services.Admin.Users;
 using Chamedoon.Application.Services.Immigration;
 using Chamedoon.Application.Services.Payments;
+using Chamedoon.Application.Services.Sms;
 
 
 namespace Chamedoon.Application;
@@ -35,6 +36,7 @@ public static class ConfigureServices
         services.AddScoped<ICountryDataCache, CountryDataCache>();
         services.AddScoped<ImmigrationScoringService>();
         services.AddScoped<PaymentService>();
+        services.AddHttpClient<ISmsService, MeliPayamakSmsService>();
         services.AddMemoryCache();
 
         return services;

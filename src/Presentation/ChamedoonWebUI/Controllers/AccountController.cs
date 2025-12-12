@@ -110,16 +110,65 @@ public class AccountController : Controller
         if (ModelState.IsValid)
         {
             var user = (await _mediator.Send(new ManageLoginUserCommand { LoginUser = register }));
-            if (user.IsSuccess is false || user.Result is null)
+            if (user.IsSuccess is false || user.Result is 0)
             {
                 ModelState.AddModelError(string.Empty, user.Message);
                 ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
                 return View(register);
             }
-            return RedirectToAction("Index", "Home");
+
+            var codeResult = await _mediator.Send(new SendTwoFactorCodeCommand { UserId = user.Result });
+            if (codeResult.IsSuccess is false)
+            {
+                ModelState.AddModelError(string.Empty, codeResult.Message);
+                ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
+                return View(register);
+            }
+
+            TempData["InfoMessage"] = codeResult.Message;
+            return RedirectToAction(nameof(VerifyCode), new { userId = user.Result, rememberMe = register.RememberMe });
         }
         ViewData["LoginNonce"] = PrepareRequestNonce(nameof(Login));
         return View(register);
+    }
+    #endregion
+
+    #region VerifyCode
+    [Route("verify-code")]
+    [HttpGet]
+    public IActionResult VerifyCode(long userId, bool rememberMe = false)
+    {
+        ViewData["VerificationNonce"] = PrepareRequestNonce(nameof(VerifyCode));
+        return View(new VerifyTwoFactorCodeViewModel { UserId = userId, RememberMe = rememberMe });
+    }
+
+    [Route("verify-code")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> VerifyCode(VerifyTwoFactorCodeViewModel model, string requestNonce)
+    {
+        if (!IsRequestNonceValid(nameof(VerifyCode), requestNonce))
+        {
+            ModelState.AddModelError(string.Empty, "درخواست تکراری یا نامعتبر.");
+            ViewData["VerificationNonce"] = PrepareRequestNonce(nameof(VerifyCode));
+            return View(model);
+        }
+
+        if (!ModelState.IsValid)
+        {
+            ViewData["VerificationNonce"] = PrepareRequestNonce(nameof(VerifyCode));
+            return View(model);
+        }
+
+        var result = await _mediator.Send(new VerifyTwoFactorCodeCommand { Verification = model });
+        if (!result.IsSuccess)
+        {
+            ModelState.AddModelError(string.Empty, result.Message);
+            ViewData["VerificationNonce"] = PrepareRequestNonce(nameof(VerifyCode));
+            return View(model);
+        }
+
+        return RedirectToAction("Index", "Home");
     }
     #endregion
 
@@ -150,16 +199,25 @@ public class AccountController : Controller
         {
             var response = await _mediator.Send(new ManageRegisterUserCommand { RegisterUser = register });
 
-            if (!response.IsSuccess && response.Message != null)
+            if (!response.IsSuccess || response.Result is 0)
             {
-                ViewData["ErrorMessage"] = string.Join(", ", response.Message);
+                ViewData["ErrorMessage"] = response.Message;
                 ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
                 ViewData["ReturnUrl"] = GetSafeReturnUrl(returnUrl);
                 return View(register);
             }
 
-            var safeReturnUrl = GetSafeReturnUrl(returnUrl);
-            return LocalRedirect(safeReturnUrl);
+            var codeResult = await _mediator.Send(new SendTwoFactorCodeCommand { UserId = response.Result });
+            if (!codeResult.IsSuccess)
+            {
+                ViewData["ErrorMessage"] = codeResult.Message;
+                ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
+                ViewData["ReturnUrl"] = GetSafeReturnUrl(returnUrl);
+                return View(register);
+            }
+
+            TempData["InfoMessage"] = codeResult.Message;
+            return RedirectToAction(nameof(VerifyCode), new { userId = response.Result, rememberMe = false });
         }
         ViewData["RegisterNonce"] = PrepareRequestNonce(nameof(Register));
         ViewData["ReturnUrl"] = GetSafeReturnUrl(returnUrl);
