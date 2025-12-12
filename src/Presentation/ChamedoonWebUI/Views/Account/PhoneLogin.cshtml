@@ -44,8 +44,11 @@
                             <input type="hidden" asp-for="PhoneNumber" />
                             <div class="mb-3">
                                 <label asp-for="Code" class="form-label"></label>
-                                <input asp-for="Code" class="form-control" placeholder="کد ۶ رقمی" @(Model.CodeSent ? "" : "disabled") />
-                                <span asp-validation-for="Code" class="text-danger"></span>
+                                <input asp-for="Code"
+                                       class="form-control"
+                                       placeholder="کد ۶ رقمی"
+                                       disabled="@(Model.CodeSent == false)" />                              
+                                       <span asp-validation-for="Code" class="text-danger"></span>
                             </div>
                             <button type="submit" class="btn btn-success w-100" @(Model.CodeSent ? "" : "disabled")>تایید و ورود</button>
                         </form>
