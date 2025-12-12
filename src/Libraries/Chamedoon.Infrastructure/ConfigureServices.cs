@@ -6,7 +6,6 @@ using Chamedoon.Domin.Entity.Permissions;
 using Chamedoon.Domin.Entity.Users;
 using Chamedoon.Infrastructure.Persistence;
 using Chamedoon.Infrastructure.Repositories.Admin;
-using Chamedoon.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

@@ -57,7 +57,6 @@
             <div class="glass-card auth-card auth-card-compact">
                 <div class="auth-card-header text-center">
                     <h2 class="mb-1">ورود / ثبت‌نام با موبایل</h2>
-                    <p class="text-muted mb-0">بدون نیاز به رمز عبور، با کد تایید وارد شوید.</p>
                 </div>
 
                 <form asp-action="SendPhoneCode" method="post" novalidate data-prevent-multi-submit="true" data-form="send-phone-code">
@@ -67,7 +66,7 @@
                     <div class="glass-field">
                         <label asp-for="PhoneNumber" class="form-label">شماره موبایل</label>
                         <input asp-for="PhoneNumber" class="form-control glass-input" placeholder="مثال: 09123456789" />
-                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        <spa></span>
                     </div>
                     <button type="submit" class="btn-glass-primary w-100" id="sendCodeButton" data-processing-text="در حال ارسال..." @(Model.CodeSent ? "disabled" : null)>ارسال کد تایید</button>
                     <div id="resendCountdown" class="text-center text-muted mt-2" style="display:@(Model.CodeSent ? "block" : "none")" aria-live="polite"></div>

@@ -1,11 +1,10 @@
-using System.Net.Http;
 using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Application.Common.Models;
 using Chamedoon.Domin.Configs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-
-namespace Chamedoon.Infrastructure.Services;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 public class MelipayamakSmsService : ISmsService
 {
@@ -25,7 +24,20 @@ public class MelipayamakSmsService : ISmsService
         _options = options.Value;
     }
 
-    public async Task<OperationResult> SendVerificationCodeAsync(string phoneNumber, string code, CancellationToken cancellationToken)
+    private sealed class MelipayamakResponse
+    {
+        [JsonPropertyName("Value")]
+        public string? Value { get; set; }
+
+        [JsonPropertyName("RetStatus")]
+        public int RetStatus { get; set; }
+
+        [JsonPropertyName("StrRetStatus")]
+        public string? StrRetStatus { get; set; }
+    }
+
+    public async Task<OperationResult> SendVerificationCodeAsync(
+        string phoneNumber, string code, CancellationToken cancellationToken)
     {
         var client = _httpClientFactory.CreateClient(DefaultHttpClientName);
         var message = $"کد تایید چمدون: {code}";
@@ -44,18 +56,49 @@ public class MelipayamakSmsService : ISmsService
             using var response = await client.PostAsync(_options.BaseUrl, payload, cancellationToken);
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            if (response.IsSuccessStatusCode)
-            {
-                return OperationResult.Success();
-            }
+            MelipayamakResponse? dto = TryParseMelipayamakResponse(content);
 
-            _logger.LogWarning("Melipayamak SMS send failed with status {StatusCode}: {Content}", response.StatusCode, content);
+            if (response.IsSuccessStatusCode && dto is not null && dto.RetStatus == 1)
+                return OperationResult.Success();
+
+            _logger.LogError(
+                "Melipayamak SMS send failed. Http={StatusCode}, RetStatus={RetStatus}, StrRetStatus={StrRetStatus}, Raw={Content}",
+                response.StatusCode,
+                dto?.RetStatus,
+                dto?.StrRetStatus,
+                content);
+
             return OperationResult.Fail("ارسال پیامک با خطا مواجه شد. لطفا دوباره تلاش کنید.");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to send SMS through Melipayamak");
             return OperationResult.Fail("امکان ارسال پیامک وجود ندارد.");
+        }
+    }
+
+    private static MelipayamakResponse? TryParseMelipayamakResponse(string content)
+    {
+        if (string.IsNullOrWhiteSpace(content)) return null;
+
+        content = content.Trim();
+
+        try
+        {
+            if (content.Length >= 2 && content[0] == '"' && content[^1] == '"')
+            {
+                var inner = JsonSerializer.Deserialize<string>(content);
+                if (!string.IsNullOrWhiteSpace(inner))
+                    content = inner;
+            }
+
+            return JsonSerializer.Deserialize<MelipayamakResponse>(
+                content,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+        catch (JsonException)
+        {
+            return null;
         }
     }
 }
