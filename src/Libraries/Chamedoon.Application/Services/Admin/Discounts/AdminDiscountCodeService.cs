@@ -20,7 +20,7 @@ public class AdminDiscountCodeService : IAdminDiscountCodeService
     {
         var codes = await _repository.GetDiscountCodesAsync(search, page, pageSize, cancellationToken);
         var mapped = codes.Items.Select(code => code.ToAdminDiscountCodeDto()).ToList();
-        return OperationResult<PaginatedList<AdminDiscountCodeDto>>.Success(new PaginatedList<AdminDiscountCodeDto>(mapped, codes.TotalCount, codes.PageNumber, codes.PageSize));
+        return OperationResult<PaginatedList<AdminDiscountCodeDto>>.Success(new PaginatedList<AdminDiscountCodeDto>(mapped, codes.TotalCount, codes.PageNumber, codes.TotalPages));
     }
 
     public async Task<OperationResult<AdminDiscountCodeDto>> GetDiscountCodeAsync(long id, CancellationToken cancellationToken)

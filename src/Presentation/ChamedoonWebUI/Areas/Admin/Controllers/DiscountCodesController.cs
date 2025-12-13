@@ -29,7 +29,7 @@ public class DiscountCodesController : Controller
             SearchTerm = search,
             CurrentPage = result.Result.PageNumber,
             TotalPages = result.Result.TotalPages,
-            PageSize = result.Result.PageSize
+            PageSize = 20
         };
 
         return View(model);
