@@ -100,7 +100,8 @@
                             <th>کد تراکنش</th>
                             <th>کاربر</th>
                             <th>پلن</th>
-                            <th>مبلغ (ریال)</th>
+                            <th>مبلغ نهایی (ریال)</th>
+                            <th>تخفیف</th>
                             <th>وضعیت</th>
                             <th>تاریخ ایجاد</th>
                             <th>تاریخ پرداخت</th>
@@ -127,7 +128,31 @@
                                     </div>
                                 </td>
                                 <td>@(string.IsNullOrWhiteSpace(payment.PlanId) ? "-" : payment.PlanId)</td>
-                                <td>@payment.Amount.ToString("N0")</td>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <strong>@payment.FinalAmount.ToString("N0")</strong>
+                                        @if (payment.Amount != payment.FinalAmount)
+                                        {
+                                            <small class="text-muted">@payment.Amount.ToString("N0") قبل از تخفیف</small>
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(payment.DiscountCode))
+                                    {
+                                        <div class="d-flex flex-column">
+                                            <strong>@payment.DiscountCode</strong>
+                                            @if (payment.DiscountAmount is not null)
+                                            {
+                                                <small class="text-muted">@payment.DiscountAmount.Value.ToString("N0")-</small>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
                                 <td>
                                     <span class="badge @payment.StatusBadgeClass">@payment.StatusLabel</span>
                                 </td>

@@ -1,0 +1,68 @@
+@model DiscountCodeEditViewModel
+@{
+    ViewData["Title"] = Model.Id.HasValue ? "ویرایش کد تخفیف" : "ایجاد کد تخفیف";
+    var isPercent = Model.Type == Chamedoon.Domin.Enums.DiscountType.Percentage;
+}
+
+<div class="container py-4 admin-section discountcodes-section">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h4 mb-0">@ViewData["Title"]</h1>
+        <a asp-action="Index" class="btn btn-outline-secondary">بازگشت</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="@(Model.Id.HasValue ? "Edit" : "Create")" asp-route-id="@Model.Id" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+                @if (Model.Id.HasValue)
+                {
+                    <input type="hidden" name="Id" value="@Model.Id" />
+                }
+
+                <div class="col-md-6">
+                    <label asp-for="Code" class="form-label"></label>
+                    <input asp-for="Code" class="form-control" />
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-3">
+                    <label asp-for="Type" class="form-label"></label>
+                    <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<Chamedoon.Domin.Enums.DiscountType>()"></select>
+                </div>
+
+                <div class="col-md-3">
+                    <label asp-for="Value" class="form-label">مقدار تخفیف</label>
+                    <input asp-for="Value" class="form-control" />
+                    <span class="form-text">@((isPercent ? "درصدی" : "مبلغی"))</span>
+                    <span asp-validation-for="Value" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="ExpiresAtUtc" class="form-label">تاریخ انقضا (UTC)</label>
+                    <input asp-for="ExpiresAtUtc" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="ExpiresAtUtc" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-8">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="col-12 d-flex align-items-center gap-2">
+                    <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                    <label asp-for="IsActive" class="form-check-label"></label>
+                </div>
+
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary">انصراف</a>
+                    <button type="submit" class="btn btn-primary">ذخیره</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

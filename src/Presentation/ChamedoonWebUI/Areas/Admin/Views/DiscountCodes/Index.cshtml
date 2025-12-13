@@ -1,0 +1,108 @@
+@model DiscountCodeIndexViewModel
+@{
+    ViewData["Title"] = "کدهای تخفیف";
+}
+
+<div class="container-fluid py-4 admin-section discountcodes-section">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">مدیریت کدهای تخفیف</h1>
+        <a asp-action="Create" class="btn btn-primary">افزودن کد جدید</a>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-9 col-lg-10">
+                    <label for="search" class="form-label">جستجو</label>
+                    <input id="search" name="search" value="@Model.SearchTerm" class="form-control" placeholder="کد یا توضیحات" />
+                </div>
+                <div class="col-md-3 col-lg-2">
+                    <button type="submit" class="btn btn-outline-primary w-100">جستوجو</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+            @if (!Model.Codes.Any())
+            {
+                <div class="p-4 text-center text-muted">کدی برای نمایش وجود ندارد.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>کد</th>
+                            <th>نوع</th>
+                            <th>مقدار</th>
+                            <th>انقضا</th>
+                            <th>وضعیت</th>
+                            <th class="text-end">عملیات</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var code in Model.Codes)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <strong>@code.Code</strong>
+                                        <small class="text-muted">ایجاد: @code.CreatedAtUtc.ToLocalTime().ToString("yyyy/MM/dd")</small>
+                                    </div>
+                                </td>
+                                <td>@code.TypeLabel</td>
+                                <td>@code.ValueLabel</td>
+                                <td>@(code.ExpiresAtUtc is null ? "-" : code.ExpiresAtUtc.Value.ToLocalTime().ToString("yyyy/MM/dd"))</td>
+                                <td>
+                                    @if (code.IsActive)
+                                    {
+                                        <span class="badge bg-success">فعال</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">غیرفعال</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a asp-action="Edit" asp-route-id="@code.Id" class="btn btn-sm btn-outline-primary">ویرایش</a>
+                                        <form asp-action="Delete" asp-route-id="@code.Id" method="post" onsubmit="return confirm('آیا از حذف این کد مطمئن هستید؟');">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">حذف</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+                @if (Model.TotalPages > 1)
+                {
+                    var startPage = Math.Max(1, Model.CurrentPage - 2);
+                    var endPage = Math.Min(Model.TotalPages, startPage + 4);
+                    startPage = Math.Max(1, endPage - 4);
+                    <nav aria-label="صفحات کدهای تخفیف" class="p-3 admin-pagination">
+                        <ul class="pagination justify-content-end mb-0">
+                            <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : string.Empty)">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)" asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.SearchTerm">قبلی</a>
+                            </li>
+                            @for (var i = startPage; i <= endPage; i++)
+                            {
+                                <li class="page-item @(i == Model.CurrentPage ? "active" : string.Empty)">
+                                    <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.SearchTerm">@i</a>
+                                </li>
+                            }
+                            <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : string.Empty)">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)" asp-route-pageSize="@Model.PageSize" asp-route-search="@Model.SearchTerm">بعدی</a>
+                            </li>
+                        </ul>
+                    </nav>
+                }
+            }
+        </div>
+    </div>
+</div>

@@ -15,40 +15,27 @@
     <link rel="stylesheet" href="~/css/subscription.css" asp-append-version="true" />
 }
 
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const globalDiscount = document.getElementById('global-discount');
+            const planDiscountInputs = document.querySelectorAll('.plan-discount');
+
+            if (!globalDiscount) return;
+
+            const syncDiscounts = () => {
+                planDiscountInputs.forEach(input => input.value = globalDiscount.value);
+            };
+
+            syncDiscounts();
+            globalDiscount.addEventListener('input', syncDiscounts);
+        });
+    </script>
+}
+
 <section class="subscription-screen py-5 py-lg-6">
     <div class="container">
-        <div class="subscription-hero">
-            <div class="subscription-hero__content">
-                <span class="subscription-pill">پلن‌های اشتراک</span>
-                <h1>پلن‌های یک‌ماهه با ظاهر آشنا</h1>
-                <p class="mb-3">همان ترکیب کارت سفید و دارک بدون حاشیه اضافی؛ قیمت و تخفیف هر پلن از تنظیمات خوانده می‌شود.</p>
-                <div class="subscription-hero__tags">
-                    <span class="subscription-tag">دارک & لایت</span>
-                    <span class="subscription-tag subscription-tag--accent">تخفیف تا @Model.Plans.Max(p => p.DiscountPercent)%</span>
-                </div>
-            </div>
-            <div class="subscription-hero__status">
-                <p class="status-title">اشتراک فعلی</p>
-                @if (Model.CurrentSubscription is null)
-                {
-                    <p class="status-plan text-muted mb-1">اشتراکی فعال نیست.</p>
-                    <p class="status-meta mb-0">یکی از پلن‌ها را انتخاب کن.</p>
-                }
-                else
-                {
-                    <p class="status-plan">@Model.CurrentSubscription.PlanTitle</p>
-                    <p class="status-meta mb-1">@Model.CurrentSubscription.RemainingDays روز باقی‌مانده</p>
-                    @if (Model.CurrentSubscription.EvaluationLimit is null)
-                    {
-                        <p class="status-meta mb-0">استعلام بی‌نهایت</p>
-                    }
-                    else
-                    {
-                        <p class="status-meta mb-0">@Model.CurrentSubscription.UsedEvaluations از @Model.CurrentSubscription.EvaluationLimit</p>
-                    }
-                }
-            </div>
-        </div>
+
 
         @if (!string.IsNullOrWhiteSpace(Model.AlertMessage))
         {
@@ -56,7 +43,6 @@
                 @Model.AlertMessage
             </div>
         }
-
         <div class="plan-showcase-grid" role="list">
             @for (var index = 0; index < Model.Plans.Count; index++)
             {
@@ -90,6 +76,7 @@
                             <form asp-action="Subscribe" method="post">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="planId" value="@plan.Id" />
+                                <input type="hidden" name="discountCode" class="plan-discount" value="@Model.DiscountCode" />
                                 <button type="submit" class="btn-glass-primary btn-rounded" @(isCurrent ? "disabled" : string.Empty)>
                                     @(isCurrent ? "فعال شده" : "انتخاب پلن")
                                 </button>
@@ -98,6 +85,15 @@
                     </div>
                 </article>
             }
+        </div>
+        <br />
+        <div class="subscription-hero">
+            <label class="form-label" for="global-discount">کد تخفیف</label>
+            <input id="global-discount"
+                   type="text"
+                   value="@Model.DiscountCode"
+                   class="form-control"
+                   placeholder="CHMDN10" />
         </div>
     </div>
 </section>

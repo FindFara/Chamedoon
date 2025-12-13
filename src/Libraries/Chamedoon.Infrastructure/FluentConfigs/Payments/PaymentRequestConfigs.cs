@@ -13,6 +13,10 @@ public class PaymentRequestConfigs : IEntityTypeConfiguration<PaymentRequest>
         builder.Property(p => p.CallbackUrl).HasMaxLength(512);
         builder.Property(p => p.GatewayTrackId).HasMaxLength(64);
         builder.Property(p => p.ReferenceCode).HasMaxLength(64);
+        builder.Property(p => p.DiscountCode).HasMaxLength(64);
+        builder.Property(p => p.DiscountValue);
+        builder.Property(p => p.DiscountAmount);
+        builder.Property(p => p.FinalAmount).IsRequired();
         builder.Property(p => p.PaymentUrl).HasMaxLength(512);
         builder.Property(p => p.LastError).HasMaxLength(512);
 

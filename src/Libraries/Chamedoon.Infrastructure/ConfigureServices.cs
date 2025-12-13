@@ -50,6 +50,7 @@ public static class ConfigureServices
         services.AddScoped<IAdminBlogRepository, AdminBlogRepository>();
         services.AddScoped<IAdminRoleRepository, AdminRoleRepository>();
         services.AddScoped<IAdminPaymentRepository, AdminPaymentRepository>();
+        services.AddScoped<IAdminDiscountCodeRepository, AdminDiscountCodeRepository>();
         services.AddScoped<ISmsService, MelipayamakSmsService>();
 
         services.AddIdentity<User, Role>()

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Chamedoon.Application.Services.Admin.Common.Models;
 using Chamedoon.Domin.Enums;
 
@@ -22,6 +23,9 @@ public class PaymentReportItemViewModel
     public long Id { get; set; }
     public string? PlanId { get; set; }
     public int Amount { get; set; }
+    public int FinalAmount { get; set; }
+    public int? DiscountAmount { get; set; }
+    public string? DiscountCode { get; set; }
     public PaymentStatus Status { get; set; }
     public DateTime CreatedAtUtc { get; set; }
     public DateTime? PaidAtUtc { get; set; }
@@ -58,6 +62,9 @@ public class PaymentReportItemViewModel
             Id = dto.Id,
             PlanId = dto.PlanId,
             Amount = dto.Amount,
+            FinalAmount = dto.FinalAmount,
+            DiscountAmount = dto.DiscountAmount,
+            DiscountCode = dto.DiscountCode,
             Status = dto.Status,
             CreatedAtUtc = dto.CreatedAtUtc,
             PaidAtUtc = dto.PaidAtUtc,

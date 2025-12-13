@@ -75,10 +75,15 @@ internal static class AdminMappingExtensions
 
         var fallbackName = payment.Customer?.User?.UserName ?? payment.Customer?.User?.Email ?? "کاربر";
 
+        var finalAmount = payment.FinalAmount <= 0 ? payment.Amount : payment.FinalAmount;
+
         return new AdminPaymentDto(
             payment.Id,
             payment.PlanId,
             payment.Amount,
+            finalAmount,
+            payment.DiscountCode,
+            payment.DiscountAmount,
             payment.Status,
             payment.CreatedAtUtc,
             payment.PaidAtUtc,
@@ -89,4 +94,15 @@ internal static class AdminMappingExtensions
             payment.Customer?.User?.UserName,
             payment.Customer?.User?.Email);
     }
+
+    public static AdminDiscountCodeDto ToAdminDiscountCodeDto(this DiscountCode code)
+        => new(
+            code.Id,
+            code.Code,
+            code.Type,
+            code.Value,
+            code.IsActive,
+            code.CreatedAtUtc,
+            code.ExpiresAtUtc,
+            code.Description);
 }
