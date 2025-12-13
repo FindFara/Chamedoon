@@ -24,6 +24,10 @@ namespace Chamedoon.Application.Services.Customers.Query
         public async Task<OperationResult<CustomerProfileViewModel>> Handle(GetCustomerProfileQuery request, CancellationToken cancellationToken)
         {
             var user = await _context.User.SingleOrDefaultAsync(u => u.UserName == request.UserName);
+            if (user is null)
+            {
+                return OperationResult<CustomerProfileViewModel>.Fail();
+            }
 
             var customer = await _context.Customers
                 .Where(c => c.Id == user.Id)
