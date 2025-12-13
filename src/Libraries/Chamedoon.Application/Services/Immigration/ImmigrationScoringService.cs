@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Linq;
@@ -38,8 +37,6 @@ namespace Chamedoon.Application.Services.Immigration
         [StringLength(DefaultTextLength)]
         public string? Notes { get; set; }
 
-        [DisplayName("تایید حریم خصوصی")]
-        public bool AcceptedPrivacy { get; set; }
     }
 
     public class CountryRecommendation
