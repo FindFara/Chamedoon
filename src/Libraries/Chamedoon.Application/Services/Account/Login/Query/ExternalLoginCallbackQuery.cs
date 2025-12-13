@@ -1,5 +1,5 @@
-﻿using Chamedoon.Application.Common.Extensions;
 using Chamedoon.Application.Common.Models;
+using Chamedoon.Application.Common.Utilities;
 using Chamedoon.Application.Services.Account.Login.ViewModel;
 using Chamedoon.Application.Services.Customers.Command;
 using Chamedoon.Domin.Entity.Users;
@@ -51,7 +51,7 @@ namespace Chamedoon.Application.Services.Account.Login.Query
             {
                 user = new User
                 {
-                    UserName = string.Concat("U-", StringExtensions.GenerateRandomString(8)),
+                    UserName = await UsernameGenerator.GenerateUniqueAsync(_userManager, cancellationToken),
                     Email = email
                 };
 
@@ -64,7 +64,7 @@ namespace Chamedoon.Application.Services.Account.Login.Query
                 await _userManager.AddLoginAsync(user, info);
                 await _signInManager.SignInAsync(user, isPersistent: false);
 
-                var addCustomer = await _mediator.Send(new AddCustomerCommand { Id = user.Id });
+                var addCustomer = await _mediator.Send(new AddCustomerCommand { Id = user.Id }, cancellationToken);
                 if (!addCustomer.IsSuccess)
                 {
                     return OperationResult<ExternalLoginViewModel>.Fail();
