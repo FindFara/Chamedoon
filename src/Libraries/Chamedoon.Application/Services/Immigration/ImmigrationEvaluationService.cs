@@ -32,7 +32,7 @@ namespace Chamedoon.Application.Services.Immigration
     public record ImmigrationEvaluationListItem(
         long Id,
         string CustomerName,
-        string? PhoneNumber,
+        string? Email,
         int Age,
         string MaritalStatus,
         string JobCategory,
@@ -73,7 +73,7 @@ namespace Chamedoon.Application.Services.Immigration
                 DegreeLevel = (int)input.DegreeLevel,
                 LanguageCertificate = (int)input.LanguageCertificate,
                 WillingToStudy = input.WillingToStudy,
-                PhoneNumber = input.PhoneNumber,
+                Email = input.Email,
                 Notes = input.Notes,
                 CreatedAtUtc = DateTime.UtcNow
             };
@@ -126,7 +126,7 @@ namespace Chamedoon.Application.Services.Immigration
                 evaluations = evaluations.Where(item =>
                     (!string.IsNullOrWhiteSpace(item.Customer.FirstName) && item.Customer.FirstName.ToLower().Contains(lowered)) ||
                     (!string.IsNullOrWhiteSpace(item.Customer.LastName) && item.Customer.LastName.ToLower().Contains(lowered)) ||
-                    (!string.IsNullOrWhiteSpace(item.PhoneNumber) && item.PhoneNumber.ToLower().Contains(lowered)) ||
+                    (!string.IsNullOrWhiteSpace(item.Email) && item.Email.ToLower().Contains(lowered)) ||
                     (!string.IsNullOrWhiteSpace(item.JobTitle) && item.JobTitle.ToLower().Contains(lowered)))
                     .OrderByDescending(item => item.CreatedAtUtc); ;
             }
@@ -136,7 +136,7 @@ namespace Chamedoon.Application.Services.Immigration
                 .Select(item => new ImmigrationEvaluationListItem(
                     item.Id,
                     BuildCustomerName(item.Customer),
-                    item.PhoneNumber,
+                    item.Email,
                     item.Age,
                     ((MaritalStatusType)item.MaritalStatus).ToDisplay(),
                     ((JobCategoryType)item.JobCategory).ToDisplay(),

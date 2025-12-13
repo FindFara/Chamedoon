@@ -165,12 +165,12 @@
                             </div>
                             <div class="immigration-form-grid">
                                 <div class="immigration-field">
-                                    <label for="PhoneNumber" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="برای هماهنگی و پیگیری سریع‌تر یک شماره معتبر وارد کن.">؟</span>
-                                        شماره تلفن
+                                    <label for="Email" class="field-label">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="ایمیلی وارد کن که به‌روز است تا بتوانیم نتیجه را برایت ارسال کنیم.">؟</span>
+                                        ایمیل
                                     </label>
-                                    <input asp-for="PhoneNumber" class="form-control" type="tel" data-progress-field data-progress-optional />
-                                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                                    <input asp-for="Email" class="form-control" type="email" data-progress-field data-progress-optional />
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
                                 </div>
                                 <div class="immigration-field">
                                     <label for="Notes" class="field-label">

@@ -96,7 +96,7 @@
                 <small class="text-muted">مشاهده و جستجوی همه ارزیابی‌های ثبت‌شده</small>
             </div>
             <form method="get" class="d-flex gap-2" role="search">
-                <input type="search" name="query" value="@Model.Query" class="form-control" placeholder="جستجو بر اساس نام، تلفن یا عنوان شغلی" aria-label="جستجو" />
+                <input type="search" name="query" value="@Model.Query" class="form-control" placeholder="جستجو بر اساس نام، ایمیل یا عنوان شغلی" aria-label="جستجو" />
                 <button type="submit" class="btn btn-primary">جستجو</button>
             </form>
         </div>
@@ -105,7 +105,7 @@
                 <thead class="table-light">
                     <tr>
                         <th scope="col">مشتری</th>
-                        <th scope="col">تلفن</th>
+                        <th scope="col">ایمیل</th>
                         <th scope="col">سن</th>
                         <th scope="col">وضعیت تاهل</th>
                         <th scope="col">دسته شغلی</th>
@@ -123,7 +123,7 @@
                         {
                             <tr>
                                 <td class="fw-semibold">@item.CustomerName</td>
-                                <td>@item.PhoneNumber ?? "-"</td>
+                                <td>@item.Email ?? "-"</td>
                                 <td>@(item.Age > 0 ? item.Age.ToString() : "نامشخص")</td>
                                 <td>@item.MaritalStatus</td>
                                 <td>@item.JobCategory</td>

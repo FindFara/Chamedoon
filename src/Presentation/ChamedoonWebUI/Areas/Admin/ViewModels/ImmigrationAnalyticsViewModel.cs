@@ -20,7 +20,7 @@ namespace ChamedoonWebUI.Areas.Admin.ViewModels
     public record ImmigrationEvaluationItemViewModel(
         long Id,
         string CustomerName,
-        string? PhoneNumber,
+        string? Email,
         int Age,
         string MaritalStatus,
         string JobCategory,
