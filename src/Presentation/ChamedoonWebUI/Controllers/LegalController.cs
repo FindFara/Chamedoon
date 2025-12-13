@@ -9,9 +9,6 @@ public class LegalController : Controller
     [HttpGet("privacy")]
     public IActionResult Privacy() => View();
 
-    [HttpGet("security")]
-    public IActionResult Security() => View();
-
     [HttpGet("terms")]
     public IActionResult Terms() => View();
 

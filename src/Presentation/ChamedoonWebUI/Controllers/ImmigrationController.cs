@@ -59,7 +59,7 @@ public class ImmigrationController : Controller
 
         if (!input.AcceptedPrivacy)
         {
-            ModelState.AddModelError(nameof(input.AcceptedPrivacy), "برای ارسال فرم باید حریم خصوصی و امنیت اطلاعات را بپذیری.");
+            ModelState.AddModelError(nameof(input.AcceptedPrivacy), "برای ارسال فرم باید حریم خصوصی را بپذیری.");
         }
 
         if (!ModelState.IsValid)
