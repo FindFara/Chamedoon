@@ -232,6 +232,7 @@
                                 <li><a class="text-reset text-decoration-none" asp-controller="Home" asp-action="About">درباره چمدون</a></li>
                                 <li><a class="text-reset text-decoration-none" asp-controller="Immigration" asp-action="Index">ارزیابی مهاجرت</a></li>
                                 <li><a class="text-reset text-decoration-none" asp-controller="Blog" asp-action="Index">مطالب وبلاگ</a></li>
+                                <li><a class="text-reset text-decoration-none" asp-controller="Legal" asp-action="Support">پشتیبانی</a></li>
                             </ul>
                         </div>
                         <div class="col-md-4">
@@ -251,9 +252,11 @@
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 pt-4 border-top gap-3">
                         <p class="mb-0 text-muted">© @DateTime.UtcNow.Year چمدون. همه حقوق محفوظ است.</p>
                         <div class="d-flex gap-3">
-                            <a class="text-decoration-none text-muted" href="#">حریم خصوصی</a>
-                            <a class="text-decoration-none text-muted" href="#">قوانین</a>
-                            <a class="text-decoration-none text-muted" href="#">پشتیبانی</a>
+                            <a class="text-decoration-none text-muted" asp-controller="Home" asp-action="About">درباره ما</a>
+                            <a class="text-decoration-none text-muted" asp-controller="Legal" asp-action="Support">پشتیبانی</a>
+                            <a class="text-decoration-none text-muted" asp-controller="Legal" asp-action="Privacy">حریم خصوصی</a>
+                            <a class="text-decoration-none text-muted" asp-controller="Legal" asp-action="Security">امنیت</a>
+                            <a class="text-decoration-none text-muted" asp-controller="Legal" asp-action="Terms">قوانین</a>
                         </div>
                     </div>
                 </div>

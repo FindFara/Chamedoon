@@ -18,7 +18,8 @@
                         <div>
                             <h2 class="fw-bold mb-2"><span aria-hidden="true">🧳</span>
                                 ارزیابی هوشمند مهاجرت</h2>
-                            <p class="immigration-helper mb-0">با پاسخ به چند سوال کوتاه در مورد سن، تحصیلات و علایقت، شانس موفقیتت در مسیرهای مختلف محاسبه می‌شود و یک گزارش خلاصه دریافت می‌کنی.</p>
+                            <p class="immigration-helper mb-2">با پاسخ به چند سوال کوتاه در مورد سن، تحصیلات و علایقت، شانس موفقیتت در مسیرهای مختلف محاسبه می‌شود و یک گزارش خلاصه دریافت می‌کنی.</p>
+                            <p class="small text-muted mb-0">در این مرحله نیازی به ارسال تصویر پاسپورت، مدارک بانکی یا اسناد حساس نیست و تنها داده‌های توصیفی جمع‌آوری می‌شود.</p>
                         </div>
                         <div class="immigration-meta">
                             <span class="meta-pill">🧭 پیشنهاد ویزا</span>
@@ -184,6 +185,13 @@
                         </div>
 
                         <div class="immigration-actions">
+                            <div class="form-check mb-3">
+                                <input asp-for="AcceptedPrivacy" class="form-check-input" type="checkbox" />
+                                <label class="form-check-label" for="AcceptedPrivacy">
+                                    با ارسال این فرم، <a href="/privacy" target="_blank" rel="noopener noreferrer">حریم خصوصی</a> و <a href="/security" target="_blank" rel="noopener noreferrer">امنیت اطلاعات</a> را مطالعه کرده و می‌پذیرم.
+                                </label>
+                                <span asp-validation-for="AcceptedPrivacy" class="text-danger small d-block"></span>
+                            </div>
                             <button type="submit" class="btn-glass-primary px-4">محاسبه شانس مهاجرت</button>
                         </div>
                     </form>

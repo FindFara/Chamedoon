@@ -57,6 +57,11 @@ public class ImmigrationController : Controller
             return eligibilityRedirect;
         }
 
+        if (!input.AcceptedPrivacy)
+        {
+            ModelState.AddModelError(nameof(input.AcceptedPrivacy), "برای ارسال فرم باید حریم خصوصی و امنیت اطلاعات را بپذیری.");
+        }
+
         if (!ModelState.IsValid)
         {
             return View("Index", input);

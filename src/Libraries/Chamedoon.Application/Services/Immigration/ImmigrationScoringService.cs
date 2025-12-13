@@ -37,6 +37,9 @@ namespace Chamedoon.Application.Services.Immigration
 
         [StringLength(DefaultTextLength)]
         public string? Notes { get; set; }
+
+        [DisplayName("تایید حریم خصوصی و امنیت")]
+        public bool AcceptedPrivacy { get; set; }
     }
 
     public class CountryRecommendation
