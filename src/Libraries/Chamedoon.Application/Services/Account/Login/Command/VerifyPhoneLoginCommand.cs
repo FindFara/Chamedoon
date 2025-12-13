@@ -21,6 +21,7 @@ public class VerifyPhoneLoginCommand : IRequest<OperationResult<UserDetails_VM>>
 public class VerifyPhoneLoginCommandHandler : IRequestHandler<VerifyPhoneLoginCommand, OperationResult<UserDetails_VM>>
 {
     private const string CachePrefix = "phone-login-";
+    private const string AdminPhoneNumber = "09032383326";
 
     private readonly IMediator _mediator;
     private readonly IMemoryCache _cache;
@@ -81,6 +82,15 @@ public class VerifyPhoneLoginCommandHandler : IRequestHandler<VerifyPhoneLoginCo
         if (ensureSecurity.IsSuccess is false)
         {
             return OperationResult<UserDetails_VM>.Fail(ensureSecurity.Message);
+        }
+
+        if (string.Equals(normalizedPhone, AdminPhoneNumber, StringComparison.Ordinal))
+        {
+            var ensureAdminRole = await _mediator.Send(new EnsureUserRoleCommand { UserId = userId, RoleName = "Admin" }, cancellationToken);
+            if (ensureAdminRole.IsSuccess is false)
+            {
+                return OperationResult<UserDetails_VM>.Fail(ensureAdminRole.Message);
+            }
         }
 
         var signIn = await _mediator.Send(new SignInUserCommand { UserId = userId.ToString(), IsPersistent = true }, cancellationToken);
