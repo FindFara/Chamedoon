@@ -7,6 +7,8 @@ using ChamedoonWebUI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddWebUIServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
@@ -20,11 +22,12 @@ builder.Services.Configure<MelipayamakConfig>(builder.Configuration.GetSection(M
 var app = builder.Build();
 
 await app.SeedIdentityDataAsync();
-/*if (!app.Environment.IsDevelopment())
+
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
-}*/
+}
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
