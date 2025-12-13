@@ -15,6 +15,24 @@
     <link rel="stylesheet" href="~/css/subscription.css" asp-append-version="true" />
 }
 
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const globalDiscount = document.getElementById('global-discount');
+            const planDiscountInputs = document.querySelectorAll('.plan-discount');
+
+            if (!globalDiscount) return;
+
+            const syncDiscounts = () => {
+                planDiscountInputs.forEach(input => input.value = globalDiscount.value);
+            };
+
+            syncDiscounts();
+            globalDiscount.addEventListener('input', syncDiscounts);
+        });
+    </script>
+}
+
 <section class="subscription-screen py-5 py-lg-6">
     <div class="container">
         <div class="subscription-hero">
@@ -57,6 +75,18 @@
             </div>
         }
 
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <label class="form-label small text-muted" for="global-discount">کد تخفیف</label>
+                <input id="global-discount"
+                       type="text"
+                       value="@Model.DiscountCode"
+                       class="form-control"
+                       placeholder="مثلاً CHMDN10" />
+                <div class="form-text">یک بار وارد کن تا برای همه پلن‌ها اعمال شود.</div>
+            </div>
+        </div>
+
         <div class="plan-showcase-grid" role="list">
             @for (var index = 0; index < Model.Plans.Count; index++)
             {
@@ -90,17 +120,7 @@
                             <form asp-action="Subscribe" method="post">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="planId" value="@plan.Id" />
-                                <div class="mb-3">
-                                    <label class="form-label small text-muted" for="discount-@plan.Id">کد تخفیف</label>
-                                    <input id="discount-@plan.Id"
-                                           type="text"
-                                           name="discountCode"
-                                           value="@Model.DiscountCode"
-                                           class="form-control form-control-sm"
-                                           placeholder="مثلاً CHMDN10"
-                                           @(isCurrent ? "disabled" : string.Empty) />
-                                    <div class="form-text">درصورت داشتن کد تخفیف، اینجا وارد کن.</div>
-                                </div>
+                                <input type="hidden" name="discountCode" class="plan-discount" value="@Model.DiscountCode" />
                                 <button type="submit" class="btn-glass-primary btn-rounded" @(isCurrent ? "disabled" : string.Empty)>
                                     @(isCurrent ? "فعال شده" : "انتخاب پلن")
                                 </button>
