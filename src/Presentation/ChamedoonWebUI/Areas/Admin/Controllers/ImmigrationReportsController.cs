@@ -40,7 +40,7 @@ public class ImmigrationReportsController : Controller
                 .Select(item => new ImmigrationEvaluationItemViewModel(
                     item.Id,
                     item.CustomerName,
-                    item.PhoneNumber,
+                    item.Email,
                     item.Age,
                     item.MaritalStatus,
                     item.JobCategory,

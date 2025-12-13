@@ -14,8 +14,8 @@ namespace Chamedoon.Infrastructure.FluentConfigs.Customers
             builder.Property(evaluation => evaluation.InvestmentAmount)
                 .HasPrecision(18, 2);
 
-            builder.Property(evaluation => evaluation.PhoneNumber)
-                .HasMaxLength(32);
+            builder.Property(evaluation => evaluation.Email)
+                .HasMaxLength(256);
 
             builder.Property(evaluation => evaluation.Notes)
                 .HasMaxLength(1000);
