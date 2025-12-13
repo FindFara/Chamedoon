@@ -22,6 +22,7 @@ public class SubscriptionController : Controller
     public async Task<IActionResult> Index(string? reason = null)
     {
         var alertMessage = TempData["SubscriptionMessage"] as string;
+        var tempDiscount = TempData["SubscriptionDiscountCode"] as string;
 
         if (!string.IsNullOrWhiteSpace(reason) && string.IsNullOrWhiteSpace(alertMessage))
         {
@@ -38,7 +39,8 @@ public class SubscriptionController : Controller
             Plans = await _mediator.Send(new GetSubscriptionPlansQuery()),
             CurrentSubscription = await _mediator.Send(new GetSubscriptionStatusQuery(User)),
             AlertMessage = alertMessage,
-            LimitReached = string.Equals(reason, "limit", StringComparison.OrdinalIgnoreCase)
+            LimitReached = string.Equals(reason, "limit", StringComparison.OrdinalIgnoreCase),
+            DiscountCode = tempDiscount
         };
 
         ViewData["Title"] = "انتخاب اشتراک";
@@ -47,7 +49,7 @@ public class SubscriptionController : Controller
 
     [HttpPost("subscribe")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Subscribe(string planId)
+    public async Task<IActionResult> Subscribe(string planId, string? discountCode)
     {
         var eligibility = await _mediator.Send(new CheckSubscriptionEligibilityQuery(User));
         if (!eligibility.IsAuthenticated)
@@ -66,10 +68,11 @@ public class SubscriptionController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        var paymentResult = await _mediator.Send(new StartSubscriptionPaymentCommand(User, planId, callbackUrl));
+        var paymentResult = await _mediator.Send(new StartSubscriptionPaymentCommand(User, planId, callbackUrl, discountCode));
         if (!paymentResult.IsSuccess || string.IsNullOrWhiteSpace(paymentResult.RedirectUrl))
         {
             TempData["SubscriptionMessage"] = paymentResult.ErrorMessage ?? "خطایی در شروع فرآیند پرداخت رخ داد.";
+            TempData["SubscriptionDiscountCode"] = discountCode;
             return RedirectToAction(nameof(Index));
         }
 

@@ -9,4 +9,5 @@ public class SubscriptionPageViewModel
     public SubscriptionStatus? CurrentSubscription { get; set; }
     public string? AlertMessage { get; set; }
     public bool? LimitReached { get; set; }
+    public string? DiscountCode { get; set; }
 }

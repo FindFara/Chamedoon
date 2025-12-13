@@ -14,6 +14,11 @@ public class PaymentRequest : BaseEntity
     public string? CallbackUrl { get; set; }
     public string? GatewayTrackId { get; set; }
     public string? ReferenceCode { get; set; }
+    public string? DiscountCode { get; set; }
+    public DiscountType? DiscountType { get; set; }
+    public int? DiscountValue { get; set; }
+    public int? DiscountAmount { get; set; }
+    public int FinalAmount { get; set; }
     public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
     public string? PaymentUrl { get; set; }
     public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;

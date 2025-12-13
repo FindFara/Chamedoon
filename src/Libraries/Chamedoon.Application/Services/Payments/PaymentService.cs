@@ -41,12 +41,25 @@ public class PaymentService
         _logger = logger;
     }
 
-    public async Task<PaymentRedirectResult> StartSubscriptionPaymentAsync(ClaimsPrincipal user, string planId, string callbackUrl, CancellationToken cancellationToken)
+    public async Task<PaymentRedirectResult> StartSubscriptionPaymentAsync(ClaimsPrincipal user, string planId, string callbackUrl, string? discountCode, CancellationToken cancellationToken)
     {
         var plan = _subscriptionService.FindPlan(planId);
         if (plan is null)
         {
             return PaymentRedirectResult.Failure("پلن انتخاب شده معتبر نیست.");
+        }
+
+        DiscountCode? discount = null;
+        if (!string.IsNullOrWhiteSpace(discountCode))
+        {
+            discount = await _context.DiscountCodes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Code == discountCode.Trim(), cancellationToken);
+
+            if (discount is null || !discount.IsActive || (discount.ExpiresAtUtc.HasValue && discount.ExpiresAtUtc.Value <= DateTime.UtcNow))
+            {
+                return PaymentRedirectResult.Failure("کد تخفیف معتبر نیست یا منقضی شده است.");
+            }
         }
 
         var userId = GetUserId(user);
@@ -76,11 +89,19 @@ public class PaymentService
             await _context.Customers.AddAsync(customer, cancellationToken);
         }
 
+        var discountAmount = CalculateDiscount(plan.Price, discount);
+        var finalAmount = Math.Max(1, plan.Price - discountAmount);
+
         var paymentRequest = new PaymentRequest
         {
             Customer = customer,
             PlanId = plan.Id,
             Amount = plan.Price,
+            FinalAmount = finalAmount,
+            DiscountCode = discount?.Code,
+            DiscountType = discount?.Type,
+            DiscountValue = discount?.Value,
+            DiscountAmount = discountAmount,
             Description = $"خرید اشتراک {plan.Title}",
             Status = PaymentStatus.Pending,
             ReferenceCode = Guid.NewGuid().ToString("N")[..12]
@@ -96,7 +117,7 @@ public class PaymentService
         var requestPayload = new ZibalRequestPayload
         {
             Merchant = _options.MerchantId,
-            Amount = Math.Max(1, _options.AmountMultiplier) * plan.Price,
+            Amount = Math.Max(1, _options.AmountMultiplier) * finalAmount,
             CallbackUrl = callbackWithPaymentId,
             Description = paymentRequest.Description ?? string.Empty,
             OrderId = paymentRequest.ReferenceCode ?? paymentRequest.Id.ToString(CultureInfo.InvariantCulture),
@@ -266,6 +287,20 @@ public class PaymentService
 
         var separator = callbackUrl.Contains('?') ? '&' : '?';
         return $"{callbackUrl}{separator}paymentId={paymentId}";
+    }
+
+    private static int CalculateDiscount(int amount, DiscountCode? discount)
+    {
+        if (discount is null || amount <= 0 || discount.Value <= 0)
+        {
+            return 0;
+        }
+
+        var discountAmount = discount.Type == DiscountType.Percentage
+            ? (int)Math.Round(amount * discount.Value / 100m)
+            : discount.Value;
+
+        return Math.Max(0, Math.Min(amount, discountAmount));
     }
 
     private static DateTime? ParsePaidAt(string? value)
