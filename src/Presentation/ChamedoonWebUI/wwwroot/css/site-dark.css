@@ -293,6 +293,18 @@ body.landing-page.dark-mode .form-select {
     border-color: rgba(148, 163, 184, 0.32);
 }
 
+body.landing-page.dark-mode input:-webkit-autofill,
+body.landing-page.dark-mode input:-webkit-autofill:focus,
+body.landing-page.dark-mode input:-webkit-autofill:hover,
+body.landing-page.dark-mode textarea:-webkit-autofill,
+body.landing-page.dark-mode textarea:-webkit-autofill:focus,
+body.landing-page.dark-mode select:-webkit-autofill,
+body.landing-page.dark-mode select:-webkit-autofill:focus {
+    -webkit-text-fill-color: #e2e8f0;
+    box-shadow: 0 0 0 1000px rgba(15, 23, 42, 0.78) inset;
+    border-color: rgba(148, 163, 184, 0.45);
+}
+
 body.landing-page.dark-mode .form-label,
 body.landing-page.dark-mode .blog-search-card h5,
 body.landing-page.dark-mode .glass-card h5 {
