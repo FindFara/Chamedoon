@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Chamedoon.Domin.Enums;
 
 namespace Chamedoon.Application.Services.Payments;
@@ -39,5 +41,28 @@ public record PaymentVerificationResult
 
     public static PaymentVerificationResult FromStatus(PaymentStatus status, string message, long? requestId, string? planId, long? customerId)
         => new() { IsSuccess = status == PaymentStatus.Paid, Message = message, Status = status, PaymentRequestId = requestId, PlanId = planId, CustomerId = customerId };
+}
+
+public record PlanDiscountPreview
+{
+    public string PlanId { get; init; } = string.Empty;
+    public string PlanTitle { get; init; } = string.Empty;
+    public int BaseAmount { get; init; }
+    public int DiscountAmount { get; init; }
+    public int FinalAmount { get; init; }
+}
+
+public record DiscountPreviewResult
+{
+    public bool IsValid { get; init; }
+    public string Message { get; init; } = string.Empty;
+    public string? Code { get; init; }
+    public IReadOnlyList<PlanDiscountPreview> Plans { get; init; } = Array.Empty<PlanDiscountPreview>();
+
+    public static DiscountPreviewResult Invalid(string message, IReadOnlyList<PlanDiscountPreview> plans)
+        => new() { IsValid = false, Message = message, Plans = plans };
+
+    public static DiscountPreviewResult Valid(string code, string message, IReadOnlyList<PlanDiscountPreview> plans)
+        => new() { IsValid = true, Message = message, Code = code, Plans = plans };
 }
 

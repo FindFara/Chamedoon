@@ -150,11 +150,64 @@ public class PaymentService
         {
             paymentRequest.Status = PaymentStatus.Redirected;
             paymentRequest.GatewayTrackId = gatewayResponse.TrackId.Value.ToString(CultureInfo.InvariantCulture);
-            paymentRequest.PaymentUrl = BuildStartUrl(gatewayResponse.TrackId.Value);
-            paymentRequest.LastError = null;
-            await _context.SaveChangesAsync(cancellationToken);
-            return PaymentRedirectResult.Success(paymentRequest.PaymentUrl, paymentRequest.Id);
+        paymentRequest.PaymentUrl = BuildStartUrl(gatewayResponse.TrackId.Value);
+        paymentRequest.LastError = null;
+        await _context.SaveChangesAsync(cancellationToken);
+        return PaymentRedirectResult.Success(paymentRequest.PaymentUrl, paymentRequest.Id);
+    }
+
+    public async Task<DiscountPreviewResult> PreviewDiscountAsync(string? discountCode, CancellationToken cancellationToken)
+    {
+        var plans = await _subscriptionService.GetPlansAsync();
+        var defaultPreview = plans
+            .Select(plan => new PlanDiscountPreview
+            {
+                PlanId = plan.Id,
+                PlanTitle = plan.Title,
+                BaseAmount = plan.Price,
+                DiscountAmount = 0,
+                FinalAmount = plan.Price
+            })
+            .ToList();
+
+        if (string.IsNullOrWhiteSpace(discountCode))
+        {
+            return DiscountPreviewResult.Invalid("کد تخفیف را وارد کن تا اعمال شود.", defaultPreview);
         }
+
+        var trimmedCode = discountCode.Trim();
+        var discount = await _context.DiscountCodes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Code == trimmedCode, cancellationToken);
+
+        if (discount is null || !discount.IsActive || (discount.ExpiresAtUtc.HasValue && discount.ExpiresAtUtc.Value <= DateTime.UtcNow))
+        {
+            return DiscountPreviewResult.Invalid("کد تخفیف معتبر نیست یا منقضی شده است.", defaultPreview);
+        }
+
+        var previews = plans
+            .Select(plan =>
+            {
+                var discountAmount = CalculateDiscount(plan.Price, discount);
+                var finalAmount = Math.Max(1, plan.Price - discountAmount);
+
+                return new PlanDiscountPreview
+                {
+                    PlanId = plan.Id,
+                    PlanTitle = plan.Title,
+                    BaseAmount = plan.Price,
+                    DiscountAmount = discountAmount,
+                    FinalAmount = finalAmount
+                };
+            })
+            .ToList();
+
+        var successMessage = discount.Type == DiscountType.Percentage
+            ? $"{discount.Value}% تخفیف روی همه پلن‌ها اعمال شد."
+            : $"{discount.Value.ToString("N0", CultureInfo.InvariantCulture)} تومان تخفیف روی همه پلن‌ها اعمال شد.";
+
+        return DiscountPreviewResult.Valid(trimmedCode, successMessage, previews);
+    }
 
         paymentRequest.Status = PaymentStatus.Failed;
         paymentRequest.LastError = gatewayResponse?.Message ?? "در حال حاضر امکان ایجاد تراکنش وجود ندارد.";

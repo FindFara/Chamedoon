@@ -19,16 +19,129 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const globalDiscount = document.getElementById('global-discount');
+            const applyButton = document.getElementById('apply-discount');
+            const previewStatus = document.getElementById('discount-feedback');
             const planDiscountInputs = document.querySelectorAll('.plan-discount');
+            const previewUrl = '@Url.Action("PreviewDiscount", "Subscription")';
 
-            if (!globalDiscount) return;
+            if (!globalDiscount || !applyButton) return;
+
+            const planCards = Array.from(document.querySelectorAll('.plan-showcase')).map(card => {
+                const planId = card.dataset.planId;
+                const priceEl = card.querySelector('.plan-showcase__price');
+                const badgeEl = card.querySelector('.plan-showcase__badge');
+                const previewEl = card.querySelector('.plan-showcase__preview');
+
+                return {
+                    planId,
+                    priceEl,
+                    badgeEl,
+                    previewEl,
+                    baseAmount: parseInt(priceEl?.dataset.amount ?? '0') || 0,
+                    baseBadge: badgeEl?.textContent?.trim() ?? ''
+                };
+            });
+
+            const formatCurrency = (value) => value.toLocaleString('fa-IR') + ' تومان';
 
             const syncDiscounts = () => {
                 planDiscountInputs.forEach(input => input.value = globalDiscount.value);
             };
 
+            const resetPreview = () => {
+                planCards.forEach(card => {
+                    if (card.priceEl) {
+                        card.priceEl.textContent = formatCurrency(card.baseAmount);
+                    }
+
+                    if (card.badgeEl && card.baseBadge) {
+                        card.badgeEl.textContent = card.baseBadge;
+                    }
+
+                    if (card.previewEl) {
+                        card.previewEl.classList.add('d-none');
+                    }
+                });
+
+                previewStatus.textContent = '';
+                previewStatus.classList.remove('text-success', 'text-danger');
+            };
+
+            const updatePreview = (result) => {
+                resetPreview();
+                if (!result || !Array.isArray(result.plans)) {
+                    return;
+                }
+
+                result.plans.forEach(plan => {
+                    const card = planCards.find(c => c.planId === plan.planId);
+                    if (!card) return;
+
+                    if (card.priceEl) {
+                        card.priceEl.textContent = formatCurrency(plan.finalAmount);
+                    }
+
+                    if (card.previewEl) {
+                        const discountLabel = card.previewEl.querySelector('[data-preview-discount]');
+                        const finalLabel = card.previewEl.querySelector('[data-preview-final]');
+                        if (discountLabel) {
+                            discountLabel.textContent = plan.discountAmount > 0
+                                ? plan.discountAmount.toLocaleString('fa-IR')
+                                : '0';
+                        }
+
+                        if (finalLabel) {
+                            finalLabel.textContent = formatCurrency(plan.finalAmount);
+                        }
+
+                        card.previewEl.classList.remove('d-none');
+                    }
+                });
+
+                if (result.message) {
+                    previewStatus.textContent = result.message;
+                    previewStatus.classList.add(result.isValid ? 'text-success' : 'text-danger');
+                }
+            };
+
+            applyButton.addEventListener('click', async () => {
+                syncDiscounts();
+                applyButton.disabled = true;
+                applyButton.classList.add('is-loading');
+
+                try {
+                    const response = await fetch(previewUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ code: globalDiscount.value })
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        updatePreview(result);
+                    } else {
+                        resetPreview();
+                        previewStatus.textContent = 'بررسی کد تخفیف با خطا مواجه شد.';
+                        previewStatus.classList.add('text-danger');
+                    }
+                } catch (e) {
+                    resetPreview();
+                    previewStatus.textContent = 'برقراری ارتباط با سرور ممکن نشد.';
+                    previewStatus.classList.add('text-danger');
+                } finally {
+                    applyButton.disabled = false;
+                    applyButton.classList.remove('is-loading');
+                }
+            });
+
+            globalDiscount.addEventListener('input', () => {
+                resetPreview();
+                syncDiscounts();
+            });
+
             syncDiscounts();
-            globalDiscount.addEventListener('input', syncDiscounts);
         });
     </script>
 }
@@ -49,7 +162,7 @@
                 var plan = Model.Plans[index];
                 var isCurrent = Model.CurrentSubscription?.PlanId == plan.Id;
                 var accent = PlanAccent(index);
-                <article class="plan-showcase @accent @(isCurrent ? "plan-showcase--active" : string.Empty)" role="listitem">
+                <article class="plan-showcase @accent @(isCurrent ? "plan-showcase--active" : string.Empty)" data-plan-id="@plan.Id" role="listitem">
                     <div class="plan-showcase__layer plan-showcase__layer--dark"></div>
                     <div class="plan-showcase__layer plan-showcase__layer--light"></div>
                     <div class="plan-showcase__content">
@@ -59,9 +172,15 @@
                                 <h3>@plan.Title</h3>
                             </div>
                             <div class="plan-showcase__pricing">
-                                <span class="plan-showcase__price">@plan.Price.ToString("N0") تومان</span>
+                                <span class="plan-showcase__price" data-amount="@plan.Price">@plan.Price.ToString("N0") تومان</span>
                                 <span class="plan-showcase__original">@plan.OriginalPrice.ToString("N0") تومان</span>
                                 <span class="plan-showcase__badge">@plan.DiscountPercent% تخفیف</span>
+                                <div class="plan-showcase__preview d-none">
+                                    <span class="plan-showcase__preview-label">کد تخفیف:</span>
+                                    <span class="plan-showcase__preview-value" data-preview-discount>0</span>
+                                    <span>تومان کمتر -</span>
+                                    <strong data-preview-final>@plan.Price.ToString("N0") تومان</strong>
+                                </div>
                             </div>
                         </header>
 
@@ -88,12 +207,21 @@
         </div>
         <br />
         <div class="subscription-hero">
-            <label class="form-label" for="global-discount">کد تخفیف</label>
-            <input id="global-discount"
-                   type="text"
-                   value="@Model.DiscountCode"
-                   class="form-control"
-                   placeholder="CHMDN10" />
+            <div class="subscription-hero__discount">
+                <label class="form-label" for="global-discount">کد تخفیف</label>
+                <div class="discount-input-group">
+                    <input id="global-discount"
+                           type="text"
+                           value="@Model.DiscountCode"
+                           class="form-control"
+                           placeholder="CHMDN10" />
+                    <button type="button" class="btn btn-glass-primary" id="apply-discount">
+                        <span class="apply-label">اعمال کد</span>
+                        <span class="apply-spinner" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <p class="form-text" id="discount-feedback"></p>
+            </div>
         </div>
     </div>
 </section>

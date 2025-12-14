@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ChamedoonWebUI.Models;
 using Chamedoon.Application.Services.Subscription;
@@ -78,4 +79,13 @@ public class SubscriptionController : Controller
 
         return Redirect(paymentResult.RedirectUrl);
     }
+
+    [HttpPost("preview-discount")]
+    public async Task<IActionResult> PreviewDiscount([FromBody] DiscountPreviewRequest request, CancellationToken cancellationToken)
+    {
+        var preview = await _mediator.Send(new GetDiscountPreviewQuery(request.Code), cancellationToken);
+        return Ok(preview);
+    }
 }
+
+public record DiscountPreviewRequest(string? Code);
