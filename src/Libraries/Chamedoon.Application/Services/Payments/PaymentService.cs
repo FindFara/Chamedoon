@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
@@ -49,17 +50,10 @@ public class PaymentService
             return PaymentRedirectResult.Failure("پلن انتخاب شده معتبر نیست.");
         }
 
-        DiscountCode? discount = null;
-        if (!string.IsNullOrWhiteSpace(discountCode))
+        var discountValidation = await GetValidatedDiscountAsync(discountCode, cancellationToken);
+        if (!discountValidation.IsValid)
         {
-            discount = await _context.DiscountCodes
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Code == discountCode.Trim(), cancellationToken);
-
-            if (discount is null || !discount.IsActive || (discount.ExpiresAtUtc.HasValue && discount.ExpiresAtUtc.Value <= DateTime.UtcNow))
-            {
-                return PaymentRedirectResult.Failure("کد تخفیف معتبر نیست یا منقضی شده است.");
-            }
+            return PaymentRedirectResult.Failure(discountValidation.ErrorMessage ?? "کد تخفیف معتبر نیست یا منقضی شده است.");
         }
 
         var userId = GetUserId(user);
@@ -89,6 +83,7 @@ public class PaymentService
             await _context.Customers.AddAsync(customer, cancellationToken);
         }
 
+        var discount = discountValidation.Discount;
         var discountAmount = CalculateDiscount(plan.Price, discount);
         var finalAmount = Math.Max(1, plan.Price - discountAmount);
 
@@ -150,42 +145,46 @@ public class PaymentService
         {
             paymentRequest.Status = PaymentStatus.Redirected;
             paymentRequest.GatewayTrackId = gatewayResponse.TrackId.Value.ToString(CultureInfo.InvariantCulture);
-        paymentRequest.PaymentUrl = BuildStartUrl(gatewayResponse.TrackId.Value);
-        paymentRequest.LastError = null;
+            paymentRequest.PaymentUrl = BuildStartUrl(gatewayResponse.TrackId.Value);
+            paymentRequest.LastError = null;
+            await _context.SaveChangesAsync(cancellationToken);
+            return PaymentRedirectResult.Success(paymentRequest.PaymentUrl, paymentRequest.Id);
+        }
+
+        paymentRequest.Status = PaymentStatus.Failed;
+        paymentRequest.LastError = gatewayResponse?.Message ?? "در حال حاضر امکان ایجاد تراکنش وجود ندارد.";
         await _context.SaveChangesAsync(cancellationToken);
-        return PaymentRedirectResult.Success(paymentRequest.PaymentUrl, paymentRequest.Id);
+        return PaymentRedirectResult.Failure(paymentRequest.LastError);
     }
 
     public async Task<DiscountPreviewResult> PreviewDiscountAsync(string? discountCode, CancellationToken cancellationToken)
     {
         var plans = await _subscriptionService.GetPlansAsync();
-        var defaultPreview = plans
-            .Select(plan => new PlanDiscountPreview
-            {
-                PlanId = plan.Id,
-                PlanTitle = plan.Title,
-                BaseAmount = plan.Price,
-                DiscountAmount = 0,
-                FinalAmount = plan.Price
-            })
-            .ToList();
+        var defaultPreview = BuildPlanPreviews(plans, null);
 
         if (string.IsNullOrWhiteSpace(discountCode))
         {
             return DiscountPreviewResult.Invalid("کد تخفیف را وارد کن تا اعمال شود.", defaultPreview);
         }
 
-        var trimmedCode = discountCode.Trim();
-        var discount = await _context.DiscountCodes
-            .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Code == trimmedCode, cancellationToken);
-
-        if (discount is null || !discount.IsActive || (discount.ExpiresAtUtc.HasValue && discount.ExpiresAtUtc.Value <= DateTime.UtcNow))
+        var validation = await GetValidatedDiscountAsync(discountCode, cancellationToken);
+        if (!validation.IsValid || validation.Discount is null)
         {
-            return DiscountPreviewResult.Invalid("کد تخفیف معتبر نیست یا منقضی شده است.", defaultPreview);
+            return DiscountPreviewResult.Invalid(validation.ErrorMessage ?? "کد تخفیف معتبر نیست یا منقضی شده است.", defaultPreview);
         }
 
-        var previews = plans
+        var previews = BuildPlanPreviews(plans, validation.Discount);
+
+        var successMessage = validation.Discount.Type == DiscountType.Percentage
+            ? $"{validation.Discount.Value}% تخفیف روی همه پلن‌ها اعمال شد."
+            : $"{validation.Discount.Value.ToString("N0", CultureInfo.InvariantCulture)} تومان تخفیف روی همه پلن‌ها اعمال شد.";
+
+        return DiscountPreviewResult.Valid(validation.Discount.Code, successMessage, previews);
+    }
+
+    private static List<PlanDiscountPreview> BuildPlanPreviews(IEnumerable<SubscriptionPlan> plans, DiscountCode? discount)
+    {
+        return plans
             .Select(plan =>
             {
                 var discountAmount = CalculateDiscount(plan.Price, discount);
@@ -201,18 +200,35 @@ public class PaymentService
                 };
             })
             .ToList();
-
-        var successMessage = discount.Type == DiscountType.Percentage
-            ? $"{discount.Value}% تخفیف روی همه پلن‌ها اعمال شد."
-            : $"{discount.Value.ToString("N0", CultureInfo.InvariantCulture)} تومان تخفیف روی همه پلن‌ها اعمال شد.";
-
-        return DiscountPreviewResult.Valid(trimmedCode, successMessage, previews);
     }
 
-        paymentRequest.Status = PaymentStatus.Failed;
-        paymentRequest.LastError = gatewayResponse?.Message ?? "در حال حاضر امکان ایجاد تراکنش وجود ندارد.";
-        await _context.SaveChangesAsync(cancellationToken);
-        return PaymentRedirectResult.Failure(paymentRequest.LastError);
+    private async Task<DiscountValidationResult> GetValidatedDiscountAsync(string? discountCode, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(discountCode))
+        {
+            return DiscountValidationResult.Valid(null);
+        }
+
+        var trimmedCode = discountCode.Trim();
+        var discount = await _context.DiscountCodes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Code == trimmedCode, cancellationToken);
+
+        if (discount is null || !discount.IsActive || (discount.ExpiresAtUtc.HasValue && discount.ExpiresAtUtc.Value <= DateTime.UtcNow))
+        {
+            return DiscountValidationResult.Invalid("کد تخفیف معتبر نیست یا منقضی شده است.");
+        }
+
+        return DiscountValidationResult.Valid(discount);
+    }
+
+    private record DiscountValidationResult(bool IsValid, DiscountCode? Discount, string? ErrorMessage)
+    {
+        public static DiscountValidationResult Valid(DiscountCode? discount)
+            => new(true, discount, null);
+
+        public static DiscountValidationResult Invalid(string message)
+            => new(false, null, message);
     }
 
     public async Task<PaymentVerificationResult> VerifyPaymentAsync(ClaimsPrincipal? user, long paymentRequestId, string trackId, CancellationToken cancellationToken)

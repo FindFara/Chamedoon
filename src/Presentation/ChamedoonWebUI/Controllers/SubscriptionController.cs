@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ChamedoonWebUI.Models;
 using Chamedoon.Application.Services.Subscription;
 using Chamedoon.Application.Services.Payments;
+using Chamedoon.Application.Services.Payments.Discounts;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
