@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ChamedoonWebUI.Models;
 using Chamedoon.Application.Services.Subscription;
@@ -45,6 +46,24 @@ public class SubscriptionController : Controller
 
         ViewData["Title"] = "انتخاب اشتراک";
         return View(model);
+    }
+
+    [HttpPost("apply-discount")]
+    public async Task<IActionResult> ApplyDiscount(string code, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(new PreviewDiscountQuery(code), cancellationToken);
+
+        if (!result.IsValid)
+        {
+            return BadRequest(new { message = result.Message ?? "کد تخفیف معتبر نیست." });
+        }
+
+        return Ok(new
+        {
+            message = result.Message,
+            code = result.AppliedCode,
+            plans = result.Plans
+        });
     }
 
     [HttpPost("subscribe")]
