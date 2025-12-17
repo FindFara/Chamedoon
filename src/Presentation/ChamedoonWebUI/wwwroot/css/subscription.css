@@ -76,6 +76,69 @@
     box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.15);
 }
 
+.subscription-hero__discount-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.subscription-hero__discount-label {
+    margin: 0;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.subscription-hero__discount-input {
+    flex: 1;
+    min-width: 220px;
+    border-radius: 14px;
+}
+
+.btn-apply-discount {
+    align-self: stretch;
+    border-radius: 14px;
+    padding-inline: 1.25rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    background: linear-gradient(135deg, #4f46e5, #22d3ee);
+    border: none;
+    box-shadow: 0 12px 30px -18px rgba(79, 70, 229, 0.7);
+}
+
+.btn-apply-discount.is-loading::after {
+    content: "";
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-top-color: #fff;
+    animation: discount-spin 0.8s linear infinite;
+}
+
+@keyframes discount-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.discount-feedback {
+    margin-top: 0.5rem;
+    font-weight: 700;
+    color: #475569;
+}
+
+.discount-feedback--success {
+    color: #047857;
+}
+
+.discount-feedback--error {
+    color: #b91c1c;
+}
+
 .subscription-hero__tags {
     display: flex;
     gap: 0.6rem;
@@ -236,6 +299,13 @@
     font-size: 0.9rem;
 }
 
+.plan-showcase__saving {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
 .plan-showcase__features {
     list-style: none;
     padding: 0;
@@ -309,6 +379,10 @@
     color: #cbd5f5;
 }
 
+.dark-mode .subscription-hero__discount-label {
+    color: #e2e8f0;
+}
+
 .dark-mode .subscription-hero__status {
     background: #0b1221;
     border: 1px solid rgba(148, 163, 184, 0.3);
@@ -339,3 +413,14 @@
     color: #f8fafc;
 }
 
+.dark-mode .discount-feedback {
+    color: #e2e8f0;
+}
+
+.dark-mode .discount-feedback--success {
+    color: #34d399;
+}
+
+.dark-mode .discount-feedback--error {
+    color: #fca5a5;
+}

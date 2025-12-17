@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Threading;
 using MediatR;
 
 namespace Chamedoon.Application.Services.Subscription;
@@ -8,6 +9,8 @@ public record GetSubscriptionPlansQuery() : IRequest<IReadOnlyList<SubscriptionP
 public record GetSubscriptionStatusQuery(ClaimsPrincipal User) : IRequest<SubscriptionStatus?>;
 
 public record CheckSubscriptionEligibilityQuery(ClaimsPrincipal User) : IRequest<SubscriptionCheckResult>;
+
+public record PreviewDiscountQuery(string Code) : IRequest<DiscountPreviewResult>;
 
 public record ActivateSubscriptionCommand(ClaimsPrincipal User, string PlanId) : IRequest;
 
@@ -55,6 +58,21 @@ public class CheckSubscriptionEligibilityQueryHandler : IRequestHandler<CheckSub
     public Task<SubscriptionCheckResult> Handle(CheckSubscriptionEligibilityQuery request, CancellationToken cancellationToken)
     {
         return _service.CheckEligibilityAsync(request.User, cancellationToken);
+    }
+}
+
+public class PreviewDiscountQueryHandler : IRequestHandler<PreviewDiscountQuery, DiscountPreviewResult>
+{
+    private readonly SubscriptionService _service;
+
+    public PreviewDiscountQueryHandler(SubscriptionService service)
+    {
+        _service = service;
+    }
+
+    public Task<DiscountPreviewResult> Handle(PreviewDiscountQuery request, CancellationToken cancellationToken)
+    {
+        return _service.PreviewDiscountAsync(request.Code, cancellationToken);
     }
 }
 

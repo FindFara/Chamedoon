@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Domin.Entity.Customers;
+using Chamedoon.Domin.Entity.Payments;
 using Chamedoon.Domin.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -119,6 +121,37 @@ public class SubscriptionService
     }
 
     public Task<IReadOnlyList<SubscriptionPlan>> GetPlansAsync() => Task.FromResult(SubscriptionPlanCatalog.Plans);
+
+    public async Task<DiscountPreviewResult> PreviewDiscountAsync(string? code, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            return DiscountPreviewResult.Invalid("کد تخفیف را وارد کن.");
+        }
+
+        var normalizedCode = NormalizeCode(code);
+
+        var discount = await _context.DiscountCodes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Code.ToLower() == normalizedCode, cancellationToken);
+
+        if (discount is null || !discount.IsActive || (discount.ExpiresAtUtc.HasValue && discount.ExpiresAtUtc.Value <= DateTime.UtcNow))
+        {
+            return DiscountPreviewResult.Invalid("کد تخفیف معتبر نیست یا منقضی شده است.");
+        }
+
+        var plans = SubscriptionPlanCatalog.Plans
+            .Select(plan =>
+            {
+                var discountAmount = CalculateDiscount(plan.Price, discount);
+                var finalPrice = Math.Max(1, plan.Price - discountAmount);
+
+                return new DiscountedPlanPrice(plan.Id, plan.Price, plan.OriginalPrice, finalPrice, discountAmount);
+            })
+            .ToList();
+
+        return DiscountPreviewResult.Valid(discount.Code, plans, "کد تخفیف اعمال شد.");
+    }
 
     public SubscriptionPlan? FindPlan(string? planId) => SubscriptionPlanCatalog.Find(planId);
 
@@ -261,6 +294,22 @@ public class SubscriptionService
         var idValue = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.Identity?.Name;
         return long.TryParse(idValue, out var id) ? id : null;
     }
+
+    private static string NormalizeCode(string? code) => (code ?? string.Empty).Trim().ToLowerInvariant();
+
+    private static int CalculateDiscount(int amount, DiscountCode? discount)
+    {
+        if (discount is null || amount <= 0 || discount.Value <= 0)
+        {
+            return 0;
+        }
+
+        var discountAmount = discount.Type == DiscountType.Percentage
+            ? (int)Math.Round(amount * discount.Value / 100m)
+            : discount.Value;
+
+        return Math.Max(0, Math.Min(amount, discountAmount));
+    }
 }
 
 public record SubscriptionPlan
@@ -300,4 +349,15 @@ public record SubscriptionCheckResult
     public bool HasActiveSubscription { get; set; }
     public bool IsLimitReached { get; set; }
     public SubscriptionStatus? CurrentSubscription { get; set; }
+}
+
+public record DiscountedPlanPrice(string PlanId, int BasePrice, int OriginalPrice, int FinalPrice, int DiscountAmount);
+
+public record DiscountPreviewResult(bool IsValid, string? Message, string? AppliedCode, IReadOnlyList<DiscountedPlanPrice> Plans)
+{
+    public static DiscountPreviewResult Invalid(string? message)
+        => new(false, message, null, Array.Empty<DiscountedPlanPrice>());
+
+    public static DiscountPreviewResult Valid(string appliedCode, IReadOnlyList<DiscountedPlanPrice> plans, string? message)
+        => new(true, message, appliedCode, plans);
 }

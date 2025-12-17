@@ -20,15 +20,129 @@
         document.addEventListener('DOMContentLoaded', function () {
             const globalDiscount = document.getElementById('global-discount');
             const planDiscountInputs = document.querySelectorAll('.plan-discount');
+            const planPriceElements = document.querySelectorAll('[data-plan-price]');
+            const applyButton = document.getElementById('apply-discount-button');
+            const discountFeedback = document.getElementById('discount-feedback');
+            const numberFormatter = new Intl.NumberFormat('fa-IR');
 
             if (!globalDiscount) return;
 
-            const syncDiscounts = () => {
-                planDiscountInputs.forEach(input => input.value = globalDiscount.value);
+            const formatMoney = (value) => `${numberFormatter.format(value)} تومان`;
+
+            const syncDiscounts = (value) => {
+                const syncedValue = value ?? globalDiscount.value;
+                planDiscountInputs.forEach(input => input.value = syncedValue);
+            };
+
+            const updateFeedback = (message, type) => {
+                if (!discountFeedback) return;
+                discountFeedback.textContent = message || '';
+                discountFeedback.classList.remove('discount-feedback--error', 'discount-feedback--success');
+
+                if (type === 'error') {
+                    discountFeedback.classList.add('discount-feedback--error');
+                } else if (type === 'success') {
+                    discountFeedback.classList.add('discount-feedback--success');
+                }
+            };
+
+            const updatePlanDisplay = (planId, finalPrice, originalPrice, savings) => {
+                const priceEl = document.querySelector(`[data-plan-price="${planId}"]`);
+                const badgeEl = document.querySelector(`[data-plan-badge="${planId}"]`);
+                const savingsEl = document.querySelector(`[data-plan-saving="${planId}"]`);
+                const resolvedOriginalPrice = originalPrice > 0
+                    ? originalPrice
+                    : Number(priceEl?.dataset.originalPrice ?? finalPrice);
+
+                if (priceEl) {
+                    priceEl.textContent = formatMoney(finalPrice);
+                }
+
+                if (badgeEl && resolvedOriginalPrice > 0) {
+                    const percent = Math.max(0, 100 - Math.round(finalPrice / resolvedOriginalPrice * 100));
+                    badgeEl.textContent = percent > 0 ? `${percent}% تخفیف` : 'بدون تخفیف';
+                }
+
+                if (savingsEl) {
+                    if (savings > 0) {
+                        savingsEl.textContent = `صرفه‌جویی ${formatMoney(savings)} با کد تخفیف`;
+                        savingsEl.hidden = false;
+                    } else {
+                        savingsEl.textContent = '';
+                        savingsEl.hidden = true;
+                    }
+                }
+            };
+
+            const resetPlanDisplays = () => {
+                planPriceElements.forEach(priceEl => {
+                    const planId = priceEl.dataset.planPrice;
+                    const basePrice = parseInt(priceEl.dataset.basePrice ?? '0', 10);
+                    const originalPrice = parseInt(priceEl.dataset.originalPrice ?? `${basePrice}`, 10);
+                    updatePlanDisplay(planId, basePrice, originalPrice, 0);
+                });
+
+                updateFeedback('', null);
+                syncDiscounts(globalDiscount.value);
             };
 
             syncDiscounts();
-            globalDiscount.addEventListener('input', syncDiscounts);
+            globalDiscount.addEventListener('input', () => syncDiscounts());
+
+            applyButton?.addEventListener('click', async (event) => {
+                event.preventDefault();
+                const code = globalDiscount.value.trim();
+
+                if (!code) {
+                    resetPlanDisplays();
+                    updateFeedback('کد تخفیف را وارد کن.', 'error');
+                    return;
+                }
+
+                applyButton.disabled = true;
+                applyButton.classList.add('is-loading');
+                updateFeedback('در حال بررسی کد تخفیف...', null);
+
+                try {
+                    const response = await fetch('/subscriptions/apply-discount', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: new URLSearchParams({ code })
+                    });
+
+                    const payload = await response.json().catch(() => null);
+
+                    if (!response.ok || !payload) {
+                        resetPlanDisplays();
+                        updateFeedback(payload?.message || 'کد تخفیف معتبر نیست.', 'error');
+                        return;
+                    }
+
+                    const appliedCode = payload.code ?? code;
+                    const plans = payload.plans ?? [];
+
+                    plans.forEach(plan => {
+                        const planId = plan.planId || plan.PlanId;
+                        const basePrice = Number(plan.basePrice ?? plan.BasePrice ?? 0);
+                        const finalPrice = Number(plan.finalPrice ?? plan.FinalPrice ?? basePrice);
+                        const originalPrice = Number(plan.originalPrice ?? plan.OriginalPrice ?? basePrice);
+                        const savings = Number(plan.discountAmount ?? plan.DiscountAmount ?? 0);
+                        updatePlanDisplay(planId, finalPrice, originalPrice, savings);
+                    });
+
+                    globalDiscount.value = appliedCode;
+                    syncDiscounts(appliedCode);
+                    updateFeedback(payload.message || 'کد تخفیف اعمال شد.', 'success');
+                } catch {
+                    resetPlanDisplays();
+                    updateFeedback('خطا در برقراری ارتباط. دوباره تلاش کن.', 'error');
+                } finally {
+                    applyButton.disabled = false;
+                    applyButton.classList.remove('is-loading');
+                }
+            });
         });
     </script>
 }
@@ -59,9 +173,10 @@
                                 <h3>@plan.Title</h3>
                             </div>
                             <div class="plan-showcase__pricing">
-                                <span class="plan-showcase__price">@plan.Price.ToString("N0") تومان</span>
+                                <span class="plan-showcase__price" data-plan-price="@plan.Id" data-base-price="@plan.Price" data-original-price="@plan.OriginalPrice">@plan.Price.ToString("N0") تومان</span>
                                 <span class="plan-showcase__original">@plan.OriginalPrice.ToString("N0") تومان</span>
-                                <span class="plan-showcase__badge">@plan.DiscountPercent% تخفیف</span>
+                                <span class="plan-showcase__badge" data-plan-badge="@plan.Id">@plan.DiscountPercent% تخفیف</span>
+                                <span class="plan-showcase__saving" data-plan-saving="@plan.Id" hidden></span>
                             </div>
                         </header>
 
@@ -88,12 +203,16 @@
         </div>
         <br />
         <div class="subscription-hero">
-            <label class="form-label" for="global-discount">کد تخفیف</label>
-            <input id="global-discount"
-                   type="text"
-                   value="@Model.DiscountCode"
-                   class="form-control"
-                   placeholder="CHMDN10" />
+            <div class="subscription-hero__discount-row">
+                <label class="subscription-hero__discount-label" for="global-discount">کد تخفیف</label>
+                <input id="global-discount"
+                       type="text"
+                       value="@Model.DiscountCode"
+                       class="form-control subscription-hero__discount-input"
+                       placeholder="CHMDN10" />
+                <button id="apply-discount-button" type="button" class="btn btn-primary btn-apply-discount">اعمال تخفیف</button>
+            </div>
+            <div id="discount-feedback" class="discount-feedback" aria-live="polite"></div>
         </div>
     </div>
 </section>
