@@ -52,9 +52,11 @@ public class PaymentService
         DiscountCode? discount = null;
         if (!string.IsNullOrWhiteSpace(discountCode))
         {
+            var normalizedCode = NormalizeCode(discountCode);
+
             discount = await _context.DiscountCodes
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Code == discountCode.Trim(), cancellationToken);
+                .FirstOrDefaultAsync(c => c.Code.ToLower() == normalizedCode, cancellationToken);
 
             if (discount is null || !discount.IsActive || (discount.ExpiresAtUtc.HasValue && discount.ExpiresAtUtc.Value <= DateTime.UtcNow))
             {
@@ -351,6 +353,8 @@ public class PaymentService
         return digits.Length == 10 ? $"98{digits}" : digits;
     }
 
+    private static string NormalizeCode(string code) => (code ?? string.Empty).Trim().ToLowerInvariant();
+
     private static long? GetUserId(ClaimsPrincipal? user)
     {
         if (user is null)
@@ -405,4 +409,3 @@ public class PaymentService
         public string? PaidAt { get; init; }
     }
 }
-

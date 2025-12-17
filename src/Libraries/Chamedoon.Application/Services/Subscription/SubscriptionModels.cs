@@ -129,9 +129,11 @@ public class SubscriptionService
             return DiscountPreviewResult.Invalid("کد تخفیف را وارد کن.");
         }
 
+        var normalizedCode = NormalizeCode(code);
+
         var discount = await _context.DiscountCodes
             .AsNoTracking()
-            .FirstOrDefaultAsync(c => c.Code == code.Trim(), cancellationToken);
+            .FirstOrDefaultAsync(c => c.Code.ToLower() == normalizedCode, cancellationToken);
 
         if (discount is null || !discount.IsActive || (discount.ExpiresAtUtc.HasValue && discount.ExpiresAtUtc.Value <= DateTime.UtcNow))
         {
@@ -292,6 +294,8 @@ public class SubscriptionService
         var idValue = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.Identity?.Name;
         return long.TryParse(idValue, out var id) ? id : null;
     }
+
+    private static string NormalizeCode(string? code) => (code ?? string.Empty).Trim().ToLowerInvariant();
 
     private static int CalculateDiscount(int amount, DiscountCode? discount)
     {
