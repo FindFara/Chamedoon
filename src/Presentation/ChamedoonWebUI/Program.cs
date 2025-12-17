@@ -20,7 +20,7 @@ builder.Services.Configure<MelipayamakConfig>(builder.Configuration.GetSection(M
 
 var app = builder.Build();
 
-//await app.SeedIdentityDataAsync();
+await app.SeedIdentityDataAsync();
 
 if (!app.Environment.IsDevelopment())
 {
