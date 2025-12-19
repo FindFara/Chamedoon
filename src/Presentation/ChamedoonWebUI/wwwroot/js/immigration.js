@@ -209,7 +209,9 @@
 
             if (missingFields.length) {
                 event.preventDefault();
-                const messages = missingFields.map((field) => `فیلد ${getFieldLabel(field)} اجباری می‌باشد.`);
+                const messages = missingFields.map((field) =>
+                    `فیلد ${getFieldLabel(field).replace(/؟/g, "").trim()} اجباری می‌باشد.`
+                );
                 renderInlineErrors(messages);
                 return;
             }
