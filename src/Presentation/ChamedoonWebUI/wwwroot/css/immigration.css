@@ -257,16 +257,59 @@
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
 }
 
+.immigration-field.is-invalid .form-control,
+.immigration-field.is-invalid .form-select {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.14);
+}
+
 .immigration-step {
     padding: clamp(1rem, 2vw, 1.35rem);
     border: 1px solid var(--immigration-step-border);
     border-radius: 1.25rem;
     background: var(--immigration-step-surface);
     box-shadow: 0 16px 38px -30px rgba(15, 23, 42, 0.42);
+    position: relative;
 }
 
 .immigration-step + .immigration-step {
     margin-top: 1rem;
+}
+
+.step-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: inherit;
+    text-align: right;
+    cursor: pointer;
+}
+
+.step-toggle:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, 0.2);
+    border-radius: 0.85rem;
+    outline-offset: 3px;
+}
+
+.immigration-step.is-locked .step-toggle {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.immigration-step.is-collapsed .immigration-step-body {
+    display: none;
+}
+
+.step-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(180deg);
+    background-color: transparent;
+    border-color: rgba(79, 70, 229, 0.45);
+    box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.12);
 }
 
 .immigration-step .step-title {

@@ -1,4 +1,31 @@
 (function () {
+    const isFieldFilled = (field) => {
+        if (!field) return false;
+
+        if (field.type === 'checkbox') {
+            return field.checked;
+        }
+
+        if (field.tagName === 'SELECT') {
+            const value = field.value;
+            return value !== '' && value !== '0';
+        }
+
+        if (field.type === 'number') {
+            return Number(field.value || '0') > 0;
+        }
+
+        return Boolean(field.value && field.value.trim().length > 0);
+    };
+
+    const setFieldValidityState = (field) => {
+        const parent = field.closest('.immigration-field');
+        if (!parent) return;
+
+        const isOptional = field.hasAttribute('data-progress-optional');
+        parent.classList.toggle('is-invalid', !isOptional && !isFieldFilled(field));
+    };
+
     const initTooltips = () => {
         const prefersTouch = window.matchMedia('(hover: none)').matches;
         const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -81,26 +108,9 @@
         const requiredFields = fields.filter((field) => !field.hasAttribute('data-progress-optional'));
         const optionalFields = fields.filter((field) => field.hasAttribute('data-progress-optional'));
 
-        const isFilled = (field) => {
-            if (field.type === 'checkbox') {
-                return field.checked;
-            }
-
-            if (field.tagName === 'SELECT') {
-                const value = field.value;
-                return value !== '' && value !== '0';
-            }
-
-            if (field.type === 'number') {
-                return Number(field.value || '0') > 0;
-            }
-
-            return Boolean(field.value && field.value.trim().length > 0);
-        };
-
         const updateProgress = () => {
-            const filledRequired = requiredFields.filter(isFilled).length;
-            const filledOptional = optionalFields.filter(isFilled).length;
+            const filledRequired = requiredFields.filter(isFieldFilled).length;
+            const filledOptional = optionalFields.filter(isFieldFilled).length;
 
             const basePercent = requiredFields.length === 0 ? 0 : Math.round((filledRequired / requiredFields.length) * 100);
             const optionalBoost = optionalFields.length ? Math.round((filledOptional / optionalFields.length) * 10) : 0;
@@ -108,6 +118,8 @@
 
             progressEl.style.setProperty('--progress', `${percent}%`);
             progressEl.setAttribute('data-progress-label', `${percent}% تکمیل شد`);
+
+            fields.forEach(setFieldValidityState);
         };
 
         fields.forEach((field) => {
@@ -268,6 +280,96 @@
     };
 
 
+    const initStepFlow = () => {
+        const steps = Array.from(document.querySelectorAll('[data-immigration-step]'));
+        if (!steps.length) return;
+
+        const getRequiredFields = (step) => Array.from(step.querySelectorAll('[data-progress-field]:not([data-progress-optional])'));
+
+        const setExpanded = (step, expanded) => {
+            const body = step.querySelector('[data-step-body]');
+            const toggle = step.querySelector('[data-step-toggle]');
+
+            if (body) {
+                body.hidden = !expanded;
+                step.classList.toggle('is-collapsed', !expanded);
+            }
+
+            if (toggle) {
+                toggle.setAttribute('aria-expanded', String(expanded));
+            }
+
+            step.classList.toggle('is-open', expanded);
+        };
+
+        const setLocked = (step, locked) => {
+            const toggle = step.querySelector('[data-step-toggle]');
+            step.classList.toggle('is-locked', locked);
+
+            if (toggle) {
+                toggle.disabled = locked;
+                toggle.setAttribute('aria-disabled', String(locked));
+            }
+
+            if (locked) {
+                setExpanded(step, false);
+            }
+        };
+
+        const isComplete = (step) => getRequiredFields(step).every(isFieldFilled);
+
+        steps.forEach((step, index) => {
+            if (index !== 0) {
+                step.classList.add('is-collapsed');
+                const body = step.querySelector('[data-step-body]');
+                if (body) {
+                    body.hidden = true;
+                }
+            }
+
+            setLocked(step, index !== 0);
+            setExpanded(step, index === 0);
+        });
+
+        const syncLocks = () => {
+            steps.forEach((step, index) => {
+                if (index === 0) {
+                    setLocked(step, false);
+                    return;
+                }
+
+                const wasLocked = step.classList.contains('is-locked');
+                const previousComplete = isComplete(steps[index - 1]);
+
+                setLocked(step, !previousComplete);
+
+                if (previousComplete && wasLocked) {
+                    setExpanded(step, true);
+                }
+            });
+        };
+
+        steps.forEach((step) => {
+            const toggle = step.querySelector('[data-step-toggle]');
+            if (!toggle) return;
+
+            toggle.addEventListener('click', () => {
+                if (step.classList.contains('is-locked')) return;
+
+                const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+                setExpanded(step, !isExpanded);
+            });
+        });
+
+        document.querySelectorAll('[data-progress-field]').forEach((field) => {
+            field.addEventListener('input', syncLocks);
+            field.addEventListener('change', syncLocks);
+        });
+
+        syncLocks();
+    };
+
+
     const initNumberSteppers = () => {
         const wrappers = document.querySelectorAll('[data-number-input]');
         if (!wrappers.length) return;
@@ -322,6 +424,7 @@
         initLoadingOverlay();
         initResultAccordions();
         initNumberSteppers();
+        initStepFlow();
 
     };
 
