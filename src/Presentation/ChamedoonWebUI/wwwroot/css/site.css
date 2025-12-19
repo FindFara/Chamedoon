@@ -418,6 +418,20 @@ body.offcanvas-open {
     height: 22px;
 }
 
+.login-button {
+    width: auto;
+    min-width: 108px;
+    padding-inline: 0.95rem;
+    justify-content: space-between;
+    gap: 0.28rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.login-button__label {
+    line-height: 1;
+}
+
 .user-menu-toggle {
     gap: 0.4rem;
 }
@@ -2268,4 +2282,3 @@ a:hover {
         justify-content: center;
     }
 }
-
