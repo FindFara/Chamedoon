@@ -447,6 +447,22 @@
     gap: 0.65rem;
 }
 
+.country-toggle {
+    display: grid;
+    gap: 0.4rem;
+    background: transparent;
+    border: none;
+    padding: 0;
+    text-align: right;
+    color: inherit;
+    cursor: pointer;
+}
+
+.country-toggle:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, 0.25);
+    border-radius: 0.75rem;
+}
+
 .rank-score {
     display: inline-flex;
     align-items: center;
@@ -501,6 +517,53 @@
     flex-direction: row-reverse;
 }
 
+.country-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.country-summary .summary-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.country-panel {
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed rgba(148, 163, 184, 0.35);
+}
+
+.country-panel[hidden] {
+    display: none;
+}
+
+.toggle-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 0.6rem;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: rgba(255, 255, 255, 0.6) url('../img/accordion-chevron.svg') no-repeat center;
+    background-size: 0.9rem;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.country-toggle[aria-expanded="true"] .toggle-icon,
+.detail-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(180deg);
+    background-color: transparent;
+    border-color: rgba(79, 70, 229, 0.45);
+    box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.12);
+}
+
 .country-heading {
     text-align: right;
     margin-inline-start: 0;
@@ -531,9 +594,38 @@
     gap: 0.35rem;
 }
 
+.detail-toggle {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    color: inherit;
+    cursor: pointer;
+    text-align: right;
+}
+
+.detail-toggle:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, 0.2);
+    border-radius: 0.65rem;
+}
+
 .detail-title {
     font-weight: 700;
     color: var(--text-dark);
+}
+
+.detail-body {
+    display: grid;
+    gap: 0.35rem;
+    margin-top: 0.2rem;
+}
+
+.detail-body[hidden] {
+    display: none;
 }
 
 .detail-text {
