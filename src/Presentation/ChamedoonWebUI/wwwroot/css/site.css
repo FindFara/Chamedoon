@@ -1453,6 +1453,10 @@ a:hover {
     gap: 0.3rem;
 }
 
+.auth-card-tight .glass-field + .btn-glass-primary {
+    margin-top: 0.65rem;
+}
+
 .auth-card-tight .auth-meta {
     margin-top: 0.5rem;
     gap: 0.5rem;
