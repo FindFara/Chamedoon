@@ -1,0 +1,529 @@
+@using Chamedoon.Domin.Enums
+@model CountriesIndexViewModel
+@{
+    ViewData["Title"] = "مدیریت کشورها";
+    var livingCostOptions = Html.GetEnumSelectList<LivingCostType>();
+}
+
+<div class="container-fluid py-4 admin-section countries-section">
+    <div class="d-flex justify-content-between align-items-start mb-4 flex-wrap gap-3">
+        <div>
+            <h1 class="h3 mb-1">داشبورد داده‌های کشورها</h1>
+            <p class="text-muted mb-0">همه جدول‌های مرتبط با کشورها را یکجا ببینید، روی هر بخش بزنید تا جزئیات باز شود و همان‌جا ویرایش یا داده جدید ثبت کنید.</p>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-primary-subtle text-primary fs-6">کشورها: @Model.Countries.Count</span>
+        </div>
+    </div>
+
+    @if (TempData["Error"] is string errorMessage)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @errorMessage
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+        </div>
+    }
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <div>
+                <h2 class="h5 mb-0">افزودن کشور جدید</h2>
+                <small class="text-muted">اطلاعات پایه را تکمیل کنید تا بتوانید جدول‌های جزئیات را اضافه کنید.</small>
+            </div>
+            <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#newCountryForm" aria-expanded="true">
+                فرم افزودن
+            </button>
+        </div>
+        <div id="newCountryForm" class="collapse show">
+            <div class="card-body">
+                <form asp-action="SaveCountry" method="post" class="row g-3">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="Id" value="" />
+                    <div class="col-md-6 col-lg-4">
+                        <label class="form-label">نام کشور</label>
+                        <input name="Name" value="@Model.NewCountry.Name" class="form-control" placeholder="مثلاً کانادا" required />
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <label class="form-label">کلید یکتا</label>
+                        <input name="Key" value="@Model.NewCountry.Key" class="form-control" placeholder="Canada" required />
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <label class="form-label">واحد پول</label>
+                        <input name="InvestmentCurrency" value="@Model.NewCountry.InvestmentCurrency" class="form-control" placeholder="USD" />
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <label class="form-label">مبلغ سرمایه‌گذاری</label>
+                        <input name="InvestmentAmount" type="number" min="0" step="0.01" value="@Model.NewCountry.InvestmentAmount" class="form-control" />
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <label class="form-label">توضیحات سرمایه‌گذاری</label>
+                        <input name="InvestmentNotes" value="@Model.NewCountry.InvestmentNotes" class="form-control" placeholder="شرایط پرداخت، ..." />
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <label class="form-label">تأثیر وضعیت تأهل</label>
+                        <input name="MaritalStatusImpact" value="@Model.NewCountry.MaritalStatusImpact" class="form-control" placeholder="مثلاً امتیاز همسر" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">اطلاعات تکمیلی</label>
+                        <textarea name="AdditionalInfo" rows="2" class="form-control" placeholder="نکات مهم درباره کشور">@Model.NewCountry.AdditionalInfo</textarea>
+                    </div>
+                    <div class="col-12 text-end">
+                        <button class="btn btn-primary" type="submit">ثبت کشور</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion" id="countriesAccordion">
+        @foreach (var country in Model.Countries)
+        {
+            <div class="accordion-item mb-3" id="country-@country.Id">
+                <h2 class="accordion-header" id="heading-@country.Id">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@country.Id" aria-expanded="false" aria-controls="collapse-@country.Id">
+                        <div class="w-100 d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+                            <div>
+                                <div class="fw-semibold">@country.Name</div>
+                                <small class="text-muted">کلید: @country.Key</small>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <span class="badge bg-primary-subtle text-primary">هزینه‌ها: @country.LivingCosts.Count</span>
+                                <span class="badge bg-secondary-subtle text-secondary">محدودیت‌ها: @country.Restrictions.Count</span>
+                                <span class="badge bg-success-subtle text-success">شغل‌ها: @country.Jobs.Count</span>
+                                <span class="badge bg-info-subtle text-info">تحصیلات: @country.Educations.Count</span>
+                            </div>
+                        </div>
+                    </button>
+                </h2>
+                <div id="collapse-@country.Id" class="accordion-collapse collapse" aria-labelledby="heading-@country.Id" data-bs-parent="#countriesAccordion">
+                    <div class="accordion-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="card shadow-sm border-0 h-100">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                                            <div>
+                                                <div class="fw-semibold mb-1">اطلاعات پایه</div>
+                                                <div class="text-muted small">
+                                                    سرمایه‌گذاری: @country.InvestmentAmount.ToString("N0") @country.InvestmentCurrency
+                                                    @if (!string.IsNullOrWhiteSpace(country.MaritalStatusImpact))
+                                                    {
+                                                        <span> | وضعیت تأهل: @country.MaritalStatusImpact</span>
+                                                    }
+                                                </div>
+                                                @if (!string.IsNullOrWhiteSpace(country.InvestmentNotes))
+                                                {
+                                                    <div class="small mt-1 text-muted">@country.InvestmentNotes</div>
+                                                }
+                                                @if (!string.IsNullOrWhiteSpace(country.AdditionalInfo))
+                                                {
+                                                    <div class="small mt-1 text-muted"> @country.AdditionalInfo</div>
+                                                }
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#edit-country-@country.Id">
+                                                ویرایش اطلاعات کشور
+                                            </button>
+                                        </div>
+                                        <div class="collapse mt-3" id="edit-country-@country.Id">
+                                            <form asp-action="SaveCountry" method="post" class="row g-3">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="Id" value="@country.Id" />
+                                                <div class="col-md-6 col-lg-4">
+                                                    <label class="form-label">نام کشور</label>
+                                                    <input name="Name" value="@country.EditModel.Name" class="form-control" required />
+                                                </div>
+                                                <div class="col-md-6 col-lg-4">
+                                                    <label class="form-label">کلید یکتا</label>
+                                                    <input name="Key" value="@country.EditModel.Key" class="form-control" required />
+                                                </div>
+                                                <div class="col-md-6 col-lg-4">
+                                                    <label class="form-label">واحد پول</label>
+                                                    <input name="InvestmentCurrency" value="@country.EditModel.InvestmentCurrency" class="form-control" />
+                                                </div>
+                                                <div class="col-md-6 col-lg-4">
+                                                    <label class="form-label">مبلغ سرمایه‌گذاری</label>
+                                                    <input name="InvestmentAmount" type="number" min="0" step="0.01" value="@country.EditModel.InvestmentAmount" class="form-control" />
+                                                </div>
+                                                <div class="col-md-6 col-lg-4">
+                                                    <label class="form-label">توضیحات سرمایه‌گذاری</label>
+                                                    <input name="InvestmentNotes" value="@country.EditModel.InvestmentNotes" class="form-control" />
+                                                </div>
+                                                <div class="col-md-6 col-lg-4">
+                                                    <label class="form-label">تأثیر وضعیت تأهل</label>
+                                                    <input name="MaritalStatusImpact" value="@country.EditModel.MaritalStatusImpact" class="form-control" />
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="form-label">اطلاعات تکمیلی</label>
+                                                    <textarea name="AdditionalInfo" rows="2" class="form-control">@country.EditModel.AdditionalInfo</textarea>
+                                                </div>
+                                                <div class="col-12 text-end">
+                                                    <button class="btn btn-primary" type="submit">ذخیره تغییرات</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="card shadow-sm border-0">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="h6 mb-0">هزینه‌های زندگی</h3>
+                                            <small class="text-muted">همه هزینه‌ها را ببینید و روی هر ردیف برای ویرایش بزنید.</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#add-living-@country.Id">
+                                            افزودن هزینه جدید
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        @if (!country.LivingCosts.Any())
+                                        {
+                                            <div class="text-muted">هزینه‌ای ثبت نشده است.</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="list-group" id="livingCosts-@country.Id">
+                                                @foreach (var cost in country.LivingCosts)
+                                                {
+                                                    <div class="list-group-item">
+                                                        <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap">
+                                                            <div>
+                                                                <div class="fw-semibold">@cost.TypeLabel</div>
+                                                                <div class="text-muted small">@cost.Value</div>
+                                                            </div>
+                                                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#edit-living-@cost.Id">
+                                                                ویرایش
+                                                            </button>
+                                                        </div>
+                                                        <div class="collapse mt-3" id="edit-living-@cost.Id" data-bs-parent="#livingCosts-@country.Id">
+                                                            <form asp-action="SaveLivingCost" method="post" class="row g-2 align-items-end">
+                                                                @Html.AntiForgeryToken()
+                                                                <input type="hidden" name="Id" value="@cost.Id" />
+                                                                <input type="hidden" name="CountryId" value="@cost.CountryId" />
+                                                                <div class="col-md-4">
+                                                                    <label class="form-label">نوع هزینه</label>
+                                                                    <select name="Type" class="form-select">
+                                                                        @foreach (var option in livingCostOptions)
+                                                                        {
+                                                                            var isSelected = option.Value == ((int)cost.Type).ToString();
+                                                                            <option value="@option.Value" selected="@isSelected">@option.Text</option>
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">مقدار</label>
+                                                                    <input name="Value" value="@cost.Value" class="form-control" required />
+                                                                </div>
+                                                                <div class="col-md-2 text-end">
+                                                                    <button class="btn btn-primary w-100" type="submit">ذخیره</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="card-footer collapse" id="add-living-@country.Id">
+                                        <form asp-action="SaveLivingCost" method="post" class="row g-2 align-items-end">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="CountryId" value="@country.Id" />
+                                            <div class="col-md-4">
+                                                <label class="form-label">نوع هزینه</label>
+                                                <select name="Type" class="form-select">
+                                                    @foreach (var option in livingCostOptions)
+                                                    {
+                                                        <option value="@option.Value">@option.Text</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">مقدار</label>
+                                                <input name="Value" class="form-control" placeholder="مثلاً ۱۵۰۰ دلار ماهانه" required />
+                                            </div>
+                                            <div class="col-md-2 text-end">
+                                                <button class="btn btn-success w-100" type="submit">ثبت</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="card shadow-sm border-0">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="h6 mb-0">محدودیت‌ها و نکات</h3>
+                                            <small class="text-muted">برای مشاهده جزئیات هر مورد، روی دکمه ویرایش بزنید.</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#add-restriction-@country.Id">
+                                            افزودن محدودیت
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        @if (!country.Restrictions.Any())
+                                        {
+                                            <div class="text-muted">محدودیتی ثبت نشده است.</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="list-group" id="restrictions-@country.Id">
+                                                @foreach (var restriction in country.Restrictions)
+                                                {
+                                                    <div class="list-group-item">
+                                                        <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap">
+                                                            <div class="text-muted">@restriction.Description</div>
+                                                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#edit-restriction-@restriction.Id">
+                                                                ویرایش
+                                                            </button>
+                                                        </div>
+                                                        <div class="collapse mt-3" id="edit-restriction-@restriction.Id" data-bs-parent="#restrictions-@country.Id">
+                                                            <form asp-action="SaveRestriction" method="post" class="row g-2 align-items-end">
+                                                                @Html.AntiForgeryToken()
+                                                                <input type="hidden" name="Id" value="@restriction.Id" />
+                                                                <input type="hidden" name="CountryId" value="@restriction.CountryId" />
+                                                                <div class="col-12">
+                                                                    <label class="form-label">توضیح</label>
+                                                                    <textarea name="Description" rows="2" class="form-control" required>@restriction.Description</textarea>
+                                                                </div>
+                                                                <div class="col-12 text-end">
+                                                                    <button class="btn btn-primary" type="submit">ذخیره</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="card-footer collapse" id="add-restriction-@country.Id">
+                                        <form asp-action="SaveRestriction" method="post" class="row g-2 align-items-end">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="CountryId" value="@country.Id" />
+                                            <div class="col-12">
+                                                <label class="form-label">توضیح</label>
+                                                <textarea name="Description" rows="2" class="form-control" placeholder="شرایط یا محدودیت خاص" required></textarea>
+                                            </div>
+                                            <div class="col-12 text-end">
+                                                <button class="btn btn-success" type="submit">ثبت</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="card shadow-sm border-0">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="h6 mb-0">فرصت‌های شغلی</h3>
+                                            <small class="text-muted">روی هر شغل کلیک کنید تا فرم ویرایش باز شود.</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#add-job-@country.Id">
+                                            افزودن شغل
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        @if (!country.Jobs.Any())
+                                        {
+                                            <div class="text-muted">شغلی ثبت نشده است.</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="list-group" id="jobs-@country.Id">
+                                                @foreach (var job in country.Jobs)
+                                                {
+                                                    <div class="list-group-item">
+                                                        <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap">
+                                                            <div>
+                                                                <div class="fw-semibold">@job.Title</div>
+                                                                <div class="text-muted small">@job.Description</div>
+                                                                <div class="small text-secondary">امتیاز: @job.Score | سابقه: @job.ExperienceImpact</div>
+                                                            </div>
+                                                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#edit-job-@job.Id">
+                                                                ویرایش
+                                                            </button>
+                                                        </div>
+                                                        <div class="collapse mt-3" id="edit-job-@job.Id" data-bs-parent="#jobs-@country.Id">
+                                                            <form asp-action="SaveJob" method="post" class="row g-2 align-items-end">
+                                                                @Html.AntiForgeryToken()
+                                                                <input type="hidden" name="Id" value="@job.Id" />
+                                                                <input type="hidden" name="CountryId" value="@job.CountryId" />
+                                                                <div class="col-md-4">
+                                                                    <label class="form-label">عنوان</label>
+                                                                    <input name="Title" value="@job.Title" class="form-control" required />
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="form-label">امتیاز</label>
+                                                                    <input name="Score" type="number" min="0" max="100" value="@job.Score" class="form-control" required />
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label">تأثیر سابقه</label>
+                                                                    <input name="ExperienceImpact" value="@job.ExperienceImpact" class="form-control" />
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <label class="form-label">توضیحات</label>
+                                                                    <textarea name="Description" rows="2" class="form-control" required>@job.Description</textarea>
+                                                                </div>
+                                                                <div class="col-12 text-end">
+                                                                    <button class="btn btn-primary" type="submit">ذخیره</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="card-footer collapse" id="add-job-@country.Id">
+                                        <form asp-action="SaveJob" method="post" class="row g-2 align-items-end">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="CountryId" value="@country.Id" />
+                                            <div class="col-md-4">
+                                                <label class="form-label">عنوان</label>
+                                                <input name="Title" class="form-control" placeholder="عنوان شغل" required />
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">امتیاز</label>
+                                                <input name="Score" type="number" min="0" max="100" class="form-control" required />
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">تأثیر سابقه</label>
+                                                <input name="ExperienceImpact" class="form-control" placeholder="نیاز به سابقه یا مدارک" />
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label">توضیحات</label>
+                                                <textarea name="Description" rows="2" class="form-control" placeholder="توضیح فرصت شغلی" required></textarea>
+                                            </div>
+                                            <div class="col-12 text-end">
+                                                <button class="btn btn-success" type="submit">ثبت</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="card shadow-sm border-0">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h3 class="h6 mb-0">مسیرهای تحصیلی</h3>
+                                            <small class="text-muted">برای ویرایش هر مسیر، روی آن بزنید تا فرم باز شود.</small>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#add-education-@country.Id">
+                                            افزودن مسیر تحصیلی
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        @if (!country.Educations.Any())
+                                        {
+                                            <div class="text-muted">مسیر تحصیلی ثبت نشده است.</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="list-group" id="educations-@country.Id">
+                                                @foreach (var education in country.Educations)
+                                                {
+                                                    <div class="list-group-item">
+                                                        <div class="d-flex justify-content-between align-items-start gap-2 flex-wrap">
+                                                            <div>
+                                                                <div class="fw-semibold">@education.FieldName</div>
+                                                                <div class="text-muted small">@education.Description</div>
+                                                                <div class="small text-secondary">امتیاز: @education.Score | مقطع: @education.Level | زبان: @education.LanguageRequirement</div>
+                                                            </div>
+                                                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#edit-education-@education.Id">
+                                                                ویرایش
+                                                            </button>
+                                                        </div>
+                                                        <div class="collapse mt-3" id="edit-education-@education.Id" data-bs-parent="#educations-@country.Id">
+                                                            <form asp-action="SaveEducation" method="post" class="row g-2 align-items-end">
+                                                                @Html.AntiForgeryToken()
+                                                                <input type="hidden" name="Id" value="@education.Id" />
+                                                                <input type="hidden" name="CountryId" value="@education.CountryId" />
+                                                                <div class="col-md-4">
+                                                                    <label class="form-label">عنوان رشته</label>
+                                                                    <input name="FieldName" value="@education.FieldName" class="form-control" required />
+                                                                </div>
+                                                                <div class="col-md-2">
+                                                                    <label class="form-label">امتیاز</label>
+                                                                    <input name="Score" type="number" min="0" max="100" value="@education.Score" class="form-control" required />
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label class="form-label">مقطع/سطح</label>
+                                                                    <input name="Level" value="@education.Level" class="form-control" />
+                                                                </div>
+                                                                <div class="col-md-3">
+                                                                    <label class="form-label">مدرک زبان</label>
+                                                                    <input name="LanguageRequirement" value="@education.LanguageRequirement" class="form-control" />
+                                                                </div>
+                                                                <div class="col-12">
+                                                                    <label class="form-label">توضیحات</label>
+                                                                    <textarea name="Description" rows="2" class="form-control" required>@education.Description</textarea>
+                                                                </div>
+                                                                <div class="col-12 text-end">
+                                                                    <button class="btn btn-primary" type="submit">ذخیره</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="card-footer collapse" id="add-education-@country.Id">
+                                        <form asp-action="SaveEducation" method="post" class="row g-2 align-items-end">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="CountryId" value="@country.Id" />
+                                            <div class="col-md-4">
+                                                <label class="form-label">عنوان رشته</label>
+                                                <input name="FieldName" class="form-control" placeholder="مثلاً مدیریت" required />
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="form-label">امتیاز</label>
+                                                <input name="Score" type="number" min="0" max="100" class="form-control" required />
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">مقطع/سطح</label>
+                                                <input name="Level" class="form-control" placeholder="کارشناسی/کارشناسی ارشد" />
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label class="form-label">مدرک زبان</label>
+                                                <input name="LanguageRequirement" class="form-control" placeholder="IELTS 6.5" />
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label">توضیحات</label>
+                                                <textarea name="Description" rows="2" class="form-control" placeholder="شرح مسیر تحصیلی" required></textarea>
+                                            </div>
+                                            <div class="col-12 text-end">
+                                                <button class="btn btn-success" type="submit">ثبت</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#country-')) {
+                const targetCollapse = document.querySelector(`${hash} .accordion-collapse`);
+                const toggleButton = document.querySelector(`${hash} .accordion-button`);
+                if (targetCollapse && !targetCollapse.classList.contains('show')) {
+                    const collapse = new bootstrap.Collapse(targetCollapse, { toggle: true });
+                    if (toggleButton) {
+                        toggleButton.classList.remove('collapsed');
+                    }
+                }
+            }
+        });
+    </script>
+}
