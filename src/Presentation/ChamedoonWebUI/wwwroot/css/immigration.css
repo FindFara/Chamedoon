@@ -944,9 +944,14 @@ body.landing-page.dark-mode .insight-pill {
 
 body.landing-page.dark-mode .immigration-field .form-control,
 body.landing-page.dark-mode .immigration-field .form-select {
-    background: rgba(15, 23, 42, 0.85);
+    background-color: rgba(15, 23, 42, 0.85);
     color: #e2e8f0;
     border-color: rgba(148, 163, 184, 0.35);
+}
+
+body.landing-page.dark-mode .immigration-field .form-select {
+    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23cbd5f5' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg);
 }
 
 body.landing-page.dark-mode .number-stepper {
