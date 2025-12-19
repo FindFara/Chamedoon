@@ -1,4 +1,6 @@
 (function () {
+    let activateValidation = () => {};
+
     const isFieldFilled = (field) => {
         if (!field) return false;
 
@@ -107,6 +109,7 @@
 
         const requiredFields = fields.filter((field) => !field.hasAttribute('data-progress-optional'));
         const optionalFields = fields.filter((field) => field.hasAttribute('data-progress-optional'));
+        let validationActivated = false;
 
         const updateProgress = () => {
             const filledRequired = requiredFields.filter(isFieldFilled).length;
@@ -119,13 +122,20 @@
             progressEl.style.setProperty('--progress', `${percent}%`);
             progressEl.setAttribute('data-progress-label', `${percent}% تکمیل شد`);
 
-            fields.forEach(setFieldValidityState);
+            if (validationActivated) {
+                fields.forEach(setFieldValidityState);
+            }
         };
 
         fields.forEach((field) => {
             field.addEventListener('input', updateProgress);
             field.addEventListener('change', updateProgress);
         });
+
+        activateValidation = () => {
+            validationActivated = true;
+            fields.forEach(setFieldValidityState);
+        };
 
         updateProgress();
     };
@@ -234,6 +244,7 @@
         };
 
         form.addEventListener('submit', () => {
+            activateValidation();
             showOverlay();
         });
     };
