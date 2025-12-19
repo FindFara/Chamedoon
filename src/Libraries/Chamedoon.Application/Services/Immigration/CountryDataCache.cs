@@ -15,6 +15,7 @@ namespace Chamedoon.Application.Services.Immigration
     public interface ICountryDataCache
     {
         Task<IReadOnlyDictionary<string, CountryDataSnapshot>> GetAllAsync(CancellationToken cancellationToken);
+        void Invalidate();
     }
 
     public class CountryDataCache : ICountryDataCache
@@ -82,6 +83,11 @@ namespace Chamedoon.Application.Services.Immigration
 
             _memoryCache.Set(CacheKey, result, TimeSpan.FromHours(6));
             return result;
+        }
+
+        public void Invalidate()
+        {
+            _memoryCache.Remove(CacheKey);
         }
 
         private static MinimumLivingCosts BuildLivingCosts(IEnumerable<CountryLivingCost> costs)
