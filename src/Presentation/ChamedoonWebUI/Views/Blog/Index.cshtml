@@ -2,6 +2,7 @@
 @using System.Linq
 @using System.Globalization
 @using System.Text.RegularExpressions
+@using System.Net
 @using ChamedoonWebUI.Models
 @{ 
     ViewData["Title"] = "وبلاگ";
@@ -50,7 +51,10 @@
                     var visitCountText = article.VisitCount.ToString("N0", CultureInfo.CreateSpecificCulture("fa-IR"));
                     cardIndex++;
                     var stepDelay = (cardIndex * 0.12).ToString("0.##", CultureInfo.InvariantCulture);
-                    var shortDescriptionText = Regex.Replace(article.ShortDescription ?? string.Empty, "<.*?>", string.Empty);
+                    var shortDescriptionText = Regex.Replace(
+                        WebUtility.HtmlDecode(article.ShortDescription ?? string.Empty),
+                        "<.*?>",
+                        string.Empty);
                     var imageSrc = string.IsNullOrWhiteSpace(article.ArticleImageName)
                         ? fallbackBlogImage
                         : (article.ArticleImageName!.StartsWith("data:image", System.StringComparison.OrdinalIgnoreCase)
