@@ -2,6 +2,10 @@
     color-scheme: light;
 }
 
+body.dark-mode {
+    color-scheme: dark;
+}
+
 body.dark-mode .admin-section .card {
     background: linear-gradient(160deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
     border-color: rgba(255, 255, 255, 0.08);
@@ -129,4 +133,53 @@ body.dark-mode .admin-section .btn-primary {
 
 body.dark-mode .admin-section .table-responsive {
     background: linear-gradient(120deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+}
+
+body.dark-mode .admin-sidebar {
+    background: linear-gradient(160deg, rgba(12, 18, 36, 0.92), rgba(9, 13, 26, 0.88));
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+}
+
+body.dark-mode .admin-sidebar .nav-link:hover,
+body.dark-mode .admin-sidebar .nav-link.active {
+    background: rgba(255, 179, 71, 0.18);
+    color: #ffe2bf;
+}
+
+body.dark-mode .admin-header {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .countries-section .accordion-button {
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+    color: #f5f7ff;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .countries-section .accordion-button:not(.collapsed) {
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+    border-color: rgba(255, 179, 71, 0.4);
+}
+
+body.dark-mode .countries-section .badge {
+    background: rgba(255, 255, 255, 0.08);
+    color: #f9fafb;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .countries-section .list-group-item {
+    background: rgba(255, 255, 255, 0.03);
+    color: #e5edff;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+body.dark-mode .countries-section .card-header {
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .countries-section .form-control,
+body.dark-mode .countries-section .form-select {
+    background: rgba(255, 255, 255, 0.03);
 }
