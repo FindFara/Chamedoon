@@ -89,24 +89,8 @@
                                                 </svg>
                                             </span>
                                         </button>
-                                    }
-                                    else
-                                    {
-                                        <a class="icon-button user-menu-toggle" asp-controller="Account" asp-action="PhoneLogin" aria-label="حساب کاربری" title="ورود یا ثبت‌نام">
-                                            <span class="visually-hidden">ورود یا ثبت نام</span>
-                                            @await Component.InvokeAsync("UserProfileImage", new { viewName = "Badge" })
-                                            <span class="user-menu-icon" aria-hidden="true">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
-                                                    <path d="M12 12c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.2-5 5 2.2 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                                    <path d="M5.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                                </svg>
-                                            </span>
-                                        </a>
-                                    }
-                                    <ul class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userMenuToggle">
-                                        @if (User.Identity.IsAuthenticated)
-                                        {
-                                            if (User.IsInRole("Admin"))
+                                        <ul class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userMenuToggle">
+                                            @if (User.IsInRole("Admin"))
                                             {
                                                 <li>
                                                     <a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">پنل مدیریت</a>
@@ -119,14 +103,12 @@
                                             <li>
                                                 <a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">خروج</a>
                                             </li>
-                                        }
-                                        else
-                                        {
-                                            <li>
-                                                <a class="dropdown-item" asp-controller="Account" asp-action="PhoneLogin">ورود / ثبت‌نام</a>
-                                            </li>
-                                        }
-                                    </ul>
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="PhoneLogin">ورود</a>
+                                    }
                                 </div>
                             <button class="icon-button theme-toggle" type="button" id="darkModeToggle" data-mode="light" aria-pressed="false" aria-label="حالت شب" data-label="حالت شب" data-label-light="حالت شب" data-label-dark="حالت روز" title="حالت شب">
                                 <span class="visually-hidden" data-role="label">حالت شب</span>
