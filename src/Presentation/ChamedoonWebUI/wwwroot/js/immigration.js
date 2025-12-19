@@ -1,4 +1,21 @@
 (function () {
+    const isFieldFilled = (field) => {
+        if (field.type === 'checkbox') {
+            return field.checked;
+        }
+
+        if (field.tagName === 'SELECT') {
+            const value = field.value;
+            return value !== '' && value !== '0';
+        }
+
+        if (field.type === 'number') {
+            return Number(field.value || '0') > 0;
+        }
+
+        return Boolean(field.value && field.value.trim().length > 0);
+    };
+
     const initTooltips = () => {
         const prefersTouch = window.matchMedia('(hover: none)').matches;
         const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -81,26 +98,9 @@
         const requiredFields = fields.filter((field) => !field.hasAttribute('data-progress-optional'));
         const optionalFields = fields.filter((field) => field.hasAttribute('data-progress-optional'));
 
-        const isFilled = (field) => {
-            if (field.type === 'checkbox') {
-                return field.checked;
-            }
-
-            if (field.tagName === 'SELECT') {
-                const value = field.value;
-                return value !== '' && value !== '0';
-            }
-
-            if (field.type === 'number') {
-                return Number(field.value || '0') > 0;
-            }
-
-            return Boolean(field.value && field.value.trim().length > 0);
-        };
-
         const updateProgress = () => {
-            const filledRequired = requiredFields.filter(isFilled).length;
-            const filledOptional = optionalFields.filter(isFilled).length;
+            const filledRequired = requiredFields.filter(isFieldFilled).length;
+            const filledOptional = optionalFields.filter(isFieldFilled).length;
 
             const basePercent = requiredFields.length === 0 ? 0 : Math.round((filledRequired / requiredFields.length) * 100);
             const optionalBoost = optionalFields.length ? Math.round((filledOptional / optionalFields.length) * 10) : 0;
@@ -268,6 +268,118 @@
     };
 
 
+    const initStepFlow = () => {
+        const steps = Array.from(document.querySelectorAll('.immigration-step'));
+        if (!steps.length) return;
+
+        const getRequiredFields = (step) => Array.from(step.querySelectorAll('[data-progress-field]:not([data-progress-optional])'));
+        const isStepComplete = (step) => getRequiredFields(step).every(isFieldFilled);
+        const getValidationMessageEl = (field) => {
+            const name = field.getAttribute('name');
+            if (!name) return null;
+            return document.querySelector(`[data-valmsg-for="${name}"]`);
+        };
+
+        const validateStepFields = (step) => {
+            const requiredFields = getRequiredFields(step);
+            let complete = true;
+
+            requiredFields.forEach((field) => {
+                const filled = isFieldFilled(field);
+                const wrapper = field.closest('.immigration-field');
+                const messageEl = getValidationMessageEl(field);
+
+                if (!filled) {
+                    complete = false;
+                    wrapper?.classList.add('is-invalid');
+                    field.setAttribute('aria-invalid', 'true');
+                    if (messageEl) {
+                        messageEl.textContent = '';
+                        messageEl.classList.remove('field-validation-error');
+                        messageEl.classList.add('field-validation-valid');
+                    }
+                } else {
+                    wrapper?.classList.remove('is-invalid');
+                    field.removeAttribute('aria-invalid');
+                    if (messageEl) {
+                        messageEl.textContent = '';
+                        messageEl.classList.remove('field-validation-error');
+                        messageEl.classList.add('field-validation-valid');
+                    }
+                }
+            });
+
+            return complete || requiredFields.length === 0;
+        };
+
+        const updateToggleStates = () => {
+            steps.forEach((step, index) => {
+                const toggle = step.querySelector('[data-step-toggle]');
+                if (!toggle) return;
+
+                const unlocked = index === 0 || steps.slice(0, index).every(isStepComplete);
+                toggle.disabled = !unlocked;
+                toggle.setAttribute('aria-disabled', String(!unlocked));
+                toggle.classList.toggle('is-disabled', !unlocked);
+            });
+        };
+
+        const setExpanded = (step, expanded) => {
+            step.dataset.stepExpanded = expanded ? 'true' : 'false';
+            const content = step.querySelector('[data-step-content]');
+            if (content) {
+                content.hidden = !expanded;
+            }
+
+            const toggle = step.querySelector('[data-step-toggle]');
+            if (toggle) {
+                toggle.setAttribute('aria-expanded', String(expanded));
+            }
+        };
+
+        steps.forEach((step) => {
+            step.dataset.stepExpanded = 'false';
+            const content = step.querySelector('[data-step-content]');
+            if (content) {
+                content.hidden = true;
+            }
+        });
+
+        const firstStep = steps[0];
+        if (firstStep) {
+            setExpanded(firstStep, true);
+        }
+
+        steps.forEach((step, index) => {
+            const toggle = step.querySelector('[data-step-toggle]');
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    if (toggle.disabled) return;
+                    const expanded = step.dataset.stepExpanded === 'true';
+                    setExpanded(step, !expanded);
+                });
+            }
+
+            getRequiredFields(step).forEach((field) => {
+                const runValidation = () => {
+                    const isComplete = validateStepFields(step);
+                    if (isComplete && index + 1 < steps.length) {
+                        const nextStep = steps[index + 1];
+                        setExpanded(nextStep, true);
+                    }
+                    updateToggleStates();
+                };
+
+                field.addEventListener('input', runValidation);
+                field.addEventListener('change', runValidation);
+                field.addEventListener('blur', runValidation);
+            });
+        });
+
+        updateToggleStates();
+    };
+
+
     const initNumberSteppers = () => {
         const wrappers = document.querySelectorAll('[data-number-input]');
         if (!wrappers.length) return;
@@ -322,6 +434,7 @@
         initLoadingOverlay();
         initResultAccordions();
         initNumberSteppers();
+        initStepFlow();
 
     };
 
