@@ -945,6 +945,23 @@ body.landing-page.dark-mode .immigration-field .form-select {
     border-color: rgba(148, 163, 184, 0.35);
 }
 
+body.landing-page.dark-mode .number-stepper {
+    border-color: rgba(148, 163, 184, 0.35);
+    background: rgba(30, 41, 59, 0.9);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 6px 12px -8px rgba(0, 0, 0, 0.45);
+}
+
+body.landing-page.dark-mode .step-btn {
+    border-color: rgba(148, 163, 184, 0.4);
+    background: linear-gradient(180deg, rgba(51, 65, 85, 0.9), rgba(30, 41, 59, 0.9));
+    color: #e2e8f0;
+    box-shadow: 0 8px 16px -10px rgba(0, 0, 0, 0.45);
+}
+
+body.landing-page.dark-mode .step-btn:hover {
+    border-color: rgba(165, 180, 252, 0.6);
+}
+
 body.landing-page.dark-mode .immigration-form-card .form-heading h3,
 body.landing-page.dark-mode .immigration-step .step-title,
 body.landing-page.dark-mode .immigration-field .field-label {
