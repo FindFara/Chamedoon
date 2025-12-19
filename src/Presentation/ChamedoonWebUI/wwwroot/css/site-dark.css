@@ -64,7 +64,7 @@ body.landing-page.dark-mode .user-menu-dropdown .dropdown-menu {
 
 body.landing-page.dark-mode .user-menu-dropdown .dropdown-item {
     color: #e2e8f0;
-    border-radius: 10px;
+    border-radius: 12px;
 }
 
 body.landing-page.dark-mode .user-menu-dropdown li:has(.dropdown-item) + li:has(.dropdown-item) .dropdown-item {

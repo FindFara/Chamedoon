@@ -1,4 +1,55 @@
 (function () {
+    let activateValidation = () => {};
+
+    const isFieldFilled = (field) => {
+        if (!field) return false;
+
+        if (field.type === 'checkbox') {
+            return field.checked;
+        }
+
+        if (field.tagName === 'SELECT') {
+            const value = field.value;
+            return value !== '';
+        }
+
+        if (field.type === 'number') {
+            return Number(field.value || '0') > 0;
+        }
+
+        return Boolean(field.value && field.value.trim().length > 0);
+    };
+
+    const setFieldValidityState = (field, isActive) => {
+        const parent = field.closest('.immigration-field');
+        if (!parent) return;
+
+        const isOptional = field.hasAttribute('data-progress-optional');
+        parent.classList.toggle('is-invalid', Boolean(isActive && !isOptional && !isFieldFilled(field)));
+    };
+
+    const escapeSelector = (value) => {
+        if (window.CSS && typeof window.CSS.escape === 'function') {
+            return window.CSS.escape(value);
+        }
+        return value.replace(/([ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, '\\$1');
+    };
+
+    const getFieldLabel = (field) => {
+        const customLabel = field.getAttribute('data-required-label');
+        if (customLabel) return customLabel.trim();
+
+        const fieldId = field.id;
+        if (fieldId) {
+            const label = document.querySelector(`label[for="${escapeSelector(fieldId)}"]`);
+            if (label) {
+                return (label.textContent || '').trim();
+            }
+        }
+
+        return field.name || 'فیلد';
+    };
+
     const initTooltips = () => {
         const prefersTouch = window.matchMedia('(hover: none)').matches;
         const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -81,26 +132,9 @@
         const requiredFields = fields.filter((field) => !field.hasAttribute('data-progress-optional'));
         const optionalFields = fields.filter((field) => field.hasAttribute('data-progress-optional'));
 
-        const isFilled = (field) => {
-            if (field.type === 'checkbox') {
-                return field.checked;
-            }
-
-            if (field.tagName === 'SELECT') {
-                const value = field.value;
-                return value !== '' && value !== '0';
-            }
-
-            if (field.type === 'number') {
-                return Number(field.value || '0') > 0;
-            }
-
-            return Boolean(field.value && field.value.trim().length > 0);
-        };
-
         const updateProgress = () => {
-            const filledRequired = requiredFields.filter(isFilled).length;
-            const filledOptional = optionalFields.filter(isFilled).length;
+            const filledRequired = requiredFields.filter(isFieldFilled).length;
+            const filledOptional = optionalFields.filter(isFieldFilled).length;
 
             const basePercent = requiredFields.length === 0 ? 0 : Math.round((filledRequired / requiredFields.length) * 100);
             const optionalBoost = optionalFields.length ? Math.round((filledOptional / optionalFields.length) * 10) : 0;
@@ -116,6 +150,78 @@
         });
 
         updateProgress();
+    };
+
+    const initDeferredValidation = () => {
+        const form = document.querySelector('.immigration-form-card form');
+        const fields = Array.from(document.querySelectorAll('[data-progress-field]'));
+        const requiredFields = fields.filter((field) => !field.hasAttribute('data-progress-optional'));
+        if (!form || !requiredFields.length) return;
+
+        let validationActivated = false;
+        const inlineErrors = document.querySelector('[data-inline-errors]');
+        const inlineList = inlineErrors ? inlineErrors.querySelector('ul') : null;
+
+        const renderInlineErrors = (messages) => {
+            if (!inlineErrors || !inlineList) return;
+
+            inlineList.innerHTML = '';
+            if (!messages.length) {
+                inlineErrors.classList.add('d-none');
+                inlineErrors.setAttribute('hidden', 'hidden');
+                return;
+            }
+
+            messages.forEach((message) => {
+                const li = document.createElement('li');
+                li.textContent = message;
+                inlineList.appendChild(li);
+            });
+
+            inlineErrors.classList.remove('d-none');
+            inlineErrors.removeAttribute('hidden');
+        };
+
+        const renderValidation = () => {
+            requiredFields.forEach((field) => setFieldValidityState(field, validationActivated));
+        };
+
+        fields.forEach((field) => {
+            field.addEventListener('input', () => {
+                if (!validationActivated) return;
+                renderValidation();
+            });
+
+            field.addEventListener('change', () => {
+                if (!validationActivated) return;
+                renderValidation();
+            });
+        });
+
+        activateValidation = () => {
+            validationActivated = true;
+            renderValidation();
+        };
+
+        form.addEventListener('submit', (event) => {
+            activateValidation();
+            const missingFields = requiredFields.filter((field) => !isFieldFilled(field));
+
+            if (missingFields.length) {
+                event.preventDefault();
+                const messages = missingFields.map((field) =>
+                    `فیلد ${getFieldLabel(field).replace(/؟/g, "").trim()} اجباری می‌باشد.`
+                );
+                renderInlineErrors(messages);
+                return;
+            }
+
+            renderInlineErrors([]);
+        });
+
+        // Clear any pre-existing error borders on first paint
+        renderValidation();
+        renderInlineErrors([]);
     };
 
     const initScoreChart = () => {
@@ -221,7 +327,11 @@
             }
         };
 
-        form.addEventListener('submit', () => {
+        form.addEventListener('submit', (event) => {
+            activateValidation();
+            if (event.defaultPrevented) {
+                return;
+            }
             showOverlay();
         });
     };
@@ -265,6 +375,96 @@
                 setExpanded(!isExpanded);
             });
         });
+    };
+
+
+    const initStepFlow = () => {
+        const steps = Array.from(document.querySelectorAll('[data-immigration-step]'));
+        if (!steps.length) return;
+
+        const getRequiredFields = (step) => Array.from(step.querySelectorAll('[data-progress-field]:not([data-progress-optional])'));
+
+        const setExpanded = (step, expanded) => {
+            const body = step.querySelector('[data-step-body]');
+            const toggle = step.querySelector('[data-step-toggle]');
+
+            if (body) {
+                body.hidden = !expanded;
+                step.classList.toggle('is-collapsed', !expanded);
+            }
+
+            if (toggle) {
+                toggle.setAttribute('aria-expanded', String(expanded));
+            }
+
+            step.classList.toggle('is-open', expanded);
+        };
+
+        const setLocked = (step, locked) => {
+            const toggle = step.querySelector('[data-step-toggle]');
+            step.classList.toggle('is-locked', locked);
+
+            if (toggle) {
+                toggle.disabled = locked;
+                toggle.setAttribute('aria-disabled', String(locked));
+            }
+
+            if (locked) {
+                setExpanded(step, false);
+            }
+        };
+
+        const isComplete = (step) => getRequiredFields(step).every(isFieldFilled);
+
+        steps.forEach((step, index) => {
+            if (index !== 0) {
+                step.classList.add('is-collapsed');
+                const body = step.querySelector('[data-step-body]');
+                if (body) {
+                    body.hidden = true;
+                }
+            }
+
+            setLocked(step, index !== 0);
+            setExpanded(step, index === 0);
+        });
+
+        const syncLocks = () => {
+            steps.forEach((step, index) => {
+                if (index === 0) {
+                    setLocked(step, false);
+                    return;
+                }
+
+                const wasLocked = step.classList.contains('is-locked');
+                const previousComplete = isComplete(steps[index - 1]);
+
+                setLocked(step, !previousComplete);
+
+                if (previousComplete && wasLocked) {
+                    setExpanded(step, true);
+                }
+            });
+        };
+
+        steps.forEach((step) => {
+            const toggle = step.querySelector('[data-step-toggle]');
+            if (!toggle) return;
+
+            toggle.addEventListener('click', () => {
+                if (step.classList.contains('is-locked')) return;
+
+                const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+                setExpanded(step, !isExpanded);
+            });
+        });
+
+        document.querySelectorAll('[data-progress-field]').forEach((field) => {
+            field.addEventListener('input', syncLocks);
+            field.addEventListener('change', syncLocks);
+        });
+
+        syncLocks();
     };
 
 
@@ -318,10 +518,12 @@
         initFieldHighlight();
         initScrollButtons();
         initProgress();
+        initDeferredValidation();
         initScoreChart();
         initLoadingOverlay();
         initResultAccordions();
         initNumberSteppers();
+        initStepFlow();
 
     };
 
