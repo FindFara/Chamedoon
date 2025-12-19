@@ -49,11 +49,10 @@
             }
         };
 
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         const storedPreference = readPreference();
         let activeMode = storedPreference === 'dark' || storedPreference === 'light'
             ? storedPreference
-            : (prefersDark ? 'dark' : 'light');
+            : 'light';
 
         applyMode(activeMode);
 

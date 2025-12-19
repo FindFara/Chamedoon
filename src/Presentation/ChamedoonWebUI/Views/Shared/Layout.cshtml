@@ -30,8 +30,7 @@
             };
 
             const storedPreference = readPreference();
-            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const isDark = storedPreference === 'dark' || (storedPreference !== 'light' && prefersDark);
+            const isDark = storedPreference === 'dark';
 
             document.documentElement.classList.toggle('dark-mode', isDark);
         })();
