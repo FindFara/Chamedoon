@@ -3,6 +3,7 @@ using System.Linq;
 using Chamedoon.Application.Services.Admin.Common.Models;
 using Chamedoon.Application.Services.Subscription;
 using Chamedoon.Domin.Entity.Blogs;
+using Chamedoon.Domin.Entity.Countries;
 using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Permissions;
 using Chamedoon.Domin.Entity.Payments;
@@ -105,4 +106,31 @@ internal static class AdminMappingExtensions
             code.CreatedAtUtc,
             code.ExpiresAtUtc,
             code.Description);
+
+    public static AdminCountryDto ToAdminCountryDto(this Country country)
+        => new(
+            country.Id,
+            country.Key,
+            country.Name,
+            country.InvestmentAmount,
+            country.InvestmentCurrency,
+            country.InvestmentNotes,
+            country.AdditionalInfo,
+            country.MaritalStatusImpact,
+            country.LivingCosts.Select(cost => cost.ToAdminCountryLivingCostDto()).ToList(),
+            country.Restrictions.Select(restriction => restriction.ToAdminCountryRestrictionDto()).ToList(),
+            country.Jobs.Select(job => job.ToAdminCountryJobDto()).ToList(),
+            country.Educations.Select(education => education.ToAdminCountryEducationDto()).ToList());
+
+    public static AdminCountryLivingCostDto ToAdminCountryLivingCostDto(this CountryLivingCost cost)
+        => new(cost.Id, cost.CountryId, cost.Type, cost.Value);
+
+    public static AdminCountryRestrictionDto ToAdminCountryRestrictionDto(this CountryRestriction restriction)
+        => new(restriction.Id, restriction.CountryId, restriction.Description);
+
+    public static AdminCountryJobDto ToAdminCountryJobDto(this CountryJob job)
+        => new(job.Id, job.CountryId, job.Title, job.Description, job.Score, job.ExperienceImpact);
+
+    public static AdminCountryEducationDto ToAdminCountryEducationDto(this CountryEducation education)
+        => new(education.Id, education.CountryId, education.FieldName, education.Description, education.Score, education.Level, education.LanguageRequirement);
 }
