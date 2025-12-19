@@ -329,6 +329,10 @@
     box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
 }
 
+.immigration-field.is-invalid .text-danger {
+    display: none;
+}
+
 .immigration-actions {
     display: flex;
     flex-wrap: wrap;

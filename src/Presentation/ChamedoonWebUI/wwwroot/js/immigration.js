@@ -361,23 +361,18 @@
             }
 
             getRequiredFields(step).forEach((field) => {
-                field.addEventListener('input', () => {
+                const runValidation = () => {
                     const isComplete = validateStepFields(step);
                     if (isComplete && index + 1 < steps.length) {
                         const nextStep = steps[index + 1];
                         setExpanded(nextStep, true);
                     }
                     updateToggleStates();
-                });
+                };
 
-                field.addEventListener('change', () => {
-                    const isComplete = validateStepFields(step);
-                    if (isComplete && index + 1 < steps.length) {
-                        const nextStep = steps[index + 1];
-                        setExpanded(nextStep, true);
-                    }
-                    updateToggleStates();
-                });
+                field.addEventListener('input', runValidation);
+                field.addEventListener('change', runValidation);
+                field.addEventListener('blur', runValidation);
             });
         });
 
