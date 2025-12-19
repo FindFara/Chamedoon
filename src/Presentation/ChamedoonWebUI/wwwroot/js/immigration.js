@@ -268,6 +268,51 @@
     };
 
 
+    const initNumberSteppers = () => {
+        const wrappers = document.querySelectorAll('[data-number-input]');
+        if (!wrappers.length) return;
+
+        wrappers.forEach((wrapper) => {
+            const input = wrapper.querySelector('input[type="number"]');
+            if (!input) return;
+
+            const parseOrFallback = (value, fallback) => {
+                const numeric = Number(value);
+                return Number.isFinite(numeric) ? numeric : fallback;
+            };
+
+            const applyStep = (direction) => {
+                const step = parseOrFallback(input.step, 1) || 1;
+                const min = input.min === '' ? -Infinity : parseOrFallback(input.min, -Infinity);
+                const max = input.max === '' ? Infinity : parseOrFallback(input.max, Infinity);
+                const baseValue = input.value === '' ? 0 : parseOrFallback(input.value, 0);
+
+                const delta = direction === 'up' ? step : -step;
+                let next = baseValue + delta;
+
+                next = Math.min(max, Math.max(min, next));
+                input.value = String(next);
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+                input.focus({ preventScroll: true });
+            };
+
+            wrapper.querySelectorAll('[data-step]').forEach((button) => {
+                button.addEventListener('mousedown', (event) => {
+                    event.preventDefault();
+                });
+
+                button.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const direction = button.getAttribute('data-step');
+                    if (!direction) return;
+                    applyStep(direction);
+                });
+            });
+        });
+    };
+
+
     const init = () => {
         initTooltips();
         initFieldHighlight();
@@ -276,6 +321,7 @@
         initScoreChart();
         initLoadingOverlay();
         initResultAccordions();
+        initNumberSteppers();
 
     };
 
