@@ -299,16 +299,20 @@
     font-weight: 700;
 }
 
-.immigration-step .step-chevron {
-    margin-inline-start: auto;
-    transition: transform 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-}
-
 .immigration-step .step-toggle.is-disabled {
     opacity: 0.6;
     cursor: not-allowed;
+}
+
+[data-step-toggle] .toggle-icon {
+    margin-inline-start: auto;
+    background-color: rgba(248, 250, 252, 0.9);
+}
+
+.step-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(180deg);
+    border-color: rgba(79, 70, 229, 0.45);
+    box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.12);
 }
 
 [data-step-content] {
@@ -319,8 +323,10 @@
     display: none;
 }
 
-.immigration-step[data-step-expanded="true"] .step-toggle .step-chevron {
-    transform: rotate(180deg);
+.immigration-field.is-invalid .form-control,
+.immigration-field.is-invalid .form-select {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12);
 }
 
 .immigration-actions {

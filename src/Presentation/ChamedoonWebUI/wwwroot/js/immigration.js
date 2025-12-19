@@ -273,9 +273,27 @@
         if (!steps.length) return;
 
         const getRequiredFields = (step) => Array.from(step.querySelectorAll('[data-progress-field]:not([data-progress-optional])'));
-        const isStepComplete = (step) => {
+        const isStepComplete = (step) => getRequiredFields(step).every(isFieldFilled);
+
+        const validateStepFields = (step) => {
             const requiredFields = getRequiredFields(step);
-            return requiredFields.length === 0 || requiredFields.every(isFieldFilled);
+            let complete = true;
+
+            requiredFields.forEach((field) => {
+                const filled = isFieldFilled(field);
+                const wrapper = field.closest('.immigration-field');
+
+                if (!filled) {
+                    complete = false;
+                    wrapper?.classList.add('is-invalid');
+                    field.setAttribute('aria-invalid', 'true');
+                } else {
+                    wrapper?.classList.remove('is-invalid');
+                    field.removeAttribute('aria-invalid');
+                }
+            });
+
+            return complete || requiredFields.length === 0;
         };
 
         const updateToggleStates = () => {
@@ -290,29 +308,19 @@
             });
         };
 
-        let currentStepIndex = 0;
+        const setExpanded = (step, expanded) => {
+            step.dataset.stepExpanded = expanded ? 'true' : 'false';
+            const content = step.querySelector('[data-step-content]');
+            if (content) {
+                content.hidden = !expanded;
+            }
 
-        const setActiveStep = (index) => {
-            steps.forEach((step, stepIndex) => {
-                const expanded = stepIndex === index;
-                step.dataset.stepExpanded = expanded ? 'true' : 'false';
-
-                const content = step.querySelector('[data-step-content]');
-                if (content) {
-                    content.hidden = !expanded;
-                }
-
-                const toggle = step.querySelector('[data-step-toggle]');
-                if (toggle) {
-                    toggle.setAttribute('aria-expanded', String(expanded));
-                }
-            });
-
-            currentStepIndex = index;
-            updateToggleStates();
+            const toggle = step.querySelector('[data-step-toggle]');
+            if (toggle) {
+                toggle.setAttribute('aria-expanded', String(expanded));
+            }
         };
 
-        const firstIncompleteIndex = steps.findIndex((step) => !isStepComplete(step));
         steps.forEach((step) => {
             step.dataset.stepExpanded = 'false';
             const content = step.querySelector('[data-step-content]');
@@ -321,34 +329,36 @@
             }
         });
 
-        setActiveStep(firstIncompleteIndex === -1 ? 0 : firstIncompleteIndex);
+        const firstStep = steps[0];
+        if (firstStep) {
+            setExpanded(firstStep, true);
+        }
 
         steps.forEach((step, index) => {
             const toggle = step.querySelector('[data-step-toggle]');
             if (toggle) {
                 toggle.addEventListener('click', () => {
                     if (toggle.disabled) return;
-                    setActiveStep(index);
+                    const expanded = step.dataset.stepExpanded === 'true';
+                    setExpanded(step, !expanded);
                 });
             }
 
             getRequiredFields(step).forEach((field) => {
                 field.addEventListener('input', () => {
-                    if (step.dataset.stepExpanded === 'true' && isStepComplete(step)) {
-                        const nextIndex = Math.min(steps.length - 1, index + 1);
-                        if (nextIndex !== index) {
-                            setActiveStep(nextIndex);
-                        }
+                    const isComplete = validateStepFields(step);
+                    if (isComplete && index + 1 < steps.length) {
+                        const nextStep = steps[index + 1];
+                        setExpanded(nextStep, true);
                     }
                     updateToggleStates();
                 });
 
                 field.addEventListener('change', () => {
-                    if (step.dataset.stepExpanded === 'true' && isStepComplete(step)) {
-                        const nextIndex = Math.min(steps.length - 1, index + 1);
-                        if (nextIndex !== index) {
-                            setActiveStep(nextIndex);
-                        }
+                    const isComplete = validateStepFields(step);
+                    if (isComplete && index + 1 < steps.length) {
+                        const nextStep = steps[index + 1];
+                        setExpanded(nextStep, true);
                     }
                     updateToggleStates();
                 });
