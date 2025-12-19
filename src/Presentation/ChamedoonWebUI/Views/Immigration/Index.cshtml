@@ -40,165 +40,185 @@
                         @Html.AntiForgeryToken()
                         <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
 
-                        <div class="immigration-step">
+                        <div class="immigration-step" data-step-index="0">
                             <div class="step-title">
-                                <span class="step-badge" aria-hidden="true">1</span>
-                                <span>مشخصات فردی</span>
+                                <button type="button" class="step-toggle" data-step-toggle>
+                                    <span class="step-badge" aria-hidden="true">1</span>
+                                    <span>مشخصات فردی</span>
+                                    <span class="step-chevron" aria-hidden="true">⌄</span>
+                                </button>
                             </div>
-                            <div class="immigration-form-grid">
-                                <div class="immigration-field">
-                                    <label for="Age" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="سن بین ۱۸ تا ۲۹ سال بیشترین امتیاز را دارد.">؟</span>
-                                        سن
-                                    </label>
-                                    <input asp-for="Age" class="form-control number-input number-input--plain" type="number" min="0" inputmode="numeric" data-progress-field />
-                                    <span asp-validation-for="Age" class="text-danger small"></span>
-                                </div>
-                                <div class="immigration-field">
-                                    <label for="MaritalStatus" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="افراد متأهل امتیاز بیشتری دریافت می‌کنند.">؟</span>
-                                        وضعیت تاهل
-                                    </label>
-                                    <select asp-for="MaritalStatus" class="form-select" asp-items="Html.GetEnumSelectList<MaritalStatusType>()" data-progress-field></select>
-                                    <span asp-validation-for="MaritalStatus" class="text-danger small"></span>
-                                </div>
-                                <div class="immigration-field">
-                                    <label for="MBTIPersonality" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="تیپ شخصیتی برای تطبیق فرهنگی استفاده می‌شود.">؟</span>
-                                        شخصیت MBTI (اختیاری)
-                                    </label>
-                                    <select asp-for="MBTIPersonality" class="form-select" asp-items="Html.GetEnumSelectList<PersonalityType>()" data-progress-field data-progress-optional></select>
-                                    <span asp-validation-for="MBTIPersonality" class="text-danger small"></span>
-                                </div>
-                                <div class="immigration-field">
-                                    <label for="InvestmentAmount" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="میزان سرمایه در مسیرهای سرمایه‌گذاری اثرگذار است.">؟</span>
-                                        میزان سرمایه (دلار/یورو)
-                                    </label>
-                                    <div class="number-input-wrapper" data-number-input>
-                                        <input asp-for="InvestmentAmount" class="form-control number-input" type="number" min="0" step="1000" data-progress-field />
-                                        <div class="number-stepper" aria-hidden="true">
-                                            <button type="button" class="step-btn step-btn-up" data-step="up" aria-label="افزایش مقدار">
-                                                <span aria-hidden="true">▲</span>
-                                            </button>
-                                            <button type="button" class="step-btn step-btn-down" data-step="down" aria-label="کاهش مقدار">
-                                                <span aria-hidden="true">▼</span>
-                                            </button>
+                            <div class="immigration-step-content" data-step-content>
+                                <div class="immigration-form-grid">
+                                    <div class="immigration-field">
+                                        <label for="Age" class="field-label">
+                                            <span class="hint-icon" data-bs-toggle="tooltip" title="سن بین ۱۸ تا ۲۹ سال بیشترین امتیاز را دارد.">؟</span>
+                                            سن
+                                        </label>
+                                        <input asp-for="Age" class="form-control number-input number-input--plain" type="number" min="0" inputmode="numeric" data-progress-field />
+                                        <span asp-validation-for="Age" class="text-danger small"></span>
+                                    </div>
+                                    <div class="immigration-field">
+                                        <label for="MaritalStatus" class="field-label">
+                                            <span class="hint-icon" data-bs-toggle="tooltip" title="افراد متأهل امتیاز بیشتری دریافت می‌کنند.">؟</span>
+                                            وضعیت تاهل
+                                        </label>
+                                        <select asp-for="MaritalStatus" class="form-select" asp-items="Html.GetEnumSelectList<MaritalStatusType>()" data-progress-field></select>
+                                        <span asp-validation-for="MaritalStatus" class="text-danger small"></span>
+                                    </div>
+                                    <div class="immigration-field">
+                                        <label for="MBTIPersonality" class="field-label">
+                                            <span class="hint-icon" data-bs-toggle="tooltip" title="تیپ شخصیتی برای تطبیق فرهنگی استفاده می‌شود.">؟</span>
+                                            شخصیت MBTI (اختیاری)
+                                        </label>
+                                        <select asp-for="MBTIPersonality" class="form-select" asp-items="Html.GetEnumSelectList<PersonalityType>()" data-progress-field data-progress-optional></select>
+                                        <span asp-validation-for="MBTIPersonality" class="text-danger small"></span>
+                                    </div>
+                                    <div class="immigration-field">
+                                        <label for="InvestmentAmount" class="field-label">
+                                            <span class="hint-icon" data-bs-toggle="tooltip" title="میزان سرمایه در مسیرهای سرمایه‌گذاری اثرگذار است.">؟</span>
+                                            میزان سرمایه (دلار/یورو)
+                                        </label>
+                                        <div class="number-input-wrapper" data-number-input>
+                                            <input asp-for="InvestmentAmount" class="form-control number-input" type="number" min="0" step="1000" data-progress-field />
+                                            <div class="number-stepper" aria-hidden="true">
+                                                <button type="button" class="step-btn step-btn-up" data-step="up" aria-label="افزایش مقدار">
+                                                    <span aria-hidden="true">▲</span>
+                                                </button>
+                                                <button type="button" class="step-btn step-btn-down" data-step="down" aria-label="کاهش مقدار">
+                                                    <span aria-hidden="true">▼</span>
+                                                </button>
+                                            </div>
                                         </div>
+                                        <span asp-validation-for="InvestmentAmount" class="text-danger small"></span>
                                     </div>
-                                    <span asp-validation-for="InvestmentAmount" class="text-danger small"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="immigration-step">
+                        <div class="immigration-step" data-step-index="1">
                             <div class="step-title">
-                                <span class="step-badge" aria-hidden="true">2</span>
-                                <span>شغل</span>
+                                <button type="button" class="step-toggle" data-step-toggle>
+                                    <span class="step-badge" aria-hidden="true">2</span>
+                                    <span>شغل</span>
+                                    <span class="step-chevron" aria-hidden="true">⌄</span>
+                                </button>
                             </div>
-                            <div class="immigration-form-grid">
-                                <div class="immigration-field">
-                                    <label for="JobCategory" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="دسته‌های پرتقاضا امتیاز بیشتری دارند.">؟</span>
-                                        دسته شغلی
-                                    </label>
-                                    <select asp-for="JobCategory" class="form-select" asp-items="Html.GetEnumSelectList<JobCategoryType>()" data-progress-field></select>
-                                    <span asp-validation-for="JobCategory" class="text-danger small"></span>
-                                </div>
-                                <div class="immigration-field">
-                                    <label for="JobTitle" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="عنوان‌های تخصصی یک امتیاز اضافه دریافت می‌کنند.">؟</span>
-                                        عنوان شغل (اختیاری)
-                                    </label>
-                                    <input asp-for="JobTitle" class="form-control" type="text" data-progress-field data-progress-optional />
-                                    <span asp-validation-for="JobTitle" class="text-danger small"></span>
-                                </div>
-                                <div class="immigration-field">
-                                    <label for="WorkExperienceYears" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="سابقه بیشتر از ۷ سال بیشترین امتیاز را دارد.">؟</span>
-                                        سابقه کاری (سال)
-                                    </label>
-                                    <div class="number-input-wrapper" data-number-input>
-                                        <input asp-for="WorkExperienceYears" class="form-control number-input" type="number" min="0" data-progress-field />
-                                        <div class="number-stepper" aria-hidden="true">
-                                            <button type="button" class="step-btn step-btn-up" data-step="up" aria-label="افزایش سابقه">
-                                                <span aria-hidden="true">▲</span>
-                                            </button>
-                                            <button type="button" class="step-btn step-btn-down" data-step="down" aria-label="کاهش سابقه">
-                                                <span aria-hidden="true">▼</span>
-                                            </button>
+                            <div class="immigration-step-content" data-step-content>
+                                <div class="immigration-form-grid">
+                                    <div class="immigration-field">
+                                        <label for="JobCategory" class="field-label">
+                                            <span class="hint-icon" data-bs-toggle="tooltip" title="دسته‌های پرتقاضا امتیاز بیشتری دارند.">؟</span>
+                                            دسته شغلی
+                                        </label>
+                                        <select asp-for="JobCategory" class="form-select" asp-items="Html.GetEnumSelectList<JobCategoryType>()" data-progress-field></select>
+                                        <span asp-validation-for="JobCategory" class="text-danger small"></span>
+                                    </div>
+                                    <div class="immigration-field">
+                                        <label for="JobTitle" class="field-label">
+                                            <span class="hint-icon" data-bs-toggle="tooltip" title="عنوان‌های تخصصی یک امتیاز اضافه دریافت می‌کنند.">؟</span>
+                                            عنوان شغل (اختیاری)
+                                        </label>
+                                        <input asp-for="JobTitle" class="form-control" type="text" data-progress-field data-progress-optional />
+                                        <span asp-validation-for="JobTitle" class="text-danger small"></span>
+                                    </div>
+                                    <div class="immigration-field">
+                                        <label for="WorkExperienceYears" class="field-label">
+                                            <span class="hint-icon" data-bs-toggle="tooltip" title="سابقه بیشتر از ۷ سال بیشترین امتیاز را دارد.">؟</span>
+                                            سابقه کاری (سال)
+                                        </label>
+                                        <div class="number-input-wrapper" data-number-input>
+                                            <input asp-for="WorkExperienceYears" class="form-control number-input" type="number" min="0" data-progress-field />
+                                            <div class="number-stepper" aria-hidden="true">
+                                                <button type="button" class="step-btn step-btn-up" data-step="up" aria-label="افزایش سابقه">
+                                                    <span aria-hidden="true">▲</span>
+                                                </button>
+                                                <button type="button" class="step-btn step-btn-down" data-step="down" aria-label="کاهش سابقه">
+                                                    <span aria-hidden="true">▼</span>
+                                                </button>
+                                            </div>
                                         </div>
+                                        <span asp-validation-for="WorkExperienceYears" class="text-danger small"></span>
                                     </div>
-                                    <span asp-validation-for="WorkExperienceYears" class="text-danger small"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="immigration-step">
+                        <div class="immigration-step" data-step-index="2">
                             <div class="step-title">
-                                <span class="step-badge" aria-hidden="true">3</span>
-                                <span>تحصیلات و زبان</span>
+                                <button type="button" class="step-toggle" data-step-toggle>
+                                    <span class="step-badge" aria-hidden="true">3</span>
+                                    <span>تحصیلات و زبان</span>
+                                    <span class="step-chevron" aria-hidden="true">⌄</span>
+                                </button>
                             </div>
-                            <div class="immigration-form-grid">
-                                <div class="immigration-field">
-                                    <label for="FieldCategory" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="رشته‌های فنی و درمانی امتیاز هم‌افزایی دارند.">؟</span>
-                                        دسته رشته
-                                    </label>
-                                    <select asp-for="FieldCategory" class="form-select" asp-items="Html.GetEnumSelectList<FieldCategoryType>()" data-progress-field></select>
-                                    <span asp-validation-for="FieldCategory" class="text-danger small"></span>
-                                </div>
-                                <div class="immigration-field">
-                                    <label for="DegreeLevel" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="تحصیلات بالاتر امتیاز بیشتری دارد.">؟</span>
-                                        مقطع تحصیلی
-                                    </label>
-                                    <select asp-for="DegreeLevel" class="form-select" asp-items="Html.GetEnumSelectList<DegreeLevelType>()" data-progress-field></select>
-                                    <span asp-validation-for="DegreeLevel" class="text-danger small"></span>
-                                </div>
-                                <div class="immigration-field">
-                                    <label for="LanguageCertificate" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="مدارک بین‌المللی معتبر امتیاز بیشتری دارند.">؟</span>
-                                        مدرک زبان
-                                    </label>
-                                    <select asp-for="LanguageCertificate" class="form-select" asp-items="Html.GetEnumSelectList<LanguageCertificateType>()" data-progress-field></select>
-                                    <span asp-validation-for="LanguageCertificate" class="text-danger small"></span>
-                                </div>
-                                <div class="immigration-field">
-                                    <label class="field-label" for="WillingToStudy">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="تمایل به تحصیل مسیرهای آموزشی را برجسته می‌کند.">؟</span>
-                                        تمایل به ادامه تحصیل
-                                    </label>
-                                    <div class="form-check form-switch">
-                                        <input asp-for="WillingToStudy" class="form-check-input" type="checkbox" role="switch" data-progress-field />
-                                        <label class="form-check-label" for="WillingToStudy">بله، تحصیل را در نظر دارم</label>
+                            <div class="immigration-step-content" data-step-content>
+                                <div class="immigration-form-grid">
+                                    <div class="immigration-field">
+                                        <label for="FieldCategory" class="field-label">
+                                            <span class="hint-icon" data-bs-toggle="tooltip" title="رشته‌های فنی و درمانی امتیاز هم‌افزایی دارند.">؟</span>
+                                            دسته رشته
+                                        </label>
+                                        <select asp-for="FieldCategory" class="form-select" asp-items="Html.GetEnumSelectList<FieldCategoryType>()" data-progress-field></select>
+                                        <span asp-validation-for="FieldCategory" class="text-danger small"></span>
                                     </div>
-                                    <span asp-validation-for="WillingToStudy" class="text-danger small"></span>
+                                    <div class="immigration-field">
+                                        <label for="DegreeLevel" class="field-label">
+                                            <span class="hint-icon" data-bs-toggle="tooltip" title="تحصیلات بالاتر امتیاز بیشتری دارد.">؟</span>
+                                            مقطع تحصیلی
+                                        </label>
+                                        <select asp-for="DegreeLevel" class="form-select" asp-items="Html.GetEnumSelectList<DegreeLevelType>()" data-progress-field></select>
+                                        <span asp-validation-for="DegreeLevel" class="text-danger small"></span>
+                                    </div>
+                                    <div class="immigration-field">
+                                        <label for="LanguageCertificate" class="field-label">
+                                            <span class="hint-icon" data-bs-toggle="tooltip" title="مدارک بین‌المللی معتبر امتیاز بیشتری دارند.">؟</span>
+                                            مدرک زبان
+                                        </label>
+                                        <select asp-for="LanguageCertificate" class="form-select" asp-items="Html.GetEnumSelectList<LanguageCertificateType>()" data-progress-field></select>
+                                        <span asp-validation-for="LanguageCertificate" class="text-danger small"></span>
+                                    </div>
+                                    <div class="immigration-field">
+                                        <label class="field-label" for="WillingToStudy">
+                                            <span class="hint-icon" data-bs-toggle="tooltip" title="تمایل به تحصیل مسیرهای آموزشی را برجسته می‌کند.">؟</span>
+                                            تمایل به ادامه تحصیل
+                                        </label>
+                                        <div class="form-check form-switch">
+                                            <input asp-for="WillingToStudy" class="form-check-input" type="checkbox" role="switch" data-progress-field />
+                                            <label class="form-check-label" for="WillingToStudy">بله، تحصیل را در نظر دارم</label>
+                                        </div>
+                                        <span asp-validation-for="WillingToStudy" class="text-danger small"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="immigration-step">
+                        <div class="immigration-step" data-step-index="3">
                             <div class="step-title">
-                                <span class="step-badge" aria-hidden="true">4</span>
-                                <span>اطلاعات تماس و توضیحات</span>
+                                <button type="button" class="step-toggle" data-step-toggle>
+                                    <span class="step-badge" aria-hidden="true">4</span>
+                                    <span>اطلاعات تماس و توضیحات</span>
+                                    <span class="step-chevron" aria-hidden="true">⌄</span>
+                                </button>
                             </div>
-                            <div class="immigration-form-grid">
-                                <div class="immigration-field">
-                                    <label for="Email" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="ایمیلی وارد کن که به‌روز است تا بتوانیم نتیجه را برایت ارسال کنیم.">؟</span>
-                                        ایمیل
-                                    </label>
-                                    <input asp-for="Email" class="form-control" type="email" data-progress-field data-progress-optional />
-                                    <span asp-validation-for="Email" class="text-danger small"></span>
-                                </div>
-                                <div class="immigration-field">
-                                    <label for="Notes" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="هر نکته‌ای که باید در پیشنهاد لحاظ شود را بنویس.">؟</span>
-                                        توضیحات تکمیلی
-                                    </label>
-                                    <textarea asp-for="Notes" class="form-control" rows="3" data-progress-field data-progress-optional></textarea>
-                                    <span asp-validation-for="Notes" class="text-danger small"></span>
+                            <div class="immigration-step-content" data-step-content>
+                                <div class="immigration-form-grid">
+                                    <div class="immigration-field">
+                                        <label for="Email" class="field-label">
+                                            <span class="hint-icon" data-bs-toggle="tooltip" title="ایمیلی وارد کن که به‌روز است تا بتوانیم نتیجه را برایت ارسال کنیم.">؟</span>
+                                            ایمیل
+                                        </label>
+                                        <input asp-for="Email" class="form-control" type="email" data-progress-field data-progress-optional />
+                                        <span asp-validation-for="Email" class="text-danger small"></span>
+                                    </div>
+                                    <div class="immigration-field">
+                                        <label for="Notes" class="field-label">
+                                            <span class="hint-icon" data-bs-toggle="tooltip" title="هر نکته‌ای که باید در پیشنهاد لحاظ شود را بنویس.">؟</span>
+                                            توضیحات تکمیلی
+                                        </label>
+                                        <textarea asp-for="Notes" class="form-control" rows="3" data-progress-field data-progress-optional></textarea>
+                                        <span asp-validation-for="Notes" class="text-danger small"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>

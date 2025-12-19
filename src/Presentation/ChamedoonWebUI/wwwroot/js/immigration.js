@@ -1,4 +1,21 @@
 (function () {
+    const isFieldFilled = (field) => {
+        if (field.type === 'checkbox') {
+            return field.checked;
+        }
+
+        if (field.tagName === 'SELECT') {
+            const value = field.value;
+            return value !== '' && value !== '0';
+        }
+
+        if (field.type === 'number') {
+            return Number(field.value || '0') > 0;
+        }
+
+        return Boolean(field.value && field.value.trim().length > 0);
+    };
+
     const initTooltips = () => {
         const prefersTouch = window.matchMedia('(hover: none)').matches;
         const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -81,26 +98,9 @@
         const requiredFields = fields.filter((field) => !field.hasAttribute('data-progress-optional'));
         const optionalFields = fields.filter((field) => field.hasAttribute('data-progress-optional'));
 
-        const isFilled = (field) => {
-            if (field.type === 'checkbox') {
-                return field.checked;
-            }
-
-            if (field.tagName === 'SELECT') {
-                const value = field.value;
-                return value !== '' && value !== '0';
-            }
-
-            if (field.type === 'number') {
-                return Number(field.value || '0') > 0;
-            }
-
-            return Boolean(field.value && field.value.trim().length > 0);
-        };
-
         const updateProgress = () => {
-            const filledRequired = requiredFields.filter(isFilled).length;
-            const filledOptional = optionalFields.filter(isFilled).length;
+            const filledRequired = requiredFields.filter(isFieldFilled).length;
+            const filledOptional = optionalFields.filter(isFieldFilled).length;
 
             const basePercent = requiredFields.length === 0 ? 0 : Math.round((filledRequired / requiredFields.length) * 100);
             const optionalBoost = optionalFields.length ? Math.round((filledOptional / optionalFields.length) * 10) : 0;
@@ -268,6 +268,97 @@
     };
 
 
+    const initStepFlow = () => {
+        const steps = Array.from(document.querySelectorAll('.immigration-step'));
+        if (!steps.length) return;
+
+        const getRequiredFields = (step) => Array.from(step.querySelectorAll('[data-progress-field]:not([data-progress-optional])'));
+        const isStepComplete = (step) => {
+            const requiredFields = getRequiredFields(step);
+            return requiredFields.length === 0 || requiredFields.every(isFieldFilled);
+        };
+
+        const updateToggleStates = () => {
+            steps.forEach((step, index) => {
+                const toggle = step.querySelector('[data-step-toggle]');
+                if (!toggle) return;
+
+                const unlocked = index === 0 || steps.slice(0, index).every(isStepComplete);
+                toggle.disabled = !unlocked;
+                toggle.setAttribute('aria-disabled', String(!unlocked));
+                toggle.classList.toggle('is-disabled', !unlocked);
+            });
+        };
+
+        let currentStepIndex = 0;
+
+        const setActiveStep = (index) => {
+            steps.forEach((step, stepIndex) => {
+                const expanded = stepIndex === index;
+                step.dataset.stepExpanded = expanded ? 'true' : 'false';
+
+                const content = step.querySelector('[data-step-content]');
+                if (content) {
+                    content.hidden = !expanded;
+                }
+
+                const toggle = step.querySelector('[data-step-toggle]');
+                if (toggle) {
+                    toggle.setAttribute('aria-expanded', String(expanded));
+                }
+            });
+
+            currentStepIndex = index;
+            updateToggleStates();
+        };
+
+        const firstIncompleteIndex = steps.findIndex((step) => !isStepComplete(step));
+        steps.forEach((step) => {
+            step.dataset.stepExpanded = 'false';
+            const content = step.querySelector('[data-step-content]');
+            if (content) {
+                content.hidden = true;
+            }
+        });
+
+        setActiveStep(firstIncompleteIndex === -1 ? 0 : firstIncompleteIndex);
+
+        steps.forEach((step, index) => {
+            const toggle = step.querySelector('[data-step-toggle]');
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    if (toggle.disabled) return;
+                    setActiveStep(index);
+                });
+            }
+
+            getRequiredFields(step).forEach((field) => {
+                field.addEventListener('input', () => {
+                    if (step.dataset.stepExpanded === 'true' && isStepComplete(step)) {
+                        const nextIndex = Math.min(steps.length - 1, index + 1);
+                        if (nextIndex !== index) {
+                            setActiveStep(nextIndex);
+                        }
+                    }
+                    updateToggleStates();
+                });
+
+                field.addEventListener('change', () => {
+                    if (step.dataset.stepExpanded === 'true' && isStepComplete(step)) {
+                        const nextIndex = Math.min(steps.length - 1, index + 1);
+                        if (nextIndex !== index) {
+                            setActiveStep(nextIndex);
+                        }
+                    }
+                    updateToggleStates();
+                });
+            });
+        });
+
+        updateToggleStates();
+    };
+
+
     const initNumberSteppers = () => {
         const wrappers = document.querySelectorAll('[data-number-input]');
         if (!wrappers.length) return;
@@ -322,6 +413,7 @@
         initLoadingOverlay();
         initResultAccordions();
         initNumberSteppers();
+        initStepFlow();
 
     };
 
