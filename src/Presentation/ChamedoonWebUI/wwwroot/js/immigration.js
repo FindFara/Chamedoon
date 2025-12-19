@@ -274,6 +274,11 @@
 
         const getRequiredFields = (step) => Array.from(step.querySelectorAll('[data-progress-field]:not([data-progress-optional])'));
         const isStepComplete = (step) => getRequiredFields(step).every(isFieldFilled);
+        const getValidationMessageEl = (field) => {
+            const name = field.getAttribute('name');
+            if (!name) return null;
+            return document.querySelector(`[data-valmsg-for="${name}"]`);
+        };
 
         const validateStepFields = (step) => {
             const requiredFields = getRequiredFields(step);
@@ -282,14 +287,25 @@
             requiredFields.forEach((field) => {
                 const filled = isFieldFilled(field);
                 const wrapper = field.closest('.immigration-field');
+                const messageEl = getValidationMessageEl(field);
 
                 if (!filled) {
                     complete = false;
                     wrapper?.classList.add('is-invalid');
                     field.setAttribute('aria-invalid', 'true');
+                    if (messageEl) {
+                        messageEl.textContent = '';
+                        messageEl.classList.remove('field-validation-error');
+                        messageEl.classList.add('field-validation-valid');
+                    }
                 } else {
                     wrapper?.classList.remove('is-invalid');
                     field.removeAttribute('aria-invalid');
+                    if (messageEl) {
+                        messageEl.textContent = '';
+                        messageEl.classList.remove('field-validation-error');
+                        messageEl.classList.add('field-validation-valid');
+                    }
                 }
             });
 
