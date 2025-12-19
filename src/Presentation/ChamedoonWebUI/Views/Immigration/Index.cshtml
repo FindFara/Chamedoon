@@ -40,12 +40,15 @@
                         @Html.AntiForgeryToken()
                         <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
 
-                        <div class="immigration-step">
-                            <div class="step-title">
-                                <span class="step-badge" aria-hidden="true">1</span>
-                                <span>مشخصات فردی</span>
-                            </div>
-                            <div class="immigration-form-grid">
+                        <div class="immigration-step" data-immigration-step data-step-index="1">
+                            <button type="button" class="step-toggle" data-step-toggle aria-expanded="true" aria-controls="stepPanel1">
+                                <div class="step-title">
+                                    <span class="step-badge" aria-hidden="true">1</span>
+                                    <span>مشخصات فردی</span>
+                                </div>
+                                <span class="toggle-icon" aria-hidden="true"></span>
+                            </button>
+                            <div class="immigration-form-grid immigration-step-body" id="stepPanel1" data-step-body>
                                 <div class="immigration-field">
                                     <label for="Age" class="field-label">
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="سن بین ۱۸ تا ۲۹ سال بیشترین امتیاز را دارد.">؟</span>
@@ -91,12 +94,15 @@
                             </div>
                         </div>
 
-                        <div class="immigration-step">
-                            <div class="step-title">
-                                <span class="step-badge" aria-hidden="true">2</span>
-                                <span>شغل</span>
-                            </div>
-                            <div class="immigration-form-grid">
+                        <div class="immigration-step" data-immigration-step data-step-index="2">
+                            <button type="button" class="step-toggle" data-step-toggle aria-expanded="false" aria-controls="stepPanel2">
+                                <div class="step-title">
+                                    <span class="step-badge" aria-hidden="true">2</span>
+                                    <span>شغل</span>
+                                </div>
+                                <span class="toggle-icon" aria-hidden="true"></span>
+                            </button>
+                            <div class="immigration-form-grid immigration-step-body" id="stepPanel2" data-step-body>
                                 <div class="immigration-field">
                                     <label for="JobCategory" class="field-label">
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="دسته‌های پرتقاضا امتیاز بیشتری دارند.">؟</span>
@@ -134,12 +140,15 @@
                             </div>
                         </div>
 
-                        <div class="immigration-step">
-                            <div class="step-title">
-                                <span class="step-badge" aria-hidden="true">3</span>
-                                <span>تحصیلات و زبان</span>
-                            </div>
-                            <div class="immigration-form-grid">
+                        <div class="immigration-step" data-immigration-step data-step-index="3">
+                            <button type="button" class="step-toggle" data-step-toggle aria-expanded="false" aria-controls="stepPanel3">
+                                <div class="step-title">
+                                    <span class="step-badge" aria-hidden="true">3</span>
+                                    <span>تحصیلات و زبان</span>
+                                </div>
+                                <span class="toggle-icon" aria-hidden="true"></span>
+                            </button>
+                            <div class="immigration-form-grid immigration-step-body" id="stepPanel3" data-step-body>
                                 <div class="immigration-field">
                                     <label for="FieldCategory" class="field-label">
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="رشته‌های فنی و درمانی امتیاز هم‌افزایی دارند.">؟</span>
@@ -178,12 +187,15 @@
                             </div>
                         </div>
 
-                        <div class="immigration-step">
-                            <div class="step-title">
-                                <span class="step-badge" aria-hidden="true">4</span>
-                                <span>اطلاعات تماس و توضیحات</span>
-                            </div>
-                            <div class="immigration-form-grid">
+                        <div class="immigration-step" data-immigration-step data-step-index="4">
+                            <button type="button" class="step-toggle" data-step-toggle aria-expanded="false" aria-controls="stepPanel4">
+                                <div class="step-title">
+                                    <span class="step-badge" aria-hidden="true">4</span>
+                                    <span>اطلاعات تماس و توضیحات</span>
+                                </div>
+                                <span class="toggle-icon" aria-hidden="true"></span>
+                            </button>
+                            <div class="immigration-form-grid immigration-step-body" id="stepPanel4" data-step-body>
                                 <div class="immigration-field">
                                     <label for="Email" class="field-label">
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="ایمیلی وارد کن که به‌روز است تا بتوانیم نتیجه را برایت ارسال کنیم.">؟</span>
@@ -201,6 +213,10 @@
                                     <span asp-validation-for="Notes" class="text-danger small"></span>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="validation-summary validation-summary-inline d-none" data-inline-errors role="alert" aria-live="polite">
+                            <ul class="mb-0"></ul>
                         </div>
 
                         <div class="immigration-actions">
