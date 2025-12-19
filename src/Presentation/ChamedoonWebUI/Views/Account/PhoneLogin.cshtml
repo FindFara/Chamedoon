@@ -1,6 +1,6 @@
 @model ChamedoonWebUI.Models.PhoneLoginViewModel
 @{
-    ViewData["Title"] = "ورود و ثبت نام با موبایل";
+    ViewData["Title"] = "ورود و ثبت نام";
     ViewData["HideChrome"] = true;
     var nonce = ViewData["PhoneLoginNonce"] as string ?? string.Empty;
     var returnUrl = ViewData["ReturnUrl"] as string ?? Url.Action("Index", "Home");
@@ -56,7 +56,7 @@
         <div class="auth-grid auth-grid-compact auth-grid-single">
             <div class="glass-card auth-card auth-card-compact">
                 <div class="auth-card-header text-center">
-                    <h2 class="mb-1">ورود / ثبت‌نام با موبایل</h2>
+                    <h2 class="mb-1">ورود / ثبت‌نام </h2>
                 </div>
 
                 <form asp-action="SendPhoneCode" method="post" novalidate data-prevent-multi-submit="true" data-form="send-phone-code">
