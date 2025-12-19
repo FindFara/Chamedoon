@@ -201,7 +201,7 @@
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="ایمیلی وارد کن که به‌روز است تا بتوانیم نتیجه را برایت ارسال کنیم.">؟</span>
                                         ایمیل
                                     </label>
-                                    <input asp-for="Email" class="form-control" type="email" data-progress-field data-progress-optional />
+                                    <input asp-for="Email" class="form-control" type="email" data-progress-field data-required-label="ایمیل" />
                                     <span asp-validation-for="Email" class="text-danger small"></span>
                                 </div>
                                 <div class="immigration-field">
@@ -213,6 +213,10 @@
                                     <span asp-validation-for="Notes" class="text-danger small"></span>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="validation-summary validation-summary-inline d-none" data-inline-errors role="alert" aria-live="polite">
+                            <ul class="mb-0"></ul>
                         </div>
 
                         <div class="immigration-actions">

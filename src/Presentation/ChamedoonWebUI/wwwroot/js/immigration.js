@@ -28,6 +28,28 @@
         parent.classList.toggle('is-invalid', Boolean(isActive && !isOptional && !isFieldFilled(field)));
     };
 
+    const escapeSelector = (value) => {
+        if (window.CSS && typeof window.CSS.escape === 'function') {
+            return window.CSS.escape(value);
+        }
+        return value.replace(/([ !"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, '\\$1');
+    };
+
+    const getFieldLabel = (field) => {
+        const customLabel = field.getAttribute('data-required-label');
+        if (customLabel) return customLabel.trim();
+
+        const fieldId = field.id;
+        if (fieldId) {
+            const label = document.querySelector(`label[for="${escapeSelector(fieldId)}"]`);
+            if (label) {
+                return (label.textContent || '').trim();
+            }
+        }
+
+        return field.name || 'فیلد';
+    };
+
     const initTooltips = () => {
         const prefersTouch = window.matchMedia('(hover: none)').matches;
         const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -137,6 +159,28 @@
         if (!form || !requiredFields.length) return;
 
         let validationActivated = false;
+        const inlineErrors = document.querySelector('[data-inline-errors]');
+        const inlineList = inlineErrors ? inlineErrors.querySelector('ul') : null;
+
+        const renderInlineErrors = (messages) => {
+            if (!inlineErrors || !inlineList) return;
+
+            inlineList.innerHTML = '';
+            if (!messages.length) {
+                inlineErrors.classList.add('d-none');
+                inlineErrors.setAttribute('hidden', 'hidden');
+                return;
+            }
+
+            messages.forEach((message) => {
+                const li = document.createElement('li');
+                li.textContent = message;
+                inlineList.appendChild(li);
+            });
+
+            inlineErrors.classList.remove('d-none');
+            inlineErrors.removeAttribute('hidden');
+        };
 
         const renderValidation = () => {
             requiredFields.forEach((field) => setFieldValidityState(field, validationActivated));
@@ -159,8 +203,23 @@
             renderValidation();
         };
 
+        form.addEventListener('submit', (event) => {
+            activateValidation();
+            const missingFields = requiredFields.filter((field) => !isFieldFilled(field));
+
+            if (missingFields.length) {
+                event.preventDefault();
+                const messages = missingFields.map((field) => `فیلد ${getFieldLabel(field)} اجباری می‌باشد.`);
+                renderInlineErrors(messages);
+                return;
+            }
+
+            renderInlineErrors([]);
+        });
+
         // Clear any pre-existing error borders on first paint
         renderValidation();
+        renderInlineErrors([]);
     };
 
     const initScoreChart = () => {
@@ -266,8 +325,11 @@
             }
         };
 
-        form.addEventListener('submit', () => {
+        form.addEventListener('submit', (event) => {
             activateValidation();
+            if (event.defaultPrevented) {
+                return;
+            }
             showOverlay();
         });
     };

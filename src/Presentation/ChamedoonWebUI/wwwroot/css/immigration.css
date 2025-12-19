@@ -401,6 +401,10 @@
     margin-bottom: 1rem;
 }
 
+.validation-summary-inline {
+    margin-top: 1rem;
+}
+
 .immigration-result-hero {
     padding: clamp(1.5rem, 3vw, 2rem);
     border-radius: 1.25rem;
