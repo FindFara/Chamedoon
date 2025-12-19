@@ -65,7 +65,7 @@
                     <input type="hidden" name="returnUrl" value="@returnUrl" />
                     <div class="glass-field">
                         <label asp-for="PhoneNumber" class="form-label">شماره موبایل</label>
-                        <input asp-for="PhoneNumber" class="form-control glass-input" placeholder="مثال: 09123456789" />
+                        <input asp-for="PhoneNumber" class="form-control glass-input" />
                         <spa></span>
                     </div>
                     <button type="submit" class="btn-glass-primary w-100" id="sendCodeButton" data-processing-text="در حال ارسال..." @(Model.CodeSent ? "disabled" : null)>ارسال کد تایید</button>
@@ -74,8 +74,7 @@
 
                 <div class="auth-meta text-center mt-3">
                     <span>
-                        با ارسال کد، <a href="/terms" target="_blank" rel="noopener noreferrer">قوانین</a>
-                        و <a href="/privacy" target="_blank" rel="noopener noreferrer">حریم خصوصی</a> چمدون را می‌پذیرم.
+                        با ارسال کد، قوانین و حریم خصوصی چمدون را می‌پذیرم.
                     </span>
                 </div>
             </div>
