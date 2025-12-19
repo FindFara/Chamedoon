@@ -168,11 +168,16 @@
 }
 
 .number-input-wrapper {
-    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: stretch;
+    gap: 0.5rem;
 }
 
 .number-input {
     -moz-appearance: textfield;
+    flex: 1 1 auto;
+    width: 100%;
 }
 
 .number-input::-webkit-inner-spin-button,
@@ -185,18 +190,11 @@
     padding-inline-start: 1rem;
 }
 
-.number-input--with-stepper {
-    padding-inline-start: 3.4rem;
-}
-
 .number-stepper {
-    position: absolute;
-    inset-inline-start: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
     display: grid;
-    gap: 0.15rem;
-    padding: 0.3rem;
+    grid-template-rows: repeat(2, 1fr);
+    width: 3.4rem;
+    min-height: 100%;
     border-radius: 0.9rem;
     border: 1px solid rgba(148, 163, 184, 0.35);
     background: rgba(255, 255, 255, 0.72);
@@ -204,8 +202,8 @@
 }
 
 .step-btn {
-    width: 1.6rem;
-    height: 1.35rem;
+    width: 100%;
+    height: 100%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
