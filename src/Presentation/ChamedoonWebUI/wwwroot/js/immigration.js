@@ -227,6 +227,47 @@
     };
 
 
+    const initResultAccordions = () => {
+        const countryCards = document.querySelectorAll('[data-country-card]');
+        countryCards.forEach((card) => {
+            const toggle = card.querySelector('[data-country-toggle]');
+            const panel = card.querySelector('[data-country-panel]');
+            if (!toggle || !panel) return;
+
+            const setExpanded = (expanded) => {
+                toggle.setAttribute('aria-expanded', String(expanded));
+                panel.hidden = !expanded;
+                card.classList.toggle('is-open', expanded);
+            };
+
+            setExpanded(false);
+
+            toggle.addEventListener('click', () => {
+                const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+                setExpanded(!isExpanded);
+            });
+        });
+
+        document.querySelectorAll('[data-detail-toggle]').forEach((toggle) => {
+            const targetId = toggle.getAttribute('aria-controls');
+            const panel = targetId ? document.getElementById(targetId) : null;
+            if (!panel) return;
+
+            const setExpanded = (expanded) => {
+                toggle.setAttribute('aria-expanded', String(expanded));
+                panel.hidden = !expanded;
+            };
+
+            setExpanded(false);
+
+            toggle.addEventListener('click', () => {
+                const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+                setExpanded(!isExpanded);
+            });
+        });
+    };
+
+
     const init = () => {
         initTooltips();
         initFieldHighlight();
@@ -234,6 +275,7 @@
         initProgress();
         initScoreChart();
         initLoadingOverlay();
+        initResultAccordions();
 
     };
 
