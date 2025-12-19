@@ -51,7 +51,7 @@
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="سن بین ۱۸ تا ۲۹ سال بیشترین امتیاز را دارد.">؟</span>
                                         سن
                                     </label>
-                                    <input asp-for="Age" class="form-control" type="number" min="0" data-progress-field />
+                                    <input asp-for="Age" class="form-control number-input number-input--plain" type="number" min="0" inputmode="numeric" data-progress-field />
                                     <span asp-validation-for="Age" class="text-danger small"></span>
                                 </div>
                                 <div class="immigration-field">
@@ -75,7 +75,17 @@
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="میزان سرمایه در مسیرهای سرمایه‌گذاری اثرگذار است.">؟</span>
                                         میزان سرمایه (دلار/یورو)
                                     </label>
-                                    <input asp-for="InvestmentAmount" class="form-control" type="number" min="0" step="1000" data-progress-field />
+                                    <div class="number-input-wrapper" data-number-input>
+                                        <input asp-for="InvestmentAmount" class="form-control number-input number-input--with-stepper" type="number" min="0" step="1000" data-progress-field />
+                                        <div class="number-stepper" aria-hidden="true">
+                                            <button type="button" class="step-btn step-btn-up" data-step="up" aria-label="افزایش مقدار">
+                                                <span aria-hidden="true">▲</span>
+                                            </button>
+                                            <button type="button" class="step-btn step-btn-down" data-step="down" aria-label="کاهش مقدار">
+                                                <span aria-hidden="true">▼</span>
+                                            </button>
+                                        </div>
+                                    </div>
                                     <span asp-validation-for="InvestmentAmount" class="text-danger small"></span>
                                 </div>
                             </div>
@@ -108,7 +118,17 @@
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="سابقه بیشتر از ۷ سال بیشترین امتیاز را دارد.">؟</span>
                                         سابقه کاری (سال)
                                     </label>
-                                    <input asp-for="WorkExperienceYears" class="form-control" type="number" min="0" data-progress-field />
+                                    <div class="number-input-wrapper" data-number-input>
+                                        <input asp-for="WorkExperienceYears" class="form-control number-input number-input--with-stepper" type="number" min="0" data-progress-field />
+                                        <div class="number-stepper" aria-hidden="true">
+                                            <button type="button" class="step-btn step-btn-up" data-step="up" aria-label="افزایش سابقه">
+                                                <span aria-hidden="true">▲</span>
+                                            </button>
+                                            <button type="button" class="step-btn step-btn-down" data-step="down" aria-label="کاهش سابقه">
+                                                <span aria-hidden="true">▼</span>
+                                            </button>
+                                        </div>
+                                    </div>
                                     <span asp-validation-for="WorkExperienceYears" class="text-danger small"></span>
                                 </div>
                             </div>

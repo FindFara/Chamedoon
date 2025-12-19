@@ -167,6 +167,82 @@
     background-size: 16px 12px;
 }
 
+.number-input-wrapper {
+    position: relative;
+}
+
+.number-input {
+    -moz-appearance: textfield;
+}
+
+.number-input::-webkit-inner-spin-button,
+.number-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.number-input--plain {
+    padding-inline-start: 1rem;
+}
+
+.number-input--with-stepper {
+    padding-inline-start: 3.4rem;
+}
+
+.number-stepper {
+    position: absolute;
+    inset-inline-start: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.3rem;
+    border-radius: 0.9rem;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 6px 12px -8px rgba(15, 23, 42, 0.25);
+}
+
+.step-btn {
+    width: 1.6rem;
+    height: 1.35rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 0.45rem;
+    background: linear-gradient(180deg, rgba(248, 250, 252, 0.9), rgba(226, 232, 240, 0.9));
+    color: #475569;
+    font-weight: 800;
+    font-size: 0.75rem;
+    padding: 0;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.step-btn:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, 0.15);
+    outline-offset: 2px;
+}
+
+.step-btn:hover {
+    border-color: rgba(79, 70, 229, 0.4);
+    box-shadow: 0 8px 16px -10px rgba(79, 70, 229, 0.4);
+}
+
+.step-btn:active {
+    transform: translateY(1px);
+}
+
+.step-btn-up {
+    padding-block-start: 0.2rem;
+}
+
+.step-btn-down {
+    padding-block-end: 0.2rem;
+}
+
 .immigration-field.is-focused .form-control,
 .immigration-field.is-focused .form-select {
     border-color: rgba(79, 70, 229, 0.65);
