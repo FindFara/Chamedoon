@@ -543,34 +543,17 @@
 }
 
 .toggle-icon {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1.6rem;
+    height: 1.6rem;
     border-radius: 0.6rem;
     border: 1px solid rgba(148, 163, 184, 0.35);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    background: rgba(255, 255, 255, 0.6) url('../img/accordion-chevron.svg') no-repeat center;
+    background-size: 0.9rem;
     transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-}
-
-.toggle-icon::before,
-.toggle-icon::after {
-    content: '';
-    position: absolute;
-    background: currentColor;
-    border-radius: 999px;
-    transition: transform 0.2s ease;
-}
-
-.toggle-icon::before {
-    width: 10px;
-    height: 2px;
-}
-
-.toggle-icon::after {
-    width: 2px;
-    height: 10px;
 }
 
 .country-toggle[aria-expanded="true"] .toggle-icon,
@@ -578,11 +561,6 @@
     transform: rotate(180deg);
     background: rgba(79, 70, 229, 0.08);
     border-color: rgba(79, 70, 229, 0.35);
-}
-
-.country-toggle[aria-expanded="true"] .toggle-icon::after,
-.detail-toggle[aria-expanded="true"] .toggle-icon::after {
-    transform: scaleY(0);
 }
 
 .country-heading {
