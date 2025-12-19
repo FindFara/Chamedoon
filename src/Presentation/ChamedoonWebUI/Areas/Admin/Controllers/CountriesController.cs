@@ -124,6 +124,15 @@ public class CountriesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteJob(long id, long countryId, CancellationToken cancellationToken)
+    {
+        var result = await _countryService.DeleteJobAsync(id, countryId, cancellationToken);
+        TempData[result.IsSuccess ? "Success" : "Error"] = result.Message;
+        return RedirectToCountryAnchor(countryId);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> SaveEducation(CountryEducationEditViewModel model, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
@@ -143,6 +152,15 @@ public class CountriesController : Controller
         }
 
         return RedirectToCountryAnchor(model.CountryId);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteEducation(long id, long countryId, CancellationToken cancellationToken)
+    {
+        var result = await _countryService.DeleteEducationAsync(id, countryId, cancellationToken);
+        TempData[result.IsSuccess ? "Success" : "Error"] = result.Message;
+        return RedirectToCountryAnchor(countryId);
     }
 
     private IActionResult RedirectToCountryAnchor(long? countryId)

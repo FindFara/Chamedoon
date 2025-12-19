@@ -18,6 +18,8 @@ public interface IAdminCountryRepository
     Task<CountryRestriction> SaveRestrictionAsync(CountryRestriction restriction, CancellationToken cancellationToken);
     Task<CountryJob?> GetJobAsync(long id, CancellationToken cancellationToken);
     Task<CountryJob> SaveJobAsync(CountryJob job, CancellationToken cancellationToken);
+    Task<bool> DeleteJobAsync(long id, CancellationToken cancellationToken);
     Task<CountryEducation?> GetEducationAsync(long id, CancellationToken cancellationToken);
     Task<CountryEducation> SaveEducationAsync(CountryEducation education, CancellationToken cancellationToken);
+    Task<bool> DeleteEducationAsync(long id, CancellationToken cancellationToken);
 }

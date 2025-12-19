@@ -11,4 +11,6 @@ public interface IAdminCountryService
     Task<OperationResult<AdminCountryRestrictionDto>> SaveRestrictionAsync(AdminCountryRestrictionInput input, CancellationToken cancellationToken);
     Task<OperationResult<AdminCountryJobDto>> SaveJobAsync(AdminCountryJobInput input, CancellationToken cancellationToken);
     Task<OperationResult<AdminCountryEducationDto>> SaveEducationAsync(AdminCountryEducationInput input, CancellationToken cancellationToken);
+    Task<OperationResult> DeleteJobAsync(long id, long countryId, CancellationToken cancellationToken);
+    Task<OperationResult> DeleteEducationAsync(long id, long countryId, CancellationToken cancellationToken);
 }
