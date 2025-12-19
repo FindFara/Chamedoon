@@ -20,12 +20,12 @@
         return Boolean(field.value && field.value.trim().length > 0);
     };
 
-    const setFieldValidityState = (field) => {
+    const setFieldValidityState = (field, isActive) => {
         const parent = field.closest('.immigration-field');
         if (!parent) return;
 
         const isOptional = field.hasAttribute('data-progress-optional');
-        parent.classList.toggle('is-invalid', !isOptional && !isFieldFilled(field));
+        parent.classList.toggle('is-invalid', Boolean(isActive && !isOptional && !isFieldFilled(field)));
     };
 
     const initTooltips = () => {
@@ -109,7 +109,6 @@
 
         const requiredFields = fields.filter((field) => !field.hasAttribute('data-progress-optional'));
         const optionalFields = fields.filter((field) => field.hasAttribute('data-progress-optional'));
-        let validationActivated = false;
 
         const updateProgress = () => {
             const filledRequired = requiredFields.filter(isFieldFilled).length;
@@ -121,10 +120,6 @@
 
             progressEl.style.setProperty('--progress', `${percent}%`);
             progressEl.setAttribute('data-progress-label', `${percent}% تکمیل شد`);
-
-            if (validationActivated) {
-                fields.forEach(setFieldValidityState);
-            }
         };
 
         fields.forEach((field) => {
@@ -132,12 +127,40 @@
             field.addEventListener('change', updateProgress);
         });
 
-        activateValidation = () => {
-            validationActivated = true;
-            fields.forEach(setFieldValidityState);
+        updateProgress();
+    };
+
+    const initDeferredValidation = () => {
+        const form = document.querySelector('.immigration-form-card form');
+        const fields = Array.from(document.querySelectorAll('[data-progress-field]'));
+        const requiredFields = fields.filter((field) => !field.hasAttribute('data-progress-optional'));
+        if (!form || !requiredFields.length) return;
+
+        let validationActivated = false;
+
+        const renderValidation = () => {
+            requiredFields.forEach((field) => setFieldValidityState(field, validationActivated));
         };
 
-        updateProgress();
+        fields.forEach((field) => {
+            field.addEventListener('input', () => {
+                if (!validationActivated) return;
+                renderValidation();
+            });
+
+            field.addEventListener('change', () => {
+                if (!validationActivated) return;
+                renderValidation();
+            });
+        });
+
+        activateValidation = () => {
+            validationActivated = true;
+            renderValidation();
+        };
+
+        // Clear any pre-existing error borders on first paint
+        renderValidation();
     };
 
     const initScoreChart = () => {
@@ -431,6 +454,7 @@
         initFieldHighlight();
         initScrollButtons();
         initProgress();
+        initDeferredValidation();
         initScoreChart();
         initLoadingOverlay();
         initResultAccordions();
