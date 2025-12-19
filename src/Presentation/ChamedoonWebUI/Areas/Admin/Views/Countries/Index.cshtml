@@ -341,9 +341,17 @@
                                                                 <div class="text-muted small">@job.Description</div>
                                                                 <div class="small text-secondary">امتیاز: @job.Score | سابقه: @job.ExperienceImpact</div>
                                                             </div>
-                                                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#edit-job-@job.Id">
-                                                                ویرایش
-                                                            </button>
+                                                            <div class="d-flex gap-2">
+                                                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#edit-job-@job.Id">
+                                                                    ویرایش
+                                                                </button>
+                                                                <form asp-action="DeleteJob" method="post" onsubmit="return confirm('آیا از حذف این شغل مطمئن هستید؟');">
+                                                                    @Html.AntiForgeryToken()
+                                                                    <input type="hidden" name="id" value="@job.Id" />
+                                                                    <input type="hidden" name="countryId" value="@job.CountryId" />
+                                                                    <button class="btn btn-sm btn-outline-danger" type="submit">حذف</button>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                         <div class="collapse mt-3" id="edit-job-@job.Id" data-bs-parent="#jobs-@country.Id">
                                                             <form asp-action="SaveJob" method="post" class="row g-2 align-items-end">
@@ -432,9 +440,17 @@
                                                                 <div class="text-muted small">@education.Description</div>
                                                                 <div class="small text-secondary">امتیاز: @education.Score | مقطع: @education.Level | زبان: @education.LanguageRequirement</div>
                                                             </div>
-                                                            <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#edit-education-@education.Id">
-                                                                ویرایش
-                                                            </button>
+                                                            <div class="d-flex gap-2">
+                                                                <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#edit-education-@education.Id">
+                                                                    ویرایش
+                                                                </button>
+                                                                <form asp-action="DeleteEducation" method="post" onsubmit="return confirm('آیا از حذف این مسیر تحصیلی مطمئن هستید؟');">
+                                                                    @Html.AntiForgeryToken()
+                                                                    <input type="hidden" name="id" value="@education.Id" />
+                                                                    <input type="hidden" name="countryId" value="@education.CountryId" />
+                                                                    <button class="btn btn-sm btn-outline-danger" type="submit">حذف</button>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                         <div class="collapse mt-3" id="edit-education-@education.Id" data-bs-parent="#educations-@country.Id">
                                                             <form asp-action="SaveEducation" method="post" class="row g-2 align-items-end">

@@ -164,6 +164,52 @@ public class AdminCountryService : IAdminCountryService
         return OperationResult<AdminCountryEducationDto>.Success(saved.ToAdminCountryEducationDto());
     }
 
+    public async Task<OperationResult> DeleteJobAsync(long id, long countryId, CancellationToken cancellationToken)
+    {
+        if (!await CountryExistsAsync(countryId, cancellationToken))
+        {
+            return OperationResult.Fail("کشور مورد نظر یافت نشد.");
+        }
+
+        var existing = await _repository.GetJobAsync(id, cancellationToken);
+        if (existing is null || existing.CountryId != countryId)
+        {
+            return OperationResult.Fail("شغل مورد نظر یافت نشد.");
+        }
+
+        var deleted = await _repository.DeleteJobAsync(id, cancellationToken);
+        if (!deleted)
+        {
+            return OperationResult.Fail("حذف شغل انجام نشد.");
+        }
+
+        ClearCountryCache();
+        return OperationResult.Success("شغل حذف شد.");
+    }
+
+    public async Task<OperationResult> DeleteEducationAsync(long id, long countryId, CancellationToken cancellationToken)
+    {
+        if (!await CountryExistsAsync(countryId, cancellationToken))
+        {
+            return OperationResult.Fail("کشور مورد نظر یافت نشد.");
+        }
+
+        var existing = await _repository.GetEducationAsync(id, cancellationToken);
+        if (existing is null || existing.CountryId != countryId)
+        {
+            return OperationResult.Fail("مسیر تحصیلی یافت نشد.");
+        }
+
+        var deleted = await _repository.DeleteEducationAsync(id, cancellationToken);
+        if (!deleted)
+        {
+            return OperationResult.Fail("حذف مسیر تحصیلی انجام نشد.");
+        }
+
+        ClearCountryCache();
+        return OperationResult.Success("مسیر تحصیلی حذف شد.");
+    }
+
     private static AdminCountryInput NormalizeCountry(AdminCountryInput input)
         => new(
             input.Id,

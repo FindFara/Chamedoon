@@ -123,6 +123,19 @@ public class AdminCountryRepository : IAdminCountryRepository
         return job;
     }
 
+    public async Task<bool> DeleteJobAsync(long id, CancellationToken cancellationToken)
+    {
+        var existing = await _context.CountryJobs.FirstOrDefaultAsync(j => j.Id == id, cancellationToken);
+        if (existing is null)
+        {
+            return false;
+        }
+
+        _context.CountryJobs.Remove(existing);
+        await _context.SaveChangesAsync(cancellationToken);
+        return true;
+    }
+
     public Task<CountryEducation?> GetEducationAsync(long id, CancellationToken cancellationToken)
         => _context.CountryEducations.FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
 
@@ -139,5 +152,18 @@ public class AdminCountryRepository : IAdminCountryRepository
 
         await _context.SaveChangesAsync(cancellationToken);
         return education;
+    }
+
+    public async Task<bool> DeleteEducationAsync(long id, CancellationToken cancellationToken)
+    {
+        var existing = await _context.CountryEducations.FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
+        if (existing is null)
+        {
+            return false;
+        }
+
+        _context.CountryEducations.Remove(existing);
+        await _context.SaveChangesAsync(cancellationToken);
+        return true;
     }
 }
