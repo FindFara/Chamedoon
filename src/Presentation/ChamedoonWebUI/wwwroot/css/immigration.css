@@ -3,7 +3,16 @@
 }
 
 .immigration-page {
+    --immigration-surface: #f8fafc;
+    --immigration-panel: rgba(255, 255, 255, 0.92);
+    --immigration-step-surface: #ffffff;
+    --immigration-step-border: rgba(148, 163, 184, 0.2);
     padding-block: clamp(2.5rem, 4vw, 3.75rem);
+    background:
+        radial-gradient(circle at 18% 14%, rgba(79, 70, 229, 0.06), transparent 40%),
+        radial-gradient(circle at 82% 0, rgba(14, 165, 233, 0.06), transparent 42%),
+        linear-gradient(180deg, var(--immigration-surface) 0%, #eef2ff 32%, #f8fafc 100%);
+    border-radius: clamp(1.35rem, 2vw, 1.75rem);
 }
 
 .immigration-hero {
@@ -67,7 +76,9 @@
 .immigration-form-card {
     padding: clamp(1.5rem, 3vw, 2rem);
     border-radius: 1.5rem;
-    box-shadow: 0 18px 48px -28px rgba(15, 23, 42, 0.45);
+    background: linear-gradient(140deg, rgba(79, 70, 229, 0.08), rgba(14, 165, 233, 0.06)), var(--immigration-panel);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    box-shadow: 0 24px 52px -30px rgba(15, 23, 42, 0.45);
     margin-inline: auto;
 }
 
@@ -170,9 +181,10 @@
 
 .immigration-step {
     padding: clamp(1rem, 2vw, 1.35rem);
-    border: 1px solid rgba(148, 163, 184, 0.25);
+    border: 1px solid var(--immigration-step-border);
     border-radius: 1.25rem;
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--immigration-step-surface);
+    box-shadow: 0 16px 38px -30px rgba(15, 23, 42, 0.42);
 }
 
 .immigration-step + .immigration-step {
@@ -764,9 +776,29 @@
 body.landing-page.dark-mode .immigration-form-card,
 body.landing-page.dark-mode .immigration-step,
 body.landing-page.dark-mode .immigration-result-card {
-    background: rgba(15, 23, 42, 0.75);
-    border-color: rgba(148, 163, 184, 0.25);
     color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .immigration-page {
+    --immigration-surface: #0c1426;
+    --immigration-panel: rgba(15, 23, 42, 0.84);
+    --immigration-step-surface: rgba(17, 24, 39, 0.9);
+    --immigration-step-border: rgba(148, 163, 184, 0.32);
+    background:
+        radial-gradient(circle at 14% 12%, rgba(79, 70, 229, 0.18), transparent 44%),
+        radial-gradient(circle at 86% 6%, rgba(14, 165, 233, 0.14), transparent 38%),
+        linear-gradient(180deg, #0b1224 0%, #0f172a 35%, #0b1224 100%);
+}
+
+body.landing-page.dark-mode .immigration-form-card {
+    background: linear-gradient(140deg, rgba(99, 102, 241, 0.22), rgba(14, 165, 233, 0.12)), var(--immigration-panel);
+    border-color: var(--immigration-step-border);
+}
+
+body.landing-page.dark-mode .immigration-step,
+body.landing-page.dark-mode .immigration-result-card {
+    background: var(--immigration-step-surface);
+    border-color: var(--immigration-step-border);
 }
 
 body.landing-page.dark-mode .immigration-result-hero,

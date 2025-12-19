@@ -54,7 +54,7 @@
     </div>
     <div class="container">
         <div class="auth-grid auth-grid-compact auth-grid-single">
-            <div class="glass-card auth-card auth-card-compact">
+            <div class="glass-card auth-card auth-card-compact auth-card-tight">
                 <div class="auth-card-header text-center">
                     <h2 class="mb-1">ورود / ثبت‌نام </h2>
                 </div>
@@ -66,16 +66,15 @@
                     <div class="glass-field">
                         <label asp-for="PhoneNumber" class="form-label">شماره موبایل</label>
                         <input asp-for="PhoneNumber" class="form-control glass-input" placeholder="مثال: 09123456789" />
-                        <spa></span>
+                        <span></span>
                     </div>
                     <button type="submit" class="btn-glass-primary w-100" id="sendCodeButton" data-processing-text="در حال ارسال..." @(Model.CodeSent ? "disabled" : null)>ارسال کد تایید</button>
                     <div id="resendCountdown" class="text-center text-muted mt-2" style="display:@(Model.CodeSent ? "block" : "none")" aria-live="polite"></div>
                 </form>
 
-                <div class="auth-meta text-center mt-3">
+                <div class="auth-meta text-center mt-2">
                     <span>
-                        با ارسال کد، <a href="/terms" target="_blank" rel="noopener noreferrer">قوانین</a>
-                        و <a href="/privacy" target="_blank" rel="noopener noreferrer">حریم خصوصی</a> چمدون را می‌پذیرم.
+                        با ارسال کد، قوانین و حریم خصوصی چمدون را می‌پذیرم.
                     </span>
                 </div>
             </div>
