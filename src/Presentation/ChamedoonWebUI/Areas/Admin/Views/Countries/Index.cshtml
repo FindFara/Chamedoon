@@ -207,7 +207,7 @@
                                                                         @foreach (var option in livingCostOptions)
                                                                         {
                                                                             var isSelected = option.Value == ((int)cost.Type).ToString();
-                                                                            <option value="@option.Value" @(isSelected ? "selected" : null)>@option.Text</option>
+                                                                            <option value="@option.Value" selected="@isSelected">@option.Text</option>
                                                                         }
                                                                     </select>
                                                                 </div>
