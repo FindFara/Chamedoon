@@ -10,7 +10,7 @@
 
         if (field.tagName === 'SELECT') {
             const value = field.value;
-            return value !== '' && value !== '0';
+            return value !== '';
         }
 
         if (field.type === 'number') {
