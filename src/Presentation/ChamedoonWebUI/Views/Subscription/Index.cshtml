@@ -1,8 +1,15 @@
 @model ChamedoonWebUI.Models.SubscriptionPageViewModel
 @using System.Linq
+@using System.Text.RegularExpressions
 @using Chamedoon.Application.Services.Subscription
 @{ 
     ViewData["Title"] = "انتخاب اشتراک";
+    var fallbackPaymentMessage = Model.PaymentSuccess == false
+        ? "پرداخت تایید نشد."
+        : "پرداخت با موفقیت انجام شد.";
+    var resolvedPaymentMessage = string.IsNullOrWhiteSpace(Model.PaymentMessage) || Regex.IsMatch(Model.PaymentMessage, "[A-Za-z]")
+        ? fallbackPaymentMessage
+        : Model.PaymentMessage;
     string PlanAccent(int index) => index switch
     {
         0 => "plan-showcase--basic",
@@ -19,7 +26,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const paymentResult = {
-                message: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PaymentMessage)),
+                message: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(resolvedPaymentMessage)),
                 success: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PaymentSuccess)),
                 returnUrl: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ReturnUrl))
             };
@@ -157,13 +164,6 @@
                 const fallbackMessage = isFailure
                     ? 'پرداخت تایید نشد.'
                     : 'پرداخت با موفقیت انجام شد.';
-                const isForeign = (text) => /[A-Za-z]/.test(text ?? '');
-                const resolvedMessage = (message) => {
-                    if (!message || isForeign(message)) {
-                        return fallbackMessage;
-                    }
-                    return message;
-                };
 
                 const modalElement = document.getElementById('paymentResultModal');
                 if (!modalElement || typeof bootstrap === 'undefined') return;
@@ -181,7 +181,7 @@
                 }
 
                 if (messageEl) {
-                    messageEl.textContent = resolvedMessage(paymentResult.message);
+                    messageEl.textContent = paymentResult.message || fallbackMessage;
                 }
 
                 if (continueBtn) {
