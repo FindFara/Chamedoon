@@ -38,7 +38,9 @@ public static class ConfigureServices
         services.Configure<MelipayamakConfig>(configuration.GetSection(MelipayamakConfig.SectionName));
         services.AddHttpClient("MelipayamakSms", client =>
         {
-            var baseUrl = configuration.GetSection(MelipayamakConfig.SectionName)?.GetValue<string>(nameof(MelipayamakConfig.BaseUrl));
+            var melipayamakSection = configuration.GetSection(MelipayamakConfig.SectionName);
+            var baseUrl = melipayamakSection?.GetValue<string>(nameof(MelipayamakConfig.OtpApiBaseAddress));
+            baseUrl ??= melipayamakSection?.GetValue<string>(nameof(MelipayamakConfig.BaseUrl));
             if (!string.IsNullOrWhiteSpace(baseUrl) && Uri.TryCreate(baseUrl, UriKind.Absolute, out var baseUri))
             {
                 client.BaseAddress = baseUri;

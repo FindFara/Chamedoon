@@ -46,16 +46,17 @@ public class SendPhoneVerificationCodeCommandHandler : IRequestHandler<SendPhone
             return OperationResult<bool>.Success(true);
 
         }
-        _cache.Set(
-            CachePrefix + normalizedPhone,
-            code,
-            new MemoryCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2) });
 
         var result = await _smsService.SendVerificationCodeAsync(normalizedPhone, code, cancellationToken);
-        if (result.IsSuccess is false)
+        if (result.IsSuccess is false || string.IsNullOrWhiteSpace(result.Result))
         {
             return OperationResult<bool>.Fail(result.Message);
         }
+
+        _cache.Set(
+            CachePrefix + normalizedPhone,
+            result.Result,
+            new MemoryCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(2) });
 
         return OperationResult<bool>.Success(true);
     }
