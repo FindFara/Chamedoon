@@ -4,5 +4,5 @@ namespace Chamedoon.Application.Common.Interfaces;
 
 public interface ISmsService
 {
-    Task<OperationResult> SendVerificationCodeAsync(string phoneNumber, string code, CancellationToken cancellationToken);
+    Task<OperationResult<string>> SendVerificationCodeAsync(string phoneNumber, string code, CancellationToken cancellationToken);
 }

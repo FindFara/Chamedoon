@@ -3,6 +3,7 @@ using Chamedoon.Application.Common.Models;
 using Chamedoon.Domin.Configs;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -26,6 +27,15 @@ public class MelipayamakSmsService : ISmsService
 
     private sealed class MelipayamakResponse
     {
+        [JsonPropertyName("code")]
+        public string? Code { get; set; }
+
+        [JsonPropertyName("status")]
+        public string? Status { get; set; }
+    }
+
+    private sealed class LegacyMelipayamakResponse
+    {
         [JsonPropertyName("Value")]
         public string? Value { get; set; }
 
@@ -36,44 +46,45 @@ public class MelipayamakSmsService : ISmsService
         public string? StrRetStatus { get; set; }
     }
 
-    public async Task<OperationResult> SendVerificationCodeAsync(
+    public async Task<OperationResult<string>> SendVerificationCodeAsync(
         string phoneNumber, string code, CancellationToken cancellationToken)
     {
-        var client = _httpClientFactory.CreateClient(DefaultHttpClientName);
-        var message = $"کد تایید چمدون: {code}";
-
-        var payload = new FormUrlEncodedContent(new Dictionary<string, string>
+        if (string.IsNullOrWhiteSpace(_options.OtpTemplateCode))
         {
-            ["username"] = _options.Username,
-            ["password"] = _options.Password,
-            ["from"] = _options.From,
-            ["to"] = phoneNumber,
-            ["text"] = message,
-        });
+            _logger.LogError("Melipayamak OTP template code is not configured.");
+            return OperationResult<string>.Fail("امکان ارسال پیامک وجود ندارد.");
+        }
+
+        var client = _httpClientFactory.CreateClient(DefaultHttpClientName);
+        var endpoint = $"api/send/otp/{_options.OtpTemplateCode}";
+        var payload = new { to = phoneNumber };
 
         try
         {
-            using var response = await client.PostAsync(_options.BaseUrl, payload, cancellationToken);
+            using var response = await client.PostAsJsonAsync(endpoint, payload, cancellationToken);
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            MelipayamakResponse? dto = TryParseMelipayamakResponse(content);
-
-            if (response.IsSuccessStatusCode && dto is not null && dto.RetStatus == 1)
-                return OperationResult.Success();
+            if (response.IsSuccessStatusCode)
+            {
+                var dto = TryParseMelipayamakResponse(content);
+                var sentCode = dto?.Code ?? code;
+                if (string.IsNullOrWhiteSpace(sentCode) is false)
+                {
+                    return OperationResult<string>.Success(sentCode);
+                }
+            }
 
             _logger.LogError(
-                "Melipayamak SMS send failed. Http={StatusCode}, RetStatus={RetStatus}, StrRetStatus={StrRetStatus}, Raw={Content}",
+                "Melipayamak SMS send failed. Http={StatusCode}, Raw={Content}",
                 response.StatusCode,
-                dto?.RetStatus,
-                dto?.StrRetStatus,
                 content);
 
-            return OperationResult.Fail("ارسال پیامک با خطا مواجه شد. لطفا دوباره تلاش کنید.");
+            return OperationResult<string>.Fail("ارسال پیامک با خطا مواجه شد. لطفا دوباره تلاش کنید.");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to send SMS through Melipayamak");
-            return OperationResult.Fail("امکان ارسال پیامک وجود ندارد.");
+            return OperationResult<string>.Fail("امکان ارسال پیامک وجود ندارد.");
         }
     }
 
@@ -98,6 +109,26 @@ public class MelipayamakSmsService : ISmsService
         }
         catch (JsonException)
         {
+            try
+            {
+                var legacyResponse = JsonSerializer.Deserialize<LegacyMelipayamakResponse>(
+                    content,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (legacyResponse is not null && legacyResponse.RetStatus == 1)
+                {
+                    return new MelipayamakResponse
+                    {
+                        Code = legacyResponse.Value,
+                        Status = legacyResponse.StrRetStatus
+                    };
+                }
+            }
+            catch (JsonException)
+            {
+                // ignored
+            }
+
             return null;
         }
     }
