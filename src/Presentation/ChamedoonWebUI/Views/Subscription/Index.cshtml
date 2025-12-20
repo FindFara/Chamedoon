@@ -157,6 +157,13 @@
                 const fallbackMessage = isFailure
                     ? 'پرداخت تایید نشد.'
                     : 'پرداخت با موفقیت انجام شد.';
+                const isForeign = (text) => /[A-Za-z]/.test(text ?? '');
+                const resolvedMessage = (message) => {
+                    if (!message || isForeign(message)) {
+                        return fallbackMessage;
+                    }
+                    return message;
+                };
 
                 const modalElement = document.getElementById('paymentResultModal');
                 if (!modalElement || typeof bootstrap === 'undefined') return;
@@ -174,7 +181,7 @@
                 }
 
                 if (messageEl) {
-                    messageEl.textContent = paymentResult.message || fallbackMessage;
+                    messageEl.textContent = resolvedMessage(paymentResult.message);
                 }
 
                 if (continueBtn) {
