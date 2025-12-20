@@ -154,6 +154,9 @@
 
                 const isSuccess = paymentResult.success === true;
                 const isFailure = !isSuccess;
+                const fallbackMessage = isFailure
+                    ? 'پرداخت تایید نشد.'
+                    : 'پرداخت با موفقیت انجام شد.';
 
                 const modalElement = document.getElementById('paymentResultModal');
                 if (!modalElement || typeof bootstrap === 'undefined') return;
@@ -171,7 +174,7 @@
                 }
 
                 if (messageEl) {
-                    messageEl.textContent = paymentResult.message;
+                    messageEl.textContent = paymentResult.message || fallbackMessage;
                 }
 
                 if (continueBtn) {
