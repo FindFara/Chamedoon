@@ -20,10 +20,22 @@ public class SubscriptionController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string? reason = null)
+    public async Task<IActionResult> Index(string? reason = null, string? returnUrl = null)
     {
-        var alertMessage = TempData["SubscriptionMessage"] as string;
+        var subscriptionMessage = TempData["SubscriptionMessage"] as string;
         var tempDiscount = TempData["SubscriptionDiscountCode"] as string;
+        var paymentSuccess = ReadTempDataBool("SubscriptionSuccess");
+        var resolvedReturnUrl = NormalizeReturnUrl(returnUrl)
+            ?? NormalizeReturnUrl(TempData.Peek("SubscriptionReturnUrl") as string)
+            ?? NormalizeReturnUrl(Request.Headers["Referer"]);
+
+        if (!string.IsNullOrWhiteSpace(resolvedReturnUrl))
+        {
+            TempData["SubscriptionReturnUrl"] = resolvedReturnUrl;
+        }
+
+        var alertMessage = paymentSuccess.HasValue ? null : subscriptionMessage;
+        var paymentMessage = paymentSuccess.HasValue ? subscriptionMessage : null;
 
         if (!string.IsNullOrWhiteSpace(reason) && string.IsNullOrWhiteSpace(alertMessage))
         {
@@ -41,7 +53,10 @@ public class SubscriptionController : Controller
             CurrentSubscription = await _mediator.Send(new GetSubscriptionStatusQuery(User)),
             AlertMessage = alertMessage,
             LimitReached = string.Equals(reason, "limit", StringComparison.OrdinalIgnoreCase),
-            DiscountCode = tempDiscount
+            DiscountCode = tempDiscount,
+            PaymentSuccess = paymentSuccess,
+            PaymentMessage = paymentMessage,
+            ReturnUrl = resolvedReturnUrl
         };
 
         ViewData["Title"] = "انتخاب اشتراک";
@@ -68,7 +83,7 @@ public class SubscriptionController : Controller
 
     [HttpPost("subscribe")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Subscribe(string planId, string? discountCode)
+    public async Task<IActionResult> Subscribe(string planId, string? discountCode, string? returnUrl)
     {
         var eligibility = await _mediator.Send(new CheckSubscriptionEligibilityQuery(User));
         if (!eligibility.IsAuthenticated)
@@ -80,7 +95,13 @@ public class SubscriptionController : Controller
             });
         }
 
-        var callbackUrl = Url.Action("Callback", "Payment", values: null, protocol: Request.Scheme);
+        var resolvedReturnUrl = NormalizeReturnUrl(returnUrl) ?? NormalizeReturnUrl(TempData.Peek("SubscriptionReturnUrl") as string);
+        if (!string.IsNullOrWhiteSpace(resolvedReturnUrl))
+        {
+            TempData["SubscriptionReturnUrl"] = resolvedReturnUrl;
+        }
+
+        var callbackUrl = Url.Action("Callback", "Payment", new { returnUrl = resolvedReturnUrl }, Request.Scheme);
         if (string.IsNullOrWhiteSpace(callbackUrl))
         {
             TempData["SubscriptionMessage"] = "آدرس بازگشت پرداخت تنظیم نشده است.";
@@ -96,5 +117,44 @@ public class SubscriptionController : Controller
         }
 
         return Redirect(paymentResult.RedirectUrl);
+    }
+
+    private bool? ReadTempDataBool(string key)
+    {
+        if (!TempData.TryGetValue(key, out var raw) || raw is null)
+        {
+            return null;
+        }
+
+        return raw switch
+        {
+            bool b => b,
+            string s when bool.TryParse(s, out var parsed) => parsed,
+            _ => null
+        };
+    }
+
+    private string? NormalizeReturnUrl(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        if (Url.IsLocalUrl(value))
+        {
+            return value;
+        }
+
+        if (Uri.TryCreate(value, UriKind.Absolute, out var uri))
+        {
+            var localPath = uri.PathAndQuery;
+            if (Url.IsLocalUrl(localPath))
+            {
+                return localPath;
+            }
+        }
+
+        return null;
     }
 }

@@ -10,4 +10,7 @@ public class SubscriptionPageViewModel
     public string? AlertMessage { get; set; }
     public bool? LimitReached { get; set; }
     public string? DiscountCode { get; set; }
+    public string? PaymentMessage { get; set; }
+    public bool? PaymentSuccess { get; set; }
+    public string? ReturnUrl { get; set; }
 }
