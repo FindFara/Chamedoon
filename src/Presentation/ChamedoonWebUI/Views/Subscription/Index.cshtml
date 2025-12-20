@@ -4,12 +4,18 @@
 @using Chamedoon.Application.Services.Subscription
 @{ 
     ViewData["Title"] = "انتخاب اشتراک";
-    var fallbackPaymentMessage = Model.PaymentSuccess == false
-        ? "پرداخت تایید نشد."
-        : "پرداخت با موفقیت انجام شد.";
-    var resolvedPaymentMessage = string.IsNullOrWhiteSpace(Model.PaymentMessage) || Regex.IsMatch(Model.PaymentMessage, "[A-Za-z]")
-        ? fallbackPaymentMessage
-        : Model.PaymentMessage;
+    var hasPaymentResult = Model.PaymentSuccess.HasValue || !string.IsNullOrWhiteSpace(Model.PaymentMessage);
+    var fallbackPaymentMessage = Model.PaymentSuccess switch
+    {
+        true => "پرداخت با موفقیت انجام شد.",
+        false => "پرداخت تایید نشد.",
+        _ => null
+    };
+    var resolvedPaymentMessage = hasPaymentResult
+        ? (!string.IsNullOrWhiteSpace(Model.PaymentMessage) && !Regex.IsMatch(Model.PaymentMessage, "[A-Za-z]")
+            ? Model.PaymentMessage
+            : fallbackPaymentMessage ?? Model.PaymentMessage)
+        : null;
     string PlanAccent(int index) => index switch
     {
         0 => "plan-showcase--basic",
@@ -28,7 +34,8 @@
             const paymentResult = {
                 message: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(resolvedPaymentMessage)),
                 success: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PaymentSuccess)),
-                returnUrl: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ReturnUrl))
+                returnUrl: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ReturnUrl)),
+                hasResult: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(hasPaymentResult))
             };
             const globalDiscount = document.getElementById('global-discount');
             const planDiscountInputs = document.querySelectorAll('.plan-discount');
@@ -157,10 +164,11 @@
             });
 
             const showPaymentResultModal = () => {
+                if (!paymentResult.hasResult) return;
                 if (!paymentResult.message) return;
 
                 const isSuccess = paymentResult.success === true;
-                const isFailure = !isSuccess;
+                const isFailure = paymentResult.hasResult && !isSuccess;
                 const fallbackMessage = isFailure
                     ? 'پرداخت تایید نشد.'
                     : 'پرداخت با موفقیت انجام شد.';
@@ -275,7 +283,7 @@
 </section>
 
 <div class="modal fade" id="paymentResultModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered payment-result-modal__dialog">
         <div class="modal-content payment-result-modal">
             <div class="modal-header border-0">
                 <h5 class="modal-title" data-role="payment-title">وضعیت پرداخت</h5>
