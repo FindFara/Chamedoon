@@ -436,14 +436,9 @@
                     return;
                 }
 
-                const wasLocked = step.classList.contains('is-locked');
                 const previousComplete = isComplete(steps[index - 1]);
 
                 setLocked(step, !previousComplete);
-
-                if (previousComplete && wasLocked) {
-                    setExpanded(step, true);
-                }
             });
         };
 
