@@ -18,6 +18,11 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const paymentResult = {
+                message: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PaymentMessage)),
+                success: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PaymentSuccess)),
+                returnUrl: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ReturnUrl))
+            };
             const globalDiscount = document.getElementById('global-discount');
             const planDiscountInputs = document.querySelectorAll('.plan-discount');
             const planPriceElements = document.querySelectorAll('[data-plan-price]');
@@ -143,6 +148,47 @@
                     applyButton.classList.remove('is-loading');
                 }
             });
+
+            const showPaymentResultModal = () => {
+                if (!paymentResult.message) return;
+
+                const isSuccess = paymentResult.success === true;
+                const isFailure = !isSuccess;
+
+                const modalElement = document.getElementById('paymentResultModal');
+                if (!modalElement || typeof bootstrap === 'undefined') return;
+
+                modalElement.setAttribute('data-return-url', paymentResult.returnUrl ?? '');
+                modalElement.classList.toggle('payment-result-modal--success', isSuccess);
+                modalElement.classList.toggle('payment-result-modal--failure', isFailure);
+
+                const titleEl = modalElement.querySelector('[data-role="payment-title"]');
+                const messageEl = modalElement.querySelector('[data-role="payment-message"]');
+                const continueBtn = modalElement.querySelector('[data-role="payment-continue"]');
+
+                if (titleEl) {
+                    titleEl.textContent = isFailure ? 'پرداخت ناموفق' : 'پرداخت موفق';
+                }
+
+                if (messageEl) {
+                    messageEl.textContent = paymentResult.message;
+                }
+
+                if (continueBtn) {
+                    continueBtn.addEventListener('click', () => {
+                        const destination = paymentResult.returnUrl || '/';
+                        window.location.href = destination;
+                    }, { once: true });
+                }
+
+                const modalInstance = bootstrap.Modal.getOrCreateInstance(modalElement, {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                modalInstance.show();
+            };
+
+            showPaymentResultModal();
         });
     </script>
 }
@@ -192,6 +238,7 @@
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="planId" value="@plan.Id" />
                                 <input type="hidden" name="discountCode" class="plan-discount" value="@Model.DiscountCode" />
+                                <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
                                 <button type="submit" class="btn-glass-primary btn-rounded" @(isCurrent ? "disabled" : string.Empty)>
                                     @(isCurrent ? "فعال شده" : "انتخاب پلن")
                                 </button>
@@ -216,3 +263,29 @@
         </div>
     </div>
 </section>
+
+<div class="modal fade" id="paymentResultModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content payment-result-modal">
+            <div class="modal-header border-0">
+                <h5 class="modal-title" data-role="payment-title">وضعیت پرداخت</h5>
+            </div>
+            <div class="modal-body">
+                <div class="payment-result-modal__status">
+                    <div class="payment-result-modal__icon" aria-hidden="true">
+                        <span class="payment-result-modal__icon-success">✓</span>
+                        <span class="payment-result-modal__icon-failure">!</span>
+                    </div>
+                    <div>
+                        <p class="payment-result-modal__message mb-0" data-role="payment-message">@Model.PaymentMessage</p>
+                        <p class="payment-result-modal__hint mb-0">برای ادامه به صفحه قبلی برمی‌گردی.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">بستن</button>
+                <button type="button" class="btn btn-primary payment-result-modal__continue" data-role="payment-continue">ادامه</button>
+            </div>
+        </div>
+    </div>
+</div>
