@@ -1,8 +1,15 @@
 @model ChamedoonWebUI.Models.SubscriptionPageViewModel
 @using System.Linq
+@using System.Text.RegularExpressions
 @using Chamedoon.Application.Services.Subscription
 @{ 
     ViewData["Title"] = "انتخاب اشتراک";
+    var fallbackPaymentMessage = Model.PaymentSuccess == false
+        ? "پرداخت تایید نشد."
+        : "پرداخت با موفقیت انجام شد.";
+    var resolvedPaymentMessage = string.IsNullOrWhiteSpace(Model.PaymentMessage) || Regex.IsMatch(Model.PaymentMessage, "[A-Za-z]")
+        ? fallbackPaymentMessage
+        : Model.PaymentMessage;
     string PlanAccent(int index) => index switch
     {
         0 => "plan-showcase--basic",
@@ -19,7 +26,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const paymentResult = {
-                message: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PaymentMessage)),
+                message: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(resolvedPaymentMessage)),
                 success: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.PaymentSuccess)),
                 returnUrl: @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.ReturnUrl))
             };
@@ -152,23 +159,29 @@
             const showPaymentResultModal = () => {
                 if (!paymentResult.message) return;
 
+                const isSuccess = paymentResult.success === true;
+                const isFailure = !isSuccess;
+                const fallbackMessage = isFailure
+                    ? 'پرداخت تایید نشد.'
+                    : 'پرداخت با موفقیت انجام شد.';
+
                 const modalElement = document.getElementById('paymentResultModal');
                 if (!modalElement || typeof bootstrap === 'undefined') return;
 
                 modalElement.setAttribute('data-return-url', paymentResult.returnUrl ?? '');
-                modalElement.classList.toggle('payment-result-modal--success', paymentResult.success === true);
-                modalElement.classList.toggle('payment-result-modal--failure', paymentResult.success === false);
+                modalElement.classList.toggle('payment-result-modal--success', isSuccess);
+                modalElement.classList.toggle('payment-result-modal--failure', isFailure);
 
                 const titleEl = modalElement.querySelector('[data-role="payment-title"]');
                 const messageEl = modalElement.querySelector('[data-role="payment-message"]');
                 const continueBtn = modalElement.querySelector('[data-role="payment-continue"]');
 
                 if (titleEl) {
-                    titleEl.textContent = paymentResult.success === false ? 'پرداخت ناموفق' : 'پرداخت موفق';
+                    titleEl.textContent = isFailure ? 'پرداخت ناموفق' : 'پرداخت موفق';
                 }
 
                 if (messageEl) {
-                    messageEl.textContent = paymentResult.message;
+                    messageEl.textContent = paymentResult.message || fallbackMessage;
                 }
 
                 if (continueBtn) {

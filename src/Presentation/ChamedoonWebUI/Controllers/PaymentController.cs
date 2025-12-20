@@ -41,7 +41,7 @@ public class PaymentController : Controller
         TempData["SubscriptionSuccess"] = verification.IsSuccess;
         TempData["SubscriptionMessage"] = verification.IsSuccess
             ? "پرداخت با موفقیت انجام شد و اشتراک شما فعال شد."
-            : verification.Message ?? "پرداخت تایید نشد.";
+            : "تراکنش با خطا مواجه شد.";
 
         return RedirectToAction("Index", "Subscription", new { returnUrl = resolvedReturnUrl });
     }
