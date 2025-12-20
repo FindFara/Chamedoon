@@ -364,6 +364,11 @@
     padding: 0.2rem;
 }
 
+.payment-result-modal__dialog {
+    max-width: 520px;
+    width: calc(100% - 2.5rem);
+}
+
 .payment-result-modal__status {
     display: flex;
     align-items: center;
