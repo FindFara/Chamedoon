@@ -92,11 +92,18 @@ public class AccountController : Controller
     }
 
     [Route("phone")]
-    public IActionResult PhoneLogin(string? returnUrl = null, string? message = null)
+    public IActionResult PhoneLogin(string? returnUrl = null, string? message = null, string? phoneNumber = null)
     {
         ViewData["PhoneLoginNonce"] = PrepareRequestNonce(nameof(PhoneLogin));
         ViewData["ReturnUrl"] = GetSafeReturnUrl(returnUrl);
-        return View("PhoneLogin", new PhoneLoginViewModel { AlertMessage = message });
+
+        var pendingPhoneNumber = TempData.Peek("PendingPhoneNumber") as string;
+
+        return View("PhoneLogin", new PhoneLoginViewModel
+        {
+            AlertMessage = message,
+            PhoneNumber = string.IsNullOrWhiteSpace(phoneNumber) ? pendingPhoneNumber ?? string.Empty : phoneNumber
+        });
     }
 
     [Route("phone/verify")]
