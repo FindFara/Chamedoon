@@ -361,7 +361,17 @@
     border-radius: 18px;
     border: 1px solid rgba(79, 70, 229, 0.2);
     box-shadow: 0 28px 52px -30px rgba(15, 23, 42, 0.35);
-    padding: 0.2rem;
+    padding: 1.25rem;
+    min-height: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.25rem;
+}
+
+.payment-result-modal__dialog {
+    max-width: 420px;
+    width: calc(100% - 2.5rem);
 }
 
 .payment-result-modal__status {
@@ -371,15 +381,18 @@
 }
 
 .payment-result-modal__icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 18px;
+    width: 80px;
+    height: 80px;
+    border-radius: 22px;
     display: grid;
     place-items: center;
-    font-size: 1.75rem;
-    font-weight: 800;
-    background: #eef2ff;
+    font-size: 2rem;
+    font-weight: 900;
+    position: relative;
+    overflow: hidden;
     color: #4f46e5;
+    background: linear-gradient(145deg, #eef2ff, #e0e7ff);
+    box-shadow: 0 18px 32px -18px rgba(15, 23, 42, 0.35);
 }
 
 .payment-result-modal__icon-success,
@@ -389,13 +402,13 @@
 }
 
 .payment-result-modal--success .payment-result-modal__icon {
-    background: rgba(16, 185, 129, 0.12);
-    color: #047857;
+    background: linear-gradient(145deg, rgba(16, 185, 129, 0.18), rgba(16, 185, 129, 0.28));
+    color: #0f5132;
 }
 
 .payment-result-modal--failure .payment-result-modal__icon {
-    background: rgba(239, 68, 68, 0.12);
-    color: #b91c1c;
+    background: linear-gradient(145deg, rgba(239, 68, 68, 0.18), rgba(239, 68, 68, 0.26));
+    color: #7f1d1d;
 }
 
 .payment-result-modal--success .payment-result-modal__icon-success {
