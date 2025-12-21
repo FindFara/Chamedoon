@@ -33,6 +33,7 @@ namespace Chamedoon.Application.Services.Immigration
         long Id,
         string CustomerName,
         string? Email,
+        string? PhoneNumber,
         int Age,
         string MaritalStatus,
         string JobCategory,
@@ -118,6 +119,7 @@ namespace Chamedoon.Application.Services.Immigration
             var evaluations = _context.ImmigrationEvaluations
                 .AsNoTracking()
                 .Include(item => item.Customer)
+                    .ThenInclude(customer => customer.User)
                 .OrderByDescending(item => item.CreatedAtUtc);
 
             if (!string.IsNullOrWhiteSpace(normalizedQuery))
@@ -137,6 +139,7 @@ namespace Chamedoon.Application.Services.Immigration
                     item.Id,
                     BuildCustomerName(item.Customer),
                     item.Email,
+                    item.Customer.User?.PhoneNumber,
                     item.Age,
                     ((MaritalStatusType)item.MaritalStatus).ToDisplay(),
                     ((JobCategoryType)item.JobCategory).ToDisplay(),

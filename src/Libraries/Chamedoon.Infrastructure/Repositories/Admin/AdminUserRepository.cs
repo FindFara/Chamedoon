@@ -99,6 +99,8 @@ public class AdminUserRepository : IAdminUserRepository
         existing.UserName = user.UserName;
         existing.NormalizedEmail = _userManager.NormalizeEmail(user.Email);
         existing.NormalizedUserName = _userManager.NormalizeName(user.UserName);
+        existing.PhoneNumber = user.PhoneNumber;
+        existing.PhoneNumberConfirmed = !string.IsNullOrWhiteSpace(user.PhoneNumber);
         existing.LockoutEnd = user.LockoutEnd;
         existing.LockoutEnabled = true;
         existing.LastModified = DateTime.UtcNow;

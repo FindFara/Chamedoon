@@ -87,6 +87,7 @@
                                             <th>ایمیل</th>
                                             <th>نقش</th>
                                             <th class="text-nowrap">وضعیت</th>
+                                            <th class="text-nowrap">تاریخ ایجاد</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -99,6 +100,7 @@
                                                 <td>
                                                     <span class="badge @(user.IsActive ? "bg-success" : "bg-danger")">@(user.IsActive ? "فعال" : "غیرفعال")</span>
                                                 </td>
+                                                <td>@user.CreatedAt.ToString("yyyy/MM/dd HH:mm")</td>
                                             </tr>
                                         }
                                     </tbody>

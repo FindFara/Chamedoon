@@ -21,6 +21,7 @@ namespace ChamedoonWebUI.Areas.Admin.ViewModels
         long Id,
         string CustomerName,
         string? Email,
+        string? PhoneNumber,
         int Age,
         string MaritalStatus,
         string JobCategory,
