@@ -22,7 +22,7 @@ namespace Chamedoon.Domin.Entity.Customers
         public int LanguageCertificate { get; set; }
         public bool WillingToStudy { get; set; }
 
-        public string? PhoneNumber { get; set; }
+        public string? Email { get; set; }
         public string? Notes { get; set; }
 
         public DateTime CreatedAtUtc { get; set; }

@@ -1,5 +1,5 @@
-﻿using Chamedoon.Application.Common.Extensions;
 using Chamedoon.Application.Common.Models;
+using Chamedoon.Application.Common.Utilities;
 using Chamedoon.Application.Services.Customers.Command;
 using Chamedoon.Domin.Entity.Users;
 using MediatR;
@@ -32,7 +32,7 @@ namespace Chamedoon.Application.Services.Account.Register.Command
 
             User user = new User
             {
-                UserName = string.Concat("U-", StringExtensions.GenerateRandomString(8)),
+                UserName = await UsernameGenerator.GenerateUniqueAsync(_userManager, cancellationToken),
                 Email = request.Email
             };
             var createResult = await _userManager.CreateAsync(user);

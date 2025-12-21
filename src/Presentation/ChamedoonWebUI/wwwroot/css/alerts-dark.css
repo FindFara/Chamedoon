@@ -1,26 +1,16 @@
 body.landing-page.dark-mode .floating-alert__box {
-    --alert-bg: rgba(17, 24, 39, 0.82);
-    --alert-border: rgba(239, 68, 68, 0.45);
-    --alert-text: #f8fafc;
-    --alert-accent: #f87171;
-    --alert-glow: rgba(239, 68, 68, 0.35);
+    --alert-bg: rgba(15, 23, 42, 0.82);
+    --alert-border: rgba(56, 189, 248, 0.5);
+    --alert-text: #e0f2fe;
+    --alert-accent: #0ea5e9;
+    --alert-glow: rgba(56, 189, 248, 0.32);
 
     box-shadow: 0 28px 60px -30px rgba(2, 6, 23, 0.8);
-    background: linear-gradient(150deg, rgba(30, 41, 59, 0.9), var(--alert-bg));
+    background: linear-gradient(150deg, rgba(15, 23, 42, 0.9), var(--alert-bg));
 }
 
 body.landing-page.dark-mode .floating-alert__box::after {
     border-color: rgba(255, 255, 255, 0.18);
-}
-
-body.landing-page.dark-mode .floating-alert__close {
-    background: rgba(15, 23, 42, 0.45);
-    color: var(--alert-text);
-}
-
-body.landing-page.dark-mode .floating-alert__close:hover,
-body.landing-page.dark-mode .floating-alert__close:focus-visible {
-    background: rgba(30, 41, 59, 0.7);
 }
 
 body.landing-page.dark-mode .floating-alert__timer {

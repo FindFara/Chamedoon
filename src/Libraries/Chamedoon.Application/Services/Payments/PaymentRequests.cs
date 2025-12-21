@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Chamedoon.Application.Services.Payments;
 
-public record StartSubscriptionPaymentCommand(ClaimsPrincipal User, string PlanId, string CallbackUrl) : IRequest<PaymentRedirectResult>;
+public record StartSubscriptionPaymentCommand(ClaimsPrincipal User, string PlanId, string CallbackUrl, string? DiscountCode) : IRequest<PaymentRedirectResult>;
 
 public class StartSubscriptionPaymentCommandHandler : IRequestHandler<StartSubscriptionPaymentCommand, PaymentRedirectResult>
 {
@@ -15,7 +15,7 @@ public class StartSubscriptionPaymentCommandHandler : IRequestHandler<StartSubsc
     }
 
     public Task<PaymentRedirectResult> Handle(StartSubscriptionPaymentCommand request, CancellationToken cancellationToken)
-        => _service.StartSubscriptionPaymentAsync(request.User, request.PlanId, request.CallbackUrl, cancellationToken);
+        => _service.StartSubscriptionPaymentAsync(request.User, request.PlanId, request.CallbackUrl, request.DiscountCode, cancellationToken);
 }
 
 public record VerifyPaymentCommand(ClaimsPrincipal? User, long PaymentRequestId, string TrackId) : IRequest<PaymentVerificationResult>;

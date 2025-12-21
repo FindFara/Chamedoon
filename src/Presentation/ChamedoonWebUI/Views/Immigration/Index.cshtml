@@ -18,7 +18,7 @@
                         <div>
                             <h2 class="fw-bold mb-2"><span aria-hidden="true">🧳</span>
                                 ارزیابی هوشمند مهاجرت</h2>
-                            <p class="immigration-helper mb-0">با پاسخ به چند سوال کوتاه در مورد سن، تحصیلات و علایقت، شانس موفقیتت در مسیرهای مختلف محاسبه می‌شود و یک گزارش خلاصه دریافت می‌کنی.</p>
+                            <p class="immigration-helper mb-2">با پاسخ به چند سوال کوتاه در مورد سن، تحصیلات و علایقت، شانس موفقیتت در مسیرهای مختلف محاسبه می‌شود و یک گزارش خلاصه دریافت می‌کنی.</p>
                         </div>
                         <div class="immigration-meta">
                             <span class="meta-pill">🧭 پیشنهاد ویزا</span>
@@ -40,18 +40,21 @@
                         @Html.AntiForgeryToken()
                         <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
 
-                        <div class="immigration-step">
-                            <div class="step-title">
-                                <span class="step-badge" aria-hidden="true">1</span>
-                                <span>مشخصات فردی</span>
-                            </div>
-                            <div class="immigration-form-grid">
+                        <div class="immigration-step" data-immigration-step data-step-index="1">
+                            <button type="button" class="step-toggle" data-step-toggle aria-expanded="true" aria-controls="stepPanel1">
+                                <div class="step-title">
+                                    <span class="step-badge" aria-hidden="true">1</span>
+                                    <span>مشخصات فردی</span>
+                                </div>
+                                <span class="toggle-icon" aria-hidden="true"></span>
+                            </button>
+                            <div class="immigration-form-grid immigration-step-body" id="stepPanel1" data-step-body>
                                 <div class="immigration-field">
                                     <label for="Age" class="field-label">
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="سن بین ۱۸ تا ۲۹ سال بیشترین امتیاز را دارد.">؟</span>
                                         سن
                                     </label>
-                                    <input asp-for="Age" class="form-control" type="number" min="0" data-progress-field />
+                                    <input asp-for="Age" class="form-control number-input number-input--plain" type="number" min="0" inputmode="numeric" data-progress-field />
                                     <span asp-validation-for="Age" class="text-danger small"></span>
                                 </div>
                                 <div class="immigration-field">
@@ -75,18 +78,31 @@
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="میزان سرمایه در مسیرهای سرمایه‌گذاری اثرگذار است.">؟</span>
                                         میزان سرمایه (دلار/یورو)
                                     </label>
-                                    <input asp-for="InvestmentAmount" class="form-control" type="number" min="0" step="1000" data-progress-field />
+                                    <div class="number-input-wrapper" data-number-input>
+                                        <input asp-for="InvestmentAmount" class="form-control number-input" type="number" min="0" step="1000" data-progress-field />
+                                        <div class="number-stepper" aria-hidden="true">
+                                            <button type="button" class="step-btn step-btn-up" data-step="up" aria-label="افزایش مقدار">
+                                                <span aria-hidden="true">▲</span>
+                                            </button>
+                                            <button type="button" class="step-btn step-btn-down" data-step="down" aria-label="کاهش مقدار">
+                                                <span aria-hidden="true">▼</span>
+                                            </button>
+                                        </div>
+                                    </div>
                                     <span asp-validation-for="InvestmentAmount" class="text-danger small"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="immigration-step">
-                            <div class="step-title">
-                                <span class="step-badge" aria-hidden="true">2</span>
-                                <span>شغل</span>
-                            </div>
-                            <div class="immigration-form-grid">
+                        <div class="immigration-step" data-immigration-step data-step-index="2">
+                            <button type="button" class="step-toggle" data-step-toggle aria-expanded="false" aria-controls="stepPanel2">
+                                <div class="step-title">
+                                    <span class="step-badge" aria-hidden="true">2</span>
+                                    <span>شغل</span>
+                                </div>
+                                <span class="toggle-icon" aria-hidden="true"></span>
+                            </button>
+                            <div class="immigration-form-grid immigration-step-body" id="stepPanel2" data-step-body>
                                 <div class="immigration-field">
                                     <label for="JobCategory" class="field-label">
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="دسته‌های پرتقاضا امتیاز بیشتری دارند.">؟</span>
@@ -108,18 +124,31 @@
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="سابقه بیشتر از ۷ سال بیشترین امتیاز را دارد.">؟</span>
                                         سابقه کاری (سال)
                                     </label>
-                                    <input asp-for="WorkExperienceYears" class="form-control" type="number" min="0" data-progress-field />
+                                    <div class="number-input-wrapper" data-number-input>
+                                        <input asp-for="WorkExperienceYears" class="form-control number-input" type="number" min="0" data-progress-field />
+                                        <div class="number-stepper" aria-hidden="true">
+                                            <button type="button" class="step-btn step-btn-up" data-step="up" aria-label="افزایش سابقه">
+                                                <span aria-hidden="true">▲</span>
+                                            </button>
+                                            <button type="button" class="step-btn step-btn-down" data-step="down" aria-label="کاهش سابقه">
+                                                <span aria-hidden="true">▼</span>
+                                            </button>
+                                        </div>
+                                    </div>
                                     <span asp-validation-for="WorkExperienceYears" class="text-danger small"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="immigration-step">
-                            <div class="step-title">
-                                <span class="step-badge" aria-hidden="true">3</span>
-                                <span>تحصیلات و زبان</span>
-                            </div>
-                            <div class="immigration-form-grid">
+                        <div class="immigration-step" data-immigration-step data-step-index="3">
+                            <button type="button" class="step-toggle" data-step-toggle aria-expanded="false" aria-controls="stepPanel3">
+                                <div class="step-title">
+                                    <span class="step-badge" aria-hidden="true">3</span>
+                                    <span>تحصیلات و زبان</span>
+                                </div>
+                                <span class="toggle-icon" aria-hidden="true"></span>
+                            </button>
+                            <div class="immigration-form-grid immigration-step-body" id="stepPanel3" data-step-body>
                                 <div class="immigration-field">
                                     <label for="FieldCategory" class="field-label">
                                         <span class="hint-icon" data-bs-toggle="tooltip" title="رشته‌های فنی و درمانی امتیاز هم‌افزایی دارند.">؟</span>
@@ -150,7 +179,7 @@
                                         تمایل به ادامه تحصیل
                                     </label>
                                     <div class="form-check form-switch">
-                                        <input asp-for="WillingToStudy" class="form-check-input" type="checkbox" role="switch" data-progress-field />
+                                        <input asp-for="WillingToStudy" class="form-check-input" type="checkbox" role="switch" data-progress-field data-progress-optional />
                                         <label class="form-check-label" for="WillingToStudy">بله، تحصیل را در نظر دارم</label>
                                     </div>
                                     <span asp-validation-for="WillingToStudy" class="text-danger small"></span>
@@ -158,19 +187,22 @@
                             </div>
                         </div>
 
-                        <div class="immigration-step">
-                            <div class="step-title">
-                                <span class="step-badge" aria-hidden="true">4</span>
-                                <span>اطلاعات تماس و توضیحات</span>
-                            </div>
-                            <div class="immigration-form-grid">
+                        <div class="immigration-step" data-immigration-step data-step-index="4">
+                            <button type="button" class="step-toggle" data-step-toggle aria-expanded="false" aria-controls="stepPanel4">
+                                <div class="step-title">
+                                    <span class="step-badge" aria-hidden="true">4</span>
+                                    <span>اطلاعات تماس و توضیحات</span>
+                                </div>
+                                <span class="toggle-icon" aria-hidden="true"></span>
+                            </button>
+                            <div class="immigration-form-grid immigration-step-body" id="stepPanel4" data-step-body>
                                 <div class="immigration-field">
-                                    <label for="PhoneNumber" class="field-label">
-                                        <span class="hint-icon" data-bs-toggle="tooltip" title="برای هماهنگی و پیگیری سریع‌تر یک شماره معتبر وارد کن.">؟</span>
-                                        شماره تلفن
+                                    <label for="Email" class="field-label">
+                                        <span class="hint-icon" data-bs-toggle="tooltip" title="ایمیلی وارد کن که به‌روز است تا بتوانیم نتیجه را برایت ارسال کنیم.">؟</span>
+                                        ایمیل
                                     </label>
-                                    <input asp-for="PhoneNumber" class="form-control" type="tel" data-progress-field data-progress-optional />
-                                    <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                                    <input asp-for="Email" class="form-control" type="email" data-progress-field data-progress-optional />
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
                                 </div>
                                 <div class="immigration-field">
                                     <label for="Notes" class="field-label">
@@ -181,6 +213,10 @@
                                     <span asp-validation-for="Notes" class="text-danger small"></span>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="validation-summary validation-summary-inline d-none" data-inline-errors role="alert" aria-live="polite">
+                            <ul class="mb-0"></ul>
                         </div>
 
                         <div class="immigration-actions">

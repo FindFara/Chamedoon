@@ -86,13 +86,21 @@ public class ImmigrationController : Controller
         if (!eligibility.HasActiveSubscription)
         {
             TempData["SubscriptionMessage"] = "برای شروع ارزیابی، لازم است اشتراک فعال داشته باشی.";
-            return RedirectToAction("Index", "Subscription", new { reason = "needsPlan" });
+            return RedirectToAction("Index", "Subscription", new
+            {
+                reason = "needsPlan",
+                returnUrl = Url.Action("Index", "Immigration")
+            });
         }
 
         if (eligibility.IsLimitReached)
         {
             TempData["SubscriptionMessage"] = "تعداد استعلام مجاز این ماه تمام شده. می‌توانی اشتراک نامحدود بگیری.";
-            return RedirectToAction("Index", "Subscription", new { reason = "limit" });
+            return RedirectToAction("Index", "Subscription", new
+            {
+                reason = "limit",
+                returnUrl = Url.Action("Index", "Immigration")
+            });
         }
 
         return null;

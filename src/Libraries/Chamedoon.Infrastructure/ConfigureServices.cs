@@ -1,14 +1,15 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Application.Common.Interfaces.Admin;
-using Chamedoon.Domin.Entity.Users;
-using Chamedoon.Domin.Entity.Permissions;
-using Microsoft.AspNetCore.Identity;
-using Chamedoon.Infrastructure.Persistence;
 using Chamedoon.Application.Common.Utilities.CustomizIdentity;
+using Chamedoon.Domin.Configs;
+using Chamedoon.Domin.Entity.Permissions;
+using Chamedoon.Domin.Entity.Users;
+using Chamedoon.Infrastructure.Persistence;
 using Chamedoon.Infrastructure.Repositories.Admin;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Chamedoon.Infrastructure;
 
@@ -34,11 +35,26 @@ public static class ConfigureServices
             option.UseSqlServer(configuration.GetConnectionString("ChamedoonConnection"));
         });
 
+        services.Configure<MelipayamakConfig>(configuration.GetSection(MelipayamakConfig.SectionName));
+        services.AddHttpClient("MelipayamakSms", client =>
+        {
+            var melipayamakSection = configuration.GetSection(MelipayamakConfig.SectionName);
+            var baseUrl = melipayamakSection?.GetValue<string>(nameof(MelipayamakConfig.OtpApiBaseAddress));
+            baseUrl ??= melipayamakSection?.GetValue<string>(nameof(MelipayamakConfig.BaseUrl));
+            if (!string.IsNullOrWhiteSpace(baseUrl) && Uri.TryCreate(baseUrl, UriKind.Absolute, out var baseUri))
+            {
+                client.BaseAddress = baseUri;
+            }
+        });
+
         services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
         services.AddScoped<IAdminUserRepository, AdminUserRepository>();
         services.AddScoped<IAdminBlogRepository, AdminBlogRepository>();
         services.AddScoped<IAdminRoleRepository, AdminRoleRepository>();
         services.AddScoped<IAdminPaymentRepository, AdminPaymentRepository>();
+        services.AddScoped<IAdminDiscountCodeRepository, AdminDiscountCodeRepository>();
+        services.AddScoped<IAdminCountryRepository, AdminCountryRepository>();
+        services.AddScoped<ISmsService, MelipayamakSmsService>();
 
         services.AddIdentity<User, Role>()
             .AddEntityFrameworkStores<ApplicationDbContext>()

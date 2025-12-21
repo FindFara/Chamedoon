@@ -45,6 +45,7 @@ namespace Chamedoon.Application.Common.Interfaces
         #region Payments
         public DbSet<PaymentRequest> PaymentRequests { get; set; }
         public DbSet<PaymentResponse> PaymentResponses { get; set; }
+        public DbSet<DiscountCode> DiscountCodes { get; set; }
         #endregion
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);

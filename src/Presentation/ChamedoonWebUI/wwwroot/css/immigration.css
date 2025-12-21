@@ -3,7 +3,16 @@
 }
 
 .immigration-page {
+    --immigration-surface: #f8fafc;
+    --immigration-panel: rgba(255, 255, 255, 0.92);
+    --immigration-step-surface: #ffffff;
+    --immigration-step-border: rgba(148, 163, 184, 0.2);
     padding-block: clamp(2.5rem, 4vw, 3.75rem);
+    background:
+        radial-gradient(circle at 18% 14%, rgba(79, 70, 229, 0.06), transparent 40%),
+        radial-gradient(circle at 82% 0, rgba(14, 165, 233, 0.06), transparent 42%),
+        linear-gradient(180deg, var(--immigration-surface) 0%, #eef2ff 32%, #f8fafc 100%);
+    border-radius: clamp(1.35rem, 2vw, 1.75rem);
 }
 
 .immigration-hero {
@@ -67,7 +76,9 @@
 .immigration-form-card {
     padding: clamp(1.5rem, 3vw, 2rem);
     border-radius: 1.5rem;
-    box-shadow: 0 18px 48px -28px rgba(15, 23, 42, 0.45);
+    background: linear-gradient(140deg, rgba(79, 70, 229, 0.08), rgba(14, 165, 233, 0.06)), var(--immigration-panel);
+    border: 1px solid rgba(148, 163, 184, 0.3);
+    box-shadow: 0 24px 52px -30px rgba(15, 23, 42, 0.45);
     margin-inline: auto;
 }
 
@@ -156,6 +167,84 @@
     background-size: 16px 12px;
 }
 
+.number-input-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0.25rem;
+}
+
+.number-input {
+    -moz-appearance: textfield;
+    flex: 1 1 auto;
+    width: 100%;
+}
+
+.number-input::-webkit-inner-spin-button,
+.number-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.number-input--plain {
+    padding-inline-start: 1rem;
+}
+
+.number-stepper {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    width: 2.4rem;
+    min-height: 100%;
+    border-radius: 0.6rem;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+.step-btn {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(148, 163, 184, 0.28);
+    border-radius: 0.45rem;
+    background: rgba(248, 250, 252, 0.85);
+    color: #0f172a;
+    font-weight: 800;
+    font-size: 0.65rem;
+    padding: 0;
+    line-height: 1;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.step-btn:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, 0.15);
+    outline-offset: 2px;
+}
+
+.step-btn:hover {
+    border-color: rgba(79, 70, 229, 0.45);
+    background: rgba(224, 231, 255, 0.85);
+}
+
+.step-btn:active {
+    transform: translateY(1px);
+}
+
+.step-btn span {
+    display: block;
+    line-height: 1;
+}
+
+.step-btn-up {
+    padding-block-start: 0.2rem;
+}
+
+.step-btn-down {
+    padding-block-end: 0.2rem;
+}
+
 .immigration-field.is-focused .form-control,
 .immigration-field.is-focused .form-select {
     border-color: rgba(79, 70, 229, 0.65);
@@ -168,15 +257,59 @@
     box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
 }
 
+.immigration-field.is-invalid .form-control,
+.immigration-field.is-invalid .form-select {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.14);
+}
+
 .immigration-step {
     padding: clamp(1rem, 2vw, 1.35rem);
-    border: 1px solid rgba(148, 163, 184, 0.25);
+    border: 1px solid var(--immigration-step-border);
     border-radius: 1.25rem;
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--immigration-step-surface);
+    box-shadow: 0 16px 38px -30px rgba(15, 23, 42, 0.42);
+    position: relative;
 }
 
 .immigration-step + .immigration-step {
     margin-top: 1rem;
+}
+
+.step-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: inherit;
+    text-align: right;
+    cursor: pointer;
+}
+
+.step-toggle:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, 0.2);
+    border-radius: 0.85rem;
+    outline-offset: 3px;
+}
+
+.immigration-step.is-locked .step-toggle {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.immigration-step.is-collapsed .immigration-step-body {
+    display: none;
+}
+
+.step-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(180deg);
+    background-color: transparent;
+    border-color: rgba(79, 70, 229, 0.45);
+    box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.12);
 }
 
 .immigration-step .step-title {
@@ -266,6 +399,10 @@
     background: rgba(239, 68, 68, 0.08);
     color: #b91c1c;
     margin-bottom: 1rem;
+}
+
+.validation-summary-inline {
+    margin-top: 1rem;
 }
 
 .immigration-result-hero {
@@ -447,6 +584,22 @@
     gap: 0.65rem;
 }
 
+.country-toggle {
+    display: grid;
+    gap: 0.4rem;
+    background: transparent;
+    border: none;
+    padding: 0;
+    text-align: right;
+    color: inherit;
+    cursor: pointer;
+}
+
+.country-toggle:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, 0.25);
+    border-radius: 0.75rem;
+}
+
 .rank-score {
     display: inline-flex;
     align-items: center;
@@ -501,6 +654,53 @@
     flex-direction: row-reverse;
 }
 
+.country-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.country-summary .summary-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.country-panel {
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px dashed rgba(148, 163, 184, 0.35);
+}
+
+.country-panel[hidden] {
+    display: none;
+}
+
+.toggle-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 0.6rem;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: rgba(255, 255, 255, 0.6) url('../img/accordion-chevron.svg') no-repeat center;
+    background-size: 0.9rem;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.country-toggle[aria-expanded="true"] .toggle-icon,
+.detail-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(180deg);
+    background-color: transparent;
+    border-color: rgba(79, 70, 229, 0.45);
+    box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.12);
+}
+
 .country-heading {
     text-align: right;
     margin-inline-start: 0;
@@ -531,9 +731,38 @@
     gap: 0.35rem;
 }
 
+.detail-toggle {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    color: inherit;
+    cursor: pointer;
+    text-align: right;
+}
+
+.detail-toggle:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, 0.2);
+    border-radius: 0.65rem;
+}
+
 .detail-title {
     font-weight: 700;
     color: var(--text-dark);
+}
+
+.detail-body {
+    display: grid;
+    gap: 0.35rem;
+    margin-top: 0.2rem;
+}
+
+.detail-body[hidden] {
+    display: none;
 }
 
 .detail-text {
@@ -672,9 +901,29 @@
 body.landing-page.dark-mode .immigration-form-card,
 body.landing-page.dark-mode .immigration-step,
 body.landing-page.dark-mode .immigration-result-card {
-    background: rgba(15, 23, 42, 0.75);
-    border-color: rgba(148, 163, 184, 0.25);
     color: #e2e8f0;
+}
+
+body.landing-page.dark-mode .immigration-page {
+    --immigration-surface: #0c1426;
+    --immigration-panel: rgba(15, 23, 42, 0.84);
+    --immigration-step-surface: rgba(17, 24, 39, 0.9);
+    --immigration-step-border: rgba(148, 163, 184, 0.32);
+    background:
+        radial-gradient(circle at 14% 12%, rgba(79, 70, 229, 0.18), transparent 44%),
+        radial-gradient(circle at 86% 6%, rgba(14, 165, 233, 0.14), transparent 38%),
+        linear-gradient(180deg, #0b1224 0%, #0f172a 35%, #0b1224 100%);
+}
+
+body.landing-page.dark-mode .immigration-form-card {
+    background: linear-gradient(140deg, rgba(99, 102, 241, 0.22), rgba(14, 165, 233, 0.12)), var(--immigration-panel);
+    border-color: var(--immigration-step-border);
+}
+
+body.landing-page.dark-mode .immigration-step,
+body.landing-page.dark-mode .immigration-result-card {
+    background: var(--immigration-step-surface);
+    border-color: var(--immigration-step-border);
 }
 
 body.landing-page.dark-mode .immigration-result-hero,
@@ -742,9 +991,34 @@ body.landing-page.dark-mode .insight-pill {
 
 body.landing-page.dark-mode .immigration-field .form-control,
 body.landing-page.dark-mode .immigration-field .form-select {
-    background: rgba(15, 23, 42, 0.85);
+    background-color: rgba(15, 23, 42, 0.85);
     color: #e2e8f0;
     border-color: rgba(148, 163, 184, 0.35);
+}
+
+body.landing-page.dark-mode .immigration-field .form-select {
+    --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23cbd5f5' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-image: var(--bs-form-select-bg-img), var(--bs-form-select-bg);
+    background-repeat: no-repeat;
+    background-position: left 1rem center;
+}
+
+body.landing-page.dark-mode .number-stepper {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+body.landing-page.dark-mode .step-btn {
+    border-color: rgba(148, 163, 184, 0.32);
+    background: rgba(30, 41, 59, 0.85);
+    color: #e2e8f0;
+    box-shadow: none;
+}
+
+body.landing-page.dark-mode .step-btn:hover {
+    border-color: rgba(165, 180, 252, 0.6);
+    background: rgba(79, 70, 229, 0.18);
 }
 
 body.landing-page.dark-mode .immigration-form-card .form-heading h3,

@@ -1,5 +1,6 @@
 (function () {
     const pageBody = document.body;
+    const rootElement = document.documentElement;
 
     const loaderElement = document.getElementById('pageLoader');
     if (loaderElement) {
@@ -24,7 +25,9 @@
 
         const applyMode = (mode) => {
             const isDark = mode === 'dark';
-            pageBody.classList.toggle('dark-mode', isDark);
+            [rootElement, pageBody].forEach(element => {
+                element?.classList.toggle('dark-mode', isDark);
+            });
             if (darkModeToggle) {
                 darkModeToggle.dataset.mode = mode;
                 darkModeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
@@ -46,11 +49,10 @@
             }
         };
 
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         const storedPreference = readPreference();
         let activeMode = storedPreference === 'dark' || storedPreference === 'light'
             ? storedPreference
-            : (prefersDark ? 'dark' : 'light');
+            : 'light';
 
         applyMode(activeMode);
 

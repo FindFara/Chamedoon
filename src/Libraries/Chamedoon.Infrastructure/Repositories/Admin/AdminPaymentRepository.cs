@@ -23,7 +23,7 @@ public class AdminPaymentRepository : IAdminPaymentRepository
         var query = _context.PaymentRequests.AsNoTracking().Where(p => p.CreatedAtUtc >= since);
 
         var successfulAmount = await query.Where(p => p.Status == PaymentStatus.Paid)
-            .SumAsync(p => (long)p.Amount, cancellationToken);
+            .SumAsync(p => (long)(p.FinalAmount > 0 ? p.FinalAmount : p.Amount), cancellationToken);
         var successfulCount = await query.CountAsync(p => p.Status == PaymentStatus.Paid, cancellationToken);
         var failedCount = await query.CountAsync(p => p.Status == PaymentStatus.Failed, cancellationToken);
         var pendingCount = await query.CountAsync(p => p.Status == PaymentStatus.Pending || p.Status == PaymentStatus.Redirected, cancellationToken);
@@ -54,7 +54,7 @@ public class AdminPaymentRepository : IAdminPaymentRepository
                 null,
                 BuildCustomerName(p.Customer),
                 p.Customer?.User?.Email,
-                p.Amount,
+                p.FinalAmount > 0 ? p.FinalAmount : p.Amount,
                 p.Status,
                 p.CreatedAtUtc,
                 p.PaidAtUtc,

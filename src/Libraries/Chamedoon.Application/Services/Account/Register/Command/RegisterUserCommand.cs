@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Chamedoon.Application.Common.Extensions;
 using Chamedoon.Application.Common.Models;
+using Chamedoon.Application.Common.Utilities;
 using Chamedoon.Application.Services.Account.Register.ViewModel;
 using Chamedoon.Application.Services.Email.Query;
 using Chamedoon.Domin.Entity.Users;
@@ -34,8 +34,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
     public async Task<OperationResult<long>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         User user = mapper.Map<User>(request.RegisterUser);
-        user.UserName = string.Concat("U-", StringExtensions.GenerateRandomString(8));
-
+        user.UserName = await UsernameGenerator.GenerateUniqueAsync(userManager, cancellationToken);
         var registerUser = await userManager.CreateAsync(user, request.RegisterUser.Password);
         if (registerUser.Succeeded)
         {

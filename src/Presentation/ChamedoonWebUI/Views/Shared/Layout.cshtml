@@ -19,6 +19,22 @@
     <link rel="stylesheet" href="~/css/alerts.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site-dark.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/alerts-dark.css" asp-append-version="true" />
+    <script>
+        (function () {
+            const readPreference = () => {
+                try {
+                    return localStorage.getItem('landing-theme');
+                } catch (error) {
+                    return null;
+                }
+            };
+
+            const storedPreference = readPreference();
+            const isDark = storedPreference === 'dark';
+
+            document.documentElement.classList.toggle('dark-mode', isDark);
+        })();
+    </script>
     @RenderSection("Styles", required: false)
 </head>
 <body class="landing-page page-loading @(hideChrome ? "landing-page--minimal" : string.Empty)">
@@ -60,20 +76,20 @@
                         <div class="landing-controls">
                             <div class="landing-actions">
                                 <div class="dropdown user-menu-dropdown">
-                                    <button class="icon-button dropdown-toggle user-menu-toggle" type="button" id="userMenuToggle" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="حساب کاربری" title="حساب کاربری">
-                                        <span class="visually-hidden">حساب کاربری</span>
-                                        @await Component.InvokeAsync("UserProfileImage", new { viewName = "Badge" })
-                                        <span class="user-menu-icon" aria-hidden="true">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
-                                                <path d="M12 12c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.2-5 5 2.2 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                                <path d="M5.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                                            </svg>
-                                        </span>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userMenuToggle">
-                                        @if (User.Identity.IsAuthenticated)
-                                        {
-                                            if (User.IsInRole("Admin"))
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <button class="icon-button dropdown-toggle user-menu-toggle" type="button" id="userMenuToggle" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="حساب کاربری" title="حساب کاربری">
+                                            <span class="visually-hidden">حساب کاربری</span>
+                                            @await Component.InvokeAsync("UserProfileImage", new { viewName = "Badge" })
+                                            <span class="user-menu-icon" aria-hidden="true">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none">
+                                                    <path d="M12 12c2.8 0 5-2.2 5-5s-2.2-5-5-5-5 2.2-5 5 2.2 5 5 5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                                    <path d="M5.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                                </svg>
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end user-menu" aria-labelledby="userMenuToggle">
+                                            @if (User.IsInRole("Admin"))
                                             {
                                                 <li>
                                                     <a class="dropdown-item" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">پنل مدیریت</a>
@@ -86,17 +102,19 @@
                                             <li>
                                                 <a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">خروج</a>
                                             </li>
-                                        }
-                                        else
-                                        {
-                                            <li>
-                                                <a class="dropdown-item" asp-controller="Account" asp-action="Login">ورود</a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" asp-controller="Account" asp-action="Register">ثبت‌نام</a>
-                                            </li>
-                                        }
-                                    </ul>
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <a class="icon-button login-button" asp-controller="Account" asp-action="PhoneLogin">
+                                            <span class="login-button__label">ورود</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
+                                                <path d="M14.75 6.75V5.75C14.75 4.64543 15.6454 3.75 16.75 3.75H18.25C19.3546 3.75 20.25 4.64543 20.25 5.75V18.25C20.25 19.3546 19.3546 20.25 18.25 20.25H16.75C15.6454 20.25 14.75 19.3546 14.75 18.25V17.25" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                                <path d="M3.75 12H11.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                                <path d="m10.75 8.75 3.25 3.25-3.25 3.25" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </a>
+                                    }
                                 </div>
                             <button class="icon-button theme-toggle" type="button" id="darkModeToggle" data-mode="light" aria-pressed="false" aria-label="حالت شب" data-label="حالت شب" data-label-light="حالت شب" data-label-dark="حالت روز" title="حالت شب">
                                 <span class="visually-hidden" data-role="label">حالت شب</span>
@@ -169,8 +187,7 @@
                         }
                         else
                         {
-                            <a class="btn btn-sm btn-primary" asp-controller="Account" asp-action="Login">ورود</a>
-                            <a class="btn btn-sm btn-outline-primary" asp-controller="Account" asp-action="Register">ثبت‌نام</a>
+                            <a class="btn btn-sm btn-primary" asp-controller="Account" asp-action="PhoneLogin">ورود / ثبت‌نام</a>
                         }
                     </div>
                 </div>
@@ -195,6 +212,8 @@
                         <div class="col-md-4">
                             <a class="navbar-brand fw-bold mb-3 d-inline-block" asp-controller="Home" asp-action="Index">چمدون</a>
                             <p class="text-muted">راهنمای هوشمند تو برای انتخاب مقصد، آماده‌سازی مدارک و شروع زندگی جدید.</p>
+                            <a referrerpolicy='origin' target='_blank' href='https://trustseal.enamad.ir/?id=687051&Code=UYiQ2dCVPY9k0GIv8EMvwlhW8I4kmkDt'><img src="~/img/enamad_icon_text_color_blue_1024.png " style="height: 87px;" /></a>
+
                         </div>
                         <div class="col-md-4">
                             <h6 class="fw-semibold mb-3">بخش‌ها</h6>
@@ -203,6 +222,7 @@
                                 <li><a class="text-reset text-decoration-none" asp-controller="Home" asp-action="About">درباره چمدون</a></li>
                                 <li><a class="text-reset text-decoration-none" asp-controller="Immigration" asp-action="Index">ارزیابی مهاجرت</a></li>
                                 <li><a class="text-reset text-decoration-none" asp-controller="Blog" asp-action="Index">مطالب وبلاگ</a></li>
+                                <li><a class="text-reset text-decoration-none" asp-controller="Legal" asp-action="Support">پشتیبانی</a></li>
                             </ul>
                         </div>
                         <div class="col-md-4">
@@ -218,16 +238,19 @@
                                 </div>
                             </form>
                         </div>
+
                     </div>
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-4 pt-4 border-top gap-3">
                         <p class="mb-0 text-muted">© @DateTime.UtcNow.Year چمدون. همه حقوق محفوظ است.</p>
                         <div class="d-flex gap-3">
-                            <a class="text-decoration-none text-muted" href="#">حریم خصوصی</a>
-                            <a class="text-decoration-none text-muted" href="#">قوانین</a>
-                            <a class="text-decoration-none text-muted" href="#">پشتیبانی</a>
+                            <a class="text-decoration-none text-muted" asp-controller="Home" asp-action="About">درباره ما</a>
+                            <a class="text-decoration-none text-muted" asp-controller="Legal" asp-action="Support">پشتیبانی</a>
+                            <a class="text-decoration-none text-muted" asp-controller="Legal" asp-action="Privacy">حریم خصوصی</a>
+                            <a class="text-decoration-none text-muted" asp-controller="Legal" asp-action="Terms">قوانین</a>
                         </div>
                     </div>
                 </div>
+
             </footer>
         }
     </div>

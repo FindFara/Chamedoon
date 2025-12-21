@@ -31,12 +31,13 @@ namespace Chamedoon.Application.Services.Immigration
         public bool WillingToStudy { get; set; }
         public PersonalityType MBTIPersonality { get; set; } = PersonalityType.Unknown;
 
-        [Phone]
-        [StringLength(32)]
-        public string? PhoneNumber { get; set; }
+        [EmailAddress]
+        [StringLength(256)]
+        public string? Email { get; set; }
 
         [StringLength(DefaultTextLength)]
         public string? Notes { get; set; }
+
     }
 
     public class CountryRecommendation

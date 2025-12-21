@@ -64,6 +64,7 @@ public class ApplicationDbContext : IdentityDbContext<
     #region Payments
     public DbSet<PaymentRequest> PaymentRequests { get; set; }
     public DbSet<PaymentResponse> PaymentResponses { get; set; }
+    public DbSet<DiscountCode> DiscountCodes { get; set; }
     #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -97,6 +98,7 @@ public class ApplicationDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new ImmigrationEvaluationConfigs());
         modelBuilder.ApplyConfiguration(new PaymentRequestConfigs());
         modelBuilder.ApplyConfiguration(new PaymentResponseConfigs());
+        modelBuilder.ApplyConfiguration(new DiscountCodeConfigs());
         modelBuilder.ApplyConfiguration(new CountryConfigs());
         modelBuilder.ApplyConfiguration(new CountryLivingCostConfigs());
         modelBuilder.ApplyConfiguration(new CountryRestrictionConfigs());

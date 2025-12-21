@@ -1,6 +1,7 @@
 using Chamedoon.Application;
 using Chamedoon.Infrastructure;
 using Chamedoon.WebAPI;
+using Chamedoon.Infrastructure.Persistence;
 using Serilog;
 
 
@@ -25,6 +26,8 @@ var logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 var app = builder.Build();
+
+await app.SeedIdentityDataAsync();
 
 if (app.Environment.IsDevelopment())
 {

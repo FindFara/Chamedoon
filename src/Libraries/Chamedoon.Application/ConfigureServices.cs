@@ -6,9 +6,11 @@ using FluentValidation;
 using Chamedoon.Application.Common.Behaviors;
 using Chamedoon.Application.Services.Admin.Blogs;
 using Chamedoon.Application.Services.Admin.Dashboard;
+using Chamedoon.Application.Services.Admin.Discounts;
 using Chamedoon.Application.Services.Admin.Payments;
 using Chamedoon.Application.Services.Admin.Roles;
 using Chamedoon.Application.Services.Admin.Users;
+using Chamedoon.Application.Services.Admin.Countries;
 using Chamedoon.Application.Services.Immigration;
 using Chamedoon.Application.Services.Payments;
 
@@ -31,6 +33,8 @@ public static class ConfigureServices
         services.AddScoped<IAdminRoleService, AdminRoleService>();
         services.AddScoped<IAdminPaymentService, AdminPaymentService>();
         services.AddScoped<IAdminDashboardService, AdminDashboardService>();
+        services.AddScoped<IAdminDiscountCodeService, AdminDiscountCodeService>();
+        services.AddScoped<IAdminCountryService, AdminCountryService>();
         services.AddScoped<IImmigrationEvaluationService, ImmigrationEvaluationService>();
         services.AddScoped<ICountryDataCache, CountryDataCache>();
         services.AddScoped<ImmigrationScoringService>();
@@ -40,4 +44,3 @@ public static class ConfigureServices
         return services;
     }
 }
-
