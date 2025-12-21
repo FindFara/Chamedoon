@@ -16,9 +16,13 @@
 </head>
 <body class="admin-shell">
     <div class="admin-wrapper d-flex">
+        <div class="admin-sidebar-backdrop" id="adminSidebarBackdrop" aria-hidden="true"></div>
         <aside class="admin-sidebar">
             <div class="sidebar-header">
                 <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="sidebar-brand">پنل مدیریت</a>
+                <button class="btn btn-outline-light sidebar-close d-md-none" type="button" id="sidebarClose" aria-label="بستن منو">
+                    ✕
+                </button>
             </div>
             <nav class="sidebar-nav nav flex-column">
                 <a class="nav-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
@@ -103,6 +107,21 @@
             const toggle = document.getElementById('themeToggle');
             const sidebar = document.querySelector('.admin-sidebar');
             const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarClose = document.getElementById('sidebarClose');
+            const sidebarBackdrop = document.getElementById('adminSidebarBackdrop');
+            const mobileMediaQuery = window.matchMedia('(max-width: 991.98px)');
+            const isMobile = () => mobileMediaQuery.matches;
+            const syncSidebarForDesktop = () => {
+                if (!isMobile()) {
+                    sidebar?.classList.remove('sidebar-open');
+                    body.classList.remove('sidebar-open');
+                    sidebarBackdrop?.classList.remove('show');
+                    sidebar?.removeAttribute('aria-hidden');
+                    sidebarToggle?.setAttribute('aria-expanded', 'false');
+                } else {
+                    sidebar?.setAttribute('aria-hidden', 'true');
+                }
+            };
 
             const applyTheme = (theme) => {
                 const isDark = theme === 'dark';
@@ -129,10 +148,51 @@
                 applyTheme(nextTheme);
             });
 
+            const openSidebar = () => {
+                if (!isMobile()) return;
+                sidebar?.classList.add('sidebar-open');
+                body.classList.add('sidebar-open');
+                sidebarBackdrop?.classList.add('show');
+                sidebar?.setAttribute('aria-hidden', 'false');
+                sidebarToggle?.setAttribute('aria-expanded', 'true');
+            };
+
+            const closeSidebar = () => {
+                if (!isMobile()) return;
+                sidebar?.classList.remove('sidebar-open');
+                body.classList.remove('sidebar-open');
+                sidebarBackdrop?.classList.remove('show');
+                sidebar?.setAttribute('aria-hidden', 'true');
+                sidebarToggle?.setAttribute('aria-expanded', 'false');
+            };
+
             sidebarToggle?.addEventListener('click', () => {
-                sidebar?.classList.toggle('sidebar-open');
-                body.classList.toggle('sidebar-open');
+                if (sidebar?.classList.contains('sidebar-open')) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
             });
+
+            sidebarClose?.addEventListener('click', closeSidebar);
+            sidebarBackdrop?.addEventListener('click', closeSidebar);
+
+            sidebar?.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', closeSidebar);
+            });
+
+            window.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && sidebar?.classList.contains('sidebar-open')) {
+                    closeSidebar();
+                }
+            });
+
+            syncSidebarForDesktop();
+            if (mobileMediaQuery.addEventListener) {
+                mobileMediaQuery.addEventListener('change', syncSidebarForDesktop);
+            } else if (mobileMediaQuery.addListener) {
+                mobileMediaQuery.addListener(syncSidebarForDesktop);
+            }
         })();
     </script>
     @RenderSection("Scripts", required: false)

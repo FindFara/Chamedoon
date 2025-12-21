@@ -371,6 +371,25 @@ body.dark-mode .admin-pagination .page-item:not(.active):not(.disabled) .page-li
     border-color: color-mix(in srgb, var(--admin-accent) 55%, rgba(255, 255, 255, 0.08));
 }
 
+.sidebar-close {
+    display: none;
+}
+
+.admin-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1035;
+}
+
+.admin-sidebar-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 @media (max-width: 991.98px) {
     .admin-sidebar {
         position: fixed;
@@ -380,20 +399,24 @@ body.dark-mode .admin-pagination .page-item:not(.active):not(.disabled) .page-li
         height: 100vh;
         width: min(320px, 82vw);
         box-shadow: -18px 0 36px rgba(0, 0, 0, 0.35);
+        border-left: none;
     }
 
     .admin-sidebar.sidebar-open {
         transform: translateX(0);
     }
 
-    body.admin-shell.sidebar-open {
-        overflow: hidden;
+    .sidebar-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.4rem;
+        height: 2.4rem;
+        padding: 0;
+        border-radius: 0.85rem;
     }
 
-    body.admin-shell.sidebar-open::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 23, 42, 0.35);
+    body.admin-shell.sidebar-open {
+        overflow: hidden;
     }
 }
