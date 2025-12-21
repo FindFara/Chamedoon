@@ -6,6 +6,10 @@ body.dark-mode {
     color-scheme: dark;
 }
 
+body.dark-mode .admin-menu-backdrop {
+    background: rgba(5, 8, 18, 0.55);
+}
+
 body.dark-mode.admin-shell {
     background: radial-gradient(circle at 20% 20%, rgba(255, 179, 71, 0.14), transparent 32%),
                 radial-gradient(circle at 80% 0%, rgba(96, 165, 250, 0.12), transparent 30%),
