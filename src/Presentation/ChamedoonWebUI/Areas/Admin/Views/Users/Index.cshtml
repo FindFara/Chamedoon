@@ -56,6 +56,7 @@
                         <tr>
                             <th>نام</th>
                             <th>ایمیل</th>
+                            <th>شماره همراه</th>
                             <th>نقش</th>
                             <th>اشتراک</th>
                             <th>وضعیت</th>
@@ -69,6 +70,7 @@
                             <tr>
                                 <td>@(string.IsNullOrWhiteSpace(user.FullName) ? user.UserName : user.FullName)</td>
                                 <td>@user.Email</td>
+                                <td>@(string.IsNullOrWhiteSpace(user.PhoneNumber) ? "-" : user.PhoneNumber)</td>
                                 <td>@(string.IsNullOrWhiteSpace(user.RoleName) ? "-" : user.RoleName)</td>
                                 <td>
                                     @if (!string.IsNullOrWhiteSpace(user.SubscriptionPlanTitle))
@@ -96,7 +98,7 @@
                                         <span class="badge bg-secondary">غیرفعال</span>
                                     }
                                 </td>
-                                <td>@user.CreatedAt.ToString("yyyy/MM/dd")</td>
+                                <td>@user.CreatedAt.ToString("yyyy/MM/dd HH:mm")</td>
                                 <td class="text-end">
                                     <div class="d-flex justify-content-end gap-2">
                                         <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-outline-primary">ویرایش</a>

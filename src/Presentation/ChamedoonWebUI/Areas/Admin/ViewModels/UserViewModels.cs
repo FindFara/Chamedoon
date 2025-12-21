@@ -23,6 +23,7 @@ public class UserListItemViewModel
     public string Email { get; init; } = string.Empty;
     public string UserName { get; init; } = string.Empty;
     public string? FullName { get; init; }
+    public string? PhoneNumber { get; init; }
     public long? RoleId { get; init; }
     public string? RoleName { get; init; }
     public bool IsActive { get; init; }
@@ -37,6 +38,7 @@ public class UserListItemViewModel
             Email = dto.Email,
             UserName = dto.UserName,
             FullName = dto.FullName,
+            PhoneNumber = dto.PhoneNumber,
             RoleId = dto.RoleId,
             RoleName = dto.RoleName,
             IsActive = dto.IsActive,
@@ -74,6 +76,10 @@ public class UserEditViewModel : IValidatableObject
     [Display(Name = "نام کامل")]
     public string? FullName { get; set; }
 
+    [Display(Name = "شماره همراه")]
+    [Phone(ErrorMessage = "شماره همراه معتبر نیست.")]
+    public string? PhoneNumber { get; set; }
+
     [Display(Name = "نقش")]
     public long? RoleId { get; set; }
 
@@ -107,6 +113,7 @@ public class UserEditViewModel : IValidatableObject
             Email = Email,
             UserName = UserName,
             FullName = FullName,
+            PhoneNumber = PhoneNumber,
             RoleId = RoleId,
             IsActive = IsActive,
             Password = Password,
@@ -123,6 +130,7 @@ public class UserEditViewModel : IValidatableObject
             Email = dto.Email,
             UserName = dto.UserName,
             FullName = dto.FullName,
+            PhoneNumber = dto.PhoneNumber,
             RoleId = dto.RoleId,
             IsActive = dto.IsActive,
             SubscriptionPlanId = dto.SubscriptionPlanId,

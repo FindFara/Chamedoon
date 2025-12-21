@@ -32,6 +32,7 @@ internal static class AdminMappingExtensions
             user.Email ?? string.Empty,
             user.UserName ?? string.Empty,
             fullName,
+            user.PhoneNumber,
             role?.RoleId,
             role?.Role?.Name,
             isActive,

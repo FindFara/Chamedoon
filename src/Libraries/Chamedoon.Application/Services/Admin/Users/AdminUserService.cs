@@ -121,6 +121,8 @@ public class AdminUserService : IAdminUserService
         {
             Email = input.Email,
             UserName = userName,
+            PhoneNumber = input.PhoneNumber,
+            PhoneNumberConfirmed = !string.IsNullOrWhiteSpace(input.PhoneNumber),
             EmailConfirmed = true,
             Created = input.Id.HasValue ? default : now,
             LastModified = now,
