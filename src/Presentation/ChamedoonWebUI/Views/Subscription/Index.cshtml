@@ -233,7 +233,6 @@
                     <div class="plan-showcase__content">
                         <header class="plan-showcase__header">
                             <div>
-                                <p class="plan-showcase__eyebrow">@plan.DurationLabel</p>
                                 <h3>@plan.Title</h3>
                             </div>
                             <div class="plan-showcase__pricing">
@@ -258,7 +257,7 @@
                                 <input type="hidden" name="discountCode" class="plan-discount" value="@Model.DiscountCode" />
                                 <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
                                 <button type="submit" class="btn-glass-primary btn-rounded" @(isCurrent ? "disabled" : string.Empty)>
-                                    @(isCurrent ? "فعال شده" : "انتخاب پلن")
+                                    @(isCurrent ? "فعال شده" : "انتخاب ")
                                 </button>
                             </form>
                         </div>
