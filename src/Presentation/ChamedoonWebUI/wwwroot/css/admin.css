@@ -303,6 +303,46 @@ body.admin-app {
     color: #fff;
 }
 
+[data-bs-theme="light"] .revenue-panel {
+    background: #ffffff;
+    color: var(--admin-text);
+    border: 1px solid var(--admin-border);
+}
+
+[data-bs-theme="light"] .revenue-panel .panel-header p {
+    color: var(--admin-muted);
+}
+
+[data-bs-theme="light"] .chart-tabs {
+    background: #f3f4f6;
+}
+
+[data-bs-theme="light"] .chart-tab {
+    color: #4b5563;
+}
+
+[data-bs-theme="light"] .chart-tab.active {
+    background: var(--admin-primary);
+    color: #fff;
+}
+
+.theme-toggle {
+    font-weight: 600;
+    min-width: 120px;
+}
+
+[data-bs-theme="light"] .theme-toggle {
+    color: #1f2937;
+    border-color: #d1d5db;
+    background: #ffffff;
+}
+
+[data-bs-theme="dark"] .theme-toggle {
+    color: #f8fafc;
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(15, 23, 42, 0.3);
+}
+
 [data-bs-theme="dark"] .admin-topbar {
     background: rgba(15, 23, 42, 0.95);
     backdrop-filter: blur(12px);

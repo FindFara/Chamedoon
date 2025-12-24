@@ -270,6 +270,10 @@
 
             const initialData = buildData('daily');
 
+            const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+            const chartTextColor = isDark ? '#d1d5db' : '#4b5563';
+            const chartGridColor = isDark ? 'rgba(148, 163, 184, 0.15)' : 'rgba(203, 213, 225, 0.6)';
+
             const revenueChart = new Chart(chartElement, {
                 type: 'line',
                 data: {
@@ -283,7 +287,7 @@
                             tension: 0.4,
                             pointRadius: 4,
                             pointHoverRadius: 6,
-                            pointBackgroundColor: '#1f2a44',
+                            pointBackgroundColor: isDark ? '#1f2a44' : '#ffffff',
                             pointBorderColor: palette.registrations
                         },
                         {
@@ -294,7 +298,7 @@
                             tension: 0.4,
                             pointRadius: 4,
                             pointHoverRadius: 6,
-                            pointBackgroundColor: '#1f2a44',
+                            pointBackgroundColor: isDark ? '#1f2a44' : '#ffffff',
                             pointBorderColor: palette.subscriptions
                         }
                     ]
@@ -305,7 +309,7 @@
                     plugins: {
                         legend: {
                             labels: {
-                                color: '#d1d5db',
+                                color: chartTextColor,
                                 usePointStyle: true,
                                 pointStyle: 'circle'
                             }
@@ -313,12 +317,12 @@
                     },
                     scales: {
                         x: {
-                            ticks: { color: '#9ca3af' },
-                            grid: { color: 'rgba(148, 163, 184, 0.15)' }
+                            ticks: { color: chartTextColor },
+                            grid: { color: chartGridColor }
                         },
                         y: {
-                            ticks: { color: '#9ca3af' },
-                            grid: { color: 'rgba(148, 163, 184, 0.15)' },
+                            ticks: { color: chartTextColor },
+                            grid: { color: chartGridColor },
                             beginAtZero: true
                         }
                     }
@@ -338,6 +342,23 @@
                     revenueChart.update();
                 });
             });
+
+            const themeToggle = document.getElementById('themeToggle');
+            const updateChartTheme = () => {
+                const isDarkTheme = document.documentElement.getAttribute('data-bs-theme') === 'dark';
+                const textColor = isDarkTheme ? '#d1d5db' : '#4b5563';
+                const gridColor = isDarkTheme ? 'rgba(148, 163, 184, 0.15)' : 'rgba(203, 213, 225, 0.6)';
+                revenueChart.options.plugins.legend.labels.color = textColor;
+                revenueChart.options.scales.x.ticks.color = textColor;
+                revenueChart.options.scales.y.ticks.color = textColor;
+                revenueChart.options.scales.x.grid.color = gridColor;
+                revenueChart.options.scales.y.grid.color = gridColor;
+                revenueChart.data.datasets.forEach((dataset) => {
+                    dataset.pointBackgroundColor = isDarkTheme ? '#1f2a44' : '#ffffff';
+                });
+                revenueChart.update();
+            };
+            themeToggle?.addEventListener('click', updateChartTheme);
         })();
     </script>
 }

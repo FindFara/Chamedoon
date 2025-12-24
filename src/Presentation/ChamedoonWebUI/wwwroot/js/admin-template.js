@@ -37,6 +37,9 @@
     const themeStorageKey = 'admin-theme';
     const applyTheme = (theme) => {
         root.setAttribute('data-bs-theme', theme);
+        if (themeToggle) {
+            themeToggle.textContent = theme === 'dark' ? 'حالت روز' : 'حالت شب';
+        }
     };
 
     const storedTheme = localStorage.getItem(themeStorageKey) ?? 'light';
