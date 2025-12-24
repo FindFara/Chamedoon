@@ -38,15 +38,8 @@
         <div class="admin-overlay" id="adminOverlay"></div>
         <aside class="admin-sidebar" id="adminSidebar" aria-hidden="false">
             <div class="sidebar-brand">
-                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Chamedoon Admin</a>
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">مدیریت چمدون</a>
                 <button class="sidebar-close d-lg-none" type="button" id="sidebarClose" aria-label="بستن منو">×</button>
-            </div>
-            <div class="sidebar-profile">
-                <div class="profile-avatar">CA</div>
-                <div>
-                    <div class="profile-name">مدیریت چمدون</div>
-                    <div class="profile-role">Admin Panel</div>
-                </div>
             </div>
             <nav class="sidebar-nav">
                 <a class="sidebar-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
@@ -97,7 +90,6 @@
                 </button>
                 <div class="topbar-title">
                     <h1>@pageTitle</h1>
-                    <p>نمای کلی پنل مدیریت و وضعیت سامانه</p>
                 </div>
                 <div class="topbar-actions">
                     <a class="btn btn-outline-primary" asp-area="" asp-controller="Home" asp-action="Index">
