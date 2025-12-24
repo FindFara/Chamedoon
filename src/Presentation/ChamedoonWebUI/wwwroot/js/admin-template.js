@@ -3,6 +3,8 @@
     const overlay = document.getElementById('adminOverlay');
     const toggle = document.getElementById('sidebarToggle');
     const close = document.getElementById('sidebarClose');
+    const themeToggle = document.getElementById('themeToggle');
+    const root = document.documentElement;
 
     if (!sidebar) {
         return;
@@ -31,4 +33,19 @@
 
     window.addEventListener('resize', handleResize);
     handleResize();
+
+    const themeStorageKey = 'admin-theme';
+    const applyTheme = (theme) => {
+        root.setAttribute('data-bs-theme', theme);
+    };
+
+    const storedTheme = localStorage.getItem(themeStorageKey) ?? 'light';
+    applyTheme(storedTheme);
+
+    themeToggle?.addEventListener('click', () => {
+        const currentTheme = root.getAttribute('data-bs-theme') ?? 'light';
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem(themeStorageKey, nextTheme);
+        applyTheme(nextTheme);
+    });
 })();

@@ -3,7 +3,7 @@
     var pageTitle = ViewData["Title"] as string ?? "مدیریت چمدون";
 }
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" data-bs-theme="light">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -79,6 +79,9 @@
                     <a class="btn btn-outline-primary" asp-area="" asp-controller="Home" asp-action="Index">
                         بازگشت به سایت
                     </a>
+                    <button class="btn btn-outline-light theme-toggle" type="button" id="themeToggle" aria-label="تغییر تم">
+                        حالت شب/روز
+                    </button>
                 </div>
             </header>
 
