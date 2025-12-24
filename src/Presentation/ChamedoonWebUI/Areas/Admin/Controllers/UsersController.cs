@@ -169,7 +169,7 @@ public class UsersController : Controller
 
     private async Task PopulatePlansAsync(UserEditViewModel model, CancellationToken cancellationToken)
     {
-        var plans = await _mediator.Send(new GetSubscriptionPlansQuery(), cancellationToken);
+        var plans = await _mediator.Send(new GetSubscriptionPlansQuery(true), cancellationToken);
         model.Plans = plans.Select(plan => new SubscriptionPlanOptionViewModel { Id = plan.Id, Title = plan.Title }).ToList();
     }
 }

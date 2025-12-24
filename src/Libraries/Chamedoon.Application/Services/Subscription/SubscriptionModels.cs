@@ -1,126 +1,72 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using Chamedoon.Application.Common.Interfaces;
 using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Payments;
+using Chamedoon.Domin.Entity.Subscriptions;
 using Chamedoon.Domin.Enums;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace Chamedoon.Application.Services.Subscription;
 
-public static class SubscriptionPlanCatalog
-{
-    private static readonly object SyncRoot = new();
-
-    private static IReadOnlyList<SubscriptionPlan> _plans = BuildDefaultPlans();
-
-    public static IReadOnlyList<SubscriptionPlan> Plans => _plans;
-
-    public static void Configure(SubscriptionPlanOptions? options)
-    {
-        lock (SyncRoot)
-        {
-            _plans = BuildPlans(options);
-        }
-    }
-
-    public static SubscriptionPlan? Find(string? planId)
-        => Plans.FirstOrDefault(plan => plan.Id.Equals(planId ?? string.Empty, StringComparison.OrdinalIgnoreCase));
-
-    private static IReadOnlyList<SubscriptionPlan> BuildPlans(SubscriptionPlanOptions? options)
-    {
-        var defaults = BuildDefaultPlans();
-
-        if (options?.Plans is null || options.Plans.Count == 0)
-        {
-            return defaults;
-        }
-
-        return defaults
-            .Select(plan =>
-            {
-                var overridePlan = options.Plans.FirstOrDefault(p =>
-                    p.Id.Equals(plan.Id, StringComparison.OrdinalIgnoreCase));
-
-                return overridePlan is null
-                    ? plan
-                    : plan with
-                    {
-                        Price = overridePlan.Price ?? plan.Price,
-                        OriginalPrice = overridePlan.OriginalPrice ?? plan.OriginalPrice
-                    };
-            })
-            .ToList();
-    }
-
-    private static IReadOnlyList<SubscriptionPlan> BuildDefaultPlans() => new List<SubscriptionPlan>
-    {
-        new()
-        {
-            Id = "starter",
-            Title = "پلن پایه (۳ استعلام)",
-            DurationLabel = "یک ماهه",
-            OriginalPrice = 120_000,
-            Price = 37_000,
-            EvaluationLimit = 3,
-            IncludesAI = false,
-            Features = new[]
-            {
-                "۳ استعلام دقیق ارزیابی مهاجرت",
-                "نمایش گزارش کامل در داشبورد",
-                "پشتیبانی ایمیلی در تمام مدت اشتراک"
-            }
-        },
-        new()
-        {
-            Id = "unlimited",
-            Title = "پلن حرفه‌ای (نامحدود)",
-            DurationLabel = "یک ماهه",
-            OriginalPrice = 170_000,
-            Price = 49_000,
-            EvaluationLimit = null,
-            IncludesAI = false,
-            Features = new[]
-            {
-                "استعلام نامحدود در دوره اشتراک",
-                "به‌روزرسانی لحظه‌ای مسیرهای مهاجرتی",
-                "پشتیبانی سریع‌تر در ساعات اداری"
-            }
-        },
-        new()
-        {
-            Id = "ai_pro",
-            Title = "پلن ویژه (هوش مصنوعی)",
-            DurationLabel = "یک ماهه",
-            OriginalPrice = 220_000,
-            Price = 62_000,
-            EvaluationLimit = null,
-            IncludesAI = true,
-            Features = new[]
-            {
-                "استعلام نامحدود با دقت بالا",
-                "تحلیل پیشرفته با کمک هوش مصنوعی",
-                "اولویت در پردازش و پاسخگویی"
-            }
-        }
-    };
-}
-
 public class SubscriptionService
 {
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+
     private readonly IApplicationDbContext _context;
 
-    public SubscriptionService(IApplicationDbContext context, IOptions<SubscriptionPlanOptions>? planOptions = null)
+    public SubscriptionService(IApplicationDbContext context)
     {
         _context = context;
-
-        SubscriptionPlanCatalog.Configure(planOptions?.Value);
     }
 
-    public Task<IReadOnlyList<SubscriptionPlan>> GetPlansAsync() => Task.FromResult(SubscriptionPlanCatalog.Plans);
+    public async Task<IReadOnlyList<SubscriptionPlan>> GetPlansAsync(CancellationToken cancellationToken, bool includeInactive = false)
+    {
+        var query = _context.SubscriptionPlans.AsNoTracking();
+        if (!includeInactive)
+        {
+            query = query.Where(plan => plan.IsActive);
+        }
+
+        var plans = await query
+            .OrderBy(plan => plan.SortOrder)
+            .ThenBy(plan => plan.Title)
+            .ToListAsync(cancellationToken);
+
+        return plans.Select(MapPlan).ToList();
+    }
+
+    public async Task<SubscriptionPlan?> FindPlanAsync(string? planId, CancellationToken cancellationToken, bool includeInactive = true)
+    {
+        if (string.IsNullOrWhiteSpace(planId))
+        {
+            return null;
+        }
+
+        var query = _context.SubscriptionPlans.AsNoTracking().Where(plan => plan.Id == planId);
+        if (!includeInactive)
+        {
+            query = query.Where(plan => plan.IsActive);
+        }
+
+        var plan = await query.FirstOrDefaultAsync(cancellationToken);
+        return plan is null ? null : MapPlan(plan);
+    }
+
+    public async Task<IReadOnlyDictionary<string, string>> GetPlanTitleLookupAsync(CancellationToken cancellationToken)
+    {
+        var plans = await _context.SubscriptionPlans
+            .AsNoTracking()
+            .Select(plan => new { plan.Id, plan.Title })
+            .ToListAsync(cancellationToken);
+
+        return plans.ToDictionary(plan => plan.Id, plan => plan.Title);
+    }
 
     public async Task<DiscountPreviewResult> PreviewDiscountAsync(string? code, CancellationToken cancellationToken)
     {
@@ -140,7 +86,8 @@ public class SubscriptionService
             return DiscountPreviewResult.Invalid("کد تخفیف معتبر نیست یا منقضی شده است.");
         }
 
-        var plans = SubscriptionPlanCatalog.Plans
+        var plans = await GetPlansAsync(cancellationToken);
+        var discountedPlans = plans
             .Select(plan =>
             {
                 var discountAmount = CalculateDiscount(plan.Price, discount);
@@ -150,10 +97,8 @@ public class SubscriptionService
             })
             .ToList();
 
-        return DiscountPreviewResult.Valid(discount.Code, plans, "کد تخفیف اعمال شد.");
+        return DiscountPreviewResult.Valid(discount.Code, discountedPlans, "کد تخفیف اعمال شد.");
     }
-
-    public SubscriptionPlan? FindPlan(string? planId) => SubscriptionPlanCatalog.Find(planId);
 
     public async Task<SubscriptionStatus?> GetCurrentSubscriptionAsync(ClaimsPrincipal user, CancellationToken cancellationToken)
     {
@@ -177,7 +122,7 @@ public class SubscriptionService
             return null;
         }
 
-        var plan = FindPlan(customer.SubscriptionPlanId);
+        var plan = await FindPlanAsync(customer.SubscriptionPlanId, cancellationToken, includeInactive: true);
         if (plan is null)
         {
             return null;
@@ -231,7 +176,7 @@ public class SubscriptionService
 
     public async Task ActivatePlanForUserAsync(long userId, string planId, CancellationToken cancellationToken)
     {
-        var plan = FindPlan(planId);
+        var plan = await FindPlanAsync(planId, cancellationToken, includeInactive: false);
         if (plan is null)
         {
             return;
@@ -273,7 +218,7 @@ public class SubscriptionService
         }
 
         var customer = await _context.Customers.FirstOrDefaultAsync(c => c.Id == userId.Value, cancellationToken);
-        var plan = FindPlan(customer?.SubscriptionPlanId);
+        var plan = await FindPlanAsync(customer?.SubscriptionPlanId, cancellationToken, includeInactive: true);
 
         if (customer is null || plan is null || plan.EvaluationLimit is null)
         {
@@ -287,6 +232,37 @@ public class SubscriptionService
 
         customer.UsedEvaluations = Math.Min(customer.UsedEvaluations + 1, plan.EvaluationLimit.Value);
         await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    private static SubscriptionPlan MapPlan(SubscriptionPlanEntity entity)
+        => new()
+        {
+            Id = entity.Id,
+            Title = entity.Title,
+            DurationLabel = entity.DurationLabel,
+            OriginalPrice = entity.OriginalPrice,
+            Price = entity.Price,
+            EvaluationLimit = entity.EvaluationLimit,
+            IncludesAI = entity.IncludesAI,
+            Features = ParseFeatures(entity.FeaturesJson)
+        };
+
+    private static IReadOnlyList<string> ParseFeatures(string? json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return Array.Empty<string>();
+        }
+
+        try
+        {
+            var list = JsonSerializer.Deserialize<List<string>>(json, JsonOptions);
+            return list?.Where(item => !string.IsNullOrWhiteSpace(item)).ToList() ?? Array.Empty<string>();
+        }
+        catch
+        {
+            return Array.Empty<string>();
+        }
     }
 
     private static long? GetUserId(ClaimsPrincipal user)

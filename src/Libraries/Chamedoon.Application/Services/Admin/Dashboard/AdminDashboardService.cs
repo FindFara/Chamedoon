@@ -16,17 +16,20 @@ public class AdminDashboardService : IAdminDashboardService
     private readonly IAdminBlogRepository _blogRepository;
     private readonly IAdminRoleRepository _roleRepository;
     private readonly IAdminPaymentRepository _paymentRepository;
+    private readonly SubscriptionService _subscriptionService;
 
     public AdminDashboardService(
         IAdminUserRepository userRepository,
         IAdminBlogRepository blogRepository,
         IAdminRoleRepository roleRepository,
-        IAdminPaymentRepository paymentRepository)
+        IAdminPaymentRepository paymentRepository,
+        SubscriptionService subscriptionService)
     {
         _userRepository = userRepository;
         _blogRepository = blogRepository;
         _roleRepository = roleRepository;
         _paymentRepository = paymentRepository;
+        _subscriptionService = subscriptionService;
     }
 
     public async Task<OperationResult<DashboardSummaryDto>> GetSummaryAsync(CancellationToken cancellationToken)
@@ -55,11 +58,14 @@ public class AdminDashboardService : IAdminDashboardService
         var dailyRegistrations = await _userRepository.GetDailyRegistrationCountsAsync(30, cancellationToken);
         var paymentSummary = await _paymentRepository.GetPaymentSummaryAsync(paymentSummarySince, cancellationToken);
         var paymentActivities = await _paymentRepository.GetRecentPaymentsAsync(5, cancellationToken);
+        var planTitles = await _subscriptionService.GetPlanTitleLookupAsync(cancellationToken);
         var mappedPayments = paymentActivities
             .Select(activity =>
             {
-                var plan = SubscriptionPlanCatalog.Find(activity.PlanId);
-                return activity with { PlanTitle = plan?.Title ?? activity.PlanTitle ?? "اشتراک" };
+                var planTitle = !string.IsNullOrWhiteSpace(activity.PlanId) && planTitles.TryGetValue(activity.PlanId, out var title)
+                    ? title
+                    : activity.PlanTitle ?? "اشتراک";
+                return activity with { PlanTitle = planTitle };
             })
             .ToList();
 
@@ -84,7 +90,7 @@ public class AdminDashboardService : IAdminDashboardService
             MonthlyActiveSubscriptions = BuildMonthlyRegistrations(monthlySubscriptions),
             MonthlyBlogViews = BuildMonthlyRegistrations(monthlyBlogViews),
             DailyRegistrationsLast30Days = BuildDailyRegistrations(dailyRegistrations),
-            RecentUsers = recentUsers.Select(user => user.ToAdminUserDto()).ToList(),
+            RecentUsers = recentUsers.Select(user => user.ToAdminUserDto(planTitles)).ToList(),
             RecentPosts = recentPosts.Select(article => article.ToAdminBlogPostDto()).ToList(),
             PaymentSummary = paymentSummary,
             RecentPayments = mappedPayments

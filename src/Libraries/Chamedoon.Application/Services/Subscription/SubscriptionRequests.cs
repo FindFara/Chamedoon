@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Chamedoon.Application.Services.Subscription;
 
-public record GetSubscriptionPlansQuery() : IRequest<IReadOnlyList<SubscriptionPlan>>;
+public record GetSubscriptionPlansQuery(bool IncludeInactive = false) : IRequest<IReadOnlyList<SubscriptionPlan>>;
 
 public record GetSubscriptionStatusQuery(ClaimsPrincipal User) : IRequest<SubscriptionStatus?>;
 
@@ -27,7 +27,7 @@ public class GetSubscriptionPlansQueryHandler : IRequestHandler<GetSubscriptionP
 
     public Task<IReadOnlyList<SubscriptionPlan>> Handle(GetSubscriptionPlansQuery request, CancellationToken cancellationToken)
     {
-        return _service.GetPlansAsync();
+        return _service.GetPlansAsync(cancellationToken, request.IncludeInactive);
     }
 }
 

@@ -2,8 +2,8 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Chamedoon.Infrastructure.Persistence;
-using Chamedoon.Application.Services.Subscription;
 using Chamedoon.Application.Services.Payments;
+using Chamedoon.Application.Services.Subscription;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
@@ -61,8 +61,6 @@ public static class ConfigureServices
 
         services.AddScoped<SubscriptionService>();
         services.AddScoped<PaymentService>();
-        services.Configure<SubscriptionPlanOptions>(configuration.GetSection(SubscriptionPlanOptions.SectionName));
-        SubscriptionPlanCatalog.Configure(configuration.GetSection(SubscriptionPlanOptions.SectionName).Get<SubscriptionPlanOptions>());
         services.Configure<PaymentGatewayOptions>(configuration.GetSection(PaymentGatewayOptions.SectionName));
         services.AddHttpClient(PaymentGatewayOptions.HttpClientName, client =>
         {
