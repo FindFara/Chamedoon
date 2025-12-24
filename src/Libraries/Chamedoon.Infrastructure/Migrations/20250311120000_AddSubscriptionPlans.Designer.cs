@@ -4605,7 +4605,6 @@ namespace Chamedoon.Infrastructure.Migrations
                             Price = 37000,
                             SortOrder = 1,
                             Title = "پلن پایه (۳ استعلام)",
-                            UpdatedAtUtc = null
                         },
                         new
                         {
@@ -4620,7 +4619,6 @@ namespace Chamedoon.Infrastructure.Migrations
                             Price = 49000,
                             SortOrder = 2,
                             Title = "پلن حرفه‌ای (نامحدود)",
-                            UpdatedAtUtc = null
                         },
                         new
                         {
@@ -4635,7 +4633,6 @@ namespace Chamedoon.Infrastructure.Migrations
                             Price = 62000,
                             SortOrder = 3,
                             Title = "پلن ویژه (هوش مصنوعی)",
-                            UpdatedAtUtc = null
                         });
                 });
 

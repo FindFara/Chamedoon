@@ -259,7 +259,7 @@ public class SubscriptionService
         try
         {
             var list = JsonSerializer.Deserialize<List<string>>(json, JsonOptions);
-            return list?.Where(item => !string.IsNullOrWhiteSpace(item)).ToList() ?? Array.Empty<string>();
+            return list?.Where(item => !string.IsNullOrWhiteSpace(item)).ToList() ??new List<string>();
         }
         catch
         {
