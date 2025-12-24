@@ -21,6 +21,5 @@ public class SubscriptionPlanConfigs : IEntityTypeConfiguration<SubscriptionPlan
         builder.Property(plan => plan.IsActive).HasDefaultValue(true);
         builder.Property(plan => plan.SortOrder).HasDefaultValue(0);
         builder.Property(plan => plan.CreatedAtUtc).IsRequired();
-        builder.Property(plan => plan.UpdatedAtUtc);
     }
 }

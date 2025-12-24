@@ -42,7 +42,6 @@ public class AdminSubscriptionPlanRepository : IAdminSubscriptionPlanRepository
     public async Task<SubscriptionPlanEntity> CreatePlanAsync(SubscriptionPlanEntity plan, CancellationToken cancellationToken)
     {
         plan.CreatedAtUtc = DateTime.UtcNow;
-        plan.UpdatedAtUtc = null;
         _context.SubscriptionPlans.Add(plan);
         await _context.SaveChangesAsync(cancellationToken);
         return plan;
@@ -65,7 +64,6 @@ public class AdminSubscriptionPlanRepository : IAdminSubscriptionPlanRepository
         existing.FeaturesJson = plan.FeaturesJson;
         existing.IsActive = plan.IsActive;
         existing.SortOrder = plan.SortOrder;
-        existing.UpdatedAtUtc = DateTime.UtcNow;
 
         await _context.SaveChangesAsync(cancellationToken);
         return existing;
@@ -80,7 +78,6 @@ public class AdminSubscriptionPlanRepository : IAdminSubscriptionPlanRepository
         }
 
         existing.IsActive = false;
-        existing.UpdatedAtUtc = DateTime.UtcNow;
         await _context.SaveChangesAsync(cancellationToken);
         return true;
     }

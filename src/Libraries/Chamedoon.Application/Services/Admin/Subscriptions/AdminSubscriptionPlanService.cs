@@ -101,8 +101,7 @@ public class AdminSubscriptionPlanService : IAdminSubscriptionPlanService
             IncludesAI = input.IncludesAI,
             FeaturesJson = JsonSerializer.Serialize(input.Features ?? new List<string>(), JsonOptions),
             IsActive = input.IsActive,
-            SortOrder = input.SortOrder,
-            UpdatedAtUtc = DateTime.UtcNow
+            SortOrder = input.SortOrder
         };
 
     private static string BuildDurationLabel(int durationMonths)
