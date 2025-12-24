@@ -9,10 +9,12 @@ using Chamedoon.Application.Services.Admin.Dashboard;
 using Chamedoon.Application.Services.Admin.Discounts;
 using Chamedoon.Application.Services.Admin.Payments;
 using Chamedoon.Application.Services.Admin.Roles;
+using Chamedoon.Application.Services.Admin.Subscriptions;
 using Chamedoon.Application.Services.Admin.Users;
 using Chamedoon.Application.Services.Admin.Countries;
 using Chamedoon.Application.Services.Immigration;
 using Chamedoon.Application.Services.Payments;
+using Chamedoon.Application.Services.Subscription;
 
 
 namespace Chamedoon.Application;
@@ -34,11 +36,13 @@ public static class ConfigureServices
         services.AddScoped<IAdminPaymentService, AdminPaymentService>();
         services.AddScoped<IAdminDashboardService, AdminDashboardService>();
         services.AddScoped<IAdminDiscountCodeService, AdminDiscountCodeService>();
+        services.AddScoped<IAdminSubscriptionPlanService, AdminSubscriptionPlanService>();
         services.AddScoped<IAdminCountryService, AdminCountryService>();
         services.AddScoped<IImmigrationEvaluationService, ImmigrationEvaluationService>();
         services.AddScoped<ICountryDataCache, CountryDataCache>();
         services.AddScoped<ImmigrationScoringService>();
         services.AddScoped<PaymentService>();
+        services.AddScoped<SubscriptionService>();
         services.AddMemoryCache();
 
         return services;

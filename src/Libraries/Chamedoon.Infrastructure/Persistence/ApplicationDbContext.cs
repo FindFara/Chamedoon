@@ -4,11 +4,13 @@ using Chamedoon.Domin.Entity.Countries;
 using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Payments;
 using Chamedoon.Domin.Entity.Permissions;
+using Chamedoon.Domin.Entity.Subscriptions;
 using Chamedoon.Domin.Entity.Users;
 using Chamedoon.Infrastructure.FluentConfigs.Blog;
 using Chamedoon.Infrastructure.FluentConfigs.Customers;
 using Chamedoon.Infrastructure.FluentConfigs.Countries;
 using Chamedoon.Infrastructure.FluentConfigs.Payments;
+using Chamedoon.Infrastructure.FluentConfigs.Subscriptions;
 using Chamedoon.Infrastructure.FluentConfigs.Users;
 using Chamedoon.Infrastructure.Persistence.Seeds;
 using Microsoft.AspNetCore.Identity;
@@ -67,6 +69,10 @@ public class ApplicationDbContext : IdentityDbContext<
     public DbSet<DiscountCode> DiscountCodes { get; set; }
     #endregion
 
+    #region Subscriptions
+    public DbSet<SubscriptionPlanEntity> SubscriptionPlans { get; set; }
+    #endregion
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -99,6 +105,7 @@ public class ApplicationDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new PaymentRequestConfigs());
         modelBuilder.ApplyConfiguration(new PaymentResponseConfigs());
         modelBuilder.ApplyConfiguration(new DiscountCodeConfigs());
+        modelBuilder.ApplyConfiguration(new SubscriptionPlanConfigs());
         modelBuilder.ApplyConfiguration(new CountryConfigs());
         modelBuilder.ApplyConfiguration(new CountryLivingCostConfigs());
         modelBuilder.ApplyConfiguration(new CountryRestrictionConfigs());
@@ -106,6 +113,7 @@ public class ApplicationDbContext : IdentityDbContext<
         modelBuilder.ApplyConfiguration(new CountryEducationConfigs());
 
         CountrySeedData.Seed(modelBuilder);
+        SubscriptionPlanSeedData.Seed(modelBuilder);
 
 
     }
