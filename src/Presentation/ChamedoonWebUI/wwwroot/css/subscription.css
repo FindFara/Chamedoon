@@ -362,16 +362,10 @@
     border: 1px solid rgba(79, 70, 229, 0.2);
     box-shadow: 0 28px 52px -30px rgba(15, 23, 42, 0.35);
     padding: 1.25rem;
-    min-height: 420px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 1.25rem;
-}
-
-.payment-result-modal__dialog {
-    max-width: 420px;
-    width: calc(100% - 2.5rem);
 }
 
 .payment-result-modal__dialog {
