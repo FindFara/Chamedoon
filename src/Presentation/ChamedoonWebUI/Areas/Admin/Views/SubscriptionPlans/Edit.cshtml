@@ -1,0 +1,109 @@
+@model SubscriptionPlanEditViewModel
+@{
+    ViewData["Title"] = string.IsNullOrWhiteSpace(Model.Id) ? "ایجاد پلن اشتراک" : "ویرایش پلن اشتراک";
+    var isEdit = !string.IsNullOrWhiteSpace(Model.Id);
+    var durations = new List<SelectListItem>
+    {
+        new("یک ماهه", "1"),
+        new("دو ماهه", "2"),
+        new("سه ماهه", "3"),
+        new("شش ماهه", "6"),
+        new("یکساله", "12")
+    };
+}
+
+<div class="container py-4 admin-section subscription-plans-section">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h4 mb-0">@ViewData["Title"]</h1>
+        <a asp-action="Index" class="btn btn-outline-secondary">بازگشت</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="@(isEdit ? "Edit" : "Create")" asp-route-id="@Model.Id" method="post" class="row g-3">
+                @Html.AntiForgeryToken()
+                @if (isEdit)
+                {
+                    <input type="hidden" name="Id" value="@Model.Id" />
+                }
+
+                @if (isEdit)
+                {
+                    <div class="col-md-4">
+                        <label asp-for="Id" class="form-label"></label>
+                        <input asp-for="Id" class="form-control" readonly />
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-12">
+                        <div class="alert alert-info mb-0">
+                            شناسه پلن به صورت خودکار ساخته می‌شود.
+                        </div>
+                    </div>
+                }
+
+                <div class="col-md-8">
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="DurationMonths" class="form-label"></label>
+                    <select asp-for="DurationMonths" class="form-select" asp-items="durations"></select>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="OriginalPrice" class="form-label"></label>
+                    <input asp-for="OriginalPrice" class="form-control" />
+                    <span asp-validation-for="OriginalPrice" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="Price" class="form-label"></label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="EvaluationLimit" class="form-label"></label>
+                    <input asp-for="EvaluationLimit" class="form-control" />
+                    <span asp-validation-for="EvaluationLimit" class="text-danger"></span>
+                    <div class="form-text">اگر خالی بماند، نامحدود در نظر گرفته می‌شود.</div>
+                </div>
+
+                <div class="col-md-4">
+                    <label asp-for="SortOrder" class="form-label"></label>
+                    <input asp-for="SortOrder" class="form-control" />
+                    <span asp-validation-for="SortOrder" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-4 d-flex align-items-center gap-2">
+                    <input asp-for="IncludesAI" class="form-check-input" type="checkbox" />
+                    <label asp-for="IncludesAI" class="form-check-label"></label>
+                </div>
+
+                <div class="col-md-4 d-flex align-items-center gap-2">
+                    <input asp-for="IsActive" class="form-check-input" type="checkbox" />
+                    <label asp-for="IsActive" class="form-check-label"></label>
+                </div>
+
+                <div class="col-12">
+                    <label asp-for="FeaturesText" class="form-label"></label>
+                    <textarea asp-for="FeaturesText" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="FeaturesText" class="text-danger"></span>
+                </div>
+
+                <div class="col-12 d-flex justify-content-end gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary">انصراف</a>
+                    <button type="submit" class="btn btn-primary">ذخیره</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

@@ -25,4 +25,5 @@ public interface IAdminUserRepository
     Task<List<User>> GetRecentUsersAsync(int count, CancellationToken cancellationToken);
     Task<IReadOnlyList<MonthlyRegistrationCount>> GetMonthlyRegistrationCountsAsync(int months, CancellationToken cancellationToken);
     Task<IReadOnlyList<MonthlyRegistrationCount>> GetMonthlyActiveSubscriptionCountsAsync(int months, CancellationToken cancellationToken);
+    Task<IReadOnlyList<DailyRegistrationCount>> GetDailyRegistrationCountsAsync(int days, CancellationToken cancellationToken);
 }

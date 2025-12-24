@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Chamedoon.Application.Services.Admin.Common.Models;
-using Chamedoon.Application.Services.Subscription;
 using Chamedoon.Domin.Entity.Blogs;
 using Chamedoon.Domin.Entity.Countries;
 using Chamedoon.Domin.Entity.Customers;
@@ -13,7 +12,7 @@ namespace Chamedoon.Application.Services.Admin.Common;
 
 internal static class AdminMappingExtensions
 {
-    public static AdminUserDto ToAdminUserDto(this User user)
+    public static AdminUserDto ToAdminUserDto(this User user, IReadOnlyDictionary<string, string>? planTitles = null)
     {
         var fullName = user.Customer is Customer customer
             ? string.Join(" ", new[] { customer.FirstName, customer.LastName }.Where(s => !string.IsNullOrWhiteSpace(s)))
@@ -25,19 +24,23 @@ internal static class AdminMappingExtensions
 
         var isActive = !user.LockoutEnd.HasValue || user.LockoutEnd.Value <= DateTimeOffset.UtcNow;
 
-        var plan = SubscriptionPlanCatalog.Find(user.Customer?.SubscriptionPlanId);
+        var planId = user.Customer?.SubscriptionPlanId;
+        var planTitle = !string.IsNullOrWhiteSpace(planId) && planTitles is not null && planTitles.TryGetValue(planId, out var title)
+            ? title
+            : null;
 
         return new AdminUserDto(
             user.Id,
             user.Email ?? string.Empty,
             user.UserName ?? string.Empty,
             fullName,
+            user.PhoneNumber,
             role?.RoleId,
             role?.Role?.Name,
             isActive,
             user.Created,
-            plan?.Id,
-            plan?.Title,
+            planId,
+            planTitle,
             user.Customer?.SubscriptionStartDateUtc,
             user.Customer?.SubscriptionEndDateUtc,
             user.Customer?.UsedEvaluations ?? 0);

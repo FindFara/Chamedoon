@@ -41,6 +41,7 @@ public class ImmigrationReportsController : Controller
                     item.Id,
                     item.CustomerName,
                     item.Email,
+                    item.PhoneNumber,
                     item.Age,
                     item.MaritalStatus,
                     item.JobCategory,

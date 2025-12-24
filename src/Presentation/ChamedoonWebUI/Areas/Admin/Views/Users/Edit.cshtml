@@ -32,6 +32,11 @@
                         <span asp-validation-for="FullName" class="text-danger"></span>
                     </div>
                     <div class="col-md-6">
+                        <label asp-for="PhoneNumber" class="form-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
                         <label asp-for="RoleId" class="form-label"></label>
                         <select asp-for="RoleId" class="form-select" asp-items="@(new SelectList(Model.Roles, nameof(RoleOptionViewModel.Id), nameof(RoleOptionViewModel.Name)))">
                             <option value="">بدون نقش</option>

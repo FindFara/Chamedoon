@@ -3,7 +3,7 @@
     var pageTitle = ViewData["Title"] as string ?? "مدیریت چمدون";
 }
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" data-bs-theme="light">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,68 +11,96 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/admin-dark.css" asp-append-version="true" />
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TLLM52T5');</script>
+    <!-- End Google Tag Manager -->
     @RenderSection("Styles", required: false)
 </head>
-<body class="admin-shell">
-    <div class="admin-wrapper d-flex">
-        <aside class="admin-sidebar">
-            <div class="sidebar-header">
-                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="sidebar-brand">پنل مدیریت</a>
+<body class="admin-app">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLLM52T5"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <div class="admin-wrapper">
+        <div class="admin-overlay" id="adminOverlay"></div>
+        <aside class="admin-sidebar" id="adminSidebar" aria-hidden="false">
+            <div class="sidebar-brand">
+                <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Chamedoon Admin</a>
+                <button class="sidebar-close d-lg-none" type="button" id="sidebarClose" aria-label="بستن منو">×</button>
             </div>
-            <nav class="sidebar-nav nav flex-column">
-                <a class="nav-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
-                    <span class="nav-icon" aria-hidden="true">📊</span>
+            <div class="sidebar-profile">
+                <div class="profile-avatar">CA</div>
+                <div>
+                    <div class="profile-name">مدیریت چمدون</div>
+                    <div class="profile-role">Admin Panel</div>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <a class="sidebar-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                    <span class="sidebar-icon">🏠</span>
                     داشبورد
                 </a>
-                <a class="nav-link" asp-area="Admin" asp-controller="PaymentReports" asp-action="Index">
-                    <span class="nav-icon" aria-hidden="true">💳</span>
+                <a class="sidebar-link" asp-area="Admin" asp-controller="PaymentReports" asp-action="Index">
+                    <span class="sidebar-icon">💳</span>
                     گزارش پرداخت‌ها
                 </a>
-                <a class="nav-link" asp-area="Admin" asp-controller="DiscountCodes" asp-action="Index">
-                    <span class="nav-icon" aria-hidden="true">🏷️</span>
+                <a class="sidebar-link" asp-area="Admin" asp-controller="DiscountCodes" asp-action="Index">
+                    <span class="sidebar-icon">🏷️</span>
                     کدهای تخفیف
                 </a>
-                <a class="nav-link" asp-area="Admin" asp-controller="ImmigrationReports" asp-action="Index">
-                    <span class="nav-icon" aria-hidden="true">🧭</span>
+                <a class="sidebar-link" asp-area="Admin" asp-controller="SubscriptionPlans" asp-action="Index">
+                    <span class="sidebar-icon">🧾</span>
+                    پلن‌های اشتراک
+                </a>
+                <a class="sidebar-link" asp-area="Admin" asp-controller="ImmigrationReports" asp-action="Index">
+                    <span class="sidebar-icon">🧭</span>
                     گزارش ارزیابی مهاجرت
                 </a>
-                <a class="nav-link" asp-area="Admin" asp-controller="Countries" asp-action="Index">
-                    <span class="nav-icon" aria-hidden="true">🌍</span>
+                <a class="sidebar-link" asp-area="Admin" asp-controller="Countries" asp-action="Index">
+                    <span class="sidebar-icon">🌍</span>
                     داشبورد کشورها
                 </a>
-                <a class="nav-link" asp-area="Admin" asp-controller="Users" asp-action="Index">
-                    <span class="nav-icon" aria-hidden="true">👥</span>
+                <a class="sidebar-link" asp-area="Admin" asp-controller="Users" asp-action="Index">
+                    <span class="sidebar-icon">👥</span>
                     مدیریت کاربران
                 </a>
-                <a class="nav-link" asp-area="Admin" asp-controller="Blogs" asp-action="Index">
-                    <span class="nav-icon" aria-hidden="true">📝</span>
+                <a class="sidebar-link" asp-area="Admin" asp-controller="Blogs" asp-action="Index">
+                    <span class="sidebar-icon">📝</span>
                     مدیریت وبلاگ
                 </a>
-                <a class="nav-link" asp-area="Admin" asp-controller="Roles" asp-action="Index">
-                    <span class="nav-icon" aria-hidden="true">🛡️</span>
+                <a class="sidebar-link" asp-area="Admin" asp-controller="Roles" asp-action="Index">
+                    <span class="sidebar-icon">🛡️</span>
                     نقش‌ها و مجوزها
                 </a>
             </nav>
         </aside>
-        <div class="admin-content flex-grow-1">
-            <header class="admin-header d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center gap-3">
-                    <button class="btn btn-outline-secondary d-md-none" type="button" id="sidebarToggle" aria-label="باز و بسته کردن منو">
-                        ☰
-                    </button>
-                    <h1 class="h5 mb-0">@pageTitle</h1>
+
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <button class="sidebar-toggle d-lg-none" type="button" id="sidebarToggle" aria-label="نمایش منو">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title">
+                    <h1>@pageTitle</h1>
+                    <p>نمای کلی پنل مدیریت و وضعیت سامانه</p>
                 </div>
-                <div class="admin-header-actions d-flex align-items-center gap-2">
-                    <a class="btn btn-outline-secondary return-link" asp-area="" asp-controller="Home" asp-action="Index" aria-label="بازگشت به سایت">
-                        <span aria-hidden="true">🏠</span>
+                <div class="topbar-actions">
+                    <a class="btn btn-outline-primary" asp-area="" asp-controller="Home" asp-action="Index">
+                        بازگشت به سایت
                     </a>
-                    <button class="btn btn-outline-secondary theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="تغییر تم">
-                        <span class="theme-icon" aria-hidden="true">🌙</span>
+                    <button class="btn btn-outline-light theme-toggle" type="button" id="themeToggle" aria-label="تغییر تم">
+                        حالت شب/روز
                     </button>
                 </div>
             </header>
-            <main class="admin-main">
+
+            <main class="admin-content">
                 @if (TempData["Success"] is string successMessage)
                 {
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -88,53 +116,15 @@
                 }
                 @RenderBody()
             </main>
-            <footer class="admin-footer text-muted">
-                © @DateTime.UtcNow.Year چمدون - محیط مدیریت
+            <footer class="admin-footer">
+                © @DateTime.UtcNow.Year Chamedoon Admin Template
             </footer>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script>
-        (function () {
-            const storageKey = 'admin-theme';
-            const body = document.body;
-            const toggle = document.getElementById('themeToggle');
-            const sidebar = document.querySelector('.admin-sidebar');
-            const sidebarToggle = document.getElementById('sidebarToggle');
-
-            const applyTheme = (theme) => {
-                const isDark = theme === 'dark';
-                body.classList.toggle('dark-mode', isDark);
-                toggle?.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-                if (toggle) {
-                    toggle.classList.toggle('btn-outline-secondary', !isDark);
-                    toggle.classList.toggle('btn-outline-light', isDark);
-                }
-                const icon = toggle?.querySelector('.theme-icon');
-                if (icon) {
-                    icon.textContent = isDark ? '☀️' : '🌙';
-                }
-                toggle?.setAttribute('aria-label', isDark ? 'تغییر به حالت روشن' : 'تغییر به حالت تیره');
-                window.dispatchEvent(new CustomEvent('adminThemeChanged', { detail: theme }));
-            };
-
-            const storedTheme = localStorage.getItem(storageKey) ?? 'light';
-            applyTheme(storedTheme);
-
-            toggle?.addEventListener('click', () => {
-                const nextTheme = body.classList.contains('dark-mode') ? 'light' : 'dark';
-                localStorage.setItem(storageKey, nextTheme);
-                applyTheme(nextTheme);
-            });
-
-            sidebarToggle?.addEventListener('click', () => {
-                sidebar?.classList.toggle('sidebar-open');
-                body.classList.toggle('sidebar-open');
-            });
-        })();
-    </script>
+    <script src="~/js/admin-template.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

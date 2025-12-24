@@ -4,6 +4,7 @@ using Chamedoon.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chamedoon.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250311121000_AddSubscriptionPlanDurationMonths")]
+    partial class AddSubscriptionPlanDurationMonths
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -4584,6 +4587,9 @@ namespace Chamedoon.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("SubscriptionPlans");
@@ -4602,7 +4608,7 @@ namespace Chamedoon.Infrastructure.Migrations
                             OriginalPrice = 120000,
                             Price = 37000,
                             SortOrder = 1,
-                            Title = "پلن پایه (۳ استعلام)"
+                            Title = "پلن پایه (۳ استعلام)",
                         },
                         new
                         {
@@ -4617,7 +4623,7 @@ namespace Chamedoon.Infrastructure.Migrations
                             OriginalPrice = 170000,
                             Price = 49000,
                             SortOrder = 2,
-                            Title = "پلن حرفه‌ای (نامحدود)"
+                            Title = "پلن حرفه‌ای (نامحدود)",
                         },
                         new
                         {
@@ -4632,7 +4638,7 @@ namespace Chamedoon.Infrastructure.Migrations
                             OriginalPrice = 220000,
                             Price = 62000,
                             SortOrder = 3,
-                            Title = "پلن ویژه (هوش مصنوعی)"
+                            Title = "پلن ویژه (هوش مصنوعی)",
                         });
                 });
 

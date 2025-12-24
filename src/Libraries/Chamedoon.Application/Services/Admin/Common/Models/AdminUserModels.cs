@@ -5,6 +5,7 @@ public record AdminUserDto(
     string Email,
     string UserName,
     string? FullName,
+    string? PhoneNumber,
     long? RoleId,
     string? RoleName,
     bool IsActive,
@@ -21,6 +22,7 @@ public class AdminUserInput
     public string Email { get; set; } = string.Empty;
     public string UserName { get; set; } = string.Empty;
     public string? FullName { get; set; }
+    public string? PhoneNumber { get; set; }
     public long? RoleId { get; set; }
     public bool IsActive { get; set; } = true;
     public string? Password { get; set; }
@@ -31,3 +33,5 @@ public class AdminUserInput
 }
 
 public record MonthlyRegistrationCount(int Year, int Month, int Count);
+
+public record DailyRegistrationCount(DateTime Date, int Count);

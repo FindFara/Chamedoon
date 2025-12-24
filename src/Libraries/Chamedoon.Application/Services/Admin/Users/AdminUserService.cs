@@ -5,6 +5,7 @@ using Chamedoon.Application.Common.Interfaces.Admin;
 using Chamedoon.Application.Common.Models;
 using Chamedoon.Application.Services.Admin.Common;
 using Chamedoon.Application.Services.Admin.Common.Models;
+using Chamedoon.Application.Services.Subscription;
 using Chamedoon.Domin.Entity.Customers;
 using Chamedoon.Domin.Entity.Users;
 using Microsoft.AspNetCore.Identity;
@@ -15,17 +16,23 @@ public class AdminUserService : IAdminUserService
 {
     private readonly IAdminUserRepository _userRepository;
     private readonly IAdminRoleRepository _roleRepository;
+    private readonly SubscriptionService _subscriptionService;
 
-    public AdminUserService(IAdminUserRepository userRepository, IAdminRoleRepository roleRepository)
+    public AdminUserService(
+        IAdminUserRepository userRepository,
+        IAdminRoleRepository roleRepository,
+        SubscriptionService subscriptionService)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
+        _subscriptionService = subscriptionService;
     }
 
     public async Task<OperationResult<PaginatedList<AdminUserDto>>> GetUsersAsync(string? search, long? roleId, int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         var users = await _userRepository.GetUsersAsync(search, roleId, pageNumber, pageSize, cancellationToken);
-        var mappedItems = users.Items.Select(user => user.ToAdminUserDto()).ToList();
+        var planTitles = await _subscriptionService.GetPlanTitleLookupAsync(cancellationToken);
+        var mappedItems = users.Items.Select(user => user.ToAdminUserDto(planTitles)).ToList();
         var paginated = new PaginatedList<AdminUserDto>(mappedItems, users.TotalCount, users.PageNumber, pageSize);
 
         return OperationResult<PaginatedList<AdminUserDto>>.Success(paginated);
@@ -39,7 +46,8 @@ public class AdminUserService : IAdminUserService
             return OperationResult<AdminUserDto>.Fail("کاربر مورد نظر یافت نشد.");
         }
 
-        return OperationResult<AdminUserDto>.Success(user.ToAdminUserDto());
+        var planTitles = await _subscriptionService.GetPlanTitleLookupAsync(cancellationToken);
+        return OperationResult<AdminUserDto>.Success(user.ToAdminUserDto(planTitles));
     }
 
     public async Task<OperationResult<AdminUserDto>> CreateUserAsync(AdminUserInput input, CancellationToken cancellationToken)
@@ -64,7 +72,8 @@ public class AdminUserService : IAdminUserService
             return OperationResult<AdminUserDto>.Fail("کاربر ایجاد شد اما اطلاعات آن قابل بازیابی نیست.");
         }
 
-        return OperationResult<AdminUserDto>.Success(createdUser.ToAdminUserDto());
+        var planTitles = await _subscriptionService.GetPlanTitleLookupAsync(cancellationToken);
+        return OperationResult<AdminUserDto>.Success(createdUser.ToAdminUserDto(planTitles));
     }
 
     public async Task<OperationResult<AdminUserDto>> UpdateUserAsync(AdminUserInput input, CancellationToken cancellationToken)
@@ -91,7 +100,8 @@ public class AdminUserService : IAdminUserService
             return OperationResult<AdminUserDto>.Fail("کاربر مورد نظر یافت نشد.");
         }
 
-        return OperationResult<AdminUserDto>.Success(updatedUser.ToAdminUserDto());
+        var planTitles = await _subscriptionService.GetPlanTitleLookupAsync(cancellationToken);
+        return OperationResult<AdminUserDto>.Success(updatedUser.ToAdminUserDto(planTitles));
     }
 
     public async Task<OperationResult<bool>> DeleteUserAsync(long id, CancellationToken cancellationToken)
@@ -121,6 +131,8 @@ public class AdminUserService : IAdminUserService
         {
             Email = input.Email,
             UserName = userName,
+            PhoneNumber = input.PhoneNumber,
+            PhoneNumberConfirmed = !string.IsNullOrWhiteSpace(input.PhoneNumber),
             EmailConfirmed = true,
             Created = input.Id.HasValue ? default : now,
             LastModified = now,

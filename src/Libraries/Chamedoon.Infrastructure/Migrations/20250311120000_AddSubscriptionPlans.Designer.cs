@@ -4,6 +4,7 @@ using Chamedoon.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Chamedoon.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250311120000_AddSubscriptionPlans")]
+    partial class AddSubscriptionPlans
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -4550,9 +4553,6 @@ namespace Chamedoon.Infrastructure.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
-                    b.Property<int>("DurationMonths")
-                        .HasColumnType("int");
-
                     b.Property<int?>("EvaluationLimit")
                         .HasColumnType("int");
 
@@ -4584,6 +4584,9 @@ namespace Chamedoon.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<DateTime?>("UpdatedAtUtc")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("SubscriptionPlans");
@@ -4594,7 +4597,6 @@ namespace Chamedoon.Infrastructure.Migrations
                             Id = "starter",
                             CreatedAtUtc = new DateTime(2024, 12, 1, 0, 0, 0, DateTimeKind.Utc),
                             DurationLabel = "یک ماهه",
-                            DurationMonths = 1,
                             EvaluationLimit = 3,
                             FeaturesJson = "[\"۳ استعلام دقیق ارزیابی مهاجرت\",\"نمایش گزارش کامل در داشبورد\",\"پشتیبانی ایمیلی در تمام مدت اشتراک\"]",
                             IncludesAI = false,
@@ -4602,14 +4604,13 @@ namespace Chamedoon.Infrastructure.Migrations
                             OriginalPrice = 120000,
                             Price = 37000,
                             SortOrder = 1,
-                            Title = "پلن پایه (۳ استعلام)"
+                            Title = "پلن پایه (۳ استعلام)",
                         },
                         new
                         {
                             Id = "unlimited",
                             CreatedAtUtc = new DateTime(2024, 12, 1, 0, 0, 0, DateTimeKind.Utc),
                             DurationLabel = "یک ماهه",
-                            DurationMonths = 1,
                             EvaluationLimit = (int?)null,
                             FeaturesJson = "[\"استعلام نامحدود در دوره اشتراک\",\"به‌روزرسانی لحظه‌ای مسیرهای مهاجرتی\",\"پشتیبانی سریع‌تر در ساعات اداری\"]",
                             IncludesAI = false,
@@ -4617,14 +4618,13 @@ namespace Chamedoon.Infrastructure.Migrations
                             OriginalPrice = 170000,
                             Price = 49000,
                             SortOrder = 2,
-                            Title = "پلن حرفه‌ای (نامحدود)"
+                            Title = "پلن حرفه‌ای (نامحدود)",
                         },
                         new
                         {
                             Id = "ai_pro",
                             CreatedAtUtc = new DateTime(2024, 12, 1, 0, 0, 0, DateTimeKind.Utc),
                             DurationLabel = "یک ماهه",
-                            DurationMonths = 1,
                             EvaluationLimit = (int?)null,
                             FeaturesJson = "[\"استعلام نامحدود با دقت بالا\",\"تحلیل پیشرفته با کمک هوش مصنوعی\",\"اولویت در پردازش و پاسخگویی\"]",
                             IncludesAI = true,
@@ -4632,7 +4632,7 @@ namespace Chamedoon.Infrastructure.Migrations
                             OriginalPrice = 220000,
                             Price = 62000,
                             SortOrder = 3,
-                            Title = "پلن ویژه (هوش مصنوعی)"
+                            Title = "پلن ویژه (هوش مصنوعی)",
                         });
                 });
 

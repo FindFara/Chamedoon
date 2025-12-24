@@ -16,17 +16,20 @@ public class AdminDashboardService : IAdminDashboardService
     private readonly IAdminBlogRepository _blogRepository;
     private readonly IAdminRoleRepository _roleRepository;
     private readonly IAdminPaymentRepository _paymentRepository;
+    private readonly SubscriptionService _subscriptionService;
 
     public AdminDashboardService(
         IAdminUserRepository userRepository,
         IAdminBlogRepository blogRepository,
         IAdminRoleRepository roleRepository,
-        IAdminPaymentRepository paymentRepository)
+        IAdminPaymentRepository paymentRepository,
+        SubscriptionService subscriptionService)
     {
         _userRepository = userRepository;
         _blogRepository = blogRepository;
         _roleRepository = roleRepository;
         _paymentRepository = paymentRepository;
+        _subscriptionService = subscriptionService;
     }
 
     public async Task<OperationResult<DashboardSummaryDto>> GetSummaryAsync(CancellationToken cancellationToken)
@@ -52,13 +55,17 @@ public class AdminDashboardService : IAdminDashboardService
         var monthlyRegistrations = await _userRepository.GetMonthlyRegistrationCountsAsync(monthlyWindow, cancellationToken);
         var monthlySubscriptions = await _userRepository.GetMonthlyActiveSubscriptionCountsAsync(monthlyWindow, cancellationToken);
         var monthlyBlogViews = await _blogRepository.GetMonthlyArticleViewCountsAsync(monthlyWindow, cancellationToken);
+        var dailyRegistrations = await _userRepository.GetDailyRegistrationCountsAsync(30, cancellationToken);
         var paymentSummary = await _paymentRepository.GetPaymentSummaryAsync(paymentSummarySince, cancellationToken);
         var paymentActivities = await _paymentRepository.GetRecentPaymentsAsync(5, cancellationToken);
+        var planTitles = await _subscriptionService.GetPlanTitleLookupAsync(cancellationToken);
         var mappedPayments = paymentActivities
             .Select(activity =>
             {
-                var plan = SubscriptionPlanCatalog.Find(activity.PlanId);
-                return activity with { PlanTitle = plan?.Title ?? activity.PlanTitle ?? "اشتراک" };
+                var planTitle = !string.IsNullOrWhiteSpace(activity.PlanId) && planTitles.TryGetValue(activity.PlanId, out var title)
+                    ? title
+                    : activity.PlanTitle ?? "اشتراک";
+                return activity with { PlanTitle = planTitle };
             })
             .ToList();
 
@@ -82,7 +89,8 @@ public class AdminDashboardService : IAdminDashboardService
             MonthlyRegistrations = BuildMonthlyRegistrations(monthlyRegistrations),
             MonthlyActiveSubscriptions = BuildMonthlyRegistrations(monthlySubscriptions),
             MonthlyBlogViews = BuildMonthlyRegistrations(monthlyBlogViews),
-            RecentUsers = recentUsers.Select(user => user.ToAdminUserDto()).ToList(),
+            DailyRegistrationsLast30Days = BuildDailyRegistrations(dailyRegistrations),
+            RecentUsers = recentUsers.Select(user => user.ToAdminUserDto(planTitles)).ToList(),
             RecentPosts = recentPosts.Select(article => article.ToAdminBlogPostDto()).ToList(),
             PaymentSummary = paymentSummary,
             RecentPayments = mappedPayments
@@ -109,6 +117,16 @@ public class AdminDashboardService : IAdminDashboardService
                 var date = new DateTime(record.Year, record.Month, 1);
                 return new DashboardMonthlyRegistrationDto(date.ToString("MMMM yyyy", new CultureInfo("fa-IR")), record.Count);
             })
+            .ToList();
+    }
+
+    private static IReadOnlyList<DashboardDailyRegistrationDto> BuildDailyRegistrations(IReadOnlyList<DailyRegistrationCount> counts)
+    {
+        return counts
+            .OrderBy(record => record.Date)
+            .Select(record => new DashboardDailyRegistrationDto(
+                record.Date.ToString("dd MMM", new CultureInfo("fa-IR")),
+                record.Count))
             .ToList();
     }
 }

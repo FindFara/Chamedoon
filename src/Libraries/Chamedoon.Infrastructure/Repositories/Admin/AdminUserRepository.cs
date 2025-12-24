@@ -99,6 +99,8 @@ public class AdminUserRepository : IAdminUserRepository
         existing.UserName = user.UserName;
         existing.NormalizedEmail = _userManager.NormalizeEmail(user.Email);
         existing.NormalizedUserName = _userManager.NormalizeName(user.UserName);
+        existing.PhoneNumber = user.PhoneNumber;
+        existing.PhoneNumberConfirmed = !string.IsNullOrWhiteSpace(user.PhoneNumber);
         existing.LockoutEnd = user.LockoutEnd;
         existing.LockoutEnabled = true;
         existing.LastModified = DateTime.UtcNow;
@@ -250,6 +252,28 @@ public class AdminUserRepository : IAdminUserRepository
 
             var count = candidates.Count(window => window.Start < monthEnd && window.End >= monthStart);
             results.Add(new MonthlyRegistrationCount(monthStart.Year, monthStart.Month, count));
+        }
+
+        return results;
+    }
+
+    public async Task<IReadOnlyList<DailyRegistrationCount>> GetDailyRegistrationCountsAsync(int days, CancellationToken cancellationToken)
+    {
+        var today = DateTime.UtcNow.Date;
+        var start = today.AddDays(-(days - 1));
+
+        var rawData = await _userManager.Users
+            .Where(user => user.Created.Date >= start)
+            .GroupBy(user => user.Created.Date)
+            .Select(group => new DailyRegistrationCount(group.Key, group.Count()))
+            .ToListAsync(cancellationToken);
+
+        var results = new List<DailyRegistrationCount>();
+        for (var i = 0; i < days; i++)
+        {
+            var date = start.AddDays(i);
+            var match = rawData.FirstOrDefault(record => record.Date.Date == date);
+            results.Add(match ?? new DailyRegistrationCount(date, 0));
         }
 
         return results;
