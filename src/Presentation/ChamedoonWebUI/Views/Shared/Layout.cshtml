@@ -19,6 +19,13 @@
     <link rel="stylesheet" href="~/css/alerts.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site-dark.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/alerts-dark.css" asp-append-version="true" />
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TLLM52T5');</script>
+    <!-- End Google Tag Manager -->
     <script>
         (function () {
             const readPreference = () => {
@@ -38,6 +45,10 @@
     @RenderSection("Styles", required: false)
 </head>
 <body class="landing-page page-loading @(hideChrome ? "landing-page--minimal" : string.Empty)">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLLM52T5"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <div id="pageLoader" class="page-loader" role="status" aria-live="polite" aria-label="در حال بارگذاری">
         <div class="page-loader__content">
             <div class="page-loader__spinner" aria-hidden="true"></div>
