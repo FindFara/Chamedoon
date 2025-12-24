@@ -9,6 +9,8 @@
     {
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
+    var dailyRegistrationLabels = Model.DailyRegistrationsLast30Days.Select(item => item.DateLabel).ToList();
+    var dailyRegistrationValues = Model.DailyRegistrationsLast30Days.Select(item => item.Count).ToList();
     var monthlyRegistrationLabels = Model.MonthlyRegistrations.Select(item => item.Month).ToList();
     var monthlyRegistrationValues = Model.MonthlyRegistrations.Select(item => item.Count).ToList();
     var monthlySubscriptionValues = Model.MonthlyActiveSubscriptions.Select(item => item.Count).ToList();
@@ -26,46 +28,80 @@
 }
 
 <div class="container-fluid py-4">
-    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4 dashboard-heading">
         <div>
             <h1 class="h3 mb-1">داشبورد مدیریتی</h1>
             <p class="text-muted mb-0">نمای کلی از وضعیت سامانه و فعالیت‌های اخیر</p>
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-12 col-xl-4">
+    <div class="row g-4 dashboard-grid">
+        <div class="col-12 col-xxl-8">
             <div class="card admin-card shadow-sm border-0 h-100">
-                <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+                <div class="card-header bg-transparent d-flex flex-wrap justify-content-between align-items-center gap-2">
                     <div>
-                        <h5 class="mb-0">کاربران</h5>
-                        <small class="text-muted">مرور وضعیت و آخرین ثبت‌نام‌ها</small>
+                        <h5 class="mb-1">کاربران</h5>
+                        <small class="text-muted">مرور وضعیت، ثبت‌نام‌های اخیر و اشتراک‌ها</small>
                     </div>
-                    <span class="badge bg-success rounded-pill">+@Model.NewUsersThisMonth.ToString("N0") این ماه</span>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-success rounded-pill">+@Model.NewUsersThisMonth.ToString("N0") این ماه</span>
+                        <span class="badge bg-primary rounded-pill">@Model.ActiveUsers.ToString("N0") فعال</span>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="d-flex flex-column gap-3 mb-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
+                <div class="card-body d-flex flex-column gap-4">
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-4">
+                            <div class="dashboard-stat">
                                 <div class="text-muted small">کل کاربران</div>
-                                <h4 class="mb-0">@Model.TotalUsers.ToString("N0")</h4>
+                                <div class="d-flex align-items-center gap-2">
+                                    <h4 class="mb-0">@Model.TotalUsers.ToString("N0")</h4>
+                                </div>
                             </div>
-                            <span class="badge bg-secondary">@Model.ActiveUsers.ToString("N0") فعال</span>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
+                        <div class="col-12 col-sm-4">
+                            <div class="dashboard-stat">
                                 <div class="text-muted small">اشتراک فعال</div>
-                                <h6 class="mb-0">@Model.UsersWithActiveSubscription.ToString("N0") کاربر</h6>
+                                <div class="d-flex align-items-center gap-2">
+                                    <h5 class="mb-0">@Model.UsersWithActiveSubscription.ToString("N0")</h5>
+                                    <small class="text-muted">کاربر</small>
+                                </div>
                             </div>
-                            <small class="text-muted">از @Model.TotalUsers.ToString("N0")</small>
+                        </div>
+                        <div class="col-12 col-sm-4">
+                            <div class="dashboard-stat">
+                                <div class="text-muted small">کاربران جدید (۳۰ روز)</div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <h5 class="mb-0">@Model.DailyRegistrationsLast30Days.Sum(item => item.Count).ToString("N0")</h5>
+                                    <small class="text-muted">نفر</small>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <h6 class="text-muted mb-2">روند ثبت‌نام و اشتراک</h6>
+                    <div class="card-section">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0 text-muted">روند ۳۰ روزه کاربران</h6>
+                            <small class="text-muted">به‌روزشده تا امروز</small>
+                        </div>
+                        @if (Model.DailyRegistrationsLast30Days.Any())
+                        {
+                            <div class="chart-container chart-container--wide">
+                                <canvas id="dailyUsersChart" aria-label="نمودار کاربران ۳۰ روزه" role="img"></canvas>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mb-0">داده‌ای برای نمایش نمودار روزانه موجود نیست.</p>
+                        }
+                    </div>
+
+                    <div class="card-section">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0 text-muted">روند ثبت‌نام و اشتراک ماهانه</h6>
+                        </div>
                         @if (Model.MonthlyRegistrations.Any())
                         {
-                            <div class="chart-container">
+                            <div class="chart-container chart-container--wide chart-container--tall">
                                 <canvas id="monthlyUsersChart" aria-label="نمودار کاربران جدید" role="img"></canvas>
                             </div>
                         }
@@ -75,8 +111,11 @@
                         }
                     </div>
 
-                    <div>
-                        <h6 class="text-muted mb-2">کاربران اخیر (بدون فیلتر وضعیت)</h6>
+                    <div class="card-section">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0 text-muted">کاربران اخیر</h6>
+                            <small class="text-muted">بدون فیلتر وضعیت</small>
+                        </div>
                         @if (Model.RecentUsers.Any())
                         {
                             <div class="table-responsive">
@@ -116,7 +155,7 @@
             </div>
         </div>
 
-        <div class="col-12 col-xl-4">
+        <div class="col-12 col-xxl-4 d-flex flex-column gap-4">
             <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
                     <div>
@@ -125,23 +164,21 @@
                     </div>
                     <span class="badge bg-primary">@Model.PaymentSummary.SuccessfulCount.ToString("N0") موفق</span>
                 </div>
-                <div class="card-body">
-                    <div class="d-flex flex-column gap-3 mb-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="text-muted small">مبلغ موفق</div>
-                                <h4 class="mb-0">@Model.PaymentSummary.SuccessfulAmount.ToString("N0") <small class="text-muted">تومان</small></h4>
-                            </div>
-                            <span class="badge bg-success">@Model.PaymentSummary.SuccessfulCount.ToString("N0") تراکنش</span>
+                <div class="card-body d-flex flex-column gap-3">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+                        <div>
+                            <div class="text-muted small">مبلغ موفق</div>
+                            <h4 class="mb-0">@Model.PaymentSummary.SuccessfulAmount.ToString("N0") <small class="text-muted">تومان</small></h4>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted">در انتظار تایید</span>
-                            <span class="badge bg-warning text-dark rounded-pill">@Model.PaymentSummary.PendingCount.ToString("N0")</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted">ناموفق / لغو شده</span>
-                            <span class="badge bg-danger rounded-pill">@Model.PaymentSummary.FailedCount.ToString("N0")</span>
-                        </div>
+                        <span class="badge bg-success">@Model.PaymentSummary.SuccessfulCount.ToString("N0") تراکنش</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">در انتظار تایید</span>
+                        <span class="badge bg-warning text-dark rounded-pill">@Model.PaymentSummary.PendingCount.ToString("N0")</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="text-muted">ناموفق / لغو شده</span>
+                        <span class="badge bg-danger rounded-pill">@Model.PaymentSummary.FailedCount.ToString("N0")</span>
                     </div>
 
                     <div>
@@ -179,9 +216,7 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-12 col-xl-4">
             <div class="card admin-card shadow-sm border-0 h-100">
                 <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
                     <div>
@@ -190,23 +225,21 @@
                     </div>
                     <span class="badge bg-info text-dark">@Model.TotalViews.ToString("N0") بازدید</span>
                 </div>
-                <div class="card-body">
-                    <div class="d-flex flex-column gap-3 mb-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <div class="text-muted small">کل مقالات</div>
-                                <h4 class="mb-0">@Model.TotalBlogPosts.ToString("N0")</h4>
-                            </div>
-                            <small class="text-muted">منتشر شده: @Model.PublishedBlogPosts.ToString("N0")</small>
+                <div class="card-body d-flex flex-column gap-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted small">کل مقالات</div>
+                            <h4 class="mb-0">@Model.TotalBlogPosts.ToString("N0")</h4>
                         </div>
-                        <div class="text-muted small">@Model.DraftBlogPosts.ToString("N0") مقاله در حالت پیش‌نویس است.</div>
+                        <small class="text-muted">منتشر شده: @Model.PublishedBlogPosts.ToString("N0")</small>
                     </div>
+                    <div class="text-muted small">@Model.DraftBlogPosts.ToString("N0") مقاله در حالت پیش‌نویس است.</div>
 
-                    <div class="mb-3">
+                    <div>
                         <h6 class="text-muted mb-2">روند بازدید مقالات</h6>
                         @if (Model.MonthlyBlogViews.Any())
                         {
-                            <div class="chart-container">
+                            <div class="chart-container chart-container--wide">
                                 <canvas id="blogViewsChart" aria-label="نمودار بازدید مقالات" role="img"></canvas>
                             </div>
                         }
@@ -355,6 +388,8 @@
                 console.warn('Chart.js is not available.');
                 return;
             }
+            const dailyLabels = @Html.Raw(JsonSerializer.Serialize(dailyRegistrationLabels, jsonOptions));
+            const dailyValues = @Html.Raw(JsonSerializer.Serialize(dailyRegistrationValues, jsonOptions));
             const monthlyLabels = @Html.Raw(JsonSerializer.Serialize(monthlyRegistrationLabels, jsonOptions));
             const monthlyValues = @Html.Raw(JsonSerializer.Serialize(monthlyRegistrationValues, jsonOptions));
             const monthlySubscriptionValues = @Html.Raw(JsonSerializer.Serialize(monthlySubscriptionValues, jsonOptions));
@@ -444,6 +479,39 @@
 
                 chart.update();
             };
+
+            const dailyCanvas = document.getElementById('dailyUsersChart');
+            if (dailyCanvas && dailyLabels.length && dailyValues.length) {
+                const dailyUsersChart = new Chart(dailyCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: dailyLabels,
+                        datasets: [{
+                            label: 'ثبت‌نام روزانه',
+                            data: dailyValues,
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 3,
+                            pointHoverRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+
+                charts.push(dailyUsersChart);
+                applyColors(dailyUsersChart);
+            }
 
             const monthlyCanvas = document.getElementById('monthlyUsersChart');
             if (monthlyCanvas && monthlyLabels.length && monthlyValues.length) {

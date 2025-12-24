@@ -33,3 +33,5 @@ public class AdminUserInput
 }
 
 public record MonthlyRegistrationCount(int Year, int Month, int Count);
+
+public record DailyRegistrationCount(DateTime Date, int Count);

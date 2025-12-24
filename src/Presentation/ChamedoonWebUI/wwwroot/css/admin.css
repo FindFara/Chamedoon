@@ -45,6 +45,22 @@ body.admin-shell {
     z-index: 1;
 }
 
+.admin-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.25);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1035;
+}
+
+.admin-menu-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 body.dark-mode.admin-shell::before {
     content: "";
     position: fixed;
@@ -65,10 +81,14 @@ body.dark-mode.admin-shell::before {
     position: sticky;
     top: 0;
     height: 100vh;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-left: 1px solid var(--admin-border);
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
     backdrop-filter: blur(14px);
+}
+
+.admin-sidebar.open {
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35), -14px 0 34px -24px rgba(15, 23, 42, 0.35);
 }
 
 .admin-sidebar .sidebar-brand {
@@ -143,6 +163,7 @@ body.dark-mode.admin-shell::before {
 
 .admin-main {
     padding: 2rem;
+    background: color-mix(in srgb, var(--admin-bg) 90%, rgba(255, 255, 255, 0.06));
 }
 
 .admin-card {
@@ -162,6 +183,37 @@ body.dark-mode.admin-shell::before {
     background: transparent;
     color: var(--admin-text);
     border-color: var(--admin-card-border);
+}
+
+.dashboard-grid {
+    align-items: stretch;
+}
+
+.dashboard-heading h1 {
+    font-weight: 800;
+}
+
+.dashboard-stat {
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 1rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02));
+    box-shadow: 0 18px 32px rgba(15, 23, 42, 0.06);
+}
+
+.card-section {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.chart-container--wide {
+    min-height: 220px;
+}
+
+.chart-container--tall {
+    min-height: 320px;
 }
 
 .chart-placeholder {
@@ -252,6 +304,32 @@ body.dark-mode .list-group-item {
 .theme-toggle.btn-outline-secondary:hover,
 .theme-toggle.btn-outline-light:hover {
     background-color: rgba(148, 163, 184, 0.12);
+}
+
+.admin-menu-trigger {
+    min-width: 2.75rem;
+}
+
+.hamburger-icon {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.hamburger-icon span {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 999px;
+}
+
+.admin-menu-close {
+    min-width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.85rem;
+    padding: 0;
 }
 
 .btn-outline-light {
@@ -378,16 +456,20 @@ body.dark-mode .admin-pagination .page-item:not(.active):not(.disabled) .page-li
         transform: translateX(100%);
         z-index: 1040;
         height: 100vh;
+        width: min(320px, 82vw);
+        right: 0;
+        left: auto;
     }
 
-    .admin-sidebar.sidebar-open {
+    .admin-sidebar.open {
         transform: translateX(0);
     }
 
-    body.admin-shell.sidebar-open::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 23, 42, 0.35);
+    .admin-sidebar .sidebar-header {
+        margin-bottom: 1.5rem;
+    }
+
+    body.sidebar-open {
+        overflow: hidden;
     }
 }

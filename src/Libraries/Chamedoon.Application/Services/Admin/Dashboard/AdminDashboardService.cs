@@ -52,6 +52,7 @@ public class AdminDashboardService : IAdminDashboardService
         var monthlyRegistrations = await _userRepository.GetMonthlyRegistrationCountsAsync(monthlyWindow, cancellationToken);
         var monthlySubscriptions = await _userRepository.GetMonthlyActiveSubscriptionCountsAsync(monthlyWindow, cancellationToken);
         var monthlyBlogViews = await _blogRepository.GetMonthlyArticleViewCountsAsync(monthlyWindow, cancellationToken);
+        var dailyRegistrations = await _userRepository.GetDailyRegistrationCountsAsync(30, cancellationToken);
         var paymentSummary = await _paymentRepository.GetPaymentSummaryAsync(paymentSummarySince, cancellationToken);
         var paymentActivities = await _paymentRepository.GetRecentPaymentsAsync(5, cancellationToken);
         var mappedPayments = paymentActivities
@@ -82,6 +83,7 @@ public class AdminDashboardService : IAdminDashboardService
             MonthlyRegistrations = BuildMonthlyRegistrations(monthlyRegistrations),
             MonthlyActiveSubscriptions = BuildMonthlyRegistrations(monthlySubscriptions),
             MonthlyBlogViews = BuildMonthlyRegistrations(monthlyBlogViews),
+            DailyRegistrationsLast30Days = BuildDailyRegistrations(dailyRegistrations),
             RecentUsers = recentUsers.Select(user => user.ToAdminUserDto()).ToList(),
             RecentPosts = recentPosts.Select(article => article.ToAdminBlogPostDto()).ToList(),
             PaymentSummary = paymentSummary,
@@ -109,6 +111,16 @@ public class AdminDashboardService : IAdminDashboardService
                 var date = new DateTime(record.Year, record.Month, 1);
                 return new DashboardMonthlyRegistrationDto(date.ToString("MMMM yyyy", new CultureInfo("fa-IR")), record.Count);
             })
+            .ToList();
+    }
+
+    private static IReadOnlyList<DashboardDailyRegistrationDto> BuildDailyRegistrations(IReadOnlyList<DailyRegistrationCount> counts)
+    {
+        return counts
+            .OrderBy(record => record.Date)
+            .Select(record => new DashboardDailyRegistrationDto(
+                record.Date.ToString("dd MMM", new CultureInfo("fa-IR")),
+                record.Count))
             .ToList();
     }
 }

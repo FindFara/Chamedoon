@@ -16,9 +16,13 @@
 </head>
 <body class="admin-shell">
     <div class="admin-wrapper d-flex">
-        <aside class="admin-sidebar">
-            <div class="sidebar-header">
+        <div class="admin-menu-backdrop" id="adminMenuBackdrop"></div>
+        <aside class="admin-sidebar" id="adminSidebar" aria-hidden="false">
+            <div class="sidebar-header d-flex align-items-center justify-content-between gap-2">
                 <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="sidebar-brand">پنل مدیریت</a>
+                <button class="btn btn-outline-secondary d-md-none admin-menu-close" type="button" id="adminMenuClose" aria-label="بستن منو">
+                    ×
+                </button>
             </div>
             <nav class="sidebar-nav nav flex-column">
                 <a class="nav-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
@@ -58,8 +62,12 @@
         <div class="admin-content flex-grow-1">
             <header class="admin-header d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-3">
-                    <button class="btn btn-outline-secondary d-md-none" type="button" id="sidebarToggle" aria-label="باز و بسته کردن منو">
-                        ☰
+                    <button class="btn btn-outline-secondary d-md-none admin-menu-trigger" type="button" id="sidebarToggle" aria-label="باز و بسته کردن منو">
+                        <span class="hamburger-icon" aria-hidden="true">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
                     </button>
                     <h1 class="h5 mb-0">@pageTitle</h1>
                 </div>
@@ -101,8 +109,10 @@
             const storageKey = 'admin-theme';
             const body = document.body;
             const toggle = document.getElementById('themeToggle');
-            const sidebar = document.querySelector('.admin-sidebar');
+            const sidebar = document.getElementById('adminSidebar');
             const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarClose = document.getElementById('adminMenuClose');
+            const sidebarBackdrop = document.getElementById('adminMenuBackdrop');
 
             const applyTheme = (theme) => {
                 const isDark = theme === 'dark';
@@ -129,10 +139,34 @@
                 applyTheme(nextTheme);
             });
 
+            const setMenuState = (open) => {
+                if (!sidebar) return;
+                const isDesktop = window.innerWidth >= 992;
+                const shouldOpen = open || isDesktop;
+                sidebar.classList.toggle('open', shouldOpen);
+                body.classList.toggle('sidebar-open', shouldOpen && !isDesktop);
+                sidebarBackdrop?.classList.toggle('show', shouldOpen && !isDesktop);
+                sidebar.setAttribute('aria-hidden', shouldOpen || isDesktop ? 'false' : 'true');
+            };
+
+            const handleDesktopSidebar = () => {
+                if (!sidebar) return;
+                if (window.innerWidth >= 992) {
+                    setMenuState(true);
+                } else {
+                    setMenuState(false);
+                }
+            };
+
             sidebarToggle?.addEventListener('click', () => {
-                sidebar?.classList.toggle('sidebar-open');
-                body.classList.toggle('sidebar-open');
+                const isOpen = sidebar?.classList.contains('open');
+                setMenuState(!isOpen);
             });
+
+            sidebarClose?.addEventListener('click', () => setMenuState(false));
+            sidebarBackdrop?.addEventListener('click', () => setMenuState(false));
+            window.addEventListener('resize', handleDesktopSidebar);
+            handleDesktopSidebar();
         })();
     </script>
     @RenderSection("Scripts", required: false)
