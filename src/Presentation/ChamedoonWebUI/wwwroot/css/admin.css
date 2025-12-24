@@ -408,6 +408,52 @@ body.admin-app {
     background: #f9fafb;
 }
 
+[data-bs-theme="dark"] .table {
+    color: #e5e7eb;
+}
+
+[data-bs-theme="dark"] .table thead th {
+    background: rgba(15, 23, 42, 0.95);
+    color: #cbd5f5;
+    border-bottom-color: var(--admin-border);
+}
+
+[data-bs-theme="dark"] .table tbody tr {
+    background: rgba(15, 23, 42, 0.6);
+}
+
+[data-bs-theme="dark"] .table tbody tr:nth-child(even) {
+    background: rgba(15, 23, 42, 0.75);
+}
+
+[data-bs-theme="dark"] .table tbody tr:hover {
+    background: rgba(30, 41, 59, 0.9);
+}
+
+[data-bs-theme="dark"] .table td,
+[data-bs-theme="dark"] .table th {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select,
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+    background-color: rgba(15, 23, 42, 0.9);
+    color: #e5e7eb;
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: none;
+}
+
+[data-bs-theme="dark"] .form-control::placeholder {
+    color: rgba(226, 232, 240, 0.6);
+}
+
+[data-bs-theme="dark"] .table-responsive,
+[data-bs-theme="dark"] .admin-panel {
+    background-color: rgba(15, 23, 42, 0.6);
+}
+
 .list-clean {
     list-style: none;
     padding: 0;
