@@ -44,12 +44,14 @@ public class AdminSubscriptionPlanService : IAdminSubscriptionPlanService
 
     public async Task<OperationResult<AdminSubscriptionPlanDto>> CreatePlanAsync(AdminSubscriptionPlanInput input, CancellationToken cancellationToken)
     {
-        if (await _repository.ExistsAsync(input.Id, cancellationToken))
+        var planId = string.IsNullOrWhiteSpace(input.Id) ? Guid.NewGuid().ToString("N") : input.Id.Trim();
+
+        if (await _repository.ExistsAsync(planId, cancellationToken))
         {
             return OperationResult<AdminSubscriptionPlanDto>.Fail("شناسه پلن تکراری است.");
         }
 
-        var plan = await _repository.CreatePlanAsync(BuildEntity(input), cancellationToken);
+        var plan = await _repository.CreatePlanAsync(BuildEntity(input with { Id = planId }), cancellationToken);
         return OperationResult<AdminSubscriptionPlanDto>.Success(MapDto(plan));
     }
 
@@ -77,6 +79,7 @@ public class AdminSubscriptionPlanService : IAdminSubscriptionPlanService
             plan.Id,
             plan.Title,
             plan.DurationLabel,
+            plan.DurationMonths,
             plan.OriginalPrice,
             plan.Price,
             plan.EvaluationLimit,
@@ -90,7 +93,8 @@ public class AdminSubscriptionPlanService : IAdminSubscriptionPlanService
         {
             Id = input.Id.Trim(),
             Title = input.Title.Trim(),
-            DurationLabel = input.DurationLabel.Trim(),
+            DurationLabel = BuildDurationLabel(input.DurationMonths),
+            DurationMonths = input.DurationMonths,
             OriginalPrice = input.OriginalPrice,
             Price = input.Price,
             EvaluationLimit = input.EvaluationLimit,
@@ -99,6 +103,17 @@ public class AdminSubscriptionPlanService : IAdminSubscriptionPlanService
             IsActive = input.IsActive,
             SortOrder = input.SortOrder,
             UpdatedAtUtc = DateTime.UtcNow
+        };
+
+    private static string BuildDurationLabel(int durationMonths)
+        => durationMonths switch
+        {
+            1 => "یک ماهه",
+            2 => "دو ماهه",
+            3 => "سه ماهه",
+            6 => "شش ماهه",
+            12 => "یکساله",
+            _ => $"{durationMonths} ماهه"
         };
 
     private static IReadOnlyList<string> ParseFeatures(string? json)

@@ -14,6 +14,7 @@ public class SubscriptionPlanConfigs : IEntityTypeConfiguration<SubscriptionPlan
         builder.Property(plan => plan.Id).HasMaxLength(64);
         builder.Property(plan => plan.Title).HasMaxLength(200).IsRequired();
         builder.Property(plan => plan.DurationLabel).HasMaxLength(64).IsRequired();
+        builder.Property(plan => plan.DurationMonths).IsRequired();
         builder.Property(plan => plan.OriginalPrice).IsRequired();
         builder.Property(plan => plan.Price).IsRequired();
         builder.Property(plan => plan.FeaturesJson).HasMaxLength(4000);

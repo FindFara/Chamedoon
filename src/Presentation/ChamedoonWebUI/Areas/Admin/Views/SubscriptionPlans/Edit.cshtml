@@ -2,6 +2,14 @@
 @{
     ViewData["Title"] = string.IsNullOrWhiteSpace(Model.Id) ? "ایجاد پلن اشتراک" : "ویرایش پلن اشتراک";
     var isEdit = !string.IsNullOrWhiteSpace(Model.Id);
+    var durations = new List<SelectListItem>
+    {
+        new("یک ماهه", "1"),
+        new("دو ماهه", "2"),
+        new("سه ماهه", "3"),
+        new("شش ماهه", "6"),
+        new("یکساله", "12")
+    };
 }
 
 <div class="container py-4 admin-section subscription-plans-section">
@@ -19,11 +27,21 @@
                     <input type="hidden" name="Id" value="@Model.Id" />
                 }
 
-                <div class="col-md-4">
-                    <label asp-for="Id" class="form-label"></label>
-                    <input asp-for="Id" class="form-control" @(isEdit ? "readonly" : string.Empty) />
-                    <span asp-validation-for="Id" class="text-danger"></span>
-                </div>
+                @if (isEdit)
+                {
+                    <div class="col-md-4">
+                        <label asp-for="Id" class="form-label"></label>
+                        <input asp-for="Id" class="form-control" readonly />
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-12">
+                        <div class="alert alert-info mb-0">
+                            شناسه پلن به صورت خودکار ساخته می‌شود.
+                        </div>
+                    </div>
+                }
 
                 <div class="col-md-8">
                     <label asp-for="Title" class="form-label"></label>
@@ -32,9 +50,8 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label asp-for="DurationLabel" class="form-label"></label>
-                    <input asp-for="DurationLabel" class="form-control" />
-                    <span asp-validation-for="DurationLabel" class="text-danger"></span>
+                    <label asp-for="DurationMonths" class="form-label"></label>
+                    <select asp-for="DurationMonths" class="form-select" asp-items="durations"></select>
                 </div>
 
                 <div class="col-md-4">

@@ -203,7 +203,8 @@ public class SubscriptionService
 
         customer.SubscriptionPlanId = plan.Id;
         customer.SubscriptionStartDateUtc = DateTime.UtcNow;
-        customer.SubscriptionEndDateUtc = DateTime.UtcNow.AddMonths(1);
+        var months = plan.DurationMonths <= 0 ? 1 : plan.DurationMonths;
+        customer.SubscriptionEndDateUtc = DateTime.UtcNow.AddMonths(months);
         customer.UsedEvaluations = 0;
 
         await _context.SaveChangesAsync(cancellationToken);
@@ -240,6 +241,7 @@ public class SubscriptionService
             Id = entity.Id,
             Title = entity.Title,
             DurationLabel = entity.DurationLabel,
+            DurationMonths = entity.DurationMonths,
             OriginalPrice = entity.OriginalPrice,
             Price = entity.Price,
             EvaluationLimit = entity.EvaluationLimit,
@@ -293,6 +295,7 @@ public record SubscriptionPlan
     public string Id { get; init; } = string.Empty;
     public string Title { get; init; } = string.Empty;
     public string DurationLabel { get; init; } = string.Empty;
+    public int DurationMonths { get; init; }
     public int OriginalPrice { get; init; }
     public int Price { get; init; }
     public int? EvaluationLimit { get; init; }

@@ -20,6 +20,7 @@ public class SubscriptionPlanListItemViewModel
     public string Id { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string DurationLabel { get; set; } = string.Empty;
+    public int DurationMonths { get; set; }
     public int OriginalPrice { get; set; }
     public int Price { get; set; }
     public int? EvaluationLimit { get; set; }
@@ -37,6 +38,7 @@ public class SubscriptionPlanListItemViewModel
         Id = dto.Id,
         Title = dto.Title,
         DurationLabel = dto.DurationLabel,
+        DurationMonths = dto.DurationMonths,
         OriginalPrice = dto.OriginalPrice,
         Price = dto.Price,
         EvaluationLimit = dto.EvaluationLimit,
@@ -48,20 +50,17 @@ public class SubscriptionPlanListItemViewModel
 
 public class SubscriptionPlanEditViewModel
 {
-    [Required(ErrorMessage = "شناسه پلن را وارد کنید.")]
     [MaxLength(64, ErrorMessage = "حداکثر ۶۴ کاراکتر")]
     [Display(Name = "شناسه پلن")]
-    public string Id { get; set; } = string.Empty;
+    public string? Id { get; set; }
 
     [Required(ErrorMessage = "عنوان پلن را وارد کنید.")]
     [MaxLength(200, ErrorMessage = "حداکثر ۲۰۰ کاراکتر")]
     [Display(Name = "عنوان پلن")]
     public string Title { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "برچسب مدت را وارد کنید.")]
-    [MaxLength(64, ErrorMessage = "حداکثر ۶۴ کاراکتر")]
     [Display(Name = "مدت اشتراک")]
-    public string DurationLabel { get; set; } = string.Empty;
+    public int DurationMonths { get; set; } = 1;
 
     [Range(0, 100000000, ErrorMessage = "مبلغ اصلی معتبر نیست.")]
     [Display(Name = "قیمت اصلی")]
@@ -88,9 +87,10 @@ public class SubscriptionPlanEditViewModel
 
     public AdminSubscriptionPlanInput ToInput()
         => new(
-            Id.Trim(),
+            Id?.Trim() ?? string.Empty,
             Title,
-            DurationLabel,
+            string.Empty,
+            DurationMonths,
             OriginalPrice,
             Price,
             EvaluationLimit,
@@ -103,7 +103,7 @@ public class SubscriptionPlanEditViewModel
     {
         Id = dto.Id,
         Title = dto.Title,
-        DurationLabel = dto.DurationLabel,
+        DurationMonths = dto.DurationMonths,
         OriginalPrice = dto.OriginalPrice,
         Price = dto.Price,
         EvaluationLimit = dto.EvaluationLimit,

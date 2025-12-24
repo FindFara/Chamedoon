@@ -7,6 +7,7 @@ public class SubscriptionPlanEntity
     public string Id { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
     public string DurationLabel { get; set; } = string.Empty;
+    public int DurationMonths { get; set; }
     public int OriginalPrice { get; set; }
     public int Price { get; set; }
     public int? EvaluationLimit { get; set; }
