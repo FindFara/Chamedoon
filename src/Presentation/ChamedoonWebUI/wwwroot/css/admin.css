@@ -256,6 +256,43 @@ body.admin-app {
     margin-bottom: 1.5rem;
 }
 
+.revenue-panel {
+    background: linear-gradient(135deg, #1f2a44, #182031);
+    color: #f9fafb;
+    border: none;
+}
+
+.revenue-panel .panel-header p {
+    color: rgba(229, 231, 235, 0.7);
+}
+
+.chart-container {
+    min-height: 260px;
+}
+
+.chart-tabs {
+    display: inline-flex;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem;
+    gap: 0.25rem;
+}
+
+.chart-tab {
+    border: none;
+    background: transparent;
+    color: #cbd5f5;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.chart-tab.active {
+    background: #3d5afe;
+    color: #fff;
+}
+
 .panel-header {
     display: flex;
     align-items: center;

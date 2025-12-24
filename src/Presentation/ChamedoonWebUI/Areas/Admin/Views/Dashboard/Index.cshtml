@@ -1,5 +1,7 @@
 @model DashboardViewModel
 @using System.Linq
+@using System.Text.Json
+@using System.Text.Encodings.Web
 @using Chamedoon.Domin.Enums
 @{
     ViewData["Title"] = "داشبورد";
@@ -15,7 +17,42 @@
         PaymentStatus.Cancelled => "badge-danger",
         _ => "badge-primary"
     };
+
+    var jsonOptions = new JsonSerializerOptions
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
+
+    var dailyLabels = Model.DailyRegistrationsLast30Days.Select(item => item.DateLabel).ToList();
+    var dailyRegistrationValues = Model.DailyRegistrationsLast30Days.Select(item => item.Count).ToList();
+    var dailySubscriptionLookup = Model.RecentPayments
+        .Where(item => item.PaidAtUtc.HasValue && item.Status == PaymentStatus.Paid)
+        .GroupBy(item => item.PaidAtUtc!.Value.ToString("yyyy/MM/dd"))
+        .ToDictionary(group => group.Key, group => group.Count());
+    var dailySubscriptionValues = dailyLabels
+        .Select(label => dailySubscriptionLookup.TryGetValue(label, out var count) ? count : 0)
+        .ToList();
+
+    var monthlyLabels = Model.MonthlyRegistrations.Select(item => item.Month).ToList();
+    var monthlyRegistrationValues = Model.MonthlyRegistrations.Select(item => item.Count).ToList();
+    var monthlySubscriptionValues = Model.MonthlyActiveSubscriptions.Select(item => item.Count).ToList();
 }
+
+<section class="admin-panel revenue-panel">
+    <div class="panel-header">
+        <div>
+            <h2>Revenue Overview</h2>
+            <p>ثبت‌نام کاربران و اشتراک‌های خریداری شده</p>
+        </div>
+        <div class="chart-tabs" role="tablist" aria-label="نمایش داده‌های نمودار">
+            <button class="chart-tab active" type="button" data-range="daily">۳۰ روز</button>
+            <button class="chart-tab" type="button" data-range="monthly">ماهانه</button>
+        </div>
+    </div>
+    <div class="chart-container">
+        <canvas id="revenueChart" height="120"></canvas>
+    </div>
+</section>
 
 <section class="stat-grid">
     <div class="stat-card">
@@ -193,6 +230,117 @@
         </section>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+    <script>
+        (function () {
+            const chartElement = document.getElementById('revenueChart');
+            if (!chartElement || typeof window.Chart === 'undefined') {
+                return;
+            }
+
+            const dailyLabels = @Html.Raw(JsonSerializer.Serialize(dailyLabels, jsonOptions));
+            const dailyRegistrations = @Html.Raw(JsonSerializer.Serialize(dailyRegistrationValues, jsonOptions));
+            const dailySubscriptions = @Html.Raw(JsonSerializer.Serialize(dailySubscriptionValues, jsonOptions));
+            const monthlyLabels = @Html.Raw(JsonSerializer.Serialize(monthlyLabels, jsonOptions));
+            const monthlyRegistrations = @Html.Raw(JsonSerializer.Serialize(monthlyRegistrationValues, jsonOptions));
+            const monthlySubscriptions = @Html.Raw(JsonSerializer.Serialize(monthlySubscriptionValues, jsonOptions));
+
+            const palette = {
+                registrations: '#7c83ff',
+                subscriptions: '#21c999'
+            };
+
+            const buildData = (range) => {
+                if (range === 'monthly') {
+                    return {
+                        labels: monthlyLabels,
+                        registrations: monthlyRegistrations,
+                        subscriptions: monthlySubscriptions
+                    };
+                }
+
+                return {
+                    labels: dailyLabels,
+                    registrations: dailyRegistrations,
+                    subscriptions: dailySubscriptions
+                };
+            };
+
+            const initialData = buildData('daily');
+
+            const revenueChart = new Chart(chartElement, {
+                type: 'line',
+                data: {
+                    labels: initialData.labels,
+                    datasets: [
+                        {
+                            label: 'ثبت‌نام کاربران',
+                            data: initialData.registrations,
+                            borderColor: palette.registrations,
+                            backgroundColor: 'rgba(124, 131, 255, 0.2)',
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#1f2a44',
+                            pointBorderColor: palette.registrations
+                        },
+                        {
+                            label: 'اشتراک‌های خریداری شده',
+                            data: initialData.subscriptions,
+                            borderColor: palette.subscriptions,
+                            backgroundColor: 'rgba(33, 201, 153, 0.2)',
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#1f2a44',
+                            pointBorderColor: palette.subscriptions
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#d1d5db',
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(148, 163, 184, 0.15)' }
+                        },
+                        y: {
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(148, 163, 184, 0.15)' },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            const tabs = document.querySelectorAll('.chart-tab');
+            tabs.forEach((tab) => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach((item) => item.classList.remove('active'));
+                    tab.classList.add('active');
+                    const range = tab.dataset.range || 'daily';
+                    const next = buildData(range);
+                    revenueChart.data.labels = next.labels;
+                    revenueChart.data.datasets[0].data = next.registrations;
+                    revenueChart.data.datasets[1].data = next.subscriptions;
+                    revenueChart.update();
+                });
+            });
+        })();
+    </script>
+}
 
 <div class="row g-4 mt-1">
     <div class="col-lg-6">
