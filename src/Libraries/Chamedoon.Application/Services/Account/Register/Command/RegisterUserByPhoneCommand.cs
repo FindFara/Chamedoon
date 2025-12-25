@@ -36,7 +36,7 @@ public class RegisterUserByPhoneCommandHandler : IRequestHandler<RegisterUserByP
             PhoneNumberConfirmed = true,
             TwoFactorEnabled = true,
             UserName = await UsernameGenerator.GenerateUniqueAsync(_userManager, cancellationToken),
-            Email = $"{normalizedPhone}@chamedoon.local",
+            Email = null,
             Created = DateTime.Now,
         };
 
