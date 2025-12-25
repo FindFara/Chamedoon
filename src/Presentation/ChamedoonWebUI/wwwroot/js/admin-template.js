@@ -4,6 +4,8 @@
     const toggle = document.getElementById('sidebarToggle');
     const close = document.getElementById('sidebarClose');
     const themeToggle = document.getElementById('themeToggle');
+    const themeToggleIcon = themeToggle?.querySelector('.theme-toggle-icon');
+    const themeToggleLabel = themeToggle?.querySelector('.visually-hidden');
     const root = document.documentElement;
 
     if (!sidebar) {
@@ -38,7 +40,15 @@
     const applyTheme = (theme) => {
         root.setAttribute('data-bs-theme', theme);
         if (themeToggle) {
-            themeToggle.textContent = theme === 'dark' ? 'حالت روز' : 'حالت شب';
+            const label = theme === 'dark' ? 'حالت روز' : 'حالت شب';
+            themeToggle.setAttribute('aria-label', label);
+            themeToggle.setAttribute('title', label);
+            if (themeToggleLabel) {
+                themeToggleLabel.textContent = label;
+            }
+            if (themeToggleIcon) {
+                themeToggleIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+            }
         }
     };
 
