@@ -13,6 +13,8 @@ public class UsersIndexViewModel
     public string? SearchTerm { get; init; }
     public long? SelectedRoleId { get; init; }
     public string? SelectedSubscriptionPlanId { get; init; }
+    public DateTime? FromDate { get; init; }
+    public DateTime? ToDate { get; init; }
     public int CurrentPage { get; init; }
     public int TotalPages { get; init; }
     public int PageSize { get; init; }
