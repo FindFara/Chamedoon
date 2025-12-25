@@ -21,7 +21,7 @@ public class PaymentRequest : BaseEntity
     public int FinalAmount { get; set; }
     public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
     public string? PaymentUrl { get; set; }
-    public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAtUtc { get; set; } = DateTime.Now;
     public DateTime? PaidAtUtc { get; set; }
     public string? LastError { get; set; }
     public ICollection<PaymentResponse> Responses { get; set; } = new List<PaymentResponse>();

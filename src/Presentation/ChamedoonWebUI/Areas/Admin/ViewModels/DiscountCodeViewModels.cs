@@ -56,7 +56,7 @@ public class DiscountCodeEditViewModel
     [Display(Name = "فعال باشد؟")]
     public bool IsActive { get; set; } = true;
 
-    [Display(Name = "تاریخ انقضا (UTC)")]
+    [Display(Name = "تاریخ انقضا")]
     public DateTime? ExpiresAtUtc { get; set; }
 
     [MaxLength(512)]

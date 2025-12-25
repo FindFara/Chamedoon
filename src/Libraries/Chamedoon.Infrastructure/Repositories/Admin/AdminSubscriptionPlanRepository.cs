@@ -41,7 +41,7 @@ public class AdminSubscriptionPlanRepository : IAdminSubscriptionPlanRepository
 
     public async Task<SubscriptionPlanEntity> CreatePlanAsync(SubscriptionPlanEntity plan, CancellationToken cancellationToken)
     {
-        plan.CreatedAtUtc = DateTime.UtcNow;
+        plan.CreatedAtUtc = DateTime.Now;
         _context.SubscriptionPlans.Add(plan);
         await _context.SaveChangesAsync(cancellationToken);
         return plan;

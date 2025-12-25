@@ -60,7 +60,7 @@ public class AdminBlogRepository : IAdminBlogRepository
         existing.ArticleDescription = article.ArticleDescription;
         existing.ArticleImageName = article.ArticleImageName;
         existing.VisitCount = article.VisitCount;
-        existing.LastModified = article.LastModified ?? DateTime.UtcNow;
+        existing.LastModified = article.LastModified ?? DateTime.Now;
 
         await _context.SaveChangesAsync(cancellationToken);
         return existing;
@@ -117,7 +117,7 @@ public class AdminBlogRepository : IAdminBlogRepository
 
         if (!articleViewSnapshots.Any())
         {
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
             var start = new DateTime(now.Year, now.Month, 1).AddMonths(-(months - 1));
             return Enumerable.Range(0, months)
                 .Select(offset =>

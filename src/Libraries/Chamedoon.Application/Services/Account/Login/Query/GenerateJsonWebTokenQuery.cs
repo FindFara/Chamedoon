@@ -33,7 +33,7 @@ namespace Chamedoon.Application.Services.Account.Login.Query
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.UtcNow.AddDays(7),
+                expires: DateTime.Now.AddDays(7),
                 claims: request.Claims,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );

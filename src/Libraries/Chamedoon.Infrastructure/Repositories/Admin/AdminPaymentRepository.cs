@@ -104,13 +104,13 @@ public class AdminPaymentRepository : IAdminPaymentRepository
 
         if (fromDate.HasValue)
         {
-            var fromUtc = DateTime.SpecifyKind(fromDate.Value.Date, DateTimeKind.Unspecified);
-            query = query.Where(p => p.CreatedAtUtc >= fromUtc);
+            var fromLocal = DateTime.SpecifyKind(fromDate.Value.Date, DateTimeKind.Local);
+            query = query.Where(p => p.CreatedAtUtc >= fromLocal);
         }
 
         if (toDate.HasValue)
         {
-            var toExclusive = DateTime.SpecifyKind(toDate.Value.Date.AddDays(1), DateTimeKind.Unspecified);
+            var toExclusive = DateTime.SpecifyKind(toDate.Value.Date.AddDays(1), DateTimeKind.Local);
             query = query.Where(p => p.CreatedAtUtc < toExclusive);
         }
 
@@ -144,4 +144,3 @@ public class AdminPaymentRepository : IAdminPaymentRepository
         return string.IsNullOrWhiteSpace(customer.User.UserName) ? customer.User.Email ?? "کاربر" : customer.User.UserName!;
     }
 }
-

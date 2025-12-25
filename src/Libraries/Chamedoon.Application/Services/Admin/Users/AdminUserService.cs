@@ -124,7 +124,7 @@ public class AdminUserService : IAdminUserService
 
     private static User BuildUserEntity(AdminUserInput input)
     {
-        var now = DateTime.UtcNow;
+        var now = DateTime.Now;
         var userName = string.IsNullOrWhiteSpace(input.UserName) ? input.Email : input.UserName;
 
         return new User
@@ -137,7 +137,7 @@ public class AdminUserService : IAdminUserService
             Created = input.Id.HasValue ? default : now,
             LastModified = now,
             LockoutEnabled = true,
-            LockoutEnd = input.IsActive ? null : DateTimeOffset.UtcNow.AddYears(10)
+            LockoutEnd = input.IsActive ? null : DateTimeOffset.Now.AddYears(10)
         };
     }
 
@@ -155,13 +155,13 @@ public class AdminUserService : IAdminUserService
         var startDate = input.SubscriptionStartDateUtc;
         if (!string.IsNullOrWhiteSpace(input.SubscriptionPlanId) && startDate is null)
         {
-            startDate = DateTime.UtcNow;
+            startDate = DateTime.Now;
         }
 
         var endDate = input.SubscriptionEndDateUtc;
         if (!string.IsNullOrWhiteSpace(input.SubscriptionPlanId) && endDate is null)
         {
-            endDate = (startDate ?? DateTime.UtcNow).AddMonths(1);
+            endDate = (startDate ?? DateTime.Now).AddMonths(1);
         }
 
         return new Customer

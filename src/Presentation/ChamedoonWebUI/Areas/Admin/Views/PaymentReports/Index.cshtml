@@ -156,11 +156,11 @@
                                 <td>
                                     <span class="badge @payment.StatusBadgeClass">@payment.StatusLabel</span>
                                 </td>
-                                <td>@payment.CreatedAtUtc.ToLocalTime().ToString("yyyy/MM/dd HH:mm")</td>
+                                <td>@payment.CreatedAtUtc.ToString("yyyy/MM/dd HH:mm")</td>
                                 <td>
                                     @if (payment.PaidAtUtc is not null)
                                     {
-                                        @payment.PaidAtUtc.Value.ToLocalTime().ToString("yyyy/MM/dd HH:mm")
+                                        @payment.PaidAtUtc.Value.ToString("yyyy/MM/dd HH:mm")
                                     }
                                     else
                                     {
