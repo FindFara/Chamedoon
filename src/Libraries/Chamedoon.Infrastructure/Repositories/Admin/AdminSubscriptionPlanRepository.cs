@@ -57,6 +57,7 @@ public class AdminSubscriptionPlanRepository : IAdminSubscriptionPlanRepository
 
         existing.Title = plan.Title;
         existing.DurationLabel = plan.DurationLabel;
+        existing.DurationMonths = plan.DurationMonths;
         existing.OriginalPrice = plan.OriginalPrice;
         existing.Price = plan.Price;
         existing.EvaluationLimit = plan.EvaluationLimit;
