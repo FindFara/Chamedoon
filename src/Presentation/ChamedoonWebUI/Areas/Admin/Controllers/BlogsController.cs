@@ -1,10 +1,12 @@
 using Chamedoon.Application.Services.Admin.Blogs;
 using ChamedoonWebUI.Areas.Admin.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChamedoonWebUI.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class BlogsController : Controller
 {
     private readonly IAdminBlogService _blogService;

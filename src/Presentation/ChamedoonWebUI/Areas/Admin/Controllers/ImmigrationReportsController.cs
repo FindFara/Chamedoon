@@ -3,11 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using Chamedoon.Application.Services.Immigration;
 using ChamedoonWebUI.Areas.Admin.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChamedoonWebUI.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class ImmigrationReportsController : Controller
 {
     private readonly IImmigrationEvaluationService _evaluationService;

@@ -1,10 +1,12 @@
 using Chamedoon.Application.Services.Admin.Subscriptions;
 using ChamedoonWebUI.Areas.Admin.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChamedoonWebUI.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class SubscriptionPlansController : Controller
 {
     private readonly IAdminSubscriptionPlanService _planService;
