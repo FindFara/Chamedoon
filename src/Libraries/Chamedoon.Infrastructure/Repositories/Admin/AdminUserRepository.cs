@@ -28,7 +28,15 @@ public class AdminUserRepository : IAdminUserRepository
         _roleManager = roleManager;
     }
 
-    public async Task<PaginatedList<User>> GetUsersAsync(string? search, long? roleId, string? subscriptionPlanId, int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<PaginatedList<User>> GetUsersAsync(
+        string? search,
+        long? roleId,
+        string? subscriptionPlanId,
+        DateTime? fromDate,
+        DateTime? toDate,
+        int pageNumber,
+        int pageSize,
+        CancellationToken cancellationToken)
     {
         IQueryable<User> query = _userManager.Users
             .Include(u => u.UserRoles)!.ThenInclude(ur => ur.Role)
@@ -54,6 +62,18 @@ public class AdminUserRepository : IAdminUserRepository
         if (!string.IsNullOrWhiteSpace(subscriptionPlanId))
         {
             query = query.Where(u => u.Customer != null && u.Customer.SubscriptionPlanId == subscriptionPlanId);
+        }
+
+        if (fromDate.HasValue)
+        {
+            var fromLocal = DateTime.SpecifyKind(fromDate.Value.Date, DateTimeKind.Local);
+            query = query.Where(u => u.Created >= fromLocal);
+        }
+
+        if (toDate.HasValue)
+        {
+            var toExclusive = DateTime.SpecifyKind(toDate.Value.Date.AddDays(1), DateTimeKind.Local);
+            query = query.Where(u => u.Created < toExclusive);
         }
 
         var ordered = query

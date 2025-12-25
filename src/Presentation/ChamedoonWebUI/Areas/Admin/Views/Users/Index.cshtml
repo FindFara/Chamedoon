@@ -1,8 +1,27 @@
 @model UsersIndexViewModel
 @using System
+@using System.Globalization
 @using System.Linq
 @{
     ViewData["Title"] = "مدیریت کاربران";
+    string FormatPersianDate(DateTime? date)
+    {
+        if (!date.HasValue)
+        {
+            return string.Empty;
+        }
+
+        var calendar = new PersianCalendar();
+        var year = calendar.GetYear(date.Value);
+        var month = calendar.GetMonth(date.Value);
+        var day = calendar.GetDayOfMonth(date.Value);
+        return $"{year:0000}/{month:00}/{day:00}";
+    }
+
+    var fromDateHidden = Model.FromDate?.ToString("yyyy-MM-dd");
+    var toDateHidden = Model.ToDate?.ToString("yyyy-MM-dd");
+    var fromDateDisplay = FormatPersianDate(Model.FromDate);
+    var toDateDisplay = FormatPersianDate(Model.ToDate);
 }
 
 <div class="container-fluid py-4 admin-section users-section">
@@ -14,11 +33,25 @@
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
             <form method="get" class="row g-3 align-items-end">
-                <div class="col-md-4">
+                <div class="col-md-4 col-lg-3">
+                    <label for="fromDatePicker" class="form-label">از تاریخ</label>
+                    <div class="persian-datepicker-field">
+                        <input id="fromDatePicker" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ شمسی" value="@fromDateDisplay" autocomplete="off" data-persian-picker data-alt-field="#fromDate" />
+                        <input type="hidden" id="fromDate" name="fromDate" value="@fromDateHidden" />
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-3">
+                    <label for="toDatePicker" class="form-label">تا تاریخ</label>
+                    <div class="persian-datepicker-field">
+                        <input id="toDatePicker" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ شمسی" value="@toDateDisplay" autocomplete="off" data-persian-picker data-alt-field="#toDate" />
+                        <input type="hidden" id="toDate" name="toDate" value="@toDateHidden" />
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-3">
                     <label for="search" class="form-label">جستجو</label>
                     <input id="search" name="search" value="@Model.SearchTerm" class="form-control" placeholder="نام، نام کاربری، ایمیل یا شماره همراه" />
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6 col-lg-3">
                     <label for="roleId" class="form-label">نقش</label>
                     <select id="roleId" name="roleId" class="form-select">
                         <option value="">همه نقش‌ها</option>
@@ -36,7 +69,7 @@
                         }
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6 col-lg-3">
                     <label for="subscriptionPlanId" class="form-label">اشتراک</label>
                     <select id="subscriptionPlanId" name="subscriptionPlanId" class="form-select">
                         <option value="">همه اشتراک‌ها</option>
@@ -54,7 +87,7 @@
                         }
                     </select>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-6 col-lg-2">
                     <label for="pageSize" class="form-label">تعداد نمایش</label>
                     <select id="pageSize" name="pageSize" class="form-select">
                         @foreach (var size in Model.PageSizeOptions)
@@ -70,8 +103,8 @@
                         }
                     </select>
                 </div>
-                <div class="col-md-12">
-                    <button type="submit" class="btn btn-outline-primary w-100">اعمال فیلتر</button>
+                <div class="col-12 d-flex justify-content-end align-items-end">
+                    <button type="submit" class="btn btn-outline-primary btn-sm px-4">جستجو</button>
                 </div>
             </form>
         </div>
@@ -163,7 +196,9 @@
                                    asp-route-pageSize="@Model.PageSize"
                                    asp-route-search="@Model.SearchTerm"
                                    asp-route-roleId="@Model.SelectedRoleId"
-                                   asp-route-subscriptionPlanId="@Model.SelectedSubscriptionPlanId">قبلی</a>
+                                   asp-route-subscriptionPlanId="@Model.SelectedSubscriptionPlanId"
+                                   asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
+                                   asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")">قبلی</a>
                             </li>
                             @for (var i = startPage; i <= endPage; i++)
                             {
@@ -174,7 +209,9 @@
                                        asp-route-pageSize="@Model.PageSize"
                                        asp-route-search="@Model.SearchTerm"
                                        asp-route-roleId="@Model.SelectedRoleId"
-                                       asp-route-subscriptionPlanId="@Model.SelectedSubscriptionPlanId">@i</a>
+                                       asp-route-subscriptionPlanId="@Model.SelectedSubscriptionPlanId"
+                                       asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
+                                       asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")">@i</a>
                                 </li>
                             }
                             <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : string.Empty)">
@@ -184,7 +221,9 @@
                                    asp-route-pageSize="@Model.PageSize"
                                    asp-route-search="@Model.SearchTerm"
                                    asp-route-roleId="@Model.SelectedRoleId"
-                                   asp-route-subscriptionPlanId="@Model.SelectedSubscriptionPlanId">بعدی</a>
+                                   asp-route-subscriptionPlanId="@Model.SelectedSubscriptionPlanId"
+                                   asp-route-fromDate="@Model.FromDate?.ToString("yyyy-MM-dd")"
+                                   asp-route-toDate="@Model.ToDate?.ToString("yyyy-MM-dd")">بعدی</a>
                             </li>
                         </ul>
                     </nav>
@@ -193,3 +232,18 @@
         </div>
     </div>
 </div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/persian-datepicker.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/persian-datepicker.js" asp-append-version="true"></script>
+    <script>
+        (function () {
+            if (window.PersianDatePicker && typeof window.PersianDatePicker.init === 'function') {
+                window.PersianDatePicker.init();
+            }
+        })();
+    </script>
+}
