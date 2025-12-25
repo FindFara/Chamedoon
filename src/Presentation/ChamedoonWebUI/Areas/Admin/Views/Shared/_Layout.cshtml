@@ -92,11 +92,13 @@
                     <h1>@pageTitle</h1>
                 </div>
                 <div class="topbar-actions">
-                    <a class="btn btn-outline-primary" asp-area="" asp-controller="Home" asp-action="Index">
-                        بازگشت به سایت
+                    <a class="btn btn-outline-primary" asp-area="" asp-controller="Home" asp-action="Index" aria-label="بازگشت به سایت" title="بازگشت به سایت">
+                        <span aria-hidden="true">🏠</span>
+                        <span class="visually-hidden">بازگشت به سایت</span>
                     </a>
-                    <button class="btn btn-outline-light theme-toggle" type="button" id="themeToggle" aria-label="تغییر تم">
-                        حالت شب/روز
+                    <button class="btn btn-outline-light theme-toggle" type="button" id="themeToggle" aria-label="حالت شب" title="حالت شب">
+                        <span class="theme-toggle-icon" aria-hidden="true">🌙</span>
+                        <span class="visually-hidden">حالت شب</span>
                     </button>
                 </div>
             </header>
