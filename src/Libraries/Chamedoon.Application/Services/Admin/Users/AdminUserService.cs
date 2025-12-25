@@ -28,9 +28,9 @@ public class AdminUserService : IAdminUserService
         _subscriptionService = subscriptionService;
     }
 
-    public async Task<OperationResult<PaginatedList<AdminUserDto>>> GetUsersAsync(string? search, long? roleId, int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<OperationResult<PaginatedList<AdminUserDto>>> GetUsersAsync(string? search, long? roleId, string? subscriptionPlanId, int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
-        var users = await _userRepository.GetUsersAsync(search, roleId, pageNumber, pageSize, cancellationToken);
+        var users = await _userRepository.GetUsersAsync(search, roleId, subscriptionPlanId, pageNumber, pageSize, cancellationToken);
         var planTitles = await _subscriptionService.GetPlanTitleLookupAsync(cancellationToken);
         var mappedItems = users.Items.Select(user => user.ToAdminUserDto(planTitles)).ToList();
         var paginated = new PaginatedList<AdminUserDto>(mappedItems, users.TotalCount, users.PageNumber, pageSize);
