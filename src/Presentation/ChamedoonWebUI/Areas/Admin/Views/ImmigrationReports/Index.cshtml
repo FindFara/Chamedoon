@@ -124,8 +124,8 @@
                         {
                             <tr>
                                 <td class="fw-semibold">@item.CustomerName</td>
-                                <td>@item.Email ?? "-"</td>
-                                <td>@(string.IsNullOrWhiteSpace(item.PhoneNumber) ? "-" : item.PhoneNumber)</td>
+                                <td><span dir="ltr">@(item.Email ?? "-")</span></td>
+                                <td><span dir="ltr">@(string.IsNullOrWhiteSpace(item.PhoneNumber) ? "-" : item.PhoneNumber)</span></td>
                                 <td>@(item.Age > 0 ? item.Age.ToString() : "نامشخص")</td>
                                 <td>@item.MaritalStatus</td>
                                 <td>@item.JobCategory</td>
