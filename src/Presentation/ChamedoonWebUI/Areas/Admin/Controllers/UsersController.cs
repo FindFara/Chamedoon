@@ -4,11 +4,13 @@ using Chamedoon.Application.Services.Admin.Users;
 using Chamedoon.Application.Services.Subscription;
 using ChamedoonWebUI.Areas.Admin.ViewModels;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChamedoonWebUI.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class UsersController : Controller
 {
     private readonly IAdminUserService _userService;

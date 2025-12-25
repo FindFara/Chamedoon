@@ -1,11 +1,13 @@
 using System.Linq;
 using Chamedoon.Application.Services.Admin.Countries;
 using ChamedoonWebUI.Areas.Admin.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChamedoonWebUI.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class CountriesController : Controller
 {
     private readonly IAdminCountryService _countryService;

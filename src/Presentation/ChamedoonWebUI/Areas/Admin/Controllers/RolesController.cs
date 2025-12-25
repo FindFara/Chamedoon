@@ -2,11 +2,13 @@ using Chamedoon.Application.Services.Admin.Common.Models;
 using Chamedoon.Application.Services.Admin.Roles;
 using ChamedoonWebUI.Areas.Admin.ViewModels;
 using ChamedoonWebUI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChamedoonWebUI.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class RolesController : Controller
 {
     private readonly IAdminRoleService _roleService;

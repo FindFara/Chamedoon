@@ -1,11 +1,13 @@
 using Chamedoon.Application.Services.Admin.Discounts;
 using Chamedoon.Domin.Enums;
 using ChamedoonWebUI.Areas.Admin.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChamedoonWebUI.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class DiscountCodesController : Controller
 {
     private readonly IAdminDiscountCodeService _discountCodeService;
