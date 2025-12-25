@@ -9,12 +9,15 @@ public class UsersIndexViewModel
 {
     public IReadOnlyList<UserListItemViewModel> Users { get; init; } = Array.Empty<UserListItemViewModel>();
     public IReadOnlyList<RoleOptionViewModel> Roles { get; init; } = Array.Empty<RoleOptionViewModel>();
+    public IReadOnlyList<SubscriptionPlanOptionViewModel> Plans { get; init; } = Array.Empty<SubscriptionPlanOptionViewModel>();
     public string? SearchTerm { get; init; }
     public long? SelectedRoleId { get; init; }
+    public string? SelectedSubscriptionPlanId { get; init; }
     public int CurrentPage { get; init; }
     public int TotalPages { get; init; }
     public int PageSize { get; init; }
     public int TotalCount { get; init; }
+    public IReadOnlyList<int> PageSizeOptions { get; init; } = new[] { 10, 15, 25 };
 }
 
 public class UserListItemViewModel

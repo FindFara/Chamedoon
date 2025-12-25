@@ -28,7 +28,7 @@ public class AdminUserRepository : IAdminUserRepository
         _roleManager = roleManager;
     }
 
-    public async Task<PaginatedList<User>> GetUsersAsync(string? search, long? roleId, int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<PaginatedList<User>> GetUsersAsync(string? search, long? roleId, string? subscriptionPlanId, int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         IQueryable<User> query = _userManager.Users
             .Include(u => u.UserRoles)!.ThenInclude(ur => ur.Role)
@@ -40,6 +40,7 @@ public class AdminUserRepository : IAdminUserRepository
             query = query.Where(u =>
                 (u.Email ?? string.Empty).Contains(term) ||
                 (u.UserName ?? string.Empty).Contains(term) ||
+                (u.PhoneNumber ?? string.Empty).Contains(term) ||
                 (u.Customer != null &&
                  ((u.Customer.FirstName ?? string.Empty) + " " + (u.Customer.LastName ?? string.Empty))
                     .Contains(term)));
@@ -48,6 +49,11 @@ public class AdminUserRepository : IAdminUserRepository
         if (roleId.HasValue)
         {
             query = query.Where(u => u.UserRoles!.Any(ur => ur.RoleId == roleId.Value));
+        }
+
+        if (!string.IsNullOrWhiteSpace(subscriptionPlanId))
+        {
+            query = query.Where(u => u.Customer != null && u.Customer.SubscriptionPlanId == subscriptionPlanId);
         }
 
         var ordered = query

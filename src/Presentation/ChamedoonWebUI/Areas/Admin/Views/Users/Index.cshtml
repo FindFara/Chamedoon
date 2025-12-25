@@ -1,4 +1,5 @@
 @model UsersIndexViewModel
+@using System
 @using System.Linq
 @{
     ViewData["Title"] = "مدیریت کاربران";
@@ -13,11 +14,11 @@
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
             <form method="get" class="row g-3 align-items-end">
-                <div class="col-md-5">
-                    <label for="search" class="form-label">جستجو</label>
-                    <input id="search" name="search" value="@Model.SearchTerm" class="form-control" placeholder="نام یا ایمیل" />
-                </div>
                 <div class="col-md-4">
+                    <label for="search" class="form-label">جستجو</label>
+                    <input id="search" name="search" value="@Model.SearchTerm" class="form-control" placeholder="نام، نام کاربری، ایمیل یا شماره همراه" />
+                </div>
+                <div class="col-md-3">
                     <label for="roleId" class="form-label">نقش</label>
                     <select id="roleId" name="roleId" class="form-select">
                         <option value="">همه نقش‌ها</option>
@@ -36,6 +37,40 @@
                     </select>
                 </div>
                 <div class="col-md-3">
+                    <label for="subscriptionPlanId" class="form-label">اشتراک</label>
+                    <select id="subscriptionPlanId" name="subscriptionPlanId" class="form-select">
+                        <option value="">همه اشتراک‌ها</option>
+                        @foreach (var plan in Model.Plans)
+                        {
+                            var isSelected = string.Equals(Model.SelectedSubscriptionPlanId, plan.Id, StringComparison.OrdinalIgnoreCase);
+                            if (isSelected)
+                            {
+                                <option value="@plan.Id" selected>@plan.Title</option>
+                            }
+                            else
+                            {
+                                <option value="@plan.Id">@plan.Title</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="pageSize" class="form-label">تعداد نمایش</label>
+                    <select id="pageSize" name="pageSize" class="form-select">
+                        @foreach (var size in Model.PageSizeOptions)
+                        {
+                            if (size == Model.PageSize)
+                            {
+                                <option value="@size" selected>@size</option>
+                            }
+                            else
+                            {
+                                <option value="@size">@size</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-12">
                     <button type="submit" class="btn btn-outline-primary w-100">اعمال فیلتر</button>
                 </div>
             </form>
@@ -127,7 +162,8 @@
                                    asp-route-page="@(Model.CurrentPage - 1)"
                                    asp-route-pageSize="@Model.PageSize"
                                    asp-route-search="@Model.SearchTerm"
-                                   asp-route-roleId="@Model.SelectedRoleId">قبلی</a>
+                                   asp-route-roleId="@Model.SelectedRoleId"
+                                   asp-route-subscriptionPlanId="@Model.SelectedSubscriptionPlanId">قبلی</a>
                             </li>
                             @for (var i = startPage; i <= endPage; i++)
                             {
@@ -137,7 +173,8 @@
                                        asp-route-page="@i"
                                        asp-route-pageSize="@Model.PageSize"
                                        asp-route-search="@Model.SearchTerm"
-                                       asp-route-roleId="@Model.SelectedRoleId">@i</a>
+                                       asp-route-roleId="@Model.SelectedRoleId"
+                                       asp-route-subscriptionPlanId="@Model.SelectedSubscriptionPlanId">@i</a>
                                 </li>
                             }
                             <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : string.Empty)">
@@ -146,7 +183,8 @@
                                    asp-route-page="@(Model.CurrentPage + 1)"
                                    asp-route-pageSize="@Model.PageSize"
                                    asp-route-search="@Model.SearchTerm"
-                                   asp-route-roleId="@Model.SelectedRoleId">بعدی</a>
+                                   asp-route-roleId="@Model.SelectedRoleId"
+                                   asp-route-subscriptionPlanId="@Model.SelectedSubscriptionPlanId">بعدی</a>
                             </li>
                         </ul>
                     </nav>

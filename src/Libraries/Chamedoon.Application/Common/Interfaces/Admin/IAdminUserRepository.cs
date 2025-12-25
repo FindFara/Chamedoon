@@ -11,7 +11,7 @@ namespace Chamedoon.Application.Common.Interfaces.Admin;
 
 public interface IAdminUserRepository
 {
-    Task<PaginatedList<User>> GetUsersAsync(string? search, long? roleId, int pageNumber, int pageSize, CancellationToken cancellationToken);
+    Task<PaginatedList<User>> GetUsersAsync(string? search, long? roleId, string? subscriptionPlanId, int pageNumber, int pageSize, CancellationToken cancellationToken);
     Task<User?> GetUserAsync(long id, CancellationToken cancellationToken);
     Task<(IdentityResult Result, User? Entity)> CreateUserAsync(User user, string password, long? roleId, Customer? customer, CancellationToken cancellationToken);
     Task<IdentityResult> UpdateUserAsync(User user, long? roleId, string? password, Customer? customer, CancellationToken cancellationToken);

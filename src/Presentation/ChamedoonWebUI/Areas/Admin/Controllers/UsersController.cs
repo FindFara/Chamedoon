@@ -22,13 +22,15 @@ public class UsersController : Controller
         _mediator = mediator;
     }
 
-    public async Task<IActionResult> Index(string? search, long? roleId, int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> Index(string? search, long? roleId, string? subscriptionPlanId, int page = 1, int pageSize = 10, CancellationToken cancellationToken = default)
     {
+        var allowedPageSizes = new[] { 10, 15, 25 };
         page = page < 1 ? 1 : page;
-        pageSize = pageSize < 1 ? 10 : pageSize;
+        pageSize = allowedPageSizes.Contains(pageSize) ? pageSize : 10;
 
-        var usersResult = await _userService.GetUsersAsync(search, roleId, page, pageSize, cancellationToken);
+        var usersResult = await _userService.GetUsersAsync(search, roleId, subscriptionPlanId, page, pageSize, cancellationToken);
         var rolesResult = await _userService.GetRolesAsync(cancellationToken);
+        var plansResult = await _mediator.Send(new GetSubscriptionPlansQuery(true), cancellationToken);
         if (!usersResult.IsSuccess || usersResult.Result is null)
         {
             return Problem(usersResult.Message);
@@ -43,8 +45,10 @@ public class UsersController : Controller
         {
             Users = usersResult.Result.Items.Select(UserListItemViewModel.FromDto).ToList(),
             Roles = rolesResult.Result.Select(role => new RoleOptionViewModel { Id = role.Id, Name = role.Name }).ToList(),
+            Plans = plansResult.Select(plan => new SubscriptionPlanOptionViewModel { Id = plan.Id, Title = plan.Title }).ToList(),
             SearchTerm = search,
             SelectedRoleId = roleId,
+            SelectedSubscriptionPlanId = subscriptionPlanId,
             CurrentPage = usersResult.Result.PageNumber,
             TotalPages = usersResult.Result.TotalPages,
             PageSize = pageSize,
