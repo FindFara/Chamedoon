@@ -51,7 +51,7 @@ public class AdminDataService : IAdminDataService
         lock (_syncRoot)
         {
             user.Id = Guid.NewGuid();
-            user.CreatedAt = user.CreatedAt == default ? DateTime.UtcNow : user.CreatedAt;
+            user.CreatedAt = user.CreatedAt == default ? DateTime.Now : user.CreatedAt;
             _users.Add(Clone(user));
             return Clone(user);
         }
@@ -112,7 +112,7 @@ public class AdminDataService : IAdminDataService
             post.Id = Guid.NewGuid();
             if (post.PublishedOn == default)
             {
-                post.PublishedOn = DateTime.UtcNow;
+                post.PublishedOn = DateTime.Now;
             }
 
             _posts.Add(Clone(post));
@@ -162,7 +162,7 @@ public class AdminDataService : IAdminDataService
             }
 
             var existing = _posts[index];
-            post.PublishedOn = post.IsPublished ? (post.PublishedOn == default ? DateTime.UtcNow : post.PublishedOn) : existing.PublishedOn;
+            post.PublishedOn = post.IsPublished ? (post.PublishedOn == default ? DateTime.Now : post.PublishedOn) : existing.PublishedOn;
             _posts[index] = Clone(post);
             return true;
         }
@@ -253,7 +253,7 @@ public class AdminDataService : IAdminDataService
     {
         lock (_syncRoot)
         {
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
             var startOfMonth = new DateTime(now.Year, now.Month, 1);
             var monthly = _users
                 .GroupBy(u => new DateTime(u.CreatedAt.Year, u.CreatedAt.Month, 1))
@@ -410,7 +410,7 @@ public class AdminDataService : IAdminDataService
                 FullName = "سمانه محمودی",
                 Email = "samaneh@example.com",
                 RoleId = roleList[0].Id,
-                CreatedAt = DateTime.UtcNow.AddDays(-12),
+                CreatedAt = DateTime.Now.AddDays(-12),
                 IsActive = true
             },
             new()
@@ -419,7 +419,7 @@ public class AdminDataService : IAdminDataService
                 FullName = "امیررضا سلطانی",
                 Email = "amir@example.com",
                 RoleId = roleList[1].Id,
-                CreatedAt = DateTime.UtcNow.AddDays(-32),
+                CreatedAt = DateTime.Now.AddDays(-32),
                 IsActive = true
             },
             new()
@@ -428,7 +428,7 @@ public class AdminDataService : IAdminDataService
                 FullName = "گلاره سادات",
                 Email = "golareh@example.com",
                 RoleId = roleList[2].Id,
-                CreatedAt = DateTime.UtcNow.AddDays(-5),
+                CreatedAt = DateTime.Now.AddDays(-5),
                 IsActive = true
             },
             new()
@@ -437,7 +437,7 @@ public class AdminDataService : IAdminDataService
                 FullName = "سعید موسوی",
                 Email = "saeed@example.com",
                 RoleId = roleList[1].Id,
-                CreatedAt = DateTime.UtcNow.AddDays(-64),
+                CreatedAt = DateTime.Now.AddDays(-64),
                 IsActive = false
             }
         };
@@ -453,7 +453,7 @@ public class AdminDataService : IAdminDataService
                 Title = "راهنمای کامل مهاجرت به کانادا",
                 Category = "راهنماها",
                 IsPublished = true,
-                PublishedOn = DateTime.UtcNow.AddDays(-20),
+                PublishedOn = DateTime.Now.AddDays(-20),
                 Views = 2450,
                 Summary = "از انتخاب استان تا آماده‌سازی مدارک در این راهنمای جامع توضیح داده شده است."
             },
@@ -463,7 +463,7 @@ public class AdminDataService : IAdminDataService
                 Title = "۵ اشتباه رایج در درخواست ویزای دانشجویی",
                 Category = "نکات کاربردی",
                 IsPublished = true,
-                PublishedOn = DateTime.UtcNow.AddDays(-10),
+                PublishedOn = DateTime.Now.AddDays(-10),
                 Views = 1680,
                 Summary = "پیش از ارسال درخواست ویزا این پنج نکته مهم را مرور کنید."
             },
@@ -473,7 +473,7 @@ public class AdminDataService : IAdminDataService
                 Title = "مصاحبه با مهاجر موفق",
                 Category = "تجربه‌ها",
                 IsPublished = false,
-                PublishedOn = DateTime.UtcNow.AddDays(-2),
+                PublishedOn = DateTime.Now.AddDays(-2),
                 Views = 220,
                 Summary = "نسخه پیش‌نویس برای بررسی نهایی تیم محتوا."
             }

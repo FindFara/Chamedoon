@@ -103,7 +103,7 @@ public class AdminUserRepository : IAdminUserRepository
         existing.PhoneNumberConfirmed = !string.IsNullOrWhiteSpace(user.PhoneNumber);
         existing.LockoutEnd = user.LockoutEnd;
         existing.LockoutEnabled = true;
-        existing.LastModified = DateTime.UtcNow;
+        existing.LastModified = DateTime.Now;
 
         var updateResult = await _userManager.UpdateAsync(existing);
         if (!updateResult.Succeeded)
@@ -166,14 +166,14 @@ public class AdminUserRepository : IAdminUserRepository
         => _userManager.Users.CountAsync(cancellationToken);
 
     public Task<int> CountActiveUsersAsync(CancellationToken cancellationToken)
-        => _userManager.Users.CountAsync(u => !u.LockoutEnd.HasValue || u.LockoutEnd <= DateTimeOffset.UtcNow, cancellationToken);
+        => _userManager.Users.CountAsync(u => !u.LockoutEnd.HasValue || u.LockoutEnd <= DateTimeOffset.Now, cancellationToken);
 
     public Task<int> CountUsersCreatedSinceAsync(DateTime since, CancellationToken cancellationToken)
         => _userManager.Users.CountAsync(u => u.Created >= since, cancellationToken);
 
     public Task<int> CountActiveSubscriptionsAsync(CancellationToken cancellationToken)
     {
-        var now = DateTime.UtcNow;
+        var now = DateTime.Now;
         return _context.Customers.CountAsync(customer =>
             !string.IsNullOrWhiteSpace(customer.SubscriptionPlanId) &&
             customer.SubscriptionEndDateUtc.HasValue &&
@@ -201,7 +201,7 @@ public class AdminUserRepository : IAdminUserRepository
 
     public async Task<IReadOnlyList<MonthlyRegistrationCount>> GetMonthlyRegistrationCountsAsync(int months, CancellationToken cancellationToken)
     {
-        var now = DateTime.UtcNow;
+        var now = DateTime.Now;
         var start = new DateTime(now.Year, now.Month, 1).AddMonths(-(months - 1));
 
         var data = await _userManager.Users
@@ -223,7 +223,7 @@ public class AdminUserRepository : IAdminUserRepository
 
     public async Task<IReadOnlyList<MonthlyRegistrationCount>> GetMonthlyActiveSubscriptionCountsAsync(int months, CancellationToken cancellationToken)
     {
-        var now = DateTime.UtcNow;
+        var now = DateTime.Now;
         var start = new DateTime(now.Year, now.Month, 1).AddMonths(-(months - 1));
         var end = start.AddMonths(months);
 
@@ -259,7 +259,7 @@ public class AdminUserRepository : IAdminUserRepository
 
     public async Task<IReadOnlyList<DailyRegistrationCount>> GetDailyRegistrationCountsAsync(int days, CancellationToken cancellationToken)
     {
-        var today = DateTime.UtcNow.Date;
+        var today = DateTime.Now.Date;
         var start = today.AddDays(-(days - 1));
 
         var rawData = await _userManager.Users

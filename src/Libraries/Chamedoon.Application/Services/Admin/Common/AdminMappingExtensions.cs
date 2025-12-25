@@ -22,7 +22,7 @@ internal static class AdminMappingExtensions
 
         var role = user.UserRoles?.FirstOrDefault();
 
-        var isActive = !user.LockoutEnd.HasValue || user.LockoutEnd.Value <= DateTimeOffset.UtcNow;
+        var isActive = !user.LockoutEnd.HasValue || user.LockoutEnd.Value <= DateTimeOffset.Now;
 
         var planId = user.Customer?.SubscriptionPlanId;
         var planTitle = !string.IsNullOrWhiteSpace(planId) && planTitles is not null && planTitles.TryGetValue(planId, out var title)

@@ -34,7 +34,7 @@ public class AdminDashboardService : IAdminDashboardService
 
     public async Task<OperationResult<DashboardSummaryDto>> GetSummaryAsync(CancellationToken cancellationToken)
     {
-        var now = DateTime.UtcNow;
+        var now = DateTime.Now;
         var monthStart = new DateTime(now.Year, now.Month, 1);
 
         var totalUsers = await _userRepository.CountUsersAsync(cancellationToken);

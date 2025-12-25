@@ -76,7 +76,7 @@ namespace Chamedoon.Application.Services.Immigration
                 WillingToStudy = input.WillingToStudy,
                 Email = input.Email,
                 Notes = input.Notes,
-                CreatedAtUtc = DateTime.UtcNow
+                CreatedAtUtc = DateTime.Now
             };
 
             await _context.ImmigrationEvaluations.AddAsync(entity, cancellationToken);

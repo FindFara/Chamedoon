@@ -81,7 +81,7 @@ public class SubscriptionService
             .AsNoTracking()
             .FirstOrDefaultAsync(c => c.Code.ToLower() == normalizedCode, cancellationToken);
 
-        if (discount is null || !discount.IsActive || (discount.ExpiresAtUtc.HasValue && discount.ExpiresAtUtc.Value <= DateTime.UtcNow))
+        if (discount is null || !discount.IsActive || (discount.ExpiresAtUtc.HasValue && discount.ExpiresAtUtc.Value <= DateTime.Now))
         {
             return DiscountPreviewResult.Invalid("کد تخفیف معتبر نیست یا منقضی شده است.");
         }
@@ -117,7 +117,7 @@ public class SubscriptionService
             return null;
         }
 
-        if (customer.SubscriptionEndDateUtc.HasValue && customer.SubscriptionEndDateUtc.Value <= DateTime.UtcNow)
+        if (customer.SubscriptionEndDateUtc.HasValue && customer.SubscriptionEndDateUtc.Value <= DateTime.Now)
         {
             return null;
         }
@@ -135,8 +135,8 @@ public class SubscriptionService
             IncludesAI = plan.IncludesAI,
             EvaluationLimit = plan.EvaluationLimit,
             UsedEvaluations = customer.UsedEvaluations,
-            StartDateUtc = customer.SubscriptionStartDateUtc ?? DateTime.UtcNow,
-            EndDateUtc = customer.SubscriptionEndDateUtc ?? DateTime.UtcNow
+            StartDateUtc = customer.SubscriptionStartDateUtc ?? DateTime.Now,
+            EndDateUtc = customer.SubscriptionEndDateUtc ?? DateTime.Now
         };
     }
 
@@ -202,9 +202,9 @@ public class SubscriptionService
         }
 
         customer.SubscriptionPlanId = plan.Id;
-        customer.SubscriptionStartDateUtc = DateTime.UtcNow;
+        customer.SubscriptionStartDateUtc = DateTime.Now;
         var months = plan.DurationMonths <= 0 ? 1 : plan.DurationMonths;
-        customer.SubscriptionEndDateUtc = DateTime.UtcNow.AddMonths(months);
+        customer.SubscriptionEndDateUtc = DateTime.Now.AddMonths(months);
         customer.UsedEvaluations = 0;
 
         await _context.SaveChangesAsync(cancellationToken);
@@ -226,7 +226,7 @@ public class SubscriptionService
             return;
         }
 
-        if (customer.SubscriptionEndDateUtc.HasValue && customer.SubscriptionEndDateUtc.Value <= DateTime.UtcNow)
+        if (customer.SubscriptionEndDateUtc.HasValue && customer.SubscriptionEndDateUtc.Value <= DateTime.Now)
         {
             return;
         }
@@ -319,7 +319,7 @@ public record SubscriptionStatus
     public DateTime StartDateUtc { get; set; }
     public DateTime EndDateUtc { get; set; }
 
-    public int RemainingDays => Math.Max(0, (int)Math.Ceiling((EndDateUtc - DateTime.UtcNow).TotalDays));
+    public int RemainingDays => Math.Max(0, (int)Math.Ceiling((EndDateUtc - DateTime.Now).TotalDays));
 }
 
 public record SubscriptionCheckResult

@@ -58,7 +58,7 @@ public class PaymentService
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Code.ToLower() == normalizedCode, cancellationToken);
 
-            if (discount is null || !discount.IsActive || (discount.ExpiresAtUtc.HasValue && discount.ExpiresAtUtc.Value <= DateTime.UtcNow))
+            if (discount is null || !discount.IsActive || (discount.ExpiresAtUtc.HasValue && discount.ExpiresAtUtc.Value <= DateTime.Now))
             {
                 return PaymentRedirectResult.Failure("کد تخفیف معتبر نیست یا منقضی شده است.");
             }
@@ -225,7 +225,7 @@ public class PaymentService
         if (gatewayResponse?.Result == 100)
         {
             payment.Status = PaymentStatus.Paid;
-            payment.PaidAtUtc = paidAt ?? DateTime.UtcNow;
+            payment.PaidAtUtc = paidAt ?? DateTime.Now;
             payment.LastError = null;
 
             if (!string.IsNullOrWhiteSpace(payment.PlanId))
@@ -316,12 +316,12 @@ public class PaymentService
         {
             // Zibal returns Unix timestamps in seconds
             return DateTimeOffset.FromUnixTimeMilliseconds(timestamp.ToString().Length > 10 ? timestamp : timestamp * 1000)
-                .UtcDateTime;
+                .LocalDateTime;
         }
 
-        if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var parsed))
+        if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var parsed))
         {
-            return parsed.ToUniversalTime();
+            return parsed;
         }
 
         return null;

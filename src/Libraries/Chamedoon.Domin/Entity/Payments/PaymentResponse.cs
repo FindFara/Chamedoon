@@ -14,7 +14,7 @@ public class PaymentResponse : BaseEntity
     public string? ReferenceId { get; set; }
     public string? CardNumber { get; set; }
     public int? Amount { get; set; }
-    public DateTime CreatedAtUtc { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAtUtc { get; set; } = DateTime.Now;
     public DateTime? PaidAtUtc { get; set; }
 }
 

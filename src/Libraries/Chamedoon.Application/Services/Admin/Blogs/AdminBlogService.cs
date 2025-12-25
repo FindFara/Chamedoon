@@ -38,8 +38,8 @@ public class AdminBlogService : IAdminBlogService
     public async Task<OperationResult<AdminBlogPostDto>> CreatePostAsync(AdminBlogPostInput input, CancellationToken cancellationToken)
     {
         var article = BuildArticle(input);
-        article.Created = DateTime.UtcNow;
-        article.LastModified = DateTime.UtcNow;
+        article.Created = DateTime.Now;
+        article.LastModified = DateTime.Now;
 
         var created = await _blogRepository.CreateArticleAsync(article, cancellationToken);
         return OperationResult<AdminBlogPostDto>.Success(created.ToAdminBlogPostDto());
@@ -54,7 +54,7 @@ public class AdminBlogService : IAdminBlogService
 
         var article = BuildArticle(input);
         article.Id = input.Id.Value;
-        article.LastModified = DateTime.UtcNow;
+        article.LastModified = DateTime.Now;
 
         var updated = await _blogRepository.UpdateArticleAsync(article, cancellationToken);
         if (updated is null)
