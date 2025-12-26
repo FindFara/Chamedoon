@@ -38,7 +38,12 @@ namespace Chamedoon.Application.Services.Blog.Query
                            u.Id == request.Id ||
                            u.ArticleTitle == (request.Title ?? ""));
             if (article is null)
-                OperationResult<User>.Fail("مقاله ای با مشخصات واد شده یافت نشد");
+            {
+                return OperationResult<ArticleViewModel>.Fail("مقاله ای با مشخصات واد شده یافت نشد");
+            }
+
+            article.VisitCount += 1;
+            await _context.SaveChangesAsync(cancellationToken);
 
             return OperationResult<ArticleViewModel>.Success(mapper.Map<ArticleViewModel>(article));
         }
