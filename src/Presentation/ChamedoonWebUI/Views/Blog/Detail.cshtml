@@ -17,8 +17,8 @@
 
 <section class="glass-section">
     <div class="container">
-        <div class="row g-4 g-xl-5 blog-detail-layout">
-            <div class="col-12 col-lg-8">
+        <div class="row g-4 g-xl-5 blog-detail-layout justify-content-center">
+            <div class="col-12 col-lg-8 mx-auto">
                 <article class="glass-card blog-detail-card">
                     <div class="blog-detail-header">
                         <img src="@heroImage" alt="@Model.ArticleTitle" class="blog-detail-cover" />
@@ -34,17 +34,6 @@
                         @Html.Raw(Model.ArticleDescription)
                     </div>
                 </article>
-            </div>
-            <div class="col-12 col-lg-4">
-                <aside class="glass-card blog-detail-search blog-search-card">
-                    <h5 class="fw-semibold mb-3">جستجوی سایر مقالات</h5>
-                    @await Html.PartialAsync("_SearchForm", new BlogSearchFormViewModel
-                    {
-                        FieldIdSuffix = "Detail",
-                        SubmitLabel = "جستجوی مقالات",
-                        UseCompactLayout = true
-                    })
-                </aside>
             </div>
         </div>
     </div>
