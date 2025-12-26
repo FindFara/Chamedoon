@@ -25,13 +25,7 @@
 
     var dailyLabels = Model.DailyRegistrationsLast30Days.Select(item => item.DateLabel).ToList();
     var dailyRegistrationValues = Model.DailyRegistrationsLast30Days.Select(item => item.Count).ToList();
-    var dailySubscriptionLookup = Model.RecentPayments
-        .Where(item => item.PaidAtUtc.HasValue && item.Status == PaymentStatus.Paid)
-        .GroupBy(item => item.PaidAtUtc!.Value.ToString("yyyy/MM/dd"))
-        .ToDictionary(group => group.Key, group => group.Count());
-    var dailySubscriptionValues = dailyLabels
-        .Select(label => dailySubscriptionLookup.TryGetValue(label, out var count) ? count : 0)
-        .ToList();
+    var dailySubscriptionValues = Model.DailyPaidSubscriptionsLast30Days.Select(item => item.Count).ToList();
 
     var dailySubscriptionPlanLabels = Model.DailySubscriptionPlanPurchases.Select(item => item.PlanTitle).ToList();
     var dailySubscriptionPlanCounts = Model.DailySubscriptionPlanPurchases.Select(item => item.Count).ToList();
