@@ -62,6 +62,37 @@ public class AdminPaymentRepository : IAdminPaymentRepository
             .ToList();
     }
 
+    public async Task<IReadOnlyList<DashboardSubscriptionPlanPurchaseDto>> GetSubscriptionPlanPurchasesAsync(
+        DateTime fromUtc,
+        DateTime toUtc,
+        CancellationToken cancellationToken)
+    {
+        var planCounts = await _context.PaymentRequests
+            .AsNoTracking()
+            .Where(p => p.Status == PaymentStatus.Paid &&
+                        p.PaidAtUtc.HasValue &&
+                        p.PaidAtUtc.Value >= fromUtc &&
+                        p.PaidAtUtc.Value < toUtc)
+            .GroupBy(p => p.PlanId)
+            .Select(group => new { PlanId = group.Key, Count = group.Count() })
+            .ToListAsync(cancellationToken);
+
+        var planTitles = await _context.SubscriptionPlans
+            .AsNoTracking()
+            .ToDictionaryAsync(plan => plan.Id, plan => plan.Title, cancellationToken);
+
+        return planCounts
+            .Select(item =>
+            {
+                var title = item.PlanId != null && planTitles.TryGetValue(item.PlanId, out var planTitle)
+                    ? planTitle
+                    : "نامشخص";
+                return new DashboardSubscriptionPlanPurchaseDto(title, item.Count);
+            })
+            .OrderByDescending(item => item.Count)
+            .ToList();
+    }
+
     public Task<PaginatedList<PaymentRequest>> GetPaymentsAsync(
         string? search,
         PaymentStatus? status,

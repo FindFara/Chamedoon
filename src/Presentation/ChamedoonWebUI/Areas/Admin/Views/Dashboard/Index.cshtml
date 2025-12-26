@@ -33,25 +33,50 @@
         .Select(label => dailySubscriptionLookup.TryGetValue(label, out var count) ? count : 0)
         .ToList();
 
+    var dailySubscriptionPlanLabels = Model.DailySubscriptionPlanPurchases.Select(item => item.PlanTitle).ToList();
+    var dailySubscriptionPlanCounts = Model.DailySubscriptionPlanPurchases.Select(item => item.Count).ToList();
+    var monthlySubscriptionPlanLabels = Model.MonthlySubscriptionPlanPurchases.Select(item => item.PlanTitle).ToList();
+    var monthlySubscriptionPlanCounts = Model.MonthlySubscriptionPlanPurchases.Select(item => item.Count).ToList();
+
     var monthlyLabels = Model.MonthlyRegistrations.Select(item => item.Month).ToList();
     var monthlyRegistrationValues = Model.MonthlyRegistrations.Select(item => item.Count).ToList();
     var monthlySubscriptionValues = Model.MonthlyActiveSubscriptions.Select(item => item.Count).ToList();
 }
 
-<section class="admin-panel revenue-panel">
-    <div class="panel-header">
-        <div>
-            <h6>ثبت‌نام کاربران و اشتراک‌های خریداری شده</h6>
-        </div>
-        <div class="chart-tabs" role="tablist" aria-label="نمایش داده‌های نمودار">
-            <button class="chart-tab active" type="button" data-range="daily">۳۰ روز</button>
-            <button class="chart-tab" type="button" data-range="monthly">ماهانه</button>
-        </div>
+<div class="row g-4 align-items-stretch">
+    <div class="col-lg-9">
+        <section class="admin-panel revenue-panel h-100">
+            <div class="panel-header">
+                <div>
+                    <h6>ثبت‌نام کاربران و اشتراک‌های خریداری شده</h6>
+                </div>
+                <div class="chart-tabs" role="tablist" aria-label="نمایش داده‌های نمودار">
+                    <button class="chart-tab active" type="button" data-range="daily" data-chart="revenue">۳۰ روز</button>
+                    <button class="chart-tab" type="button" data-range="monthly" data-chart="revenue">ماهانه</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="revenueChart" height="120"></canvas>
+            </div>
+        </section>
     </div>
-    <div class="chart-container">
-        <canvas id="revenueChart" height="120"></canvas>
+    <div class="col-lg-3">
+        <section class="admin-panel subscription-distribution-panel h-100">
+            <div class="panel-header">
+                <div>
+                    <h2>توزیع خرید اشتراک‌ها</h2>
+                    <p>نمایش تعداد خریداری شده از هر پلن</p>
+                </div>
+                <div class="chart-tabs" role="tablist" aria-label="نمایش داده‌های خرید اشتراک">
+                    <button class="chart-tab active" type="button" data-range="daily" data-chart="subscription">روزانه</button>
+                    <button class="chart-tab" type="button" data-range="monthly" data-chart="subscription">ماهانه</button>
+                </div>
+            </div>
+            <p class="text-muted mt-3 mb-2 subscription-distribution-empty" id="subscriptionDistributionEmpty">داده‌ای برای نمایش خرید اشتراک وجود ندارد.</p>
+            <ul class="subscription-distribution-list" id="subscriptionDistributionList"></ul>
+        </section>
     </div>
-</section>
+</div>
 
 <section class="stat-grid">
     <div class="stat-card">
@@ -245,11 +270,16 @@
             const monthlyLabels = @Html.Raw(JsonSerializer.Serialize(monthlyLabels, jsonOptions));
             const monthlyRegistrations = @Html.Raw(JsonSerializer.Serialize(monthlyRegistrationValues, jsonOptions));
             const monthlySubscriptions = @Html.Raw(JsonSerializer.Serialize(monthlySubscriptionValues, jsonOptions));
+            const dailyPlanLabels = @Html.Raw(JsonSerializer.Serialize(dailySubscriptionPlanLabels, jsonOptions));
+            const dailyPlanCounts = @Html.Raw(JsonSerializer.Serialize(dailySubscriptionPlanCounts, jsonOptions));
+            const monthlyPlanLabels = @Html.Raw(JsonSerializer.Serialize(monthlySubscriptionPlanLabels, jsonOptions));
+            const monthlyPlanCounts = @Html.Raw(JsonSerializer.Serialize(monthlySubscriptionPlanCounts, jsonOptions));
 
             const palette = {
                 registrations: '#7c83ff',
                 subscriptions: '#21c999'
             };
+            const distributionPalette = ['#3d5afe', '#f59e0b', '#10b981', '#ef4444', '#8b5cf6', '#0ea5e9', '#f97316', '#14b8a6'];
 
             const buildData = (range) => {
                 if (range === 'monthly') {
@@ -328,7 +358,7 @@
                 }
             });
 
-            const tabs = document.querySelectorAll('.chart-tab');
+            const tabs = document.querySelectorAll('.chart-tab[data-chart="revenue"]');
             tabs.forEach((tab) => {
                 tab.addEventListener('click', () => {
                     tabs.forEach((item) => item.classList.remove('active'));
@@ -341,6 +371,70 @@
                     revenueChart.update();
                 });
             });
+
+            const distributionListElement = document.getElementById('subscriptionDistributionList');
+            const distributionEmptyElement = document.getElementById('subscriptionDistributionEmpty');
+
+            const buildDistributionData = (range) => {
+                if (range === 'monthly') {
+                    return {
+                        labels: monthlyPlanLabels,
+                        counts: monthlyPlanCounts
+                    };
+                }
+
+                return {
+                    labels: dailyPlanLabels,
+                    counts: dailyPlanCounts
+                };
+            };
+
+            const renderDistributionList = (labels, counts) => {
+                if (!distributionListElement || !distributionEmptyElement) {
+                    return;
+                }
+
+                distributionListElement.innerHTML = '';
+                const hasData = labels.length > 0 && counts.length > 0;
+                distributionEmptyElement.classList.toggle('d-none', hasData);
+                if (!hasData) {
+                    return;
+                }
+
+                const max = Math.max(...counts, 0);
+                labels.forEach((label, index) => {
+                    const count = counts[index] ?? 0;
+                    const color = distributionPalette[index % distributionPalette.length];
+                    const width = max === 0 ? '0%' : `${Math.round((count / max) * 100)}%`;
+                    const item = document.createElement('li');
+                    item.innerHTML = `
+                        <div class="subscription-distribution-plan">
+                            <span class="subscription-distribution-dot" style="background:${color}"></span>
+                            <span>${label}</span>
+                        </div>
+                        <div class="subscription-distribution-metrics">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width:${width}; background:${color}" aria-valuenow="${count}" aria-valuemin="0" aria-valuemax="${max}"></div>
+                            </div>
+                            <span class="subscription-distribution-count">${count.toLocaleString()}</span>
+                        </div>`;
+                    distributionListElement.appendChild(item);
+                });
+            };
+
+            const distributionData = buildDistributionData('daily');
+            renderDistributionList(distributionData.labels, distributionData.counts);
+
+            const distributionTabs = document.querySelectorAll('.chart-tab[data-chart="subscription"]');
+            distributionTabs.forEach((tab) => {
+                tab.addEventListener('click', () => {
+                    distributionTabs.forEach((item) => item.classList.remove('active'));
+                tab.classList.add('active');
+                const range = tab.dataset.range || 'daily';
+                const next = buildDistributionData(range);
+                renderDistributionList(next.labels, next.counts);
+            });
+        });
 
             const themeToggle = document.getElementById('themeToggle');
             const updateChartTheme = () => {
