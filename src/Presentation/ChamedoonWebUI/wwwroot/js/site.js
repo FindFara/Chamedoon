@@ -10,11 +10,15 @@
             setTimeout(() => loaderElement.remove(), 600);
         };
 
-        if (document.readyState === 'complete') {
-            requestAnimationFrame(hideLoader);
+        const scheduleHide = () => requestAnimationFrame(hideLoader);
+
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            scheduleHide();
         } else {
-            window.addEventListener('load', hideLoader);
+            document.addEventListener('DOMContentLoaded', scheduleHide, { once: true });
         }
+
+        window.addEventListener('load', scheduleHide, { once: true });
     }
 
     const darkModeToggle = document.getElementById('darkModeToggle');
