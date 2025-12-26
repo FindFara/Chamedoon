@@ -43,40 +43,6 @@
     var monthlySubscriptionValues = Model.MonthlyActiveSubscriptions.Select(item => item.Count).ToList();
 }
 
-<div class="row g-4 align-items-stretch">
-    <div class="col-lg-9">
-        <section class="admin-panel revenue-panel h-100">
-            <div class="panel-header">
-                <div>
-                    <h6>ثبت‌نام کاربران و اشتراک‌های خریداری شده</h6>
-                </div>
-                <div class="chart-tabs" role="tablist" aria-label="نمایش داده‌های نمودار">
-                    <button class="chart-tab active" type="button" data-range="daily" data-chart="revenue">۳۰ روز</button>
-                    <button class="chart-tab" type="button" data-range="monthly" data-chart="revenue">ماهانه</button>
-                </div>
-            </div>
-            <div class="chart-container">
-                <canvas id="revenueChart" height="120"></canvas>
-            </div>
-        </section>
-    </div>
-    <div class="col-lg-3">
-        <section class="admin-panel subscription-distribution-panel h-100">
-            <div class="panel-header">
-                <div>
-                    <h2>توزیع خرید اشتراک‌ها</h2>
-                    <p>نمایش تعداد خریداری شده از هر پلن</p>
-                </div>
-                <div class="chart-tabs" role="tablist" aria-label="نمایش داده‌های خرید اشتراک">
-                    <button class="chart-tab active" type="button" data-range="daily" data-chart="subscription">روزانه</button>
-                    <button class="chart-tab" type="button" data-range="monthly" data-chart="subscription">ماهانه</button>
-                </div>
-            </div>
-            <p class="text-muted mt-3 mb-2 subscription-distribution-empty" id="subscriptionDistributionEmpty">داده‌ای برای نمایش خرید اشتراک وجود ندارد.</p>
-            <ul class="subscription-distribution-list" id="subscriptionDistributionList"></ul>
-        </section>
-    </div>
-</div>
 
 <section class="stat-grid">
     <div class="stat-card">
@@ -100,6 +66,42 @@
         <span class="stat-badge badge-warning">@Model.TotalBlogPosts.ToString("N0") مقاله</span>
     </div>
 </section>
+
+
+<div class="row g-4 align-items-stretch">
+    <div class="col-lg-9">
+        <section class="admin-panel revenue-panel h-100">
+            <div class="panel-header">
+                <div>
+                    <h6>ثبت‌نام کاربران و اشتراک‌های خریداری شده</h6>
+                </div>
+                <div class="chart-tabs" role="tablist" aria-label="نمایش داده‌های نمودار">
+                    <button class="chart-tab active" type="button" data-range="daily" data-chart="revenue">۳۰ روز</button>
+                    <button class="chart-tab" type="button" data-range="monthly" data-chart="revenue">ماهانه</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="revenueChart" height="120"></canvas>
+            </div>
+        </section>
+    </div>
+    <div class="col-lg-3">
+        <section class="admin-panel subscription-distribution-panel h-100">
+            <div class="panel-header">
+                <div>
+                    <h2>توزیع خرید اشتراک‌ها</h2>
+                </div>
+                <div class="chart-tabs" role="tablist" aria-label="نمایش داده‌های خرید اشتراک">
+                    <button class="chart-tab active" type="button" data-range="daily" data-chart="subscription">روزانه</button>
+                    <button class="chart-tab" type="button" data-range="monthly" data-chart="subscription">ماهانه</button>
+                </div>
+            </div>
+            <p class="text-muted mt-3 mb-2 subscription-distribution-empty" id="subscriptionDistributionEmpty">داده‌ای برای نمایش خرید اشتراک وجود ندارد.</p>
+            <ul class="subscription-distribution-list" id="subscriptionDistributionList"></ul>
+        </section>
+    </div>
+</div>
+<br />
 
 <section class="admin-panel">
     <div class="panel-header">
