@@ -62,6 +62,31 @@ public class AdminPaymentRepository : IAdminPaymentRepository
             .ToList();
     }
 
+    public async Task<IReadOnlyList<DailyRegistrationCount>> GetDailyPaidSubscriptionCountsAsync(int days, CancellationToken cancellationToken)
+    {
+        var today = DateTime.Now.Date;
+        var start = today.AddDays(-(days - 1));
+
+        var rawData = await _context.PaymentRequests
+            .AsNoTracking()
+            .Where(p => p.Status == PaymentStatus.Paid &&
+                        p.PaidAtUtc.HasValue &&
+                        p.PaidAtUtc.Value.Date >= start)
+            .GroupBy(p => p.PaidAtUtc!.Value.Date)
+            .Select(group => new DailyRegistrationCount(group.Key, group.Count()))
+            .ToListAsync(cancellationToken);
+
+        var results = new List<DailyRegistrationCount>();
+        for (var i = 0; i < days; i++)
+        {
+            var date = start.AddDays(i);
+            var match = rawData.FirstOrDefault(record => record.Date.Date == date);
+            results.Add(match ?? new DailyRegistrationCount(date, 0));
+        }
+
+        return results;
+    }
+
     public async Task<IReadOnlyList<DashboardSubscriptionPlanPurchaseDto>> GetSubscriptionPlanPurchasesAsync(
         DateTime fromUtc,
         DateTime toUtc,

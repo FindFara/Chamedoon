@@ -17,6 +17,7 @@ public class DashboardSummaryDto
     public IReadOnlyList<DashboardMonthlyRegistrationDto> MonthlyActiveSubscriptions { get; set; } = Array.Empty<DashboardMonthlyRegistrationDto>();
     public IReadOnlyList<DashboardMonthlyRegistrationDto> MonthlyBlogViews { get; set; } = Array.Empty<DashboardMonthlyRegistrationDto>();
     public IReadOnlyList<DashboardDailyRegistrationDto> DailyRegistrationsLast30Days { get; set; } = Array.Empty<DashboardDailyRegistrationDto>();
+    public IReadOnlyList<DashboardDailyRegistrationDto> DailyPaidSubscriptionsLast30Days { get; set; } = Array.Empty<DashboardDailyRegistrationDto>();
     public IReadOnlyList<DashboardSubscriptionPlanPurchaseDto> DailySubscriptionPlanPurchases { get; set; } = Array.Empty<DashboardSubscriptionPlanPurchaseDto>();
     public IReadOnlyList<DashboardSubscriptionPlanPurchaseDto> MonthlySubscriptionPlanPurchases { get; set; } = Array.Empty<DashboardSubscriptionPlanPurchaseDto>();
     public IReadOnlyList<AdminUserDto> RecentUsers { get; set; } = Array.Empty<AdminUserDto>();
