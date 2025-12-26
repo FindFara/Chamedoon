@@ -9,6 +9,10 @@ public interface IAdminPaymentRepository
 {
     Task<DashboardPaymentSummaryDto> GetPaymentSummaryAsync(DateTime since, CancellationToken cancellationToken);
     Task<IReadOnlyList<DashboardPaymentActivityDto>> GetRecentPaymentsAsync(int count, CancellationToken cancellationToken);
+    Task<IReadOnlyList<DashboardSubscriptionPlanPurchaseDto>> GetSubscriptionPlanPurchasesAsync(
+        DateTime fromUtc,
+        DateTime toUtc,
+        CancellationToken cancellationToken);
     Task<PaginatedList<PaymentRequest>> GetPaymentsAsync(
         string? search,
         PaymentStatus? status,
@@ -19,4 +23,3 @@ public interface IAdminPaymentRepository
         int pageSize,
         CancellationToken cancellationToken);
 }
-
