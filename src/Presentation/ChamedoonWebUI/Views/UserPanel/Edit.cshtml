@@ -8,51 +8,48 @@
         : Model.ProfileImage;
 }
 
-@section UserPanelContent {
-    <div class="glass-card dashboard-card">
-        <h5>ویرایش اطلاعات شخصی</h5>
-        <p class="glass-helper">اطلاعات دقیق باعث می‌شود پیشنهادهای مهاجرتی بهتر و نزدیک‌تر به نیازهایت نمایش داده شود.</p>
-        <form asp-controller="UserPanel" asp-action="Edit" method="post" enctype="multipart/form-data">
-            <div class="avatar-wrapper mb-4">
-                <img id="avatarPreview" src="@profileImage" alt="تصویر پروفایل">
-                <div class="d-flex flex-column gap-2">
-                    <span class="glass-helper">برای انتخاب تصویر جدید از دکمه زیر استفاده کن.</span>
-                    <label for="ProfileImageFile" class="btn-outline-glass">انتخاب تصویر</label>
-                    <input type="file" name="ProfileImageFile" id="ProfileImageFile" class="d-none" accept="image/*">
-                </div>
+<div class="glass-card dashboard-card">
+    <h5>ویرایش اطلاعات شخصی</h5>
+    <p class="glass-helper">اطلاعات دقیق باعث می‌شود پیشنهادهای مهاجرتی بهتر و نزدیک‌تر به نیازهایت نمایش داده شود.</p>
+    <form asp-controller="UserPanel" asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div class="avatar-wrapper mb-4">
+            <img id="avatarPreview" src="@profileImage" alt="تصویر پروفایل">
+            <div class="d-flex flex-column gap-2">
+                <span class="glass-helper">برای انتخاب تصویر جدید از دکمه زیر استفاده کن.</span>
+                <label for="ProfileImageFile" class="btn-outline-glass">انتخاب تصویر</label>
+                <input type="file" name="ProfileImageFile" id="ProfileImageFile" class="d-none" accept="image/*">
             </div>
-            <div class="dashboard-form-grid">
-                <div class="glass-field">
-                    <label class="form-label" for="first">نام</label>
-                    <input name="FirstName" id="first" type="text" class="form-control glass-input" value="@Model.FirstName" />
-                </div>
-                <div class="glass-field">
-                    <label class="form-label" for="last">نام خانوادگی</label>
-                    <input name="LastName" id="last" type="text" class="form-control glass-input" value="@Model.LastName" />
-                </div>
-                <div class="glass-field">
-                    <label class="form-label" for="gender">جنسیت</label>
-                    <select name="Gender" id="gender" class="form-select glass-input">
-                        @for (int i = 0; i < Model.GenderList.Length; i++)
-                        {
-                            <option value="@((Gender)i)" selected="@(Model.Gender == (Gender)i ? "selected" : null)">@Model.GenderList[i]</option>
-                        }
-                    </select>
-                </div>
-                <div class="glass-field">
-                    <label class="form-label" for="occupation">شغل</label>
-                    <input name="Job" id="occupation" type="text" class="form-control glass-input" value="@Model.Job" />
-                </div>
+        </div>
+        <div class="dashboard-form-grid">
+            <div class="glass-field">
+                <label class="form-label" for="first">نام</label>
+                <input name="FirstName" id="first" type="text" class="form-control glass-input" value="@Model.FirstName" />
             </div>
-            <div class="glass-field mt-3">
-                <label class="form-label" for="comments">توضیحات</label>
-                <textarea name="Description" id="comments" rows="4" class="form-control glass-input">@Model.Description</textarea>
+            <div class="glass-field">
+                <label class="form-label" for="last">نام خانوادگی</label>
+                <input name="LastName" id="last" type="text" class="form-control glass-input" value="@Model.LastName" />
             </div>
-            <button type="submit" class="btn-glass-primary mt-4">ذخیره تغییرات</button>
-        </form>
-    </div>
-
-}
+            <div class="glass-field">
+                <label class="form-label" for="gender">جنسیت</label>
+                <select name="Gender" id="gender" class="form-select glass-input">
+                    @for (int i = 0; i < Model.GenderList.Length; i++)
+                    {
+                        <option value="@((Gender)i)" selected="@(Model.Gender == (Gender)i ? "selected" : null)">@Model.GenderList[i]</option>
+                    }
+                </select>
+            </div>
+            <div class="glass-field">
+                <label class="form-label" for="occupation">شغل</label>
+                <input name="Job" id="occupation" type="text" class="form-control glass-input" value="@Model.Job" />
+            </div>
+        </div>
+        <div class="glass-field mt-3">
+            <label class="form-label" for="comments">توضیحات</label>
+            <textarea name="Description" id="comments" rows="4" class="form-control glass-input">@Model.Description</textarea>
+        </div>
+        <button type="submit" class="btn-glass-primary mt-4">ذخیره تغییرات</button>
+    </form>
+</div>
 
 @section Scripts {
     <script src="~/js/views/userpanel/edit.js" asp-append-version="true"></script>

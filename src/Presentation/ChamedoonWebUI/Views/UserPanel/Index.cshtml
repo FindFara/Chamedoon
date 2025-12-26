@@ -6,42 +6,40 @@
     ViewData["Title"] = "پنل کاربری " + User.Identity?.Name;
 }
 
-@section UserPanelContent {
-    <div class="glass-card dashboard-card">
-        <h5>خلاصه حساب کاربری</h5>
-        <p class="glass-helper">اطلاعات شخصی و وضعیت حساب تو در این بخش نمایش داده می‌شود.</p>
-        <div class="profile-details">
-            <div class="detail-row">
-                <span class="detail-icon" aria-hidden="true">📛</span>
-                <div class="detail-body">
-                    <p class="detail-title">نام کاربری</p>
-                    <p class="detail-value">@Model.UserName</p>
-                </div>
+<div class="glass-card dashboard-card">
+    <h5>خلاصه حساب کاربری</h5>
+    <p class="glass-helper">اطلاعات شخصی و وضعیت حساب تو در این بخش نمایش داده می‌شود.</p>
+    <div class="profile-details">
+        <div class="detail-row">
+            <span class="detail-icon" aria-hidden="true">📛</span>
+            <div class="detail-body">
+                <p class="detail-title">نام کاربری</p>
+                <p class="detail-value">@Model.UserName</p>
             </div>
-            <div class="detail-row">
-                <span class="detail-icon" aria-hidden="true">📱</span>
-                <div class="detail-body">
-                    <p class="detail-title">شماره موبایل</p>
-                    <p class="detail-value">@Model.PhoneNumber</p>
-                </div>
+        </div>
+        <div class="detail-row">
+            <span class="detail-icon" aria-hidden="true">📱</span>
+            <div class="detail-body">
+                <p class="detail-title">شماره موبایل</p>
+                <p class="detail-value">@Model.PhoneNumber</p>
             </div>
-            <div class="detail-row">
-                <span class="detail-icon" aria-hidden="true">📅</span>
-                <div class="detail-body">
-                    <p class="detail-title">تاریخ عضویت</p>
-                    @{
-                        var joinDate = Model.Created.ConvertMiladiToShamsi();
-                    }
-                    @if (string.IsNullOrWhiteSpace(joinDate))
-                    {
-                        <p class="detail-value text-muted">اطلاعات تاریخ ثبت‌نام موجود نیست</p>
-                    }
-                    else
-                    {
-                        <p class="detail-value">@joinDate</p>
-                    }
-                </div>
+        </div>
+        <div class="detail-row">
+            <span class="detail-icon" aria-hidden="true">📅</span>
+            <div class="detail-body">
+                <p class="detail-title">تاریخ عضویت</p>
+                @{
+                    var joinDate = Model.Created.ConvertMiladiToShamsi();
+                }
+                @if (string.IsNullOrWhiteSpace(joinDate))
+                {
+                    <p class="detail-value text-muted">اطلاعات تاریخ ثبت‌نام موجود نیست</p>
+                }
+                else
+                {
+                    <p class="detail-value">@joinDate</p>
+                }
             </div>
         </div>
     </div>
-}
+</div>
