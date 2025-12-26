@@ -56,6 +56,7 @@ public class AdminDashboardService : IAdminDashboardService
         var monthlySubscriptions = await _userRepository.GetMonthlyActiveSubscriptionCountsAsync(monthlyWindow, cancellationToken);
         var monthlyBlogViews = await _blogRepository.GetMonthlyArticleViewCountsAsync(monthlyWindow, cancellationToken);
         var dailyRegistrations = await _userRepository.GetDailyRegistrationCountsAsync(30, cancellationToken);
+        var dailyPaidSubscriptions = await _paymentRepository.GetDailyPaidSubscriptionCountsAsync(30, cancellationToken);
         var paymentSummary = await _paymentRepository.GetPaymentSummaryAsync(paymentSummarySince, cancellationToken);
         var paymentActivities = await _paymentRepository.GetRecentPaymentsAsync(5, cancellationToken);
         var planTitles = await _subscriptionService.GetPlanTitleLookupAsync(cancellationToken);
@@ -90,6 +91,7 @@ public class AdminDashboardService : IAdminDashboardService
             MonthlyActiveSubscriptions = BuildMonthlyRegistrations(monthlySubscriptions),
             MonthlyBlogViews = BuildMonthlyRegistrations(monthlyBlogViews),
             DailyRegistrationsLast30Days = BuildDailyRegistrations(dailyRegistrations),
+            DailyPaidSubscriptionsLast30Days = BuildDailyRegistrations(dailyPaidSubscriptions),
             RecentUsers = recentUsers.Select(user => user.ToAdminUserDto(planTitles)).ToList(),
             RecentPosts = recentPosts.Select(article => article.ToAdminBlogPostDto()).ToList(),
             PaymentSummary = paymentSummary,

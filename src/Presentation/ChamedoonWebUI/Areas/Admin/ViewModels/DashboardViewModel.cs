@@ -22,6 +22,7 @@ public class DashboardViewModel
     public IReadOnlyList<DashboardMonthlyRegistrationViewModel> MonthlyActiveSubscriptions { get; init; } = Array.Empty<DashboardMonthlyRegistrationViewModel>();
     public IReadOnlyList<DashboardMonthlyRegistrationViewModel> MonthlyBlogViews { get; init; } = Array.Empty<DashboardMonthlyRegistrationViewModel>();
     public IReadOnlyList<DashboardDailyRegistrationViewModel> DailyRegistrationsLast30Days { get; init; } = Array.Empty<DashboardDailyRegistrationViewModel>();
+    public IReadOnlyList<DashboardDailyRegistrationViewModel> DailyPaidSubscriptionsLast30Days { get; init; } = Array.Empty<DashboardDailyRegistrationViewModel>();
     public IReadOnlyList<UserListItemViewModel> RecentUsers { get; init; } = Array.Empty<UserListItemViewModel>();
     public IReadOnlyList<BlogListItemViewModel> RecentPosts { get; init; } = Array.Empty<BlogListItemViewModel>();
     public DashboardPaymentSummaryViewModel PaymentSummary { get; init; } = new();
@@ -46,6 +47,7 @@ public class DashboardViewModel
             MonthlyActiveSubscriptions = dto.MonthlyActiveSubscriptions.Select(item => new DashboardMonthlyRegistrationViewModel(item.Month, item.Count)).ToList(),
             MonthlyBlogViews = dto.MonthlyBlogViews.Select(item => new DashboardMonthlyRegistrationViewModel(item.Month, item.Count)).ToList(),
             DailyRegistrationsLast30Days = dto.DailyRegistrationsLast30Days.Select(item => new DashboardDailyRegistrationViewModel(item.DateLabel, item.Count)).ToList(),
+            DailyPaidSubscriptionsLast30Days = dto.DailyPaidSubscriptionsLast30Days.Select(item => new DashboardDailyRegistrationViewModel(item.DateLabel, item.Count)).ToList(),
             RecentUsers = dto.RecentUsers.Select(UserListItemViewModel.FromDto).ToList(),
             RecentPosts = dto.RecentPosts.Select(BlogListItemViewModel.FromDto).ToList(),
             PaymentSummary = new DashboardPaymentSummaryViewModel
