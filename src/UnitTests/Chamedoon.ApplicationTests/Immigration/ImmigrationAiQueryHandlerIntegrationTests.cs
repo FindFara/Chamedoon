@@ -1,8 +1,10 @@
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Chamedoon.Application.Services.Immigration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
@@ -14,25 +16,19 @@ public class ImmigrationAiQueryHandlerIntegrationTests
     [Fact]
     public async Task Handle_Integration_CallsGroqAndReturnsFiveCountries()
     {
-        var apiKey = Environment.GetEnvironmentVariable("GROQ_API_KEY");
-        var model = Environment.GetEnvironmentVariable("GROQ_MODEL");
-        var baseUrl = Environment.GetEnvironmentVariable("GROQ_BASE_URL") ?? "https://api.groq.com/openai/v1/";
-
-        if (string.IsNullOrWhiteSpace(apiKey) || string.IsNullOrWhiteSpace(model))
+        var options = LoadGroqOptions();
+        if (options is null ||
+            string.IsNullOrWhiteSpace(options.ApiKey) ||
+            string.IsNullOrWhiteSpace(options.Model))
         {
             return;
         }
 
-        var client = new HttpClient { BaseAddress = new Uri(baseUrl) };
+        var client = new HttpClient { BaseAddress = new Uri(options.BaseUrl) };
         var factory = new TestHttpClientFactory(client);
-        var options = Options.Create(new GroqOptions
-        {
-            ApiKey = apiKey,
-            BaseUrl = baseUrl,
-            Model = model
-        });
+        var optionsWrapper = Options.Create(options);
 
-        var handler = new ImmigrationAiQueryHandler(factory, options, NullLogger<ImmigrationAiQueryHandler>.Instance);
+        var handler = new ImmigrationAiQueryHandler(factory, optionsWrapper, NullLogger<ImmigrationAiQueryHandler>.Instance);
         var input = new ImmigrationInput
         {
             Age = 29,
@@ -65,5 +61,45 @@ public class ImmigrationAiQueryHandlerIntegrationTests
         }
 
         public HttpClient CreateClient(string name) => _client;
+    }
+
+    private static GroqOptions? LoadGroqOptions()
+    {
+        var repoRoot = FindRepoRoot();
+        if (repoRoot is null)
+        {
+            return null;
+        }
+
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(repoRoot)
+            .AddJsonFile("src/Presentation/ChamedoonWebUI/appsettings.json", optional: true)
+            .AddJsonFile("src/Presentation/ChamedoonWebUI/appsettings.Production.json", optional: true)
+            .AddEnvironmentVariables()
+            .Build();
+
+        return configuration.GetSection(GroqOptions.SectionName).Get<GroqOptions>();
+    }
+
+    private static string? FindRepoRoot()
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(
+                directory.FullName,
+                "src",
+                "Presentation",
+                "ChamedoonWebUI",
+                "appsettings.json");
+            if (File.Exists(candidate))
+            {
+                return directory.FullName;
+            }
+
+            directory = directory.Parent;
+        }
+
+        return null;
     }
 }
