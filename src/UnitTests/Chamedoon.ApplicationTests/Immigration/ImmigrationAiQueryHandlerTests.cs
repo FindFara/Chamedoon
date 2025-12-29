@@ -14,13 +14,55 @@ namespace Chamedoon.ApplicationTests.Immigration;
 
 public class ImmigrationAiQueryHandlerTests
 {
-    [Fact]
-    public async Task Handle_ValidJson_ReturnsFiveCountries()
+    public static IEnumerable<object[]> ValidInputs()
+    {
+        yield return new object[]
+        {
+            new ImmigrationInput
+            {
+                Age = 28,
+                JobTitle = "توسعه‌دهنده",
+                JobCategory = JobCategoryType.IT,
+                WorkExperienceYears = 4,
+                FieldCategory = FieldCategoryType.IT,
+                DegreeLevel = DegreeLevelType.Bachelor,
+                LanguageCertificate = LanguageCertificateType.IELTS,
+                VisaType = VisaType.Work,
+                HasCriminalRecord = false,
+                InvestmentAmount = 20000,
+                MaritalStatus = MaritalStatusType.Single,
+                WillingToStudy = false
+            }
+        };
+
+        yield return new object[]
+        {
+            new ImmigrationInput
+            {
+                Age = 35,
+                JobTitle = "تحلیلگر داده",
+                JobCategory = JobCategoryType.Science,
+                WorkExperienceYears = 8,
+                FieldCategory = FieldCategoryType.Science,
+                DegreeLevel = DegreeLevelType.Master,
+                LanguageCertificate = LanguageCertificateType.TOEFL,
+                VisaType = VisaType.Study,
+                HasCriminalRecord = false,
+                InvestmentAmount = 50000,
+                MaritalStatus = MaritalStatusType.Married,
+                WillingToStudy = true
+            }
+        };
+    }
+
+    [Theory]
+    [MemberData(nameof(ValidInputs))]
+    public async Task Handle_ValidJson_ReturnsFiveCountries(ImmigrationInput input)
     {
         var response = CreateGroqResponse(BuildValidResultJson());
         var handler = CreateHandler(response);
 
-        var result = await handler.Handle(new ImmigrationAiQuery { Input = new ImmigrationInput() }, CancellationToken.None);
+        var result = await handler.Handle(new ImmigrationAiQuery { Input = input }, CancellationToken.None);
 
         Assert.NotNull(result);
         Assert.Equal(5, result.TopCountries.Count);
