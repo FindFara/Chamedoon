@@ -66,7 +66,8 @@ public class ImmigrationController : Controller
 
         await _mediator.Send(new RegisterSubscriptionUsageCommand(User));
         await _evaluationService.RecordAsync(input, User, HttpContext.RequestAborted);
-        var result = await _mediator.Send(new ImmigrationQuery { Input = input });
+        // var result = await _mediator.Send(new ImmigrationQuery { Input = input });
+        var result = await _mediator.Send(new ImmigrationAiQuery { Input = input });
         return View("Result", result);
     }
 
