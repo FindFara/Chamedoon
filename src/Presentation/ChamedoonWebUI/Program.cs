@@ -1,5 +1,6 @@
 using Chamedoon.Application;
 using Chamedoon.Domin.Configs;
+using Chamedoon.Application.Services.Immigration;
 using Chamedoon.Infrastructure;
 using ChamedoonWebUI;
 using Chamedoon.Infrastructure.Persistence;
@@ -13,7 +14,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddWebUIServices(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
+builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
+builder.Services.Configure<GroqOptions>(builder.Configuration.GetSection(GroqOptions.SectionName));
 builder.Services.Configure<SmtpConfig>(builder.Configuration.GetSection("Smtp"));
 builder.Services.Configure<UrlsConfig>(builder.Configuration.GetSection("Urls"));
 builder.Services.Configure<MelipayamakConfig>(builder.Configuration.GetSection(MelipayamakConfig.SectionName));
