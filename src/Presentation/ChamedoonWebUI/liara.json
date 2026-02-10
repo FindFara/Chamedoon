@@ -1,8 +1,13 @@
 {
-  "app": "beautiful-gagarin-nmaiuaz6g",
+  "app": "zen-black-hrsrsh8fv",
   "port": 3000,
   "build": {
     "location": "iran"
   },
-  "disks": []
+  "disks": [
+    {
+      "name": "chmedoon-disk",
+      "mountTo": "path/to/folder"
+    }
+  ]
 }
