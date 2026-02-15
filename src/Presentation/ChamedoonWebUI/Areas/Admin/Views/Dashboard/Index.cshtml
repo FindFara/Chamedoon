@@ -29,8 +29,13 @@
 
     var dailySubscriptionPlanLabels = Model.DailySubscriptionPlanPurchases.Select(item => item.PlanTitle).ToList();
     var dailySubscriptionPlanCounts = Model.DailySubscriptionPlanPurchases.Select(item => item.Count).ToList();
+    var dailySubscriptionPlanAmounts = Model.DailySubscriptionPlanPurchases.Select(item => item.Amount).ToList();
+    var yesterdaySubscriptionPlanLabels = Model.YesterdaySubscriptionPlanPurchases.Select(item => item.PlanTitle).ToList();
+    var yesterdaySubscriptionPlanCounts = Model.YesterdaySubscriptionPlanPurchases.Select(item => item.Count).ToList();
+    var yesterdaySubscriptionPlanAmounts = Model.YesterdaySubscriptionPlanPurchases.Select(item => item.Amount).ToList();
     var monthlySubscriptionPlanLabels = Model.MonthlySubscriptionPlanPurchases.Select(item => item.PlanTitle).ToList();
     var monthlySubscriptionPlanCounts = Model.MonthlySubscriptionPlanPurchases.Select(item => item.Count).ToList();
+    var monthlySubscriptionPlanAmounts = Model.MonthlySubscriptionPlanPurchases.Select(item => item.Amount).ToList();
 
     var monthlyLabels = Model.MonthlyRegistrations.Select(item => item.Month).ToList();
     var monthlyRegistrationValues = Model.MonthlyRegistrations.Select(item => item.Count).ToList();
@@ -87,8 +92,13 @@
                 </div>
                 <div class="chart-tabs" role="tablist" aria-label="نمایش داده‌های خرید اشتراک">
                     <button class="chart-tab active" type="button" data-range="daily" data-chart="subscription">روزانه</button>
+                    <button class="chart-tab" type="button" data-range="yesterday" data-chart="subscription">دیروز</button>
                     <button class="chart-tab" type="button" data-range="monthly" data-chart="subscription">ماهانه</button>
                 </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mt-2 mb-1">
+                <span class="text-muted small">جمع کل مبالغ</span>
+                <span class="stat-badge badge-primary" id="subscriptionDistributionTotalAmount">0 تومان</span>
             </div>
             <p class="text-muted mt-3 mb-2 subscription-distribution-empty" id="subscriptionDistributionEmpty">داده‌ای برای نمایش خرید اشتراک وجود ندارد.</p>
             <ul class="subscription-distribution-list" id="subscriptionDistributionList"></ul>
@@ -268,8 +278,13 @@
             const monthlySubscriptions = @Html.Raw(JsonSerializer.Serialize(monthlySubscriptionValues, jsonOptions));
             const dailyPlanLabels = @Html.Raw(JsonSerializer.Serialize(dailySubscriptionPlanLabels, jsonOptions));
             const dailyPlanCounts = @Html.Raw(JsonSerializer.Serialize(dailySubscriptionPlanCounts, jsonOptions));
+            const dailyPlanAmounts = @Html.Raw(JsonSerializer.Serialize(dailySubscriptionPlanAmounts, jsonOptions));
+            const yesterdayPlanLabels = @Html.Raw(JsonSerializer.Serialize(yesterdaySubscriptionPlanLabels, jsonOptions));
+            const yesterdayPlanCounts = @Html.Raw(JsonSerializer.Serialize(yesterdaySubscriptionPlanCounts, jsonOptions));
+            const yesterdayPlanAmounts = @Html.Raw(JsonSerializer.Serialize(yesterdaySubscriptionPlanAmounts, jsonOptions));
             const monthlyPlanLabels = @Html.Raw(JsonSerializer.Serialize(monthlySubscriptionPlanLabels, jsonOptions));
             const monthlyPlanCounts = @Html.Raw(JsonSerializer.Serialize(monthlySubscriptionPlanCounts, jsonOptions));
+            const monthlyPlanAmounts = @Html.Raw(JsonSerializer.Serialize(monthlySubscriptionPlanAmounts, jsonOptions));
 
             const palette = {
                 registrations: '#7c83ff',
@@ -370,22 +385,33 @@
 
             const distributionListElement = document.getElementById('subscriptionDistributionList');
             const distributionEmptyElement = document.getElementById('subscriptionDistributionEmpty');
+            const distributionTotalAmountElement = document.getElementById('subscriptionDistributionTotalAmount');
 
             const buildDistributionData = (range) => {
                 if (range === 'monthly') {
                     return {
                         labels: monthlyPlanLabels,
-                        counts: monthlyPlanCounts
+                        counts: monthlyPlanCounts,
+                        amounts: monthlyPlanAmounts
+                    };
+                }
+
+                if (range === 'yesterday') {
+                    return {
+                        labels: yesterdayPlanLabels,
+                        counts: yesterdayPlanCounts,
+                        amounts: yesterdayPlanAmounts
                     };
                 }
 
                 return {
                     labels: dailyPlanLabels,
-                    counts: dailyPlanCounts
+                    counts: dailyPlanCounts,
+                    amounts: dailyPlanAmounts
                 };
             };
 
-            const renderDistributionList = (labels, counts) => {
+            const renderDistributionList = (labels, counts, amounts) => {
                 if (!distributionListElement || !distributionEmptyElement) {
                     return;
                 }
@@ -393,6 +419,10 @@
                 distributionListElement.innerHTML = '';
                 const hasData = labels.length > 0 && counts.length > 0;
                 distributionEmptyElement.classList.toggle('d-none', hasData);
+                if (distributionTotalAmountElement) {
+                    const totalAmount = (amounts || []).reduce((sum, amount) => sum + (amount || 0), 0);
+                    distributionTotalAmountElement.textContent = `${totalAmount.toLocaleString()} تومان`;
+                }
                 if (!hasData) {
                     return;
                 }
@@ -400,6 +430,7 @@
                 const max = Math.max(...counts, 0);
                 labels.forEach((label, index) => {
                     const count = counts[index] ?? 0;
+                    const amount = amounts[index] ?? 0;
                     const color = distributionPalette[index % distributionPalette.length];
                     const width = max === 0 ? '0%' : `${Math.round((count / max) * 100)}%`;
                     const item = document.createElement('li');
@@ -412,14 +443,14 @@
                             <div class="progress">
                                 <div class="progress-bar" role="progressbar" style="width:${width}; background:${color}" aria-valuenow="${count}" aria-valuemin="0" aria-valuemax="${max}"></div>
                             </div>
-                            <span class="subscription-distribution-count">${count.toLocaleString()}</span>
+                            <span class="subscription-distribution-count">${count.toLocaleString()} | ${amount.toLocaleString()} تومان</span>
                         </div>`;
                     distributionListElement.appendChild(item);
                 });
             };
 
             const distributionData = buildDistributionData('daily');
-            renderDistributionList(distributionData.labels, distributionData.counts);
+            renderDistributionList(distributionData.labels, distributionData.counts, distributionData.amounts);
 
             const distributionTabs = document.querySelectorAll('.chart-tab[data-chart="subscription"]');
             distributionTabs.forEach((tab) => {
@@ -428,7 +459,7 @@
                 tab.classList.add('active');
                 const range = tab.dataset.range || 'daily';
                 const next = buildDistributionData(range);
-                renderDistributionList(next.labels, next.counts);
+                renderDistributionList(next.labels, next.counts, next.amounts);
             });
         });
 

@@ -39,6 +39,7 @@ public class AdminDashboardService : IAdminDashboardService
         var monthEnd = monthStart.AddMonths(1);
         var dayStart = now.Date;
         var dayEnd = dayStart.AddDays(1);
+        var yesterdayStart = dayStart.AddDays(-1);
 
         var totalUsers = await _userRepository.CountUsersAsync(cancellationToken);
         var activeUsers = await _userRepository.CountActiveUsersAsync(cancellationToken);
@@ -63,6 +64,7 @@ public class AdminDashboardService : IAdminDashboardService
         var paymentSummary = await _paymentRepository.GetPaymentSummaryAsync(paymentSummarySince, cancellationToken);
         var paymentActivities = await _paymentRepository.GetRecentPaymentsAsync(5, cancellationToken);
         var dailyPlanPurchases = await _paymentRepository.GetSubscriptionPlanPurchasesAsync(dayStart, dayEnd, cancellationToken);
+        var yesterdayPlanPurchases = await _paymentRepository.GetSubscriptionPlanPurchasesAsync(yesterdayStart, dayStart, cancellationToken);
         var monthlyPlanPurchases = await _paymentRepository.GetSubscriptionPlanPurchasesAsync(monthStart, monthEnd, cancellationToken);
         var planTitles = await _subscriptionService.GetPlanTitleLookupAsync(cancellationToken);
         var mappedPayments = paymentActivities
@@ -98,6 +100,7 @@ public class AdminDashboardService : IAdminDashboardService
             DailyRegistrationsLast30Days = BuildDailyRegistrations(dailyRegistrations),
             DailyPaidSubscriptionsLast30Days = BuildDailyRegistrations(dailyPaidSubscriptions),
             DailySubscriptionPlanPurchases = dailyPlanPurchases,
+            YesterdaySubscriptionPlanPurchases = yesterdayPlanPurchases,
             MonthlySubscriptionPlanPurchases = monthlyPlanPurchases,
             RecentUsers = recentUsers.Select(user => user.ToAdminUserDto(planTitles)).ToList(),
             RecentPosts = recentPosts.Select(article => article.ToAdminBlogPostDto()).ToList(),

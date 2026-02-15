@@ -99,7 +99,12 @@ public class AdminPaymentRepository : IAdminPaymentRepository
                         p.PaidAtUtc.Value >= fromUtc &&
                         p.PaidAtUtc.Value < toUtc)
             .GroupBy(p => p.PlanId)
-            .Select(group => new { PlanId = group.Key, Count = group.Count() })
+            .Select(group => new
+            {
+                PlanId = group.Key,
+                Count = group.Count(),
+                Amount = group.Sum(p => (long)(p.FinalAmount > 0 ? p.FinalAmount : p.Amount))
+            })
             .ToListAsync(cancellationToken);
 
         var planTitles = await _context.SubscriptionPlans
@@ -112,7 +117,7 @@ public class AdminPaymentRepository : IAdminPaymentRepository
                 var title = item.PlanId != null && planTitles.TryGetValue(item.PlanId, out var planTitle)
                     ? planTitle
                     : "نامشخص";
-                return new DashboardSubscriptionPlanPurchaseDto(title, item.Count);
+                return new DashboardSubscriptionPlanPurchaseDto(title, item.Count, item.Amount);
             })
             .OrderByDescending(item => item.Count)
             .ToList();
