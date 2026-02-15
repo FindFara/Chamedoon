@@ -1,27 +1,12 @@
 @model UsersIndexViewModel
 @using System
-@using System.Globalization
 @using System.Linq
 @{
     ViewData["Title"] = "مدیریت کاربران";
-    string FormatPersianDate(DateTime? date)
-    {
-        if (!date.HasValue)
-        {
-            return string.Empty;
-        }
-
-        var calendar = new PersianCalendar();
-        var year = calendar.GetYear(date.Value);
-        var month = calendar.GetMonth(date.Value);
-        var day = calendar.GetDayOfMonth(date.Value);
-        return $"{year:0000}/{month:00}/{day:00}";
-    }
-
     var fromDateHidden = Model.FromDate?.ToString("yyyy-MM-dd");
     var toDateHidden = Model.ToDate?.ToString("yyyy-MM-dd");
-    var fromDateDisplay = FormatPersianDate(Model.FromDate);
-    var toDateDisplay = FormatPersianDate(Model.ToDate);
+    var fromDateDisplay = Model.FromDate.ConvertMiladiToShamsi();
+    var toDateDisplay = Model.ToDate.ConvertMiladiToShamsi();
 }
 
 <div class="container-fluid py-4 admin-section users-section">
@@ -147,7 +132,7 @@
                                             <strong>@user.SubscriptionPlanTitle</strong>
                                             @if (user.SubscriptionEndDateUtc is not null)
                                             {
-                                                <small class="text-muted">تا @user.SubscriptionEndDateUtc?.ToString("yyyy/MM/dd")</small>
+                                                <small class="text-muted">تا @user.SubscriptionEndDateUtc?.ConvertMiladiToShamsi()</small>
                                             }
                                         </div>
                                     }
@@ -166,7 +151,7 @@
                                         <span class="badge bg-secondary">غیرفعال</span>
                                     }
                                 </td>
-                                <td>@user.CreatedAt.ToString("yyyy/MM/dd HH:mm")</td>
+                                <td>@user.CreatedAt.ConvertMiladiToShamsiWithTime()</td>
                                 <td class="text-end">
                                     <div class="d-flex justify-content-end gap-2">
                                         <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-outline-primary">ویرایش</a>
