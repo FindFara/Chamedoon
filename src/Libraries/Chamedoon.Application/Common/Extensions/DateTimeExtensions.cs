@@ -38,6 +38,17 @@ public static class DateTimeExtensions
             return "";
         }
     }
+
+    public static string ConvertMiladiToShamsi(this System.DateTime dateTime, string seperator = "/")
+    {
+        return ((System.DateTime?)dateTime).ConvertMiladiToShamsi(seperator);
+    }
+
+    public static string ConvertMiladiToShamsi(this System.DateTimeOffset dateTime, string seperator = "/")
+    {
+        return ((System.DateTimeOffset?)dateTime).ConvertMiladiToShamsiOffset(seperator);
+    }
+
     public static string ConvertMiladiToShamsiOffset(this System.DateTimeOffset? DateTime, string seperator = "/")
     {
         try
@@ -71,6 +82,17 @@ public static class DateTimeExtensions
 
             return "";
         }
+    }
+
+
+    public static string ConvertMiladiToShamsiWithTime(this System.DateTime dateTime, string dateSeperator = "/")
+    {
+        return ((System.DateTime?)dateTime).ConvertMiladiToShamsiWithTime(dateSeperator);
+    }
+
+    public static string ConvertMiladiToShamsiWithTime(this System.DateTimeOffset dateTime, string dateSeperator = "/")
+    {
+        return ((System.DateTimeOffset?)dateTime).ConvertMiladiToShamsiWithTime(dateSeperator);
     }
 
     public static string ConvertMiladiToShamsiWithTime(this System.DateTime? dateTime, string dateSeperator = "/")
