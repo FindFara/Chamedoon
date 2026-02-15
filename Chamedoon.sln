@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chamedoon.ApplicationTests"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTest", "IntegrationTest", "{EB3BB79A-67F9-4EBA-B3C7-9ED28346CE18}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChamedoonWebUI", "src\Presentation\ChamedoonWebUI\ChamedoonWebUI.csproj", "{A8F22BA9-59FD-4E9B-B587-A024D869FD63}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chamedoon.WebUI", "src\Presentation\ChamedoonWebUI\Chamedoon.WebUI.csproj", "{A8F22BA9-59FD-4E9B-B587-A024D869FD63}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
