@@ -228,8 +228,24 @@ body.admin-app {
 }
 
 .stat-card .stat-value {
-    font-size: 1.75rem;
+    font-size: 1.3125rem;
     font-weight: 700;
+}
+
+.stat-card .stat-value.stat-value-primary {
+    color: var(--admin-primary);
+}
+
+.stat-card .stat-value.stat-value-success {
+    color: var(--admin-success);
+}
+
+.stat-card .stat-value.stat-value-warning {
+    color: var(--admin-warning);
+}
+
+.stat-card .stat-value.stat-value-danger {
+    color: var(--admin-danger);
 }
 
 .stat-card .stat-badge {
