@@ -142,7 +142,7 @@
                                         <span class="badge bg-secondary-subtle text-secondary">خیر</span>
                                     }
                                 </td>
-                                <td>@item.CreatedAtUtc.ToString("yyyy/MM/dd HH:mm")</td>
+                                <td>@item.CreatedAtUtc.ConvertMiladiToShamsiWithTime()</td>
                             </tr>
                         }
                     }
