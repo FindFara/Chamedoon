@@ -73,4 +73,36 @@ public static class DateTimeExtensions
         }
     }
 
+    public static string ConvertMiladiToShamsiWithTime(this System.DateTime? dateTime, string dateSeperator = "/")
+    {
+        if (dateTime.HasValue == false || dateTime == default)
+        {
+            return string.Empty;
+        }
+
+        var shamsiDate = dateTime.ConvertMiladiToShamsi(dateSeperator);
+        if (string.IsNullOrWhiteSpace(shamsiDate))
+        {
+            return string.Empty;
+        }
+
+        return $"{shamsiDate} {dateTime.Value:HH:mm}";
+    }
+
+    public static string ConvertMiladiToShamsiWithTime(this System.DateTimeOffset? dateTime, string dateSeperator = "/")
+    {
+        if (dateTime.HasValue == false || dateTime == default)
+        {
+            return string.Empty;
+        }
+
+        var shamsiDate = dateTime.ConvertMiladiToShamsiOffset(dateSeperator);
+        if (string.IsNullOrWhiteSpace(shamsiDate))
+        {
+            return string.Empty;
+        }
+
+        return $"{shamsiDate} {dateTime.Value:HH:mm}";
+    }
+
 }

@@ -1,5 +1,4 @@
 @model PaymentReportIndexViewModel
-@using System.Globalization
 @using Chamedoon.Domin.Enums
 @{
     ViewData["Title"] = "گزارش پرداخت‌ها";
@@ -8,24 +7,10 @@
     var endPage = Math.Min(Model.TotalPages, startPage + 4);
     startPage = Math.Max(1, endPage - 4);
 
-    string FormatPersianDate(DateTime? date)
-    {
-        if (!date.HasValue)
-        {
-            return string.Empty;
-        }
-
-        var calendar = new PersianCalendar();
-        var year = calendar.GetYear(date.Value);
-        var month = calendar.GetMonth(date.Value);
-        var day = calendar.GetDayOfMonth(date.Value);
-        return $"{year:0000}/{month:00}/{day:00}";
-    }
-
     var fromDateHidden = Model.FromDate?.ToString("yyyy-MM-dd");
     var toDateHidden = Model.ToDate?.ToString("yyyy-MM-dd");
-    var fromDateDisplay = FormatPersianDate(Model.FromDate);
-    var toDateDisplay = FormatPersianDate(Model.ToDate);
+    var fromDateDisplay = Model.FromDate.ConvertMiladiToShamsi();
+    var toDateDisplay = Model.ToDate.ConvertMiladiToShamsi();
 }
 
 <div class="container-fluid py-4 admin-section payments-section">
@@ -156,11 +141,11 @@
                                 <td>
                                     <span class="badge @payment.StatusBadgeClass">@payment.StatusLabel</span>
                                 </td>
-                                <td>@payment.CreatedAtUtc.ToString("yyyy/MM/dd HH:mm")</td>
+                                <td>@payment.CreatedAtUtc.ConvertMiladiToShamsiWithTime()</td>
                                 <td>
                                     @if (payment.PaidAtUtc is not null)
                                     {
-                                        @payment.PaidAtUtc.Value.ToString("yyyy/MM/dd HH:mm")
+                                        @payment.PaidAtUtc.Value.ConvertMiladiToShamsiWithTime()
                                     }
                                     else
                                     {

@@ -57,6 +57,8 @@ public static class ConfigureServices
             options.AccessDeniedPath = "/auth/AccessDenied";
             options.Cookie.HttpOnly = true;
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.ExpireTimeSpan = TimeSpan.FromDays(30);
+            options.SlidingExpiration = true;
         });
 
         services.AddScoped<SubscriptionService>();

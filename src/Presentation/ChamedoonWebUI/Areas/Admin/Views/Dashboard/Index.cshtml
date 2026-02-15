@@ -130,7 +130,7 @@
                                     @(user.IsActive ? "فعال" : "غیرفعال")
                                 </span>
                             </td>
-                            <td>@user.CreatedAt.ToString("yyyy/MM/dd HH:mm")</td>
+                            <td>@user.CreatedAt.ConvertMiladiToShamsiWithTime()</td>
                         </tr>
                     }
                 </tbody>
