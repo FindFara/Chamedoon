@@ -51,38 +51,38 @@
 <section class="stat-grid">
     <div class="stat-card">
         <div class="stat-title">کل کاربران</div>
-        <div class="stat-value">@Model.TotalUsers.ToString("N0")</div>
+        <div class="stat-value stat-value-primary">@Model.TotalUsers.ToString("N0")</div>
     </div>
     <div class="stat-card">
         <div class="stat-title">کاربرانی که اشتراک خریدن</div>
-        <div class="stat-value">@Model.ActiveUsers.ToString("N0")</div>
+        <div class="stat-value stat-value-success">@Model.ActiveUsers.ToString("N0")</div>
     </div>
     <div class="stat-card">
         <div class="stat-title">پرداخت موفق</div>
-        <div class="stat-value">@Model.PaymentSummary.SuccessfulAmount.ToString("N0")</div>
+        <div class="stat-value stat-value-warning">@Model.PaymentSummary.SuccessfulAmount.ToString("N0")</div>
     </div>
     <div class="stat-card">
         <div class="stat-title">بازدید وبلاگ</div>
-        <div class="stat-value">@Model.TotalViews.ToString("N0")</div>
+        <div class="stat-value stat-value-danger">@Model.TotalViews.ToString("N0")</div>
     </div>
 </section>
 
 <section class="stat-grid">
     <div class="stat-card">
         <div class="stat-title">کاربران جدید امروز</div>
-        <div class="stat-value">@todayNewUsers.ToString("N0")</div>
+        <div class="stat-value stat-value-primary">@todayNewUsers.ToString("N0")</div>
     </div>
     <div class="stat-card">
         <div class="stat-title">خرید اشتراک امروز</div>
-        <div class="stat-value">@todayPaidSubscriptions.ToString("N0")</div>
+        <div class="stat-value stat-value-success">@todayPaidSubscriptions.ToString("N0")</div>
     </div>
     <div class="stat-card">
         <div class="stat-title">پرداخت موفق امروز</div>
-        <div class="stat-value">@todaySuccessfulAmount.ToString("N0")</div>
+        <div class="stat-value stat-value-warning">@todaySuccessfulAmount.ToString("N0")</div>
     </div>
     <div class="stat-card">
         <div class="stat-title">تراکنش موفق امروز</div>
-        <div class="stat-value">@todaySuccessfulPaymentsCount.ToString("N0")</div>
+        <div class="stat-value stat-value-danger">@todaySuccessfulPaymentsCount.ToString("N0")</div>
     </div>
 </section>
 
