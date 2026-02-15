@@ -40,6 +40,11 @@
     var monthlyLabels = Model.MonthlyRegistrations.Select(item => item.Month).ToList();
     var monthlyRegistrationValues = Model.MonthlyRegistrations.Select(item => item.Count).ToList();
     var monthlySubscriptionValues = Model.MonthlyActiveSubscriptions.Select(item => item.Count).ToList();
+
+    var todayNewUsers = Model.DailyRegistrationsLast30Days.LastOrDefault()?.Count ?? 0;
+    var todayPaidSubscriptions = Model.DailyPaidSubscriptionsLast30Days.LastOrDefault()?.Count ?? 0;
+    var todaySuccessfulAmount = Model.DailySubscriptionPlanPurchases.Sum(item => item.Amount);
+    var todaySuccessfulPaymentsCount = Model.DailySubscriptionPlanPurchases.Sum(item => item.Count);
 }
 
 
@@ -47,22 +52,37 @@
     <div class="stat-card">
         <div class="stat-title">کل کاربران</div>
         <div class="stat-value">@Model.TotalUsers.ToString("N0")</div>
-        <span class="stat-badge badge-primary">+@Model.NewUsersThisMonth.ToString("N0") این ماه</span>
     </div>
     <div class="stat-card">
         <div class="stat-title">کاربرانی که اشتراک خریدن</div>
         <div class="stat-value">@Model.ActiveUsers.ToString("N0")</div>
-        <span class="stat-badge badge-success">@Model.UsersWithActiveSubscription.ToString("N0") اشتراک فعال</span>
     </div>
     <div class="stat-card">
         <div class="stat-title">پرداخت موفق</div>
         <div class="stat-value">@Model.PaymentSummary.SuccessfulAmount.ToString("N0")</div>
-        <span class="stat-badge badge-primary">@Model.PaymentSummary.SuccessfulCount.ToString("N0") تراکنش</span>
     </div>
     <div class="stat-card">
         <div class="stat-title">بازدید وبلاگ</div>
         <div class="stat-value">@Model.TotalViews.ToString("N0")</div>
-        <span class="stat-badge badge-warning">@Model.TotalBlogPosts.ToString("N0") مقاله</span>
+    </div>
+</section>
+
+<section class="stat-grid">
+    <div class="stat-card">
+        <div class="stat-title">کاربران جدید امروز</div>
+        <div class="stat-value">@todayNewUsers.ToString("N0")</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">خرید اشتراک امروز</div>
+        <div class="stat-value">@todayPaidSubscriptions.ToString("N0")</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">پرداخت موفق امروز</div>
+        <div class="stat-value">@todaySuccessfulAmount.ToString("N0")</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-title">تراکنش موفق امروز</div>
+        <div class="stat-value">@todaySuccessfulPaymentsCount.ToString("N0")</div>
     </div>
 </section>
 
