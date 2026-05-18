@@ -64,15 +64,13 @@ public class MelipayamakSmsService : ISmsService
             using var response = await client.PostAsJsonAsync(endpoint, payload, cancellationToken);
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
 
-            if (response.IsSuccessStatusCode)
-            {
+
                 var dto = TryParseMelipayamakResponse(content);
                 var sentCode = dto?.Code ?? code;
                 if (string.IsNullOrWhiteSpace(sentCode) is false)
                 {
                     return OperationResult<string>.Success(sentCode);
                 }
-            }
 
             _logger.LogError(
                 "Melipayamak SMS send failed. Http={StatusCode}, Raw={Content}",
