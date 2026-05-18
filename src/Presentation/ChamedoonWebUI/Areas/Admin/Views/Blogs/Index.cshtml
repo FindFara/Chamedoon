@@ -50,7 +50,7 @@
                                 <td>@post.Title</td>
                                 <td>@post.Writer</td>
                                 <td>@post.VisitCount.ToString("N0")</td>
-                                <td>@post.CreatedAt.ToString("yyyy/MM/dd")</td>
+                                <td>@post.CreatedAt.ConvertMiladiToShamsi()</td>
                                 <td class="text-end">
                                     <div class="d-flex justify-content-end gap-2">
                                         <a asp-action="Edit" asp-route-id="@post.Id" class="btn btn-sm btn-outline-primary">ویرایش</a>

@@ -3,6 +3,8 @@
     ViewData["Title"] = Model.IsNew ? "ایجاد کاربر" : "ویرایش کاربر";
     var startValue = Model.SubscriptionStartDateUtc?.ToString("yyyy-MM-dd");
     var endValue = Model.SubscriptionEndDateUtc?.ToString("yyyy-MM-dd");
+    var startDisplayValue = Model.SubscriptionStartDateUtc.ConvertMiladiToShamsi();
+    var endDisplayValue = Model.SubscriptionEndDateUtc.ConvertMiladiToShamsi();
 }
 
 <div class="container-fluid py-4 admin-section users-section">
@@ -59,7 +61,7 @@
                     <div class="col-md-6">
                         <label asp-for="SubscriptionStartDateUtc" class="form-label"></label>
                         <div class="persian-datepicker-field">
-                            <input type="text" id="subscriptionStartDisplay" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ شروع" value="@startValue" autocomplete="off" data-persian-picker data-alt-field="#subscriptionStartValue" />
+                            <input type="text" id="subscriptionStartDisplay" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ شروع" value="@startDisplayValue" autocomplete="off" data-persian-picker data-alt-field="#subscriptionStartValue" />
                             <input type="hidden" id="subscriptionStartValue" name="SubscriptionStartDateUtc" value="@startValue" />
                         </div>
                         <span asp-validation-for="SubscriptionStartDateUtc" class="text-danger"></span>
@@ -67,7 +69,7 @@
                     <div class="col-md-6">
                         <label asp-for="SubscriptionEndDateUtc" class="form-label"></label>
                         <div class="persian-datepicker-field">
-                            <input type="text" id="subscriptionEndDisplay" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ پایان" value="@endValue" autocomplete="off" data-persian-picker data-alt-field="#subscriptionEndValue" />
+                            <input type="text" id="subscriptionEndDisplay" class="form-control persian-datepicker-input" placeholder="انتخاب تاریخ پایان" value="@endDisplayValue" autocomplete="off" data-persian-picker data-alt-field="#subscriptionEndValue" />
                             <input type="hidden" id="subscriptionEndValue" name="SubscriptionEndDateUtc" value="@endValue" />
                         </div>
                         <span asp-validation-for="SubscriptionEndDateUtc" class="text-danger"></span>

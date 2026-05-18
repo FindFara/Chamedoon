@@ -50,12 +50,12 @@
                                 <td>
                                     <div class="d-flex flex-column">
                                         <strong>@code.Code</strong>
-                                        <small class="text-muted">ایجاد: @code.CreatedAtUtc.ToString("yyyy/MM/dd")</small>
+                                        <small class="text-muted">ایجاد: @code.CreatedAtUtc.ConvertMiladiToShamsi()</small>
                                     </div>
                                 </td>
                                 <td>@code.TypeLabel</td>
                                 <td>@code.ValueLabel</td>
-                                <td>@(code.ExpiresAtUtc is null ? "-" : code.ExpiresAtUtc.Value.ToString("yyyy/MM/dd"))</td>
+                                <td>@(code.ExpiresAtUtc is null ? "-" : code.ExpiresAtUtc.Value.ConvertMiladiToShamsi())</td>
                                 <td>
                                     @if (code.IsActive)
                                     {
