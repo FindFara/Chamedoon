@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Chamedoon logo">
+  <defs>
+    <linearGradient id="chamedoonLightGradient" x1="46" y1="40" x2="211" y2="218" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#4b36ff" />
+      <stop offset="0.48" stop-color="#248bff" />
+      <stop offset="1" stop-color="#12c6df" />
+    </linearGradient>
+    <filter id="softShadow" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="12" stdDeviation="13" flood-color="#1d4ed8" flood-opacity="0.20" />
+    </filter>
+  </defs>
+  <rect x="34" y="34" width="188" height="188" rx="43" fill="url(#chamedoonLightGradient)" filter="url(#softShadow)" />
+  <g fill="none" stroke="#ffffff" stroke-width="9.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M82 156v-49c0-14.9 12.1-27 27-27h43c14.9 0 27 12.1 27 27v16" />
+    <path d="M105 80V66c0-9.4 7.6-17 17-17h18c9.4 0 17 7.6 17 17v14" />
+    <path d="M82 151c0 16 13 29 29 29h20" />
+    <path d="M91 154l40 4 73-62c11-9.4 25.7-11.3 32.4-4.2 6.7 7.1 2.9 20.9-8.4 30.3L154 184c-6.2 5.2-14.3 7.6-22.4 6.7L91 186" />
+    <path d="M96 125l33 26" />
+    <path d="M96 125l15-14 72 11" />
+  </g>
+</svg>

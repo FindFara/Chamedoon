@@ -541,12 +541,20 @@ body.offcanvas-open {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    color: #ffffff;
-    box-shadow: 0 14px 34px -20px rgba(79, 70, 229, 0.6);
+    width: 48px;
+    height: 48px;
+    flex: 0 0 48px;
+}
+
+.landing-logo .logo-mark-img {
+    display: block;
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.landing-logo .logo-mark-img--dark {
+    display: none;
 }
 
 .landing-logo .logo-text {
