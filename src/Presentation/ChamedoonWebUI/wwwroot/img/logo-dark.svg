@@ -1,17 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Chamedoon logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Chamedoon logo">
   <defs>
-    <radialGradient id="darkGlow" cx="34%" cy="28%" r="72%">
+    <radialGradient id="darkGlow" cx="34%" cy="28%" r="74%">
       <stop offset="0" stop-color="#283241" />
       <stop offset="0.54" stop-color="#171e29" />
       <stop offset="1" stop-color="#070c14" />
     </radialGradient>
   </defs>
-  <rect x="36" y="36" width="184" height="184" rx="43" fill="url(#darkGlow)" />
-  <g fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M79 157v-50c0-14.9 12.1-27 27-27h50c14.9 0 27 12.1 27 27v17" />
-    <path d="M106 80V66c0-9.4 7.6-17 17-17h17c9.4 0 17 7.6 17 17v14" />
-    <path d="M79 155c0 18.2 14.8 33 33 33h22" />
-    <path d="M91 127l37 29-24 23-25-3" />
-    <path d="M91 127l18-16 59 10 31-24c12.6-9.7 30.1-9.4 37.9.6 7.8 10.1 2.8 26-10.5 36.7l-69.8 56.2c-6.7 5.4-15.3 7.8-23.9 6.7L79 191" />
+  <rect x="5" y="5" width="54" height="54" rx="13" fill="url(#darkGlow)" />
+  <g fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 43V28c0-4.4 3.6-8 8-8h16c4.4 0 8 3.6 8 8v4" />
+    <path d="M28 20v-4c0-2.2 1.8-4 4-4h6c2.2 0 4 1.8 4 4v4" />
+    <path d="M19 40c0 5 4 9 9 9h8" />
   </g>
+  <path fill="#ffffff" d="M14.7 34.2c-.8-.6-.8-1.8 0-2.4l4.7-4c.4-.3.9-.5 1.4-.4l16.7 3.1 8.9-7.2c3.2-2.6 7.9-2.8 10.1-.5 2.2 2.3 1.2 6.5-2 9.2L37 46.5c-.4.3-.9.5-1.4.4l-17.5-2c-1.4-.2-1.9-1.9-.8-2.7l7-5.2-9.6-2.8Z" />
 </svg>

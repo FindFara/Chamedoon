@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Chamedoon">
   <defs>
-    <linearGradient id="lightGradient" x1="11" y1="8" x2="54" y2="57" gradientUnits="userSpaceOnUse">
+    <linearGradient id="lightGradient" x1="12" y1="9" x2="54" y2="56" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#4b36ff" />
       <stop offset="0.5" stop-color="#248bff" />
       <stop offset="1" stop-color="#12c6df" />
     </linearGradient>
-    <radialGradient id="darkGradient" cx="34%" cy="28%" r="72%">
+    <radialGradient id="darkGradient" cx="34%" cy="28%" r="74%">
       <stop offset="0" stop-color="#283241" />
       <stop offset="0.54" stop-color="#171e29" />
       <stop offset="1" stop-color="#070c14" />
@@ -17,12 +17,11 @@
       }
     </style>
   </defs>
-  <rect class="bg" x="4" y="4" width="56" height="56" rx="13" />
-  <g fill="none" stroke="#ffffff" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M20.4 39.2V27c0-4 3.2-7.2 7.2-7.2h10c4 0 7.2 3.2 7.2 7.2v4" />
-    <path d="M27.2 19.8v-3.5c0-2.3 1.9-4.2 4.2-4.2h3.8c2.3 0 4.2 1.9 4.2 4.2v3.5" />
-    <path d="M20.4 38.7c0 4.5 3.7 8.2 8.2 8.2H34" />
-    <path d="M23.5 31.5l9.1 7.2-5.9 5.6-6.3-.7" />
-    <path d="M23.5 31.5l4.4-4 14.8 2.5 7.8-6c3.2-2.4 7.6-2.4 9.5.1 2 2.5.8 6.5-2.6 9.2L39.9 47.4c-1.7 1.4-3.9 2-6 1.7l-13.5-1.6" />
+  <rect class="bg" x="5" y="5" width="54" height="54" rx="13" />
+  <g fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 43V28c0-4.4 3.6-8 8-8h16c4.4 0 8 3.6 8 8v4" />
+    <path d="M28 20v-4c0-2.2 1.8-4 4-4h6c2.2 0 4 1.8 4 4v4" />
+    <path d="M19 40c0 5 4 9 9 9h8" />
   </g>
+  <path fill="#ffffff" d="M14.7 34.2c-.8-.6-.8-1.8 0-2.4l4.7-4c.4-.3.9-.5 1.4-.4l16.7 3.1 8.9-7.2c3.2-2.6 7.9-2.8 10.1-.5 2.2 2.3 1.2 6.5-2 9.2L37 46.5c-.4.3-.9.5-1.4.4l-17.5-2c-1.4-.2-1.9-1.9-.8-2.7l7-5.2-9.6-2.8Z" />
 </svg>
