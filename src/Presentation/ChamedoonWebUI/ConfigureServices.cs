@@ -56,7 +56,7 @@ public static class ConfigureServices
             options.LogoutPath = "/auth/logout";
             options.AccessDeniedPath = "/auth/AccessDenied";
             options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
             options.ExpireTimeSpan = TimeSpan.FromDays(2);
             options.SlidingExpiration = true;
         });
