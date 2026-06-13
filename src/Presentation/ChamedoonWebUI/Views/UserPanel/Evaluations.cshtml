@@ -35,6 +35,49 @@
                             </div>
                         </div>
 
+                        <div class="evaluation-input-summary" aria-label="خلاصه اطلاعات وارد شده">
+                            <div class="summary-item">
+                                <span>وضعیت تأهل</span>
+                                <strong>@evaluation.Input.MaritalStatus.ToDisplay()</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>شخصیت</span>
+                                <strong>@evaluation.Input.MBTIPersonality</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>عنوان شغلی</span>
+                                <strong>@(string.IsNullOrWhiteSpace(evaluation.Input.JobTitle) ? "ثبت نشده" : evaluation.Input.JobTitle)</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>سابقه کار</span>
+                                <strong>@evaluation.Input.WorkExperienceYears سال</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>رشته تحصیلی</span>
+                                <strong>@evaluation.Input.FieldCategory.ToDisplay()</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>مدرک زبان</span>
+                                <strong>@evaluation.Input.LanguageCertificate.ToDisplay()</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>بودجه سرمایه‌گذاری</span>
+                                <strong>@evaluation.Input.InvestmentAmount.ToString("N0")</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>تمایل به تحصیل</span>
+                                <strong>@(evaluation.Input.WillingToStudy ? "دارد" : "ندارد")</strong>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(evaluation.Input.Notes))
+                        {
+                            <div class="evaluation-note">
+                                <span>توضیحات کاربر:</span>
+                                <p>@evaluation.Input.Notes</p>
+                            </div>
+                        }
+
                         @if (evaluation.TopCountries.Any())
                         {
                             <div class="evaluation-country-grid">

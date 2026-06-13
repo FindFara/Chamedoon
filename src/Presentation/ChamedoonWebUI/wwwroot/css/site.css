@@ -2401,3 +2401,40 @@ a:hover {
         flex-direction: column;
     }
 }
+
+.evaluation-input-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.summary-item {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.75rem;
+    border-radius: 0.9rem;
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.summary-item span,
+.evaluation-note span {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+}
+
+.summary-item strong {
+    color: var(--text-dark);
+    font-size: 0.9rem;
+}
+
+.evaluation-note {
+    padding: 0.85rem 1rem;
+    border-radius: 1rem;
+    background: rgba(79, 70, 229, 0.07);
+}
+
+.evaluation-note p {
+    margin: 0.25rem 0 0;
+    color: var(--text-dark);
+}
