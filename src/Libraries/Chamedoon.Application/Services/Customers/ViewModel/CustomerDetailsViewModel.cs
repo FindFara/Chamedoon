@@ -3,6 +3,7 @@ using Chamedoon.Application.Common.Extensions;
 using Chamedoon.Application.Common.Utilities.AutoMapper;
 using Chamedoon.Application.Services.Account.Users.ViewModel;
 using Chamedoon.Domin.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace Chamedoon.Application.Services.Customers.ViewModel
 {
@@ -13,6 +14,7 @@ namespace Chamedoon.Application.Services.Customers.ViewModel
         public string? Job { get; set; }
         public string? Description { get; set; }
         public string? ProfileImage { get; set; }
+        public IFormFile? ProfileImageFile { get; set; }
         public Gender? Gender { get; set; }
         public string[]? GenderList { get; set; } = EnumExtensions.GetEnumDescriptions<Gender>();
         public UserDetails_VM? User { get; set; }
