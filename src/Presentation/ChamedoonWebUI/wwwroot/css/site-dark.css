@@ -609,3 +609,13 @@ body.landing-page.dark-mode .modal-step .modal-content {
         box-shadow: 0 30px 46px -28px rgba(2, 6, 23, 0.85);
     }
 }
+
+body.landing-page.dark-mode .user-evaluation-card {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(148, 163, 184, 0.24);
+}
+
+body.landing-page.dark-mode .evaluation-country-card {
+    background: rgba(14, 165, 233, 0.12);
+    color: #e2e8f0;
+}
