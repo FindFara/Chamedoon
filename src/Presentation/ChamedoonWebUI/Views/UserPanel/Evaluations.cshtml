@@ -1,0 +1,113 @@
+@model IReadOnlyList<ChamedoonWebUI.Controllers.UserEvaluationResult_VM>
+@using Chamedoon.Application.Common.Extensions
+@using Chamedoon.Application.Services.Immigration
+@{
+    Layout = "~/Views/Shared/UserPanelLayout.cshtml";
+    ViewData["Title"] = "نتایج ارزیابی‌های من";
+}
+
+@section UserPanelContent {
+    <div class="glass-card dashboard-card">
+        <div class="evaluations-header">
+            <div>
+                <h5>نتایج ارزیابی‌های من</h5>
+                <p class="glass-helper mb-0">اینجا می‌توانی آخرین ارزیابی‌های مهاجرتی خودت و سه کشور پیشنهادی هر ارزیابی را ببینی.</p>
+            </div>
+            <a asp-controller="Immigration" asp-action="Index" class="btn-glass-primary evaluations-new-link">ارزیابی جدید</a>
+        </div>
+
+        @if (Model?.Any() == true)
+        {
+            <div class="user-evaluations-list">
+                @foreach (var evaluation in Model)
+                {
+                    var shamsiDate = evaluation.CreatedAtUtc.ConvertMiladiToShamsi();
+                    <article class="user-evaluation-card">
+                        <div class="user-evaluation-summary">
+                            <div>
+                                <span class="evaluation-date">@(!string.IsNullOrWhiteSpace(shamsiDate) ? shamsiDate : "تاریخ نامشخص")</span>
+                                <h6>ارزیابی شماره @evaluation.Id</h6>
+                            </div>
+                            <div class="evaluation-tags">
+                                <span>@evaluation.Input.Age سال</span>
+                                <span>@evaluation.Input.JobCategory.ToDisplay()</span>
+                                <span>@evaluation.Input.DegreeLevel.ToDisplay()</span>
+                            </div>
+                        </div>
+
+                        <div class="evaluation-input-summary" aria-label="خلاصه اطلاعات وارد شده">
+                            <div class="summary-item">
+                                <span>وضعیت تأهل</span>
+                                <strong>@evaluation.Input.MaritalStatus.ToDisplay()</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>شخصیت</span>
+                                <strong>@evaluation.Input.MBTIPersonality</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>عنوان شغلی</span>
+                                <strong>@(string.IsNullOrWhiteSpace(evaluation.Input.JobTitle) ? "ثبت نشده" : evaluation.Input.JobTitle)</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>سابقه کار</span>
+                                <strong>@evaluation.Input.WorkExperienceYears سال</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>رشته تحصیلی</span>
+                                <strong>@evaluation.Input.FieldCategory.ToDisplay()</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>مدرک زبان</span>
+                                <strong>@evaluation.Input.LanguageCertificate.ToDisplay()</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>بودجه سرمایه‌گذاری</span>
+                                <strong>@evaluation.Input.InvestmentAmount.ToString("N0")</strong>
+                            </div>
+                            <div class="summary-item">
+                                <span>تمایل به تحصیل</span>
+                                <strong>@(evaluation.Input.WillingToStudy ? "دارد" : "ندارد")</strong>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(evaluation.Input.Notes))
+                        {
+                            <div class="evaluation-note">
+                                <span>توضیحات کاربر:</span>
+                                <p>@evaluation.Input.Notes</p>
+                            </div>
+                        }
+
+                        @if (evaluation.TopCountries.Any())
+                        {
+                            <div class="evaluation-country-grid">
+                                @foreach (var country in evaluation.TopCountries)
+                                {
+                                    var score = Math.Round(country.Score, 0);
+                                    <div class="evaluation-country-card">
+                                        <span class="country-name">@country.Country.GetDescription()</span>
+                                        <span class="country-score">@score%</span>
+                                        <span class="country-visa">@country.RecommendedVisaType</span>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="detail-value mb-0">برای این ارزیابی نتیجه‌ای ثبت نشده است.</p>
+                        }
+                    </article>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="empty-evaluations-state">
+                <div class="empty-evaluations-icon" aria-hidden="true">🧭</div>
+                <h6>هنوز ارزیابی انجام ندادی</h6>
+                <p>بعد از انجام ارزیابی مهاجرت، نتیجه‌ها در همین بخش برایت نمایش داده می‌شود.</p>
+                <a asp-controller="Immigration" asp-action="Index" class="btn-glass-primary">شروع ارزیابی</a>
+            </div>
+        }
+    </div>
+}
