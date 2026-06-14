@@ -2458,11 +2458,11 @@ a:hover {
         position: fixed;
         inset: 0 auto auto 0;
         z-index: 2147483647;
-        width: 72px;
-        height: 72px;
+        width: 46px;
+        height: 46px;
         pointer-events: none;
         opacity: 0;
-        transform: translate3d(var(--cursor-x), var(--cursor-y), 0);
+        transform: translate3d(calc(var(--cursor-x) - 50%), calc(var(--cursor-y) - 50%), 0);
         transition: opacity 160ms ease;
     }
 
@@ -2472,26 +2472,26 @@ a:hover {
 
     .water-cursor__pointer {
         position: absolute;
-        left: 0;
-        top: 0;
-        width: 28px;
-        height: 38px;
-        background: linear-gradient(145deg, #7dd3fc 0%, #0ea5e9 48%, #0369a1 100%);
-        clip-path: polygon(0 0, 0 32px, 9px 24px, 15px 38px, 22px 35px, 16px 22px, 28px 22px);
-        filter: drop-shadow(0 2px 0 rgba(255, 255, 255, 0.82)) drop-shadow(0 7px 12px rgba(2, 132, 199, 0.32));
-        transform: translate(-1px, -1px);
+        left: 50%;
+        top: 50%;
+        width: 18px;
+        height: 24px;
+        background: #0ea5e9;
+        clip-path: polygon(0 0, 0 22px, 6px 16px, 10px 24px, 15px 22px, 11px 14px, 18px 14px);
+        filter: drop-shadow(0 4px 8px rgba(2, 132, 199, 0.24));
+        transform: translate(-50%, -50%);
         transition: transform 150ms ease, filter 150ms ease;
     }
 
     .water-cursor__ripple {
         position: absolute;
-        left: 13px;
-        top: 36px;
-        width: 24px;
-        height: 24px;
+        left: 50%;
+        top: 50%;
+        width: 18px;
+        height: 18px;
         border: 2px solid rgba(14, 165, 233, 0.58);
         border-radius: 999px;
-        box-shadow: inset 0 0 12px rgba(125, 211, 252, 0.22), 0 0 16px rgba(14, 165, 233, 0.16);
+        box-shadow: 0 0 12px rgba(14, 165, 233, 0.14);
         transform: translate(-50%, -50%);
         animation: water-cursor-ripple 1.55s ease-out infinite;
     }
@@ -2502,8 +2502,8 @@ a:hover {
     }
 
     .water-cursor.is-interactive .water-cursor__pointer {
-        transform: translate(-1px, -1px) scale(1.08);
-        filter: drop-shadow(0 2px 0 rgba(255, 255, 255, 0.82)) drop-shadow(0 9px 16px rgba(2, 132, 199, 0.4));
+        transform: translate(-50%, -50%) scale(1.08);
+        filter: drop-shadow(0 5px 10px rgba(2, 132, 199, 0.32));
     }
 
     .water-cursor.is-interactive .water-cursor__ripple {
@@ -2523,6 +2523,6 @@ a:hover {
 
     100% {
         opacity: 0;
-        transform: translate(-50%, -50%) scale(1.9);
+        transform: translate(-50%, -50%) scale(1.65);
     }
 }
