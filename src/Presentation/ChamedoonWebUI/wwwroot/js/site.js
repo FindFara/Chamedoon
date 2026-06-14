@@ -1,6 +1,48 @@
 (function () {
     const pageBody = document.body;
     const rootElement = document.documentElement;
+    const canUseAnimatedCursor = window.matchMedia
+        && window.matchMedia('(pointer: fine)').matches
+        && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (canUseAnimatedCursor) {
+        const cursorWave = document.createElement('span');
+        const clickableSelector = [
+            'a',
+            'button',
+            'summary',
+            'label',
+            'select',
+            'input[type="button"]',
+            'input[type="checkbox"]',
+            'input[type="color"]',
+            'input[type="file"]',
+            'input[type="image"]',
+            'input[type="radio"]',
+            'input[type="range"]',
+            'input[type="reset"]',
+            'input[type="submit"]',
+            '[role="button"]',
+            '[role="link"]',
+            '[tabindex]:not([tabindex="-1"])'
+        ].join(',');
+
+        cursorWave.className = 'theme-cursor-wave';
+        cursorWave.setAttribute('aria-hidden', 'true');
+        pageBody.appendChild(cursorWave);
+
+        const moveCursorWave = (event) => {
+            const hoveredClickable = event.target.closest(clickableSelector);
+            cursorWave.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0) translate3d(-50%, -50%, 0)`;
+            cursorWave.classList.add('is-visible');
+            cursorWave.classList.toggle('is-clickable', Boolean(hoveredClickable));
+        };
+
+        document.addEventListener('pointermove', moveCursorWave, { passive: true });
+        document.addEventListener('pointerleave', () => {
+            cursorWave.classList.remove('is-visible', 'is-clickable');
+        });
+    }
 
     const loaderElement = document.getElementById('pageLoader');
     if (loaderElement) {
