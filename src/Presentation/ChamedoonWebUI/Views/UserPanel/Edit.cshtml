@@ -15,9 +15,10 @@
             <div class="avatar-wrapper mb-4">
                 <img id="avatarPreview" src="@profileImage" alt="تصویر پروفایل">
                 <div class="d-flex flex-column gap-2">
-                    <span class="glass-helper">برای انتخاب تصویر جدید از دکمه زیر استفاده کن.</span>
+                    <span class="glass-helper">برای انتخاب تصویر جدید از دکمه زیر استفاده کن. حجم عکس نباید بیشتر از ۱ مگابایت باشد.</span>
                     <label for="ProfileImageFile" class="btn-outline-glass">انتخاب تصویر</label>
-                    <input type="file" name="ProfileImageFile" id="ProfileImageFile" class="d-none" accept="image/*">
+                    <input type="file" name="ProfileImageFile" id="ProfileImageFile" class="d-none" accept="image/*" data-max-size="1048576">
+                    <span class="text-danger" asp-validation-for="ProfileImageFile"></span>
                 </div>
             </div>
             <div class="dashboard-form-grid">
