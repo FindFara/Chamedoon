@@ -24,6 +24,9 @@ namespace ChamedoonWebUI.Controllers
     [Route("cpanel")]
     public class UserPanelController : Controller
     {
+        private const long MaxProfileImageSizeBytes = 1024 * 1024;
+        private const string ProfileImageSizeErrorMessage = "حجم عکس پروفایل نباید بیشتر از ۱ مگابایت باشد.";
+
         private readonly IMediator mediator;
         private readonly IMapper mapper;
         private readonly IImmigrationEvaluationService evaluationService;
@@ -83,10 +86,22 @@ namespace ChamedoonWebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditUser_VM user)
         {
+            if (user.ProfileImageFile?.Length > MaxProfileImageSizeBytes)
+            {
+                ModelState.AddModelError(nameof(user.ProfileImageFile), ProfileImageSizeErrorMessage);
+            }
+
             if (!ModelState.IsValid)
             {
                 ViewBag.SubscriptionStatus = await mediator.Send(new GetSubscriptionStatusQuery(User));
-                return View(user);
+                var customer = await mediator.Send(new GetUserAndCustomerDetailsQuery { UserName = User.Identity.Name });
+                var viewModel = customer.Result ?? new CustomerDetailsViewModel();
+                viewModel.FirstName = user.FirstName;
+                viewModel.LastName = user.LastName;
+                viewModel.Job = user.Job;
+                viewModel.Description = user.Description;
+                viewModel.Gender = user.Gender;
+                return View(viewModel);
             }
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

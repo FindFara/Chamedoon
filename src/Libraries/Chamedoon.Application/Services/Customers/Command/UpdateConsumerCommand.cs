@@ -15,6 +15,9 @@ namespace Chamedoon.Application.Services.Customers.Command
     }
     public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, OperationResult>
     {
+        private const long MaxProfileImageSizeBytes = 1024 * 1024;
+        private const string ProfileImageSizeErrorMessage = "حجم عکس پروفایل نباید بیشتر از ۱ مگابایت باشد.";
+
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
@@ -30,6 +33,11 @@ namespace Chamedoon.Application.Services.Customers.Command
 
             if (customer == null)
                 return OperationResult.Fail();
+
+            if (request.UpsertCustomerViewModel.ProfileImageFile?.Length > MaxProfileImageSizeBytes)
+            {
+                return OperationResult.Fail(ProfileImageSizeErrorMessage);
+            }
 
             if (request.UpsertCustomerViewModel.ProfileImageFile?.Length > 0)
             {
