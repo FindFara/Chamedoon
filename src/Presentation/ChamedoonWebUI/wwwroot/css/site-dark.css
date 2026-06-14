@@ -633,3 +633,19 @@ body.landing-page.dark-mode .evaluation-note p {
 body.landing-page.dark-mode .evaluation-note {
     background: rgba(129, 140, 248, 0.1);
 }
+
+body.landing-page.dark-mode .flashcard-counter {
+    background: rgba(129, 140, 248, 0.16);
+    color: #c7d2fe;
+}
+
+body.landing-page.dark-mode .flashcard-button {
+    background: rgba(15, 23, 42, 0.72);
+    border-color: rgba(129, 140, 248, 0.28);
+    color: #c7d2fe;
+}
+
+body.landing-page.dark-mode .flashcard-button-primary {
+    background: linear-gradient(135deg, rgba(129, 140, 248, 0.92), rgba(56, 189, 248, 0.82));
+    color: #fff;
+}

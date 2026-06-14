@@ -18,11 +18,16 @@
 
         @if (Model?.Any() == true)
         {
-            <div class="user-evaluations-list">
-                @foreach (var evaluation in Model)
-                {
-                    var shamsiDate = evaluation.CreatedAtUtc.ConvertMiladiToShamsi();
-                    <article class="user-evaluation-card">
+            <div class="evaluation-flashcards" data-evaluation-flashcards>
+                <div class="flashcard-counter" aria-live="polite">
+                    <span data-flashcard-current>1</span> از <span>@Model.Count</span>
+                </div>
+                <div class="user-evaluations-list" data-flashcard-stage>
+                    @for (var index = 0; index < Model.Count; index++)
+                    {
+                        var evaluation = Model[index];
+                        var shamsiDate = evaluation.CreatedAtUtc.ConvertMiladiToShamsi();
+                        <article class="user-evaluation-card @(index == 0 ? "active" : string.Empty)" data-flashcard-card data-card-index="@index" aria-hidden="@(index == 0 ? "false" : "true")">
                         <div class="user-evaluation-summary">
                             <div>
                                 <span class="evaluation-date">@(!string.IsNullOrWhiteSpace(shamsiDate) ? shamsiDate : "تاریخ نامشخص")</span>
@@ -96,8 +101,19 @@
                         {
                             <p class="detail-value mb-0">برای این ارزیابی نتیجه‌ای ثبت نشده است.</p>
                         }
-                    </article>
-                }
+                        </article>
+                    }
+                </div>
+                <div class="flashcard-actions" aria-label="جابجایی بین ارزیابی‌ها">
+                    <button type="button" class="flashcard-button" data-flashcard-prev>قبلی</button>
+                    <div class="flashcard-dots" aria-hidden="true">
+                        @for (var dotIndex = 0; dotIndex < Model.Count; dotIndex++)
+                        {
+                            <span class="flashcard-dot @(dotIndex == 0 ? "active" : string.Empty)"></span>
+                        }
+                    </div>
+                    <button type="button" class="flashcard-button flashcard-button-primary" data-flashcard-next>بعدی</button>
+                </div>
             </div>
         }
         else
@@ -110,4 +126,57 @@
             </div>
         }
     </div>
+}
+
+
+@section Scripts {
+    <script>
+        (() => {
+            const root = document.querySelector('[data-evaluation-flashcards]');
+            if (!root) {
+                return;
+            }
+
+            const cards = Array.from(root.querySelectorAll('[data-flashcard-card]'));
+            const dots = Array.from(root.querySelectorAll('.flashcard-dot'));
+            const currentLabel = root.querySelector('[data-flashcard-current]');
+            const prevButton = root.querySelector('[data-flashcard-prev]');
+            const nextButton = root.querySelector('[data-flashcard-next]');
+            let activeIndex = 0;
+
+            const render = () => {
+                cards.forEach((card, index) => {
+                    const isActive = index === activeIndex;
+                    card.classList.toggle('active', isActive);
+                    card.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+                });
+
+                dots.forEach((dot, index) => dot.classList.toggle('active', index === activeIndex));
+
+                if (currentLabel) {
+                    currentLabel.textContent = (activeIndex + 1).toString();
+                }
+
+                if (prevButton) {
+                    prevButton.disabled = activeIndex === 0;
+                }
+
+                if (nextButton) {
+                    nextButton.disabled = activeIndex === cards.length - 1;
+                }
+            };
+
+            prevButton?.addEventListener('click', () => {
+                activeIndex = Math.max(activeIndex - 1, 0);
+                render();
+            });
+
+            nextButton?.addEventListener('click', () => {
+                activeIndex = Math.min(activeIndex + 1, cards.length - 1);
+                render();
+            });
+
+            render();
+        })();
+    </script>
 }
