@@ -2478,14 +2478,13 @@ a:hover {
         height: 24px;
         background: #0ea5e9;
         clip-path: polygon(0 0, 0 22px, 6px 16px, 10px 24px, 15px 22px, 11px 14px, 18px 14px);
-        filter: drop-shadow(0 4px 8px rgba(2, 132, 199, 0.24));
         transform: translate(-50%, -50%);
-        transition: transform 150ms ease, filter 150ms ease;
+        transition: transform 150ms ease;
     }
 
     .water-cursor__ripple {
         position: absolute;
-        left: 50%;
+        left: 44%;
         top: 50%;
         width: 18px;
         height: 18px;
@@ -2503,7 +2502,6 @@ a:hover {
 
     .water-cursor.is-interactive .water-cursor__pointer {
         transform: translate(-50%, -50%) scale(1.08);
-        filter: drop-shadow(0 5px 10px rgba(2, 132, 199, 0.32));
     }
 
     .water-cursor.is-interactive .water-cursor__ripple {
