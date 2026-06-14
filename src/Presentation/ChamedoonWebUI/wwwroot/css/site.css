@@ -2438,3 +2438,89 @@ a:hover {
     margin: 0.25rem 0 0;
     color: var(--text-dark);
 }
+
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .has-water-cursor,
+    .has-water-cursor body,
+    .has-water-cursor a,
+    .has-water-cursor button,
+    .has-water-cursor input,
+    .has-water-cursor textarea,
+    .has-water-cursor select,
+    .has-water-cursor label,
+    .has-water-cursor [role="button"] {
+        cursor: none !important;
+    }
+
+    .water-cursor {
+        --cursor-x: 50vw;
+        --cursor-y: 50vh;
+        position: fixed;
+        inset: 0 auto auto 0;
+        z-index: 2147483647;
+        width: 54px;
+        height: 54px;
+        pointer-events: none;
+        opacity: 0;
+        transform: translate3d(calc(var(--cursor-x) - 50%), calc(var(--cursor-y) - 50%), 0);
+        transition: opacity 160ms ease;
+        mix-blend-mode: multiply;
+    }
+
+    .water-cursor.is-visible {
+        opacity: 1;
+    }
+
+    .water-cursor__dot,
+    .water-cursor__ripple {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        border-radius: 999px;
+        transform: translate(-50%, -50%);
+    }
+
+    .water-cursor__dot {
+        width: 13px;
+        height: 13px;
+        background: radial-gradient(circle at 35% 30%, #d8f7ff 0 18%, #38bdf8 42%, #0284c7 100%);
+        box-shadow: 0 0 14px rgba(14, 165, 233, 0.55), 0 6px 16px rgba(2, 132, 199, 0.24);
+    }
+
+    .water-cursor__ripple {
+        width: 24px;
+        height: 24px;
+        border: 2px solid rgba(14, 165, 233, 0.58);
+        box-shadow: inset 0 0 12px rgba(125, 211, 252, 0.22), 0 0 16px rgba(14, 165, 233, 0.16);
+        animation: water-cursor-ripple 1.55s ease-out infinite;
+    }
+
+    .water-cursor__ripple--two {
+        animation-delay: 0.72s;
+        border-color: rgba(56, 189, 248, 0.45);
+    }
+
+    .water-cursor.is-interactive .water-cursor__dot {
+        transform: translate(-50%, -50%) scale(1.22);
+    }
+
+    .water-cursor.is-interactive .water-cursor__ripple {
+        animation-duration: 1.15s;
+    }
+}
+
+@keyframes water-cursor-ripple {
+    0% {
+        opacity: 0.75;
+        transform: translate(-50%, -50%) scale(0.35);
+    }
+
+    70% {
+        opacity: 0.24;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1.9);
+    }
+}
