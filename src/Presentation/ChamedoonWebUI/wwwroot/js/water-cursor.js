@@ -9,7 +9,7 @@
     const cursor = document.createElement('div');
     cursor.className = 'water-cursor';
     cursor.setAttribute('aria-hidden', 'true');
-    cursor.innerHTML = '<span class="water-cursor__dot"></span><span class="water-cursor__ripple water-cursor__ripple--one"></span><span class="water-cursor__ripple water-cursor__ripple--two"></span>';
+    cursor.innerHTML = '<span class="water-cursor__pointer"></span><span class="water-cursor__ripple water-cursor__ripple--one"></span><span class="water-cursor__ripple water-cursor__ripple--two"></span>';
     document.body.appendChild(cursor);
     document.documentElement.classList.add('has-water-cursor');
 

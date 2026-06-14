@@ -2458,40 +2458,41 @@ a:hover {
         position: fixed;
         inset: 0 auto auto 0;
         z-index: 2147483647;
-        width: 54px;
-        height: 54px;
+        width: 72px;
+        height: 72px;
         pointer-events: none;
         opacity: 0;
-        transform: translate3d(calc(var(--cursor-x) - 50%), calc(var(--cursor-y) - 50%), 0);
+        transform: translate3d(var(--cursor-x), var(--cursor-y), 0);
         transition: opacity 160ms ease;
-        mix-blend-mode: multiply;
     }
 
     .water-cursor.is-visible {
         opacity: 1;
     }
 
-    .water-cursor__dot,
+    .water-cursor__pointer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 28px;
+        height: 38px;
+        background: linear-gradient(145deg, #7dd3fc 0%, #0ea5e9 48%, #0369a1 100%);
+        clip-path: polygon(0 0, 0 32px, 9px 24px, 15px 38px, 22px 35px, 16px 22px, 28px 22px);
+        filter: drop-shadow(0 2px 0 rgba(255, 255, 255, 0.82)) drop-shadow(0 7px 12px rgba(2, 132, 199, 0.32));
+        transform: translate(-1px, -1px);
+        transition: transform 150ms ease, filter 150ms ease;
+    }
+
     .water-cursor__ripple {
         position: absolute;
-        left: 50%;
-        top: 50%;
-        border-radius: 999px;
-        transform: translate(-50%, -50%);
-    }
-
-    .water-cursor__dot {
-        width: 13px;
-        height: 13px;
-        background: radial-gradient(circle at 35% 30%, #d8f7ff 0 18%, #38bdf8 42%, #0284c7 100%);
-        box-shadow: 0 0 14px rgba(14, 165, 233, 0.55), 0 6px 16px rgba(2, 132, 199, 0.24);
-    }
-
-    .water-cursor__ripple {
+        left: 13px;
+        top: 36px;
         width: 24px;
         height: 24px;
         border: 2px solid rgba(14, 165, 233, 0.58);
+        border-radius: 999px;
         box-shadow: inset 0 0 12px rgba(125, 211, 252, 0.22), 0 0 16px rgba(14, 165, 233, 0.16);
+        transform: translate(-50%, -50%);
         animation: water-cursor-ripple 1.55s ease-out infinite;
     }
 
@@ -2500,8 +2501,9 @@ a:hover {
         border-color: rgba(56, 189, 248, 0.45);
     }
 
-    .water-cursor.is-interactive .water-cursor__dot {
-        transform: translate(-50%, -50%) scale(1.22);
+    .water-cursor.is-interactive .water-cursor__pointer {
+        transform: translate(-1px, -1px) scale(1.08);
+        filter: drop-shadow(0 2px 0 rgba(255, 255, 255, 0.82)) drop-shadow(0 9px 16px rgba(2, 132, 199, 0.4));
     }
 
     .water-cursor.is-interactive .water-cursor__ripple {
