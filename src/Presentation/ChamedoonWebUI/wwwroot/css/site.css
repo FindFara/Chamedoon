@@ -2458,11 +2458,11 @@ a:hover {
         position: fixed;
         inset: 0 auto auto 0;
         z-index: 2147483647;
-        width: 46px;
-        height: 46px;
+        width: 42px;
+        height: 42px;
         pointer-events: none;
         opacity: 0;
-        transform: translate3d(calc(var(--cursor-x) - 50%), calc(var(--cursor-y) - 50%), 0);
+        transform: translate3d(calc(var(--cursor-x) - 30%), calc(var(--cursor-y) - 28%), 0);
         transition: opacity 160ms ease;
     }
 
@@ -2470,57 +2470,16 @@ a:hover {
         opacity: 1;
     }
 
-    .water-cursor__pointer {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        width: 18px;
-        height: 24px;
-        background: #0ea5e9;
-        clip-path: polygon(0 0, 0 22px, 6px 16px, 10px 24px, 15px 22px, 11px 14px, 18px 14px);
-        transform: translate(-50%, -50%);
+    .water-cursor__icon {
+        display: block;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+        transform-origin: 50% 50%;
         transition: transform 150ms ease;
     }
 
-    .water-cursor__ripple {
-        position: absolute;
-        left: 44%;
-        top: 50%;
-        width: 18px;
-        height: 18px;
-        border: 2px solid rgba(14, 165, 233, 0.58);
-        border-radius: 999px;
-        box-shadow: 0 0 12px rgba(14, 165, 233, 0.14);
-        transform: translate(-50%, -50%);
-        animation: water-cursor-ripple 1.55s ease-out infinite;
-    }
-
-    .water-cursor__ripple--two {
-        animation-delay: 0.72s;
-        border-color: rgba(56, 189, 248, 0.45);
-    }
-
-    .water-cursor.is-interactive .water-cursor__pointer {
-        transform: translate(-50%, -50%) scale(1.08);
-    }
-
-    .water-cursor.is-interactive .water-cursor__ripple {
-        animation-duration: 1.15s;
-    }
-}
-
-@keyframes water-cursor-ripple {
-    0% {
-        opacity: 0.75;
-        transform: translate(-50%, -50%) scale(0.35);
-    }
-
-    70% {
-        opacity: 0.24;
-    }
-
-    100% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(1.65);
+    .water-cursor.is-interactive .water-cursor__icon {
+        transform: scale(1.06);
     }
 }
