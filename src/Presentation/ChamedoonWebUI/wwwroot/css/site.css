@@ -2294,3 +2294,255 @@ a:hover {
         justify-content: center;
     }
 }
+
+.evaluations-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.evaluations-new-link {
+    white-space: nowrap;
+}
+
+.user-evaluations-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.user-evaluation-card {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 1.25rem;
+    background: rgba(248, 250, 252, 0.75);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.user-evaluation-summary {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.user-evaluation-summary h6 {
+    margin: 0.25rem 0 0;
+    font-weight: 700;
+}
+
+.evaluation-date {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+}
+
+.evaluation-tags,
+.evaluation-country-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.evaluation-tags span,
+.evaluation-country-card {
+    border-radius: 999px;
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.35rem 0.7rem;
+}
+
+.evaluation-country-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(14, 165, 233, 0.1);
+    color: var(--text-dark);
+}
+
+.country-score {
+    color: var(--primary);
+}
+
+.country-visa {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.empty-evaluations-state {
+    display: grid;
+    justify-items: center;
+    gap: 0.75rem;
+    padding: 2rem 1rem;
+    text-align: center;
+}
+
+.empty-evaluations-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 1.25rem;
+    display: grid;
+    place-items: center;
+    background: rgba(79, 70, 229, 0.12);
+    font-size: 1.8rem;
+}
+
+.empty-evaluations-state p {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+@media (max-width: 575.98px) {
+    .evaluations-header,
+    .user-evaluation-summary {
+        flex-direction: column;
+    }
+}
+
+.evaluation-input-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
+}
+
+.summary-item {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.75rem;
+    border-radius: 0.9rem;
+    background: rgba(255, 255, 255, 0.65);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.summary-item span,
+.evaluation-note span {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+}
+
+.summary-item strong {
+    color: var(--text-dark);
+    font-size: 0.9rem;
+}
+
+.evaluation-note {
+    padding: 0.85rem 1rem;
+    border-radius: 1rem;
+    background: rgba(79, 70, 229, 0.07);
+}
+
+.evaluation-note p {
+    margin: 0.25rem 0 0;
+    color: var(--text-dark);
+}
+
+.evaluation-flashcards {
+    display: grid;
+    gap: 1rem;
+}
+
+.flashcard-counter {
+    justify-self: center;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.user-evaluation-card[data-flashcard-card] {
+    display: none;
+    min-height: 430px;
+    box-shadow: 0 24px 60px -42px rgba(15, 23, 42, 0.55);
+}
+
+.user-evaluation-card[data-flashcard-card].active {
+    display: grid;
+    animation: flashcard-in 0.24s ease;
+}
+
+@keyframes flashcard-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.flashcard-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.flashcard-button {
+    border: 1px solid rgba(79, 70, 229, 0.25);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.78);
+    color: var(--primary);
+    font-weight: 700;
+    padding: 0.65rem 1.2rem;
+    transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+.flashcard-button:not(:disabled):hover,
+.flashcard-button:not(:disabled):focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 36px -28px rgba(79, 70, 229, 0.55);
+}
+
+.flashcard-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+.flashcard-button-primary {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.95), rgba(14, 165, 233, 0.9));
+    color: #fff;
+    border-color: transparent;
+}
+
+.flashcard-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    flex: 1;
+}
+
+.flashcard-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.45);
+    transition: width 0.2s ease, background 0.2s ease;
+}
+
+.flashcard-dot.active {
+    width: 1.6rem;
+    background: var(--primary);
+}
+
+@media (max-width: 575.98px) {
+    .flashcard-actions {
+        flex-wrap: wrap;
+    }
+
+    .flashcard-button {
+        flex: 1 1 120px;
+    }
+
+    .flashcard-dots {
+        order: 3;
+        flex-basis: 100%;
+    }
+}

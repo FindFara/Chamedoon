@@ -17,6 +17,7 @@ namespace Chamedoon.Application.Services.Immigration
         Task RecordAsync(ImmigrationInput input, ClaimsPrincipal user, CancellationToken cancellationToken);
         Task<ImmigrationAnalyticsResult> GetAnalyticsAsync(CancellationToken cancellationToken);
         Task<PaginatedList<ImmigrationEvaluationListItem>> SearchAsync(string? query, int pageNumber, int pageSize, CancellationToken cancellationToken);
+        Task<IReadOnlyList<UserImmigrationEvaluationItem>> GetUserEvaluationsAsync(ClaimsPrincipal user, CancellationToken cancellationToken);
     }
 
     public record DistributionItem(string Label, double Percentage, int Count);
@@ -28,6 +29,11 @@ namespace Chamedoon.Application.Services.Immigration
         public List<DistributionItem> DegreeDistribution { get; init; } = new();
         public int TotalEvaluations { get; init; }
     }
+
+    public record UserImmigrationEvaluationItem(
+        long Id,
+        ImmigrationInput Input,
+        DateTime CreatedAtUtc);
 
     public record ImmigrationEvaluationListItem(
         long Id,
@@ -153,6 +159,29 @@ namespace Chamedoon.Application.Services.Immigration
             return new PaginatedList<ImmigrationEvaluationListItem>(mappedItems, paginated.TotalCount, paginated.PageNumber, pageSize);
         }
 
+
+        public async Task<IReadOnlyList<UserImmigrationEvaluationItem>> GetUserEvaluationsAsync(ClaimsPrincipal user, CancellationToken cancellationToken)
+        {
+            var userId = GetUserId(user);
+            if (!userId.HasValue)
+            {
+                return Array.Empty<UserImmigrationEvaluationItem>();
+            }
+
+            var evaluations = await _context.ImmigrationEvaluations
+                .AsNoTracking()
+                .Where(item => item.CustomerId == userId.Value)
+                .OrderByDescending(item => item.CreatedAtUtc)
+                .ToListAsync(cancellationToken);
+
+            return evaluations
+                .Select(item => new UserImmigrationEvaluationItem(
+                    item.Id,
+                    ToInput(item),
+                    item.CreatedAtUtc))
+                .ToList();
+        }
+
         private static List<DistributionItem> CalculateAgeDistribution(IEnumerable<ImmigrationEvaluation> evaluations, int total)
         {
             var buckets = new Dictionary<string, int>
@@ -206,6 +235,27 @@ namespace Chamedoon.Application.Services.Immigration
                     kvp.Value))
                 .OrderByDescending(item => item.Percentage)
                 .ToList();
+        }
+
+
+        private static ImmigrationInput ToInput(ImmigrationEvaluation evaluation)
+        {
+            return new ImmigrationInput
+            {
+                Age = evaluation.Age,
+                MaritalStatus = (MaritalStatusType)evaluation.MaritalStatus,
+                MBTIPersonality = (PersonalityType)evaluation.MBTIPersonality,
+                InvestmentAmount = evaluation.InvestmentAmount,
+                JobCategory = (JobCategoryType)evaluation.JobCategory,
+                JobTitle = evaluation.JobTitle,
+                WorkExperienceYears = evaluation.WorkExperienceYears,
+                FieldCategory = (FieldCategoryType)evaluation.FieldCategory,
+                DegreeLevel = (DegreeLevelType)evaluation.DegreeLevel,
+                LanguageCertificate = (LanguageCertificateType)evaluation.LanguageCertificate,
+                WillingToStudy = evaluation.WillingToStudy,
+                Email = evaluation.Email,
+                Notes = evaluation.Notes
+            };
         }
 
         private static long? GetUserId(ClaimsPrincipal user)
