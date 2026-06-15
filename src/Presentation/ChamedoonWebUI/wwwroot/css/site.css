@@ -2458,11 +2458,11 @@ a:hover {
         position: fixed;
         inset: 0 auto auto 0;
         z-index: 2147483647;
-        width: 42px;
-        height: 42px;
+        width: 32px;
+        height: 32px;
         pointer-events: none;
         opacity: 0;
-        transform: translate3d(calc(var(--cursor-x) - 30%), calc(var(--cursor-y) - 28%), 0);
+        transform: translate3d(calc(var(--cursor-x) - 22%), calc(var(--cursor-y) - 16%), 0);
         transition: opacity 160ms ease;
     }
 
@@ -2475,11 +2475,21 @@ a:hover {
         width: 100%;
         height: 100%;
         overflow: visible;
+        color: #0ea5e9;
+        filter: drop-shadow(0 8px 14px rgba(14, 165, 233, 0.28));
         transform-origin: 50% 50%;
-        transition: transform 150ms ease;
+        transition: transform 150ms ease, filter 150ms ease;
+    }
+
+    .water-cursor__shape {
+        fill: currentColor;
+        stroke: rgba(255, 255, 255, 0.86);
+        stroke-width: 2;
+        stroke-linejoin: round;
     }
 
     .water-cursor.is-interactive .water-cursor__icon {
-        transform: scale(1.06);
+        filter: drop-shadow(0 10px 18px rgba(14, 165, 233, 0.34));
+        transform: scale(1.08);
     }
 }
