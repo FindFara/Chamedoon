@@ -12,7 +12,6 @@
     cursor.innerHTML = `
         <svg class="water-cursor__icon" viewBox="0 0 48 48" focusable="false" aria-hidden="true">
             <path class="water-cursor__shape" d="M10 6 L38 24 L26 28 L21 40 Z" />
-            <circle class="water-cursor__dot" cx="34" cy="14" r="4" />
         </svg>`;
     document.body.appendChild(cursor);
     document.documentElement.classList.add('has-water-cursor');
