@@ -1,23 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Chamedoon">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Chamedoon logo">
   <defs>
-    <linearGradient id="lightGradient" x1="12" y1="9" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+    <linearGradient id="chamedoonLightGradient" x1="12" y1="9" x2="54" y2="56" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#4b36ff" />
       <stop offset="0.5" stop-color="#248bff" />
       <stop offset="1" stop-color="#12c6df" />
     </linearGradient>
-    <radialGradient id="darkGradient" cx="34%" cy="28%" r="74%">
-      <stop offset="0" stop-color="#283241" />
-      <stop offset="0.54" stop-color="#171e29" />
-      <stop offset="1" stop-color="#070c14" />
-    </radialGradient>
-    <style>
-      .bg { fill: url(#lightGradient); }
-      @media (prefers-color-scheme: dark) {
-        .bg { fill: url(#darkGradient); }
-      }
-    </style>
   </defs>
-  <rect class="bg" x="5" y="5" width="54" height="54" rx="13" />
+  <rect x="5" y="5" width="54" height="54" rx="13" fill="url(#chamedoonLightGradient)" />
   <g fill="none" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
     <path d="M19 43V28c0-4.4 3.6-8 8-8h16c4.4 0 8 3.6 8 8v4" />
     <path d="M28 20v-4c0-2.2 1.8-4 4-4h6c2.2 0 4 1.8 4 4v4" />
