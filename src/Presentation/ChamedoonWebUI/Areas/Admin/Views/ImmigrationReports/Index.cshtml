@@ -106,7 +106,6 @@
                     <tr>
                         <th scope="col">مشتری</th>
                         <th scope="col">ایمیل</th>
-                        <th scope="col">شماره همراه</th>
                         <th scope="col">سن</th>
                         <th scope="col">وضعیت تاهل</th>
                         <th scope="col">دسته شغلی</th>
@@ -124,8 +123,7 @@
                         {
                             <tr>
                                 <td class="fw-semibold">@item.CustomerName</td>
-                                <td><span dir="ltr">@(item.Email ?? "-")</span></td>
-                                <td><span dir="ltr">@(string.IsNullOrWhiteSpace(item.PhoneNumber) ? "-" : item.PhoneNumber)</span></td>
+                                <td>@item.Email ?? "-"</td>
                                 <td>@(item.Age > 0 ? item.Age.ToString() : "نامشخص")</td>
                                 <td>@item.MaritalStatus</td>
                                 <td>@item.JobCategory</td>
@@ -142,7 +140,7 @@
                                         <span class="badge bg-secondary-subtle text-secondary">خیر</span>
                                     }
                                 </td>
-                                <td>@item.CreatedAtUtc.ConvertMiladiToShamsiWithTime()</td>
+                                <td>@item.CreatedAtUtc.ToLocalTime().ToString("yyyy/MM/dd HH:mm")</td>
                             </tr>
                         }
                     }
@@ -155,41 +153,6 @@
                 </tbody>
             </table>
         </div>
-        @if (Model.TotalPages > 1)
-        {
-            var startPage = Math.Max(1, Model.CurrentPage - 2);
-            var endPage = Math.Min(Model.TotalPages, startPage + 4);
-            startPage = Math.Max(1, endPage - 4);
-
-            <nav aria-label="صفحات ارزیابی" class="p-3 admin-pagination">
-                <ul class="pagination justify-content-end mb-0">
-                    <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : string.Empty)">
-                        <a class="page-link"
-                           asp-action="Index"
-                           asp-route-page="@(Model.CurrentPage - 1)"
-                           asp-route-pageSize="@Model.PageSize"
-                           asp-route-query="@Model.Query">قبلی</a>
-                    </li>
-                    @for (var i = startPage; i <= endPage; i++)
-                    {
-                        <li class="page-item @(i == Model.CurrentPage ? "active" : string.Empty)">
-                            <a class="page-link"
-                               asp-action="Index"
-                               asp-route-page="@i"
-                               asp-route-pageSize="@Model.PageSize"
-                               asp-route-query="@Model.Query">@i</a>
-                        </li>
-                    }
-                    <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : string.Empty)">
-                        <a class="page-link"
-                           asp-action="Index"
-                           asp-route-page="@(Model.CurrentPage + 1)"
-                           asp-route-pageSize="@Model.PageSize"
-                           asp-route-query="@Model.Query">بعدی</a>
-                    </li>
-                </ul>
-            </nav>
-        }
     </div>
 </div>
 
