@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Chamedoon.Application.Common.Extensions;
 using Chamedoon.Application.Common.Interfaces;
-using Chamedoon.Application.Common.Models;
 using Chamedoon.Domin.Entity.Customers;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +15,7 @@ namespace Chamedoon.Application.Services.Immigration
     {
         Task RecordAsync(ImmigrationInput input, ClaimsPrincipal user, CancellationToken cancellationToken);
         Task<ImmigrationAnalyticsResult> GetAnalyticsAsync(CancellationToken cancellationToken);
-        Task<PaginatedList<ImmigrationEvaluationListItem>> SearchAsync(string? query, int pageNumber, int pageSize, CancellationToken cancellationToken);
+        Task<IReadOnlyList<ImmigrationEvaluationListItem>> SearchAsync(string? query, CancellationToken cancellationToken);
     }
 
     public record DistributionItem(string Label, double Percentage, int Count);
@@ -111,7 +110,7 @@ namespace Chamedoon.Application.Services.Immigration
             };
         }
 
-        public async Task<PaginatedList<ImmigrationEvaluationListItem>> SearchAsync(string? query, int pageNumber, int pageSize, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<ImmigrationEvaluationListItem>> SearchAsync(string? query, CancellationToken cancellationToken)
         {
             var normalizedQuery = query?.Trim();
 
@@ -128,11 +127,12 @@ namespace Chamedoon.Application.Services.Immigration
                     (!string.IsNullOrWhiteSpace(item.Customer.LastName) && item.Customer.LastName.ToLower().Contains(lowered)) ||
                     (!string.IsNullOrWhiteSpace(item.Email) && item.Email.ToLower().Contains(lowered)) ||
                     (!string.IsNullOrWhiteSpace(item.JobTitle) && item.JobTitle.ToLower().Contains(lowered)))
-                    .OrderByDescending(item => item.CreatedAtUtc); ;
+                    .OrderByDescending(item => item.CreatedAtUtc);
             }
 
-            var paginated = await PaginatedList<ImmigrationEvaluation>.CreateAsync(evaluations, pageNumber, pageSize);
-            var mappedItems = paginated.Items
+            var items = await evaluations.ToListAsync(cancellationToken);
+
+            return items
                 .Select(item => new ImmigrationEvaluationListItem(
                     item.Id,
                     BuildCustomerName(item.Customer),
@@ -146,8 +146,6 @@ namespace Chamedoon.Application.Services.Immigration
                     item.WillingToStudy,
                     item.CreatedAtUtc))
                 .ToList();
-
-            return new PaginatedList<ImmigrationEvaluationListItem>(mappedItems, paginated.TotalCount, paginated.PageNumber, pageSize);
         }
 
         private static List<DistributionItem> CalculateAgeDistribution(IEnumerable<ImmigrationEvaluation> evaluations, int total)
