@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Chamedoon.Application.Common.Extensions;
 using Chamedoon.Application.Common.Interfaces;
-using Chamedoon.Application.Common.Models;
 using Chamedoon.Domin.Entity.Customers;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,8 +15,7 @@ namespace Chamedoon.Application.Services.Immigration
     {
         Task RecordAsync(ImmigrationInput input, ClaimsPrincipal user, CancellationToken cancellationToken);
         Task<ImmigrationAnalyticsResult> GetAnalyticsAsync(CancellationToken cancellationToken);
-        Task<PaginatedList<ImmigrationEvaluationListItem>> SearchAsync(string? query, int pageNumber, int pageSize, CancellationToken cancellationToken);
-        Task<IReadOnlyList<UserImmigrationEvaluationItem>> GetUserEvaluationsAsync(ClaimsPrincipal user, CancellationToken cancellationToken);
+        Task<IReadOnlyList<ImmigrationEvaluationListItem>> SearchAsync(string? query, CancellationToken cancellationToken);
     }
 
     public record DistributionItem(string Label, double Percentage, int Count);
@@ -30,16 +28,10 @@ namespace Chamedoon.Application.Services.Immigration
         public int TotalEvaluations { get; init; }
     }
 
-    public record UserImmigrationEvaluationItem(
-        long Id,
-        ImmigrationInput Input,
-        DateTime CreatedAtUtc);
-
     public record ImmigrationEvaluationListItem(
         long Id,
         string CustomerName,
         string? Email,
-        string? PhoneNumber,
         int Age,
         string MaritalStatus,
         string JobCategory,
@@ -82,7 +74,7 @@ namespace Chamedoon.Application.Services.Immigration
                 WillingToStudy = input.WillingToStudy,
                 Email = input.Email,
                 Notes = input.Notes,
-                CreatedAtUtc = DateTime.Now
+                CreatedAtUtc = DateTime.UtcNow
             };
 
             await _context.ImmigrationEvaluations.AddAsync(entity, cancellationToken);
@@ -118,14 +110,13 @@ namespace Chamedoon.Application.Services.Immigration
             };
         }
 
-        public async Task<PaginatedList<ImmigrationEvaluationListItem>> SearchAsync(string? query, int pageNumber, int pageSize, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<ImmigrationEvaluationListItem>> SearchAsync(string? query, CancellationToken cancellationToken)
         {
             var normalizedQuery = query?.Trim();
 
             var evaluations = _context.ImmigrationEvaluations
                 .AsNoTracking()
                 .Include(item => item.Customer)
-                    .ThenInclude(customer => customer.User)
                 .OrderByDescending(item => item.CreatedAtUtc);
 
             if (!string.IsNullOrWhiteSpace(normalizedQuery))
@@ -136,16 +127,16 @@ namespace Chamedoon.Application.Services.Immigration
                     (!string.IsNullOrWhiteSpace(item.Customer.LastName) && item.Customer.LastName.ToLower().Contains(lowered)) ||
                     (!string.IsNullOrWhiteSpace(item.Email) && item.Email.ToLower().Contains(lowered)) ||
                     (!string.IsNullOrWhiteSpace(item.JobTitle) && item.JobTitle.ToLower().Contains(lowered)))
-                    .OrderByDescending(item => item.CreatedAtUtc); ;
+                    .OrderByDescending(item => item.CreatedAtUtc);
             }
 
-            var paginated = await PaginatedList<ImmigrationEvaluation>.CreateAsync(evaluations, pageNumber, pageSize);
-            var mappedItems = paginated.Items
+            var items = await evaluations.ToListAsync(cancellationToken);
+
+            return items
                 .Select(item => new ImmigrationEvaluationListItem(
                     item.Id,
                     BuildCustomerName(item.Customer),
                     item.Email,
-                    item.Customer.User?.PhoneNumber,
                     item.Age,
                     ((MaritalStatusType)item.MaritalStatus).ToDisplay(),
                     ((JobCategoryType)item.JobCategory).ToDisplay(),
@@ -153,31 +144,6 @@ namespace Chamedoon.Application.Services.Immigration
                     ((DegreeLevelType)item.DegreeLevel).ToDisplay(),
                     ((LanguageCertificateType)item.LanguageCertificate).ToDisplay(),
                     item.WillingToStudy,
-                    item.CreatedAtUtc))
-                .ToList();
-
-            return new PaginatedList<ImmigrationEvaluationListItem>(mappedItems, paginated.TotalCount, paginated.PageNumber, pageSize);
-        }
-
-
-        public async Task<IReadOnlyList<UserImmigrationEvaluationItem>> GetUserEvaluationsAsync(ClaimsPrincipal user, CancellationToken cancellationToken)
-        {
-            var userId = GetUserId(user);
-            if (!userId.HasValue)
-            {
-                return Array.Empty<UserImmigrationEvaluationItem>();
-            }
-
-            var evaluations = await _context.ImmigrationEvaluations
-                .AsNoTracking()
-                .Where(item => item.CustomerId == userId.Value)
-                .OrderByDescending(item => item.CreatedAtUtc)
-                .ToListAsync(cancellationToken);
-
-            return evaluations
-                .Select(item => new UserImmigrationEvaluationItem(
-                    item.Id,
-                    ToInput(item),
                     item.CreatedAtUtc))
                 .ToList();
         }
@@ -235,27 +201,6 @@ namespace Chamedoon.Application.Services.Immigration
                     kvp.Value))
                 .OrderByDescending(item => item.Percentage)
                 .ToList();
-        }
-
-
-        private static ImmigrationInput ToInput(ImmigrationEvaluation evaluation)
-        {
-            return new ImmigrationInput
-            {
-                Age = evaluation.Age,
-                MaritalStatus = (MaritalStatusType)evaluation.MaritalStatus,
-                MBTIPersonality = (PersonalityType)evaluation.MBTIPersonality,
-                InvestmentAmount = evaluation.InvestmentAmount,
-                JobCategory = (JobCategoryType)evaluation.JobCategory,
-                JobTitle = evaluation.JobTitle,
-                WorkExperienceYears = evaluation.WorkExperienceYears,
-                FieldCategory = (FieldCategoryType)evaluation.FieldCategory,
-                DegreeLevel = (DegreeLevelType)evaluation.DegreeLevel,
-                LanguageCertificate = (LanguageCertificateType)evaluation.LanguageCertificate,
-                WillingToStudy = evaluation.WillingToStudy,
-                Email = evaluation.Email,
-                Notes = evaluation.Notes
-            };
         }
 
         private static long? GetUserId(ClaimsPrincipal user)
