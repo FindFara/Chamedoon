@@ -153,6 +153,41 @@
                 </tbody>
             </table>
         </div>
+        @if (Model.TotalPages > 1)
+        {
+            var startPage = Math.Max(1, Model.CurrentPage - 2);
+            var endPage = Math.Min(Model.TotalPages, startPage + 4);
+            startPage = Math.Max(1, endPage - 4);
+
+            <nav aria-label="صفحات ارزیابی" class="p-3 admin-pagination">
+                <ul class="pagination justify-content-end mb-0">
+                    <li class="page-item @(Model.CurrentPage <= 1 ? "disabled" : string.Empty)">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@(Model.CurrentPage - 1)"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-query="@Model.Query">قبلی</a>
+                    </li>
+                    @for (var i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : string.Empty)">
+                            <a class="page-link"
+                               asp-action="Index"
+                               asp-route-page="@i"
+                               asp-route-pageSize="@Model.PageSize"
+                               asp-route-query="@Model.Query">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.CurrentPage >= Model.TotalPages ? "disabled" : string.Empty)">
+                        <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@(Model.CurrentPage + 1)"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-query="@Model.Query">بعدی</a>
+                    </li>
+                </ul>
+            </nav>
+        }
     </div>
 </div>
 
@@ -208,7 +243,7 @@
 
             buildChart('ageChart', ageLabels, ageValues);
             buildChart('jobChart', jobLabels, jobValues);
-            buildChart('degreeChart', degreeLabels, degreeValues);
+            buildChart('degreeChart', degreeValues);
         })();
     </script>
 }
